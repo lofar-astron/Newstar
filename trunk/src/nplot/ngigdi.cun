@@ -1,0 +1,1451 @@
+/* ngigdi.cun
+.  HjV 930203
+.
+.   Revisions:
+.	WNB 930331	Changed name
+.	WNB 930510	IINFO, GDSID, IMMID, IMSID, OPEN, MHEAD, SETID error
+.	WNB 930510	Add PGPLOT, FRAME
+.	CMV 930913	Corrected several parameter lists
+.	CMV 931004	Added setxgrid, setygrid
+.	CMV 931108	Changed calls to gdi_*_c 
+.	CMV 931112	Proper interface for characters (fchar)
+.	CMV 931220	Changed call to n_gdi_pgplot
+.	HjV 960729	Add test for Solaris (wn_so__)
+.			Test should be before wn_sw__ -test because for
+.			Solaris that switch is also set
+...                                                                     */
+/*
+.  Description:  
+.       Dummy interface for GIPSY routines used by NGIDS 
+.       The available routines are:
+.
+.    GDI_OPEN        Opens a display.
+.    GDI_CLOSE       Closes an opened display device.
+.    GDI_CINFO       Obtains info about the color tables of the display.
+.    GDI_GINFO       Obtains info about the graphics planes.
+.    GDI_RINFO       Obtains info about the number of recorded images.
+.    GDI_IINFO       Obtains info about GDS image loaded in DISPLAY SERVER.
+.    GDI_GRCOL       Sets the color for a graphics plane.
+.    GDI_GRON        Turns graphics planes on.
+.    GDI_GROFF       Turns graphics planes off.
+.    GDI_GRCLEAR     Clears graphics planes.
+.    GDI_GRREGION    Lets user define a region in graphics planes.
+.    GDI_RECORD      Records the images currently on the display
+.    GDI_REMOVE      Remove a recorded image.
+.    GDI_RMASK       Obtain mask of recorded images.
+.    GDI_SEQUENCE    Set playback sequence for recorded images.
+.    GDI_COLPUT      Sends a color Look Up Table to the display.
+.    GDI_COLGET      Obtains color Look Up Table from the display.
+.    GDI_DEFIMG      Defines the sizes and scaling of a display image.
+.    GDI_MHEAD       Creates an image header from a GDS set for 
+.                    the display.
+.    GDI_IMWRITE     Sends display data to server.
+.    GDI_GRREAD      Gets the graphics data.
+.    GDI_GRWRITE     Puts the graphics data.
+.    GDI_IMMID       Main identification of image.
+.    GDI_IMSID       Sub identification of image.
+.    GDI_SETID       Constitutes a main and sub id from a subset for the
+.                    display device.
+.    GDI_SETXGRID    Set text for X grid coordinates
+.    GDI_SETYGRID    Set text for Y grid coordinates
+.    GDI_GDSID       Sends GDS database name and subset level 
+.                    to DISPLAY SERVER.
+.    GDI_PGPLOT	     Use PGPLOT on GDS
+.    GDI_FRAME       Get current frame parameters
+.
+.	NOTE on calling with character strings:
+.
+.	     Characters are passed to C as a pointer to the character
+.	     string followed by an integer (not a pointer) which is 
+.	     the length of the string. If the Fortran call has an 
+.	     integer behind the character, the length will be suppressed.
+.	     
+.	     In this interface, we assume that the string is passed
+.	     without an explicit length argument, so use
+.
+.		N_GDI_OPEN(GID,DISP(:WNCALN(DISP))
+.
+.	     in stead of
+.
+.	        N_GDI_OPEN(GID,DISP,WNCALN(DISP))
+.
+.	     The sequence of arguments for n_gdi_setxgrid and _setygrid
+.	     has been changed in the call to the interface (for this same
+.	     reason).
+.
+.
+/*
+.   Include files:
+...									*/
+
+
+#ifdef wn_hp__
+typedef long fint;
+typedef struct { char *a; fint l; } fchar;
+#else
+typedef long fint;
+typedef struct { char *a; fint l; } fchar;
+#endif
+#ifdef wn_li__
+/* Fake errno for old gdilib. Will of course cause some problems... CMV20031229*/
+int errno=0;
+#endif
+
+/*
+.   Function:  N_GDI_OPEN
+...                                                                     */
+		n_gdi_open_(display,len)
+/*
+.   Arguments:
+... 
+                        	                                        */
+		char *display;			/* display device       */
+		fint len;
+{
+/*
+.   Use:    INTEGER N_GDI_OPEN( DISPLAY )      Input       CHARACTER*(*)
+.
+.           GDI_OPEN         Returns on success a non-negative display
+.                            identifier for further use. Negative
+.                            values indicate an error condition.
+.           DISPLAY          Name of display device. If DISPLAY
+.                            is not present or empty, the default
+.                            display (DEFAULT_DISPLAY) will be used.
+...                                                                     */
+/*
+.   Include files:
+...
+*/
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=display;
+	return (gdi_open_c(c));
+#else
+#ifdef wn_sw__
+	return (gdi_open_c(display,len));
+#else
+	fchar c;
+        c.l=len;
+        c.a=display;
+	return (gdi_open_c(c));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_CLOSE
+...                                                                     */
+		n_gdi_close_(gdi_id)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id           */
+{
+/*
+.   Use:    INTEGER N_GDI_CLOSE( GDI_ID )      Input       INTEGER
+.
+.           GDI_CLOSE      Returns zero if successful, otherwize a
+.                          negative value is returned.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+. 
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_close_c(gdi_id));
+}
+			
+/*
+.   Function:  N_GDI_CINFO
+...                                                                     */
+		n_gdi_cinfo_(gdi_id,mincol,maxcol,ncolors,blank)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id           */
+		int *mincol;			/* min. display value   */
+		int *maxcol;			/* max. display value   */
+		int *ncolors;			/* nr. of colors        */
+		int *blank;
+{
+/*
+.   Use:      INTEGER GDI_CINFO( GDI_ID,        Input     INTEGER
+.                                MINCOL,        Output    INTEGER
+.                                MAXCOL,        Output    INTEGER
+.                                NCOLORS,       Output    INTEGER
+.                                BLANK )        Output    INTEGER
+. 
+.             GDI_CINFO      Returns zero on success, negative on error.
+.             GDI_ID         Display id as returned by GDI_OPEN.
+.             MINCOL         Minimum display value for which a
+.                            color can be assigned.
+.             MAXCOL         Maximum display value for which a
+.                            color can be assigned.
+.             NCOLORS        Number of colors (MAXCOL - MINCOL + 1).
+.             BLANK          Display value reserved for undefined
+.                            data.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_cinfo_c(gdi_id,mincol,maxcol,ncolors,blank));
+}
+
+/*
+.   Function:  N_GDI_GINFO
+...                                                                     */
+		n_gdi_ginfo_(gdi_id,nplanes,pmask)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id           */
+		int *nplanes;			/* nr. planes available */
+		int *pmask;			/* mask which planes on */
+{
+/*
+.   Use:    INTEGER GDI_GINFO( GDI_ID ,     Input      INTEGER
+.                              NPLANES ,    Output     INTEGER
+.                              PMASK )      Output     INTEGER
+.
+.           GDI_GINFO      Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           NPLANES        Number of graphics planes available.
+.           PMASK          Mask which specifies which planes are on.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_ginfo_c(gdi_id,nplanes,pmask));
+}
+
+/*
+.   Function:  N_GDI_RINFO
+...                                                                     */
+		n_gdi_rinfo_(gdi_id,nrecord,mrecord)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id           */
+		int *nrecord;			/* nr. recorded image   */
+		int *mrecord;			/* max. recorded image  */
+{
+/*
+.   Use:    INTEGER GDI_RINFO( GDI_ID ,     Input      INTEGER
+.                              NRECORD ,    Output     INTEGER
+.                              MRECORD )    Output     INTEGER
+.
+.           GDI_RINFO      Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           NRECORD        Number of recorded images.
+.           MRECORD        Maximum number of recorded images.
+. 
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_rinfo_c(gdi_id,nrecord,mrecord));
+}
+
+/*
+.   Function:  N_GDI_GRCOL
+...                                                                     */
+		n_gdi_grcol_(gdi_id,plane,red,green,blue)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *plane;			/* plane nr.		*/
+		float *red;			/* red color intensity	*/
+		float *green;			/* green color intens.	*/
+		float *blue;			/* blue color intensity	*/
+{
+/*
+.   Use:    INTEGER GDI_GRCOL( GDI_ID ,     Input      INTEGER
+.                              PLANE,       Input      INTEGER
+.                              RED ,        Input      REAL
+.                              GREEN ,      Input      REAL
+.                              BLUE )       Input      REAL
+.
+.           GDI_GRCOL      Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           PLANE          Plane number (1, 2, 4, etc. ).
+.           RED            Red color intensity (0.0 .. 1.0).
+.           GREEN          Green color intensity (0.0 .. 1.0).
+.           BLUE           Blue color intensity (0.0 .. 1.0 ).
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_grcol_c(gdi_id,plane,red,green,blue));
+}
+
+/*
+.   Function:  N_GDI_GRON
+...                                                                     */
+		n_gdi_gron_(gdi_id,pmask)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *pmask;			/* turn which planes on	*/
+{
+/*
+.   Use:    INTEGER GDI_GRON( GDI_ID ,     Input      INTEGER
+.                             PMASK )      Input      INTEGER
+.
+.           GDI_GRON       Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           PMASK          Mask which specifies which planes should be
+.                          turned on.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_gron_c(gdi_id,pmask));
+}
+
+/*
+.   Function:  N_GDI_GROFF
+...                                                                     */
+		n_gdi_groff_(gdi_id,pmask)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *pmask;			/* turn which planes off*/
+{
+/*
+.   Use:    INTEGER GDI_GROFF( GDI_ID ,     Input      INTEGER
+.                              PMASK )      Input      INTEGER
+.   
+.           GDI_GROFF      Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           PMASK          Mask which specifies which planes should be
+.                          turned off.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_groff_c(gdi_id,pmask));
+}
+
+/*
+.   Function:  N_GDI_GRCLEAR
+...                                                                     */
+		n_gdi_grclear_(gdi_id,pmask)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *pmask;			/* clear which planes 	*/
+{
+/*
+.   Use:    INTEGER GDI_GRCLEAR( GDI_ID ,     Input      INTEGER
+.                                PMASK )      Input      INTEGER
+.
+.           GDI_GRCLEAR    Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           PMASK          Mask which specifies which planes should be
+.                          cleared.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_grclear_c(gdi_id,pmask));
+}
+
+/*
+.   Function:  N_GDI_GRREGION
+...                                                                     */
+		n_gdi_grregion_(gdi_id,plane)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *plane;			/* plane nr.		*/
+{
+/*
+.   Use:    INTEGER GDI_GRREGION( GDI_ID ,     Input      INTEGER
+.                                 PLANE )      Input      INTEGER
+.
+.           GDI_GRREGION   Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           PLANE          Graphics plane.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_grregion_c(gdi_id,plane));
+}
+
+/*
+.   Function:  N_GDI_RECORD
+...                                                                     */
+		n_gdi_record_(gdi_id,record)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *record;			/* record nr.		*/
+{
+/*
+.   Use:    INTEGER GDI_RECORD( GDI_ID ,     Input      INTEGER
+.                               RECORD )     Input      INTEGER
+.
+.           GDI_RECORD     Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           RECORD         record number (0 to .....).
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_record_c(gdi_id,record));
+}
+
+/*
+.   Function:  N_GDI_REMOVE
+...                                                                     */
+		n_gdi_remove_(gdi_id,record)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *record;			/* record nr. to remove	*/
+{
+/*
+.   Use:    INTEGER GDI_REMOVE( GDI_ID ,     Input      INTEGER
+.                               RECORD )     Input      INTEGER
+.
+.           GDI_REMOVE     Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           RECORD         Record number (0 to .....) of image to be
+.                          removed.
+. 
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_remove_c(gdi_id,record));
+}
+
+/*
+.   Function:  N_GDI_RMASK
+...                                                                     */
+		n_gdi_rmask_(gdi_id,records,nrecords)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *records;			/* image present ??	*/
+		int *nrecords;			/* size of RECORDS	*/
+{
+/*
+.   Use:    INTEGER GDI_RMASK( GDI_ID  ,     Input      INTEGER
+.                              RECORDS ,     Output     INTEGER
+.                              NRECORDS )    Input      INTEGER
+.
+.           GDI_RMASK      Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           RECORDS        Contains one if recorded image is present,
+.                          zero if not.
+.           NRECORDS       Size of RECORDS.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_rmask_c(gdi_id,records,nrecords));
+}
+
+/*
+.   Function:  N_GDI_SEQUENCE
+...                                                                     */
+		n_gdi_sequence_(gdi_id,records,nrecords)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *records;			/* sequence of image 	*/
+		int *nrecords;			/* size of RECORDS	*/
+{
+/*
+.   Use:    INTEGER GDI_SEQUENCE( GDI_ID  ,     Input      INTEGER
+.                                 RECORDS ,     Output     INTEGER
+.                                 NRECORDS )    Input      INTEGER
+.
+.           GDI_RMASK      Returns zero on succes, negative on error.
+.           GDI_ID         Display id as returned by GDI_OPEN.
+.           RECORDS        Containse sequence of recorded images.
+.           NRECORDS       Size of RECORDS.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_sequence_c(gdi_id,records,nrecords));
+}
+
+/*
+.   Function:  N_GDI_COLPUT
+...                                                                     */
+		n_gdi_colput_(gdi_id,values,red,green,blue,ncolors)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *values;			/* display values	*/
+		float *red;			/* red color intensity	*/
+		float *green;			/* green color intens.	*/
+		float *blue;			/* blue color intensity	*/
+		int *ncolors;			/* nr. of colors	*/
+{
+/*
+.   Use:    INTEGER GDI_COLPUT( GDI_ID,     Input      INTEGER
+.                               VALUES,     Input      INTEGER ARRAY
+.                               RED,        Input      REAL ARRAY
+.                               GREEN,      Input      REAL ARRAY
+.                               BLUE,       Input      REAL ARRAY
+.                               NCOLORS )   Input      INTEGER
+.  
+.           GDI_COLPUT     Returns zero on succes, negative on error.
+.           VALUES         Array containing the display values which
+.                          should have the new colors.
+.           RED            Red intensities in the range 0.0 to 1.0.
+.           GREEN          Green intensities in the range 0.0 to 1.0.
+.           BLUE           Blue intensities in the range 0.0 to 1.0.
+.           NCOLORS        Total number of colors to send to display.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_colput_c(gdi_id,values,red,green,blue,ncolors));
+}
+
+/*
+.   Function:  N_GDI_IMMID
+...                                                                     */
+		n_gdi_immid_(gdi_id,text,len)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *text;
+		fint len;
+{
+/*
+.   Use:    INTEGER GDI_IMMID( GDI_ID,     Input      INTEGER
+.                              TEXT )      Input      CHARACTER*(*)
+.
+.           GDI_IMMID      Returns zero on succes, negative on error.
+.           TEXT           Text as main image identifier.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_immid_c(gdi_id,c));
+#else
+#ifdef wn_sw__
+	return (gdi_immid_c(gdi_id,text,len));
+#else
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_immid_c(gdi_id,c));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_IMSID
+...                                                                     */
+		n_gdi_imsid_(gdi_id,text,len)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *text;
+		fint len;
+{
+/*
+.   Use:    INTEGER GDI_IMSID( GDI_ID,     Input      INTEGER
+.                              TEXT )      Input      CHARACTER*(*)
+.
+.           GDI_IMSID      Returns zero on succes, negative on error.
+.           TEXT           Text as main image identifier.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_imsid_c(gdi_id,c));
+#else
+#ifdef wn_sw__
+	return (gdi_imsid_c(gdi_id,text,len));
+#else
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_imsid_c(gdi_id,c));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_COLGET
+...                                                                     */
+		n_gdi_colget_(gdi_id,values,red,green,blue,ncolors)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *values;			/* display values	*/
+		float *red;			/* red color intensity	*/
+		float *green;			/* green color intens.	*/
+		float *blue;			/* blue color intensity	*/
+		int *ncolors;			/* nr. of colors	*/
+{
+/*
+.   Use:    INTEGER GDI_COLGET( GDI_ID,     Input      INTEGER
+.                               VALUES,     Input      INTEGER ARRAY
+.                               RED,        Output     REAL ARRAY
+.                               GREEN,      Output     REAL ARRAY
+.                               BLUE,       Output     REAL ARRAY
+.                               NCOLORS )   Input      INTEGER
+.
+.           GDI_COLGET     Returns zero on success, negative on error.
+.           VALUES         Array containing the display values for
+.                          which the colors should be obtained.
+.           RED            Red intensities in the range 0.0 to 1.0.
+.           GREEN          Green intensities in the range 0.0 to 1.0.
+.           BLUE           Blue intensities in the range 0.0 to 1.0.
+.           NCOLORS        Total number of colors to read from display.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_colget_c(gdi_id,values,red,green,blue,ncolors));
+}
+
+/*
+.   Function:  N_GDI_DEFIMG
+...                                                                     */
+		n_gdi_defimg_(gdi_id,glo,ghi,bscale,bzero)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *glo;			/* lower grid units	*/
+		int *ghi;			/* upper grid units	*/
+		float *bscale;			/* scaling factor	*/
+		float *bzero;
+{
+/*
+.   Use:    INTEGER GDI_DEFIMG( GDI_ID ,     Input     INTEGER
+.                               GLO ,        Input     INTEGER ARRAY
+.                               GHI ,        Input     INETEGR ARRAY
+.                               BSCALE ,     Input     REAL
+.                               BZERO )      Input     REAL
+.
+.           GDI_DEFIMG     Returns zero on succes, negative on error. 
+.           GDI_ID         Display identifier.
+.           GLO            Array containing the lower grid units
+.                          (first X, then Y) of image on display.
+.           GHI            Array containing the upper grid units
+.                          (fitst X, then Y) of image on display.
+.           BSCALE         Scaling factor from display data to
+.                          real data:
+.                          real = BSCALE * display + BZERO
+.           BZERO          See above.
+.       
+.Notes:     GDI_DEFIMG must be called prior to GDI_IMWRITE.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_defimg_c(gdi_id,glo,ghi,bscale,bzero));
+}
+
+/*
+.   Function:  N_GDI_MHEAD
+...                                                                     */
+		n_gdi_mhead_(gdi_id,set,len,cwlo,cwhi)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *set;			/* set name 		*/
+		fint len;
+		int *cwlo;			/* lower c.w.		*/
+		int *cwhi;			/* upper c.w.		*/
+{
+/*
+.   Use:    INTEGER GDI_MHEAD( GDI_ID ,    Input      INTEGER
+.                              SET ,       Input      CHARACTER*(*)
+.                              CWLO ,      Input      INTEGER
+.                              CWHI )      Input      INTEGER
+.
+.           GDI_MHEAD      Returns zero on success, negative on error.
+.           GDI_ID         Id of display.
+.           SET            Name of GDS set.
+.           CWLO           Lower coordinate word of frame.
+.           CWHI           Upper coordinate word of frame.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_mhead_c(gdi_id,c,cwlo,cwhi));
+#else
+#ifdef wn_sw__
+	return (gdi_imsid_c(gdi_id,set,len,cwlo,cwhi));
+#else
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_mhead_c(gdi_id,c,cwlo,cwhi));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_IMWRITE
+...                                                                     */
+		n_gdi_imwrite_(gdi_id,data,ndata,packed)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *data;			/* display data		*/
+		int *ndata;			/* nr. of dispaly data 	*/
+		int *packed;			/* packing code		*/
+{
+/*
+.   Use:    INTEGER GDI_IMWRITE( GDI_ID ,     Input     INTEGER
+.                                DATA ,       Input     INTEGER ARRAY
+.                                NDATA ,      Input     INTEGER
+.                                PACKED )     Input     INTEGER
+.
+.           GDI_IMWRITE    Returns zero on success, negative on error.
+.           GDI_ID         Id of display.
+.           DATA           Array containing display data packed
+.                          according to the PACKED code.
+.           NDATA          Number of display data packed into DATA.
+.           PACKED         Number of display data per integer.
+.                          The least significant part of the
+.                          integer contains the most left display
+.                          datum. A value of zero means that
+.                          DATA contains plain bytes.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_imwrite_c(gdi_id,data,ndata,packed));
+}
+
+/*
+.   Function:  N_GDI_GRREAD
+...                                                                     */
+		n_gdi_grread_(gdi_id,data,ndata,packed)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *data;			/* display data		*/
+		int *ndata;			/* nr. of dispaly data 	*/
+		int *packed;			/* packing code		*/
+{
+/*
+.   Use:    INTEGER GDI_GRREAD( GDI_ID ,     Input     INTEGER
+.                               DATA ,       Input     INTEGER ARRAY
+.                               NDATA ,      Input     INTEGER
+.                               PACKED )     Input     INTEGER
+.
+.           GDI_GRREAD     Returns zero on success, negative on error.
+.           GDI_ID         Id of display.
+.           DATA           Array containing graphics data packed
+.                          according to the PACKED code.
+.           NDATA          Number of graphics data packed into DATA.
+.           PACKED         Number of graphics data per integer.
+.                          The least significant part of the
+.                          integer contains the most left graphics
+.                          datum. A value of zero means that
+.                          DATA contains plain bytes.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_grread_c(gdi_id,data,ndata,packed));
+}
+
+/*
+.   Function:  N_GDI_GRWRITE
+...                                                                     */
+		n_gdi_grwrite_(gdi_id,data,ndata,packed)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *data;			/* display data		*/
+		int *ndata;			/* nr. of dispaly data 	*/
+		int *packed;			/* packing code		*/
+{
+/*
+.   Use:    INTEGER GDI_GRWRITE( GDI_ID ,     Input     INTEGER
+.                                DATA ,       Output    INTEGER ARRAY
+.                                NDATA ,      Input     INTEGER
+.                                PACKED )     Input     INTEGER
+.
+.           GDI_GRWRITE    Returns zero on success, negative on error.
+.           GDI_ID         Id of display.
+.           DATA           Array containing graphics data packed
+.                          according to the PACKED code.
+.           NDATA          Number of graphics data packed into DATA.
+.           PACKED         Number of graphics data per integer.
+.                          The least significant part of the
+.                          integer contains the most left graphics
+.                          datum. A value of zero means that
+.                          DATA contains plain bytes.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_grwrite_c(gdi_id,data,ndata,packed));
+}
+
+/*
+.   Function:  N_GDI_GDSID
+...                                                                     */
+		n_gdi_gdsid_(gdi_id,set,len,subset)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *set;			/* set name		*/
+		fint len;
+		int *subset;			/* subset level		*/
+{
+/*
+.   Use:    INTEGER GDI_GDSID( GDI_ID ,       Input     INTEGER
+.                              SET ,          Input     CHARACTER*(*)
+.                              SUBSET )       Input     INTEGER
+.
+.           GDI_GDSID      Returns zero on success, negative on error.
+.           GDI_ID         Id of display.
+.           SET            Name of GDS database.
+.           SUBSET         Subset level of GDS database.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_gdsid_c(gdi_id,c,subset));
+#else
+#ifdef wn_sw__
+	return (gdi_gdsid_c(gdi_id,set,len,subset));
+#else
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_gdsid_c(gdi_id,c,subset));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_IINFO
+...                                                                     */
+		n_gdi_iinfo_(gdi_id,set,len,subset,blo,bhi)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *set;			/* set name		*/
+		fint len;
+		int *subset;			/* subset level		*/
+		int *blo;			/* lower grids		*/
+		int *bhi;			/* upper grids		*/
+{
+/*
+.   Use:    INTEGER GDI_IINFO( GDI_ID ,       Input     INTEGER
+.                              SET ,          Output    CHARACTER*(*)
+.                              SUBSET ,       Output    INTEGER
+.                              BLO ,          Output    INTEGER ARRAY
+.                              BHI )          Output    INTEGER ARRAY
+.
+.           GDI_GDSID      Returns zero on success, negative on error.
+.           GDI_ID         Id of display.
+.           SET            Name of GDS database.
+.           SUBSET         Subset level of GDS database.
+.           BLO            Contains lower X and Y grids of loaded image.
+.           BHI            Contains upper X and Y grids of loaded image.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_iinfo_c(gdi_id,c,subset,blo,bhi));
+#else
+#ifdef wn_sw__
+	return (gdi_iinfo_c(gdi_id,set,len,subset,blo,bhi));
+#else
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_iinfo_c(gdi_id,c,subset,blo,bhi));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_SETID
+...                                                                     */
+		n_gdi_setid_(gdi_id,set,len,subset,axperm)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *set;			/* set name		*/
+		fint len;
+		int *subset;			/* subset level		*/
+		int *axperm;			/* axis permutation	*/
+{
+/*
+.   Use:    INTEGER GDI_SETID( ID ,        Input      INTEGER
+.                              SET ,       Input      CHARACTER*(*)
+.                              SUBSET ,    Input      INTEGER
+.                              AXPERM )    Input      INTEGER ARRAY
+.
+.           GDI_SETID     Return 0 on success, negative on error.
+.           ID            Display id, i.e. returned from GDI_OPEN.
+.           SET           Name of set.
+.           SUBSET        Subset coordinate word.
+.           AXPERM        Axes premutation array as returned from GDSINP.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_setid_c(gdi_id,c,subset,axperm));
+#else
+#ifdef wn_sw__
+	return (gdi_setid_c(gdi_id,set,len,subset,axperm));
+#else
+	fchar c;
+        c.l=len;
+        c.a=set;
+	return (gdi_setid_c(gdi_id,c,subset,axperm));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_SETXGRID
+...                                                                     */
+		n_gdi_setxgrid_(gdi_id,nn,text,len)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *text;			/* set name		*/
+		fint len;
+		int *nn;			/* items in text	*/
+{
+/*
+.Use:          INTEGER GDI_SETXGRID( ID    ,   Input   INTEGER
+.                                    TEXT  ,   Input   CHARACTER*(*) ARRAY
+.                                    XSIZE )   Input   INTEGER
+.
+.              GDI_SETXGRID  Returns 0 on success, negative on error.
+.              ID            Display id, i.e. returned from GDI_OPEN.
+.              TEXT          Text to be displayed on display instead of
+.                            grid coordinates. Usually only 7 characters
+.                            are used.
+.              XSIZE         Number of items in TEXT. Must be equal to
+.                            the size as defined with gdi_defimg.
+.
+.Notes:        The call to gds_setxgrid should immediately follow the call to
+.              gdi_defimg.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_setxgrid_c(gdi_id,c,nn));
+#else
+#ifdef wn_sw__
+	return (gdi_setxgrid_c(gdi_id,text,len,nn));
+#else
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_setxgrid_c(gdi_id,c,nn));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_SETYGRID
+...                                                                     */
+		n_gdi_setygrid_(gdi_id,nn,text,len)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		char *text;			/* set name		*/
+		fint len;
+		int *nn;			/* items in text	*/
+{
+/*
+.Use:          INTEGER GDI_SETYGRID( ID    ,   Input   INTEGER
+.                                    TEXT  ,   Input   CHARACTER*(*) ARRAY
+.                                    YSIZE )   Input   INTEGER
+.
+.              GDI_SETXGRID  Returns 0 on success, negative on error.
+.              ID            Display id, i.e. returned from GDI_OPEN.
+.              TEXT          Text to be displayed on display instead of
+.                            grid coordinates. Usually only 7 characters
+.                            are used.
+.              YSIZE         Number of items in TEXT. Must be equal to
+.                            the size as defined with gdi_defimg.
+.
+.Notes:        The call to gds_setxgrid should immediately follow the call to
+.              gdi_defimg.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_setygrid_c(gdi_id,c,nn));
+#else
+#ifdef wn_sw__
+	return (gdi_setygrid_c(gdi_id,text,len,nn));
+#else
+	fchar c;
+        c.l=len;
+        c.a=text;
+	return (gdi_setygrid_c(gdi_id,c,nn));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_PGPLOT
+...                                                                     */
+		n_gdi_pgplot_(gdi_id,ifunc,rbuf,nrbf,lchr,cbuf,len)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		int *ifunc;
+		float *rbuf;
+		int *nrbf;
+		int *lchr;
+		char *cbuf;
+		fint len;
+{
+/*
+.   Use:    INTEGER GDI_PGPLOT( ID ,        Input      	INTEGER
+.				IFUNC,	    Input	INTEGER
+				RBUF,       In/out	FLOAT ARRAY
+				NRBUF,	    Input	INTEGER
+ 				CBUF,	    In/out	CHARACTER*(*)
+				LEN)	    Input	INTEGER
+.
+.           GDI_PGPLOT    Return 0 on success, negative on error.
+.           ID            Display id, i.e. returned from GDI_OPEN.
+.	    IFUNC	  Function to perform
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+#ifdef wn_so__
+	fchar c;
+        c.l=len;
+        c.a=cbuf;
+	return (gdi_pgplot_c(gdi_id,ifunc,rbuf,nrbf,c,lchr));
+#else
+#ifdef wn_sw__
+	return (gdi_pgplot_c(gdi_id,ifunc,rbuf,nrbf,cbuf,len,lchr));
+#else
+	fchar c;
+        c.l=len;
+        c.a=cbuf;
+	return (gdi_pgplot_c(gdi_id,ifunc,rbuf,nrbf,c,lchr));
+#endif
+#endif
+}
+
+/*
+.   Function:  N_GDI_FRAME
+...                                                                     */
+		n_gdi_frame_(gdi_id,glo,ghi)
+/*
+.   Arguments:
+...                                                                     */
+		int *gdi_id;			/* display id		*/
+		float *glo;
+		float *ghi;
+{
+/*
+.   Use:    INTEGER GDI_FRAME(	ID ,        Input      	INTEGER
+.				GLO,	    Output	FLOAT ARRAY
+				GHI)        Output	FLOAT ARRAY
+.
+.           GDI_PGPLOT    Return 0 on success, negative on error.
+.           ID            Display id, i.e. returned from GDI_OPEN.
+.
+...                                                                     */
+/*
+.   Include files:
+...                                                                     */
+/*
+.   Parameters:
+...                                                                     */
+/*
+.   Function references:
+...                                                                     */
+/*
+.   Data declarations:
+...                                                                     */
+/*-                                                                     */
+	return (gdi_frame_c(gdi_id,glo,ghi));
+}

@@ -1,0 +1,124 @@
+C+ WNMLGR.FOR
+C  WNB 950330
+C
+C  Revisions:
+C       WNB 950615	Typo
+C
+	INTEGER FUNCTION WNMLGR(MAR,ROW)
+C
+C  Some help routines for LSQ package
+C
+C  Result:
+C
+C	WNMLGR_J = WNMLGR( MAR_J:I, ROW_J:I)
+C				Give A_D pointer for ROW in normal
+C				equation array
+C	WNMLGE_J = WNMLGE( MAR_J:I, ROW_J:I, COL_J:I)
+C				Give A_D pointer for ROW and COLumn in normal
+C				equation array
+C	WNMLGK_J = WNMLGK( MAR_J:I, ROW_J:I)
+C				Give A_D pointer to known column ROW
+C	WNMLMF_L = WNMLMF( MAR_J:I, MAR2_J:I)
+C				Move some info from MAR to MAR2, using
+C				MAR for sizes (only for m=1)
+C	WNMLMT_L = WNMLMT( MAR_J:I, MAR2_J:I)
+C				Move some info from MAR2 to MAR, using
+C				MAR for sizes (only for m=1)
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'LSQ_O_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER MAR				!AREA POINTER
+	INTEGER ROW				!ARRAY ROW
+	INTEGER COL				!ARRAY COLUMN
+	INTEGER MAR2				!AREA POINTER
+C
+C  Entry points:
+C
+	INTEGER WNMLGE,WNMLGK
+	LOGICAL WNMLMT,WNMLMF
+C
+C  Function references:
+C
+C
+C  Data declarations:
+C
+C-
+C
+C WNMLGR
+C
+	WNMLGR=A_J(MAR+LSQ_NORM_J)+((2*A_J(MAR+LSQ_N_J)-ROW-1)*ROW)/2
+C
+	RETURN
+C
+C WNMLGE
+C
+	ENTRY WNMLGE(MAR,ROW,COL)
+c
+	WNMLGE=A_J(MAR+LSQ_NORM_J)+((2*A_J(MAR+LSQ_N_J)-ROW-1)*ROW)/2+COL
+C
+	RETURN
+C
+C WNMLGK
+C
+	ENTRY WNMLGK(MAR,ROW)
+C
+	WNMLGK=A_J(MAR+LSQ_KNOWN_J)+ROW*A_J(MAR+LSQ_N_J)
+C
+	RETURN
+C
+C WNMLMT
+C
+	ENTRY WNMLMT(MAR,MAR2)
+C
+	WNMLMT=.TRUE.
+	DO I=0,A_J(MAR+LSQ_N_J)-1 			!COPY UNKNOWN
+	  I1=A_J(MAR+LSQ_NORM_J)+((2*A_J(MAR+LSQ_N_J)-I-1)*I)/2
+	  I0=A_J(MAR2+LSQ_NORM_J)+((2*A_J(MAR+LSQ_N_J)-I-1)*I)/2
+	  DO I2=I,A_J(MAR+LSQ_N_J)-1
+	    A_D(I1+I2)=A_D(I0+I2)
+	  END DO
+	  I1=A_J(MAR+LSQ_KNOWN_J)
+	  I0=A_J(MAR2+LSQ_KNOWN_J)
+	  A_D(I1+I)=A_D(I0+I) 				!COPY KNOWN
+	END DO
+	I1=A_J(MAR+LSQ_ERROR_J)				!COPY ERROR
+	I0=A_J(MAR2+LSQ_ERROR_J)
+	DO I2=0,LERR__N-1
+	   A_D(I1+I2)=A_D(I0+I2)
+	END DO
+C
+	RETURN
+C
+C WNMLMF
+C
+	ENTRY WNMLMF(MAR,MAR2)
+C
+	WNMLMF=.TRUE.
+	DO I=0,A_J(MAR+LSQ_N_J)-1 			!COPY UNKNOWN
+	  I0=A_J(MAR+LSQ_NORM_J)+((2*A_J(MAR+LSQ_N_J)-I-1)*I)/2
+	  I1=A_J(MAR2+LSQ_NORM_J)+((2*A_J(MAR+LSQ_N_J)-I-1)*I)/2
+	  DO I2=I,A_J(MAR+LSQ_N_J)-1
+	    A_D(I1+I2)=A_D(I0+I2)
+	  END DO
+	  I0=A_J(MAR+LSQ_KNOWN_J)
+	  I1=A_J(MAR2+LSQ_KNOWN_J)
+	  A_D(I1+I)=A_D(I0+I) 				!COPY KNOWN
+	END DO
+	I0=A_J(MAR+LSQ_ERROR_J)				!COPY ERROR
+	I1=A_J(MAR2+LSQ_ERROR_J)
+	DO I2=0,LERR__N-1
+	   A_D(I1+I2)=A_D(I0+I2)
+	END DO
+C
+	RETURN
+C
+C
+	END

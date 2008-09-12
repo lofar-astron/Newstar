@@ -1,0 +1,133 @@
+C+ WNTIA0.FOR
+C  WNB 930501
+C
+C  Revisions:
+C	WNB 930803	Add special NUMER option
+C
+	LOGICAL FUNCTION WNTIA0(NUMER,TLIN,PT,NDIM,NENT,INDIC)
+C
+C  Help routine to analyse array definition in a format line
+C
+C  Result:
+C
+C	WNTIA0_L = WNTIAF( NUMER_L:I, TLIN_C*:I, PT_J:IO, NDIM_J:O, NENT_J:O,
+C			INDIC_J(0:1,0:*):O)
+C				Analyse a line given in TLIN at PT for
+C				array definition.
+C				NDIM returns number of dimensions found,
+C				NENT the total number of elements in array,
+C				INDIC the low bound/length per dimension.
+C				If the last dimension is specified with an
+C				implied length of *, NENT will be <0, and
+C				be the length of the first dimensions and
+C				the length for the index will be -1.
+C				If MUMER .true., no check for * and length
+C				will be done
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'WNT_O_DEF'
+	INCLUDE 'WNT_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	LOGICAL NUMER			!DO NOT CHECK SIZES
+	CHARACTER*(*) TLIN		!LINE TO DO
+	INTEGER PT			!POINTER INTO LINE
+	INTEGER NDIM			!DIMENSIONS FOUND
+	INTEGER NENT			!# OF ELEMENTS IN ARRAY
+	INTEGER INDIC(0:1,0:*)		!INDICES
+C
+C  Function references:
+C
+	LOGICAL WNCASC,WNCATC		!TEST CHARACTER
+	LOGICAL WNTIVG			!GET VALUE
+C
+C  Data declarations:
+C
+	CHARACTER*(MXLNAM) LNAM		!LOCAL NAME
+C-
+C
+C INIT
+C
+	WNTIA0=.TRUE.				!ASSUME OK
+	NDIM=0					!DIMENSIONS
+C
+C GET INDICES
+C
+	CALL WNCASB(TLIN,PT)			!SKIP SPACES
+	IF (WNCASC(TLIN,PT,'(')) THEN		!ARRAY
+ 10	  CONTINUE
+	  NDIM=NDIM+1				!COUNT DIMENSION
+	  IF (NDIM.GT.MXNARR) GOTO 900		!TOO MANY INDICES
+	  CALL WNCASB(TLIN,PT)			!SKIP SPACES
+	  IF (WNCASC(TLIN,PT,'*')) THEN		!IMPLIED LENGTH
+	    IF (NUMER) GOTO 900			!NOT ALLOWED
+	    I1=-1				!LENGTH
+	    CALL WNCASB(TLIN,PT)		!SKIP SPACES
+	    IF (.NOT.WNCATC(TLIN,PT,')')) GOTO 900 !ERROR
+	    JS=.TRUE.				!INDICATE VALUE
+	  ELSE
+	    IF (.NOT.WNTIVG(TLIN,PT,JS,I1,LNAM)) THEN !LOW BOUND
+	      I1=1
+	      JS=.TRUE.				!INDICATE VALUE
+	    END IF
+	  END IF
+	  IF (.NOT.JS) GOTO 900			!NOT VALUE
+	  CALL WNCASB(TLIN,PT)			!SKIP SPACES
+	  IF (.NOT.NUMER) THEN			!HIGH BOUND POSSIBLE
+	    IF (WNCASC(TLIN,PT,':')) THEN	!HIGH BOUND GIVEN
+	      CALL WNCASB(TLIN,PT)		!SKIP SPACES
+	      IF (WNCASC(TLIN,PT,'*')) THEN	!IMPLIED LENGTH
+	        I2=-1
+	        CALL WNCASB(TLIN,PT)		!SKIP SPACES
+	        IF (.NOT.WNCATC(TLIN,PT,')')) GOTO 900 !ERROR
+	      ELSE
+	        IF (.NOT.WNTIVG(TLIN,PT,JS,I2,LNAM)) GOTO 900 !HIGH BOUND
+	        IF (.NOT.JS) GOTO 900		!NOT VALUE
+	      END IF
+	    ELSE
+	      I2=I1				!HIGH BOUND
+	      I1=1				!LOW BOUND
+	    END IF
+	    IF (I2.NE.-1) THEN
+	      I2=I2-I1+1			!LENGTH
+	      IF (I2.LE.0) GOTO 900		!ILLEGAL LENGTH
+	    END IF
+	  ELSE
+	    I2=I1				!LENGTH
+	    I1=0				!DUMMY LOW BOUND
+	  END IF
+	  INDIC(0,NDIM-1)=I1			!LOW BOUND
+	  INDIC(1,NDIM-1)=I2			!LENGTH
+	  CALL WNCASB(TLIN,PT)			!SKIP SPACES
+	  IF (WNCASC(TLIN,PT,',')) GOTO 10	!MORE DIMENSIONS
+	  IF (.NOT.WNCASC(TLIN,PT,')')) GOTO 900 !NOT END )
+	END IF
+	NENT=1					!TOTAL ENTRIES
+	IF (.NOT.NUMER) THEN			!GET INDICES
+	  DO I=0,NDIM-1				!COUNT ARRAY LENGTH
+	    IF (INDIC(1,I).NE.-1) NENT=NENT*INDIC(1,I)
+	  END DO
+	END IF
+	GOTO 800				!READY
+C
+C ERROR
+C
+ 900	CONTINUE
+	WNTIA0=.FALSE.
+	NDIM=0					!MAKE SURE
+	NENT=1
+C
+C FINISH
+C
+ 800	CONTINUE
+C
+	RETURN
+C
+C
+	END

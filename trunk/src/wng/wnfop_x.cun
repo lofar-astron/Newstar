@@ -1,0 +1,200 @@
+/*+ wnfop_x.cun
+.   WNB 900107
+.
+.   Revisions:
+.	WNB 920114	Tape positioning EOT
+.	JPH 930414	FCA_M_WRT --> FCA_M_WRTAPE
+.	WNB 930803	Change to .cun and _o_inc
+.	CMV 940111	Changed for alpha
+.	CMV 940204	Split off open() and read() for remote tapedrive
+.	CMV 940419	Make finding end-of-tape more solid
+.	CMV 940822	Write protect file to avoid multiple accesses
+.	HjV 941107	Calculate correct label for labeled tapes
+.	JPH 950127	File mask 744 --> 644 (i.e. files mot executable)
+...									*/
+#include "fca_o_inc"
+#include "mca_o_inc"
+#include <sys/types.h>
+#include <sys/stat.h>
+
+/*
+...									*/
+			wnfop_x_(fcap,mcap,fnam,rlen,tlab)
+/*
+.   Open disk/tape file for general stream/direct I/O
+.
+.   Result:
+.
+.	wnfop_x_j = wnfop_x ( FCA_J:I, MCA_J:I, FNAM_C80:I, RLEN_J:I,
+C						TLAB_J:I)
+.
+.	See WNFOP.FOR for details
+.
+.   PIN references:
+...									*/
+/*
+.   Arguments:
+...									*/
+		struct fca *fcap;		/* FCA ptr		*/
+		struct mca *mcap;		/* MCA ptr		*/
+		char *fnam;			/* filename		*/
+#ifdef wn_da__
+		int *rlen;			/* record length	*/
+		int *tlab;			/* tape label		*/
+#else
+		long *rlen;			/* record length	*/
+		long *tlab;			/* tape label		*/
+#endif
+{
+/*
+.   Include files:
+...									*/
+#include <fcntl.h>
+#include <sys/file.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <ctype.h>
+extern int errno ;
+/*
+.   Parameters:
+...									*/
+/*
+.   Equivalences:
+...									*/
+/*
+.   Commons:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+	int wnftsf_();				/* skip tape files	*/
+	int wnftrw_();				/* rewind tape		*/
+	int wnftsb_();				/* skip tape block	*/
+	int wnfttm_();				/* write tm		*/
+	int wnftrb_();				/* read  buffer		*/
+	int wnftwb_();				/* write buffer		*/
+/*
+.   Data declarations:
+...									*/
+	int ld;					/* open descriptor	*/
+	int flg = 0;				/* open flags		*/
+	int j;
+	int j1;
+	int js;
+	struct stat sbuf;			/* for finding mode	*/
+/* Open file
+.									*/
+	if (!(fcap->bits & FCA_M_MAG))		/* disk			*/
+	{ flg=0;
+	  if (fcap->bits & FCA_M_WRITE)
+	    flg |= O_RDWR;			/* read/write		*/
+	  else
+	    flg |= O_RDONLY;			/* read only		*/
+	  if (!(fcap->bits & FCA_M_OLD))	/* new file		*/
+	    flg |= (O_CREAT | O_TRUNC);
+	  ld=open (fnam,flg,0644);		/* open file		*/
+	  if (ld <= 0)
+	    return (2*errno);			/* cannot open		*/
+	  fcap->chan = ld;			/* save channel		*/
+	  fcap->bits |= (FCA_M_ACC | FCA_M_ASS); /* set accessed	*/
+	  fcap->eof = (int)lseek(fcap->chan,(off_t)0,2);
+						/* set start EOF	*/
+	  bcopy(fnam,fcap->fnam,80);		/* save file name	*/
+
+	  if (fcap->bits & FCA_M_WRITE) {
+	    fstat(ld,&sbuf);			/* find mode		*/
+	    fcap->atrj.atrj[0] = 
+		(sbuf.st_mode & 0777);		/* save mode		*/
+	    fchmod(ld,0444);			/* write lock		*/
+	  }
+	}
+/* Position tape
+...									*/
+	if (fcap->bits & FCA_M_MAG)		/* tape			*/
+	{ j = *tlab;				/* label to do		*/
+	  if (j <= 0)				/* undefined label	*/
+	  { 
+/*
+   We try to find the last label on tape. Some tapeunit continue to 
+   give errors once you have read behind the EOD, so we rewind after
+   detection of the EOD. This seems to reset the error condition
+*/
+            if (fcap->bits & FCA_M_WRTAPE)	/* tape write		*/
+	    { while (wnftsf_(mcap,1) == 1)	/* skip file		*/
+	      { mcap->magf += 1;
+	      }
+	      if (mcap->bits & MCA_M_UNL)	/* unlabeled		*/
+	        j= mcap->magf;
+	      else				/* labeled		*/
+	        j= (mcap->magf / 3) + 1;
+	      js = wnftrw_(mcap);		/* rewind		*/
+	      if (js != 1) return(js);		/* error		*/
+	      mcap->magf = 0;			/* update pointer	*/
+	    }
+	    else
+	      j=1;				/* assume start of tape	*/
+	  }
+	  if (j == 1)				/* start of tape	*/
+	  { js= wnftrw_(mcap);			/* rewind		*/
+	    if (js != 1)
+	      return(js);			/* error		*/
+	    mcap->magf = 0;			/* set at start		*/
+	    if (!(mcap->bits & MCA_M_UNL))	/* labeled		*/
+	    { js=wnftsb_(mcap,1);		/* skip VOL1		*/
+	      if (js != 1)
+	        return(js);			/* error		*/
+	    }
+	  }
+	  else					/* position		*/
+	  { j1=j-1;				/* proper position	*/
+	    if (!(mcap->bits & MCA_M_UNL))	/* labeled		*/
+	      j1=3*j1;
+	    j1= j1 - mcap->magf - 1;		/* to skip		*/
+	    if (j1 != 0)
+	    { js = wnftsf_(mcap,j1);		/* skip			*/
+	      if (js != 1)			/* error		*/
+	        return(js);
+	      mcap->magf += j1;			/* update pointer	*/
+	    }
+	    js= wnftsf_(mcap,1);		/* final skip		*/
+	    if (js != 1)			/* error		*/
+	      return(js);
+	    mcap->magf += 1;			/* update pointer	*/
+	  }
+	  if (!(mcap->bits & MCA_M_UNL))	/* labels		*/
+	  { if (!(fcap->bits & FCA_M_WRTAPE))	/* read			*/
+	    { js = wnftrb_(mcap,mcap->hd1,80); /* read HD1		*/
+	      if (!(js == 80 & strncmp("HDR1",mcap->hd1,4) == 0))
+	        return(0);			/* error		*/
+	      js = wnftrb_(mcap,mcap->hd2,80); /* read HD2		*/
+	      if (!(js == 80 & strncmp("HDR2",mcap->hd2,4) == 0))
+	        return(0);			/* error		*/
+	      js = wnftsf_(mcap,1);		/* skip tm		*/
+	      if (js != 1)
+	        return(0);			/* error		*/
+	      mcap->magf += 1;			/* set position		*/
+	    }
+	    else				/* write		*/
+	    { bcopy(&mcap->vol[4],&mcap->hd1[21],6); /* set volume label*/
+						/*** to fill name */
+	      js= wnftwb_(mcap,mcap->hd1,80); /* write header	*/
+	      if (js != 80)
+	        return(0);
+	      js= wnftwb_(mcap,mcap->hd2,80); /* write header	*/
+	      if (js != 80)
+	        return(0);
+	      js = wnfttm_(mcap);		/* write tm		*/
+	      if (js != 1)
+	        return(0);
+	      mcap->magf += 1;			/* set position		*/
+	    }
+	  }
+	}
+/* Ready
+...									*/
+	return(1);				/* ready		*/
+}
+/*
+.
+...									*/

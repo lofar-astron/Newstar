@@ -1,0 +1,415 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/*.Ident:	GENUN_SYMBOLC
+/*.Keywords:	Symbols
+/*.Author:	Friso Olnon (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	UNIX
+/*.Comments:
+/*	- Symbols tie a value to a name.
+/*	- Symbol names are extended-alphanumeric strings (uppercase letters, 
+/*	  digits, dollar sign and underscore) of up to 64 characters. The first
+/*	  character cannot be a digit. When a symbol name is entered with 
+/*	  lowercase letters, these will be converted to uppercase; trailing
+/*	  blanks will be ignored.
+/*	- Symbol values may contain up to 255 ASCII characters. All blanks are
+/*	  significant including leading and trailing ones. Symbols can have 
+/*	  null values, which are given as '""'.
+/*	- On the Alliant, all symbols are global and their definitions are kept 
+/*	  in the file defined under the environment variable DWARF_SYMBOLS.
+/*	  The file will automatically be created when necessary.
+/*	- Each program works with its own copy of the symbol file. Only at 
+/*	  program termination, the master file will be updated.
+/*
+/*.Version:	900418 FMO - creation
+/*.Version:	900502 FMO - new GEN_LUN module
+/*.Version:	910808 FMO - rewritten, added SYMBOL_SEARCH and SYMBOL_EXIT
+/*.Version:	910830 FMO - allow for symbol file defined under environment
+/*			variable DWARF_SYMBOLS
+/*.Version:	911106 GvD - rewritten in mainly C to make it faster
+/*.Version:     940329 CMV - if symbol not found, try getenv()
+/*---------------------------------------------------------------------------*/
+#include <stdio.h>
+
+char *getenv();		/* define standard function */
+
+#define NAMSIZ 65	/* maximum length of symbol name  (incl. \0)  */
+#define VALSIZ 256	/* maximum length of symbol value (incl. \0)  */
+#define INCSIZ 128	/* increment when extending symbol table SYMN */
+
+/*
+Define the structures describing the symbol names and values
+*/
+typedef struct symv {
+    char *valp;		/* pointer to value    */
+    int  lenv;		/* length of value     */
+    int  typ;		/* 0=old, 1=new, 2=del */
+} symv;
+typedef struct symn {
+    char *namp;		/* pointer to name        */
+    symv *symvp;	/* pointer to value block */
+} symn;
+/*
+Define global variables
+*/
+int  allsz  = 0;	/* nr of entries allocated in memory */
+int  usedsz = 0;	/* nr of entries used */
+symn *addr  = 0;	/* pointer to SYMN array in dynamic memory */
+int  updsw  = 0;	/* 0 = nothing written     1 = symbols written */
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_init_c_ ()		/* 1=success, else=error */
+{
+    int  status,lnam,lval;
+    FILE *fptr;
+    char *np;
+    char nam[NAMSIZ],val[VALSIZ];
+
+    if ((np = getenv ("DWARF_SYMBOLS")) == 0)
+	return 2;
+    if ((fptr = fopen (np, "r")) == 0)
+	return 0;
+
+    while (symbol_file_read (fptr,&lnam,nam,&lval,val) == 1) {
+	symbol_ins (lnam,nam,lval,val,0,0,usedsz);
+    }
+    fclose (fptr);
+    return 1;
+}
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_exit_c_ ()			/* 1=success, else=error */
+{
+    FILE *fpi,*fpo;			/* input and output file pointer */
+    int  i,swrd,len,is;
+    char *npi,*npo;			/* input and output file name    */
+    char nam[NAMSIZ],val[VALSIZ];	/* file symbol names and values  */
+    int  lnam,lval;			/* length of file symbols        */
+    symn symnbl;			/* table symbol name area        */
+    symv symvbl;			/* table symbol value area       */
+    static char heof[] = {127,0};	/* very high EOF value           */
+
+/*
+Update the file containing the symbols.
+We can exit immediately if no updates have been done.
+Otherwise open the input file and an output file.
+Give the output file a temporary name derived from the input name DWARF_SYMBOLS
+by appending .tmp to it.
+*/
+    if (!updsw) {
+	usedsz = 0;
+	return 1;
+    }
+    if ((npi = getenv ("DWARF_SYMBOLS")) == 0)
+	return 2;
+    len = strlen(npi);
+    npo = (char*) malloc (len+5);
+    memcpy (npo,npi,len);
+    strcpy (npo+len,".tmp");
+    if ((fpi = fopen (npi, "r")) == 0)
+	return 0;
+    if ((fpo = fopen (npo, "w")) == 0)
+	return 0;
+/*
+Loop through all symbols in the table and the file.
+Update the file symbols if changed in the table (new value or deleted).
+Insert the high EOF value at the end (is handy to test).
+*/
+    i    = 0;
+    swrd = 1;
+    while (1) {
+	if (swrd) {					/* read if needed */
+	    if (symbol_file_read (fpi,&lnam,nam,&lval,val) != 1)
+		strcpy (nam,heof);			/* end-of-file */
+	}
+	swrd = 1;					/* reset to read file */
+	if (i < usedsz) {
+	    memcpy (&symnbl,addr+i      ,sizeof(symn));
+	    memcpy (&symvbl,symnbl.symvp,sizeof(symv));
+	} else {
+	    symnbl.namp = heof;				/* end-of-table */
+	    symvbl.typ  = 0;
+	}
+	is = strcmp (nam,symnbl.namp);
+	if (is<0) {
+/*
+File symbol not in table, thus write the file symbol
+*/
+	    symbol_file_write (fpo,lnam,nam,lval,val);
+	} else {
+/*
+Write the table symbol if its value is new
+*/
+	    if (symvbl.typ == 1)
+		symbol_file_write (fpo, strlen(symnbl.namp), symnbl.namp,
+				   symvbl.lenv, symvbl.valp);
+/*
+If the table symbol is not in file, do not read file
+Otherwise exit if EOF or write the symbol if table symbol is old
+Increment the table index
+*/
+	    if (is>0) {
+		swrd = 0;
+	    } else {
+		if (strcmp (nam,heof) == 0)
+		    break;				/* end-of-all */
+		if (symvbl.typ == 0)
+		    symbol_file_write (fpo,lnam,nam,lval,val);
+	    }
+	    i++;
+	}
+    }
+/*
+All symbols have been handled
+Close the files and rename the output file to the correct name
+Clear the table size and update switch
+*/
+    fclose (fpi);
+    fclose (fpo);
+    rename (npo,npi);
+    updsw  = 0;
+    usedsz = 0;
+    return 1;
+}
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_add_c_ (lnam,nam,lval,val,type)  /* 1=success, else=error	*/
+int  *lnam;				/* (i) length of symbol name    */
+char nam[];				/* (i) symbol name              */
+int  *lval;				/* (i) length of symbol value   */
+char val[];				/* (i) symbol value             */
+int  *type;				/* (i) 0=old, 1=new, 2=delete   */
+{
+    int is,sw,inx;
+/*
+Try to find the new name in the table by doing a binary search for it.
+Then insert the symbol in the table.
+Set update switch to something has been done.
+*/
+    sw    = symbol_find (nam,&inx);
+    is    = symbol_ins (*lnam,nam,*lval,val,*type,sw,inx);
+    updsw = 1;
+    return is;
+}
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_next_c_ (nr,nam,lnam)	/* 1=success, else=error      */
+int  *nr;				/* (m) index of next symbol   */
+char nam[];				/* (o) symbol name            */
+int  *lnam;				/* (o) length of symbol value */
+{
+    int is, inx;
+/*
+Set index to 0 if <0
+Return the next symbol name (skip deleted symbols)
+Return status 0 if no more symbols
+*/
+    inx = *nr;
+    if (inx<0)
+	inx = 0;
+    nam[0] = '\0';
+    is     = 0;				/* no symbol returned yet */
+    while (!is) {
+	if (inx >= usedsz) {
+	    inx = 0;					/* no more symbols    */
+	    break;
+	} else {
+	    if ((addr+inx)->symvp->typ != 2) {
+		strcpy (nam, (addr+inx)->namp);		/* non-deleted symbol */
+		is = 1;
+	    }
+	}
+	inx++;
+    }
+
+    *lnam = strlen(nam);
+    *nr   = inx;
+    return is;
+}
+
+
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_file_read (fp,lnam,nam,lval,val)	/* 1=success, else=error */
+FILE *fp;				/* (i) pointer to symbol file */
+int  *lnam;				/* (o) length of symbol name  */
+char nam[];				/* (o) symbol name            */
+int  *lval;				/* (o) length of symbol value */
+char val[];				/* (o) symbol value           */
+{
+    int nr;
+/*
+Read namelength, name, value length and value
+Stop if any read failed or if length are too big
+*/
+    nr = 0;
+    if (fread (lnam,sizeof(int),1,fp) != 0) {		    /* name length */
+	if (*lnam > 0  &&  *lnam <= NAMSIZ) {
+	    if (fread (nam,*lnam,1,fp) != 0) {		    /* symbol name */
+		if (fread (lval,sizeof(int),1,fp) != 0) {   /* value length */
+		    if (*lval > 0  &&  *lval <= VALSIZ) {
+			nr = fread (val,*lval,1,fp);	    /* symbol value */
+		    }
+		}
+	    }
+	}
+    }
+    if (nr == 0) {
+	*lnam = 0;
+	*lval = 0;
+    }
+    nam[*lnam] = '\0';
+    val[*lval] = '\0';
+
+    if (nr!=0)
+	nr = 1;
+    return nr;
+}
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_file_write (fp,lnam,nam,lval,val)	/* 1=success, else=error */
+FILE *fp;				/* (i) pointer to symbol file */
+int  lnam;				/* (i) length of symbol name  */
+char nam[];				/* (i) symbol name            */
+int  lval;				/* (i) length of symbol value */
+char val[];				/* (i) symbol value           */
+{
+/*
+Write namelength, name, value length and value
+*/
+    fwrite (&lnam,sizeof(int),1,fp);
+    fwrite (nam,lnam,1,fp);
+    fwrite (&lval,sizeof(int),1,fp);
+    fwrite (val,lval,1,fp);
+    return 1;
+}
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_ins (lnam,nam,lval,val,type,sw,inx)	/* 1=success, else=error */
+int  lnam;				/* (i) length of symbol name    */
+char nam[];				/* (i) symbol name              */
+int  lval;				/* (i) length of symbol value   */
+char val[];				/* (i) symbol value             */
+int  type;				/* (i) 0=insert,  1=delete      */
+int  sw;				/* (i) 0=new symbol, 1=existing */
+int  inx;				/* (i) index where to insert    */
+{
+    int  newsz;
+    char *vp;
+    symn *newa, *enda;
+    symn symnbl;
+    symv symvbl;
+/*
+If the symbol is new get the symbol blocks, otherwise initialize them.
+Extend the pointer table if not found.
+(Re)allocate the pointer table if too small
+Exit if allocation failed
+Else update address and allocated size
+*/
+    if (sw) {
+	newa = addr+inx;
+	memcpy (&symnbl, newa, sizeof(symn));
+	memcpy (&symvbl, symnbl.symvp, sizeof(symv));
+    } else {
+	symnbl.symvp = 0;
+	symnbl.namp  = 0;
+	symvbl.valp  = 0;
+	if (usedsz >= allsz) {
+	    newsz = (allsz+INCSIZ) * sizeof(symn);
+	    if (allsz == 0)
+		newa = (symn *)malloc (newsz);
+	    else
+		newa = (symn *)realloc(addr, newsz);
+	    if (newa == 0)
+		return 1;
+	    allsz = allsz+INCSIZ;
+	    addr  = newa;
+	}
+/*
+Shift the table to make room for the new pointer.
+Increase the nr of used entries.
+*/
+	newa = addr+inx;
+	for (enda=addr+usedsz; enda>newa; enda--) {
+	    *enda = *(enda-1);
+	}
+	usedsz++;
+    }
+/*
+Store the symbol value in memory.
+Fill in length and type and store the value structure in memory.
+Store name in memory if not done yet.
+Finally fill and store the name structure in memory.
+*/
+    if (symvbl.valp == 0)
+	vp = (char *)malloc  (lval);
+    else
+	vp = (char *)realloc (symvbl.valp, lval);
+    if (lval > 0)
+ 	memcpy (vp,val,lval);			/* Put value in memory */
+    symvbl.valp = vp;
+    symvbl.lenv = lval;
+    symvbl.typ  = type;
+    if (symnbl.symvp == 0)
+	symnbl.symvp = (symv *)malloc (sizeof(symv));
+    memcpy (symnbl.symvp, &symvbl, sizeof(symv));
+    if (symnbl.namp == 0) {
+	symnbl.namp = (char *)malloc (lnam+1);
+	memcpy (symnbl.namp, nam, lnam+1);	/* Put name (and 0) in memory */
+    }
+    memcpy (newa, &symnbl, sizeof(symn));
+    return 1;
+}
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_find (nam,inx)		/* 1=found, else=not found */
+char nam[];				/* (i) symbol name         */
+int  *inx;				/* (o) index where found or to insert */
+{
+    int i,is,st,end;
+/*
+Do a binary search in the table.
+If not found, return the element where to insert as index
+*/
+    st  = 0;
+    end = usedsz+1;
+    while (1) {
+	i = (st+end) / 2;
+	if (i == st) {
+	    is = 1;				/* not found */
+	    break;
+	} else {
+	    is = strcmp (nam, (addr+i-1)->namp);
+	    if (is==0) {
+		i--;				/* found */
+		break;
+	    }
+	    if (is < 0)
+		end = i;			/* take lower part */
+	    else
+		st  = i;			/* take upper part */
+	}
+    }
+    *inx = i;
+    return 1-is;
+}
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+int symbol_get_c_ (nam,lval,val)	/* 1=success, else=error      */
+char nam[];				/* (i) symbol name            */
+int  *lval;				/* (o) length of symbol value */
+char val[];				/* (o) symbol value           */
+{
+    int inx;
+/*
+Try to find the symbol
+If found and not deleted return its value and length
+Otherwise try to get an environment variable with the same name.
+If found, return it, else return zero length and false status
+*/
+    if (symbol_find (nam,&inx)  &&  (addr+inx)->symvp->typ != 2) {
+	*lval = (addr+inx)->symvp->lenv;
+	memcpy (val, (addr+inx)->symvp->valp, *lval);
+	return 1;
+    } else if (getenv(nam)!=NULL) {
+        *lval = strlen(getenv(nam));
+        memcpy (val, getenv(nam), *lval);
+	return 1;
+    } else {
+	*lval = 0;
+	return 0;
+    }
+}
+
+
+

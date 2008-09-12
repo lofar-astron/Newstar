@@ -1,0 +1,24 @@
+%model_update.cap
+\begin{figure}
+
+\fig{model_update}
+
+\caption[]{\it
+\label{.model.update}
+Schematic diagram of the model-update operation.
+\\ \\
+The observation consists of the true source visibilities plus observing errors.
+The source model consists of the true source components minus some unknown
+defects.
+\\ \\
+It is these latter defects that the update procedure tries to determine. To do
+this, it transforms the model into visibilities and compares it to the observed
+visibilities. It then uses a least-square model fit to determine which part of
+the difference is attributable to a model defect.
+\\ \\
+The update model to be fitted is different for each model component; moreover
+it depends on constraints defined by the user in the form of an update mode
+(i.e. update position, update flux, update extents etc.)
+}
+\end{figure}
+

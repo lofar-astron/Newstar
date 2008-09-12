@@ -1,0 +1,65 @@
+List of codes in the OHW-fields SPEFU, TYPE, CATEG
+--------------------------------------------------
+	(original Dutch source unknown,
+	 translated litterally into English by JPH, 940621)
+
+History: 
+	JPH 940914      Format corrections
+
+
+	The OH (Observation Header) of an observation file on a WSRT tape is
+copied literally into a OHW block asspociated with one or more Sectors in a
+.SCN file. It contains several fields describing the natiure of the
+observation. The meaning of the ASCII that may occur in these fields is
+tabulated below.
+
+ SPEFU=   Meaning
+ ------   -------
+  PT     Pointing observation
+  HO     Holog observation
+  OF     Offset observation
+  VL     VLBI observation
+  MO     Mosaiking observation
+  PD     Pulsar observation (DCB)
+  DF     Delay offset observation (DCB)
+  LO     LO sweep observation
+  FS     FS frequency switching observation
+  SD     Switched dipole observation
+  NO     No special observation
+
+
+
+
+ TYPE
+ 1st char Meaning               2nd char Meaning
+ -------- -------               -------- -------
+ C       Other                  A        Supplememt to N,M,P or F
+ F       Frequency switch.      B        Baseline  (for C)
+ M       Mosaicking             C        Gain/phase (for C)
+ N       Norm. astr.            D        Dipole switch (for C)
+ P       Pulsar                 E        Extinction  (for C)
+ V       VLBI                   F        Phase only (for C)
+				G        Gain only (for C)
+				H        Holog (for C)
+				L        LO-delay (for C)
+				M        Monitoring (for N)
+				N        New (for N,M,P of F)
+				O        Redo (for N,M,P of F)
+				P        Parallax (for N of C)
+				Q        Offset (for C)
+				R        Pointing (for C)
+				S        System temp. (for C)
+				T        General Test (for C)
+				U        Universal (for C)
+				V        Videoband   (for C)
+				W        Delay (for C)
+
+
+
+ CATEG=         Meaning
+ ------         -------
+  I             Instrumental, including all calibrations
+  N             Astronomy: Nearby galaxies
+  S             Astronomy: Solar System
+  G             Astronomy: Galactic Object
+  E             Galactic astronomy not covered by N

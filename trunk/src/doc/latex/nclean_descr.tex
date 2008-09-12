@@ -1,0 +1,260 @@
+%       JPH 940916      Make compilable
+% nclean_descr.tex
+%
+%       JPH 9404..      Original
+%       JPH 940729      Note on corrugations and SDI Clean
+%                       Note on residual map for UV Clean (bug 67)
+%       JPH 940816      \textref to keyword help files --> \keyref
+%       JPH 941028      \keyref --> \textref
+%
+%
+%
+\chapter{The program NCLEAN}
+
+\tableofcontents
+
+\section{ Overview}
+\label{.overview}
+
+	NCLEAN is a relatively simple implementation of a number of Clean
+algorithms.  According to its writer (WNB), more elaborate and versatile
+implementations exist in AIPS and GIPSY.
+
+	NCLEAN makes extensive use of the
+\textref{\em source model}{nmodel_descr} facilities. A source model is a list
+of source components.  The user has considerable latitude in manipulating such
+models; for example, NCLEAN allows one to restore source components that were
+inserted in the model by mechanisms other than Clean and are not on grid
+points.  Since it is left to the user to decide what is "correct" and what not,
+such facilities should be used only by experts and with caution.
+
+\input{../fig/nclean_interface.cap}
+
+	\Figref{.nclean.interface} shows an overview of the options available
+in NCLEAN.  The program's basic Clean function is implemented in several forms
+to be discussed below.  In addition, there is a separate option to restore a
+map from a source model in a
+\textref{\em MDL file}{nmodel_descr}, and an option to produce a histogram of
+the intensities of a collection of map areas.
+
+	The components found are stored in a source model in core. NCLEAN will
+ask the user for an MDL file to store the list; if he specifies none, the
+\textref{\em NMODEL HANDLE}{nmodel_descr} process will be activated to process
+the list.
+
+
+\section{ NCLEAN versus NMODEL FIND}
+\label{.nclean.versus}
+
+	The Clean algorithm is fundamentally limited by its basic paradigm,
+{\em viz.} attempting to represent a continuous brightness contribution as a
+superposition of point sources on map-grid points. This approach is inadequate
+for small sources if dynamic ranges in excess of, say, 1000 are aimed for.
+
+	On the other hand, Clean is the only mechanism available to construct
+models for extended sources that cannot be adequately represented by a model
+with at most a few parameters. Note, however, that Clean has difficulty
+guessing the missing information for extended sources which results in the
+notorious problem of \whichref{\em corrugations}{}. Modifications to Clean's
+search algorithm have proved succesful in suppressing these corrugations
+(whichref{"SDI Clean"}{}), but they are not available in NCLEAN.
+
+	As an alternative, Newstar has the option of FINDing sources with the
+program \textref{NMODEL}{nmodel_descr}.  This method is superior for sources of
+small extent, since it does not confine their positions to be on grid points
+and desribes their shapes in terms of an ellipse with three parameters (axes
+and orientation).  In doing this, FIND can also take the effects of bandwidth
+smearing and finite integration time into account.
+
+	FIND is therefore the recommended way of building models of small
+sources.  Cleaning must be used for sources that do not fit the shape
+restrictions on FIND sources.  Obviously, Clean and FIND may have to be used in
+combination, in such a way that all source components in the model take the
+form that best fits their real appearance.
+
+
+\section{ Cleaning methods} %
+\subsection{ Beam Clean = H\"ogbom Clean}
+\label{.beam.clean}
+
+	H\"ogbom's original \whichref{\bf Clean}{} method is known in Newstar
+as {\bf Beam Clean}.  It consists of repeatedly finding the highest point in
+(part of) a map (the {\em search area}) and subtracting a source component at
+that position from the entire map or some part of it (the {\em clean area}).
+The subtracted component consists of the antenna pattern shifted and multiplied
+by the peak intensity of the source and a {\em gain factor}.  This factor is
+usually chosen somewhat smaller then 1 to account for the fact that part of the
+intensity found may be due to sidelobes from other sources.
+
+	The subtraction may be problematic in cases where the shifted antenna
+pattern does not cover the entire clean area.  Moreover, the edges of both the
+map and the antenna pattern are contaminated by aliasing effects.  For this
+reason cleaning is best restricted to an area somewhat less than the central
+half of the map in both dimensions.
+
+	In the NEWSTAR version, the search area coincides with the clean area.
+It is defined as the union of at most 32 rectangles specified by the user.
+Since subtraction occurs only in the search area, sidelobes in the remainder of
+the map are not removed.  It is therefore not advisable to successively clean
+different areas; nor is it necessary, since NCLEAN allows you to specify all
+relevant areas simultaneously.
+
+	H\"ogbom Clean is controlled by the parameters
+
+\begin{itemize}
+\item   \textref{\bf LOOP\_GAIN}{nclean_private_keys.loop.gain}: the gain
+factor;
+
+\item   \textref{\bf COMPON\_LIMIT}{nclean_private_keys.compon.limit}: the
+number of source components at which the process will stop;
+
+\item   \textref{\bf CLEAN\_LIMIT}{nclean_private_keys.clean.limit}: the
+absolute maximum intensity in the residual map at which the process will stop;
+
+\item   \textref{\bf AREA}{nclean_private_keys.area} (prompt repeats until a
+null answer is given): the map areas in which source components are looked for
+and subtracted. %
+\end{itemize}
+
+\label{.prussian.hat}
+	An additional parameter,
+\textref{\bf PRUSSIAN\_HAT}{nclean_private_keys.prussian.hat}, allows one to
+stick a delta-function peak on the centre of the antenna pattern, which in
+certain cases gives better results (Cornwell ...).
+
+
+\subsection{ UV Clean = Clark Clean }
+\label{.uv.clean}
+
+	{\bf UV Clean}, more hgenerally known as \whichref{\bf Clark Clean}{}
+speeds up the cleaning of extended sources which must be represented by a large
+number of closely spaced point-source components. Sources are found in the same
+way as for H\"ogbom Clean.  But rather than subtracting them one by one in the
+entire search area, Clark Clean does only a provisional subtraction in a small
+{\em patch} around the source position.  Proper subtraction is done later by
+jointly convolving the sources collected with the antenna pattern and
+subtracting the result.
+
+	The convolution is implemented through Fourier transformations and a
+multiplication in the visibility plane, which is considerably faster than a
+direct convolution in the map domain.  However, this method suffers from
+aliasing errors similar to those for Beam Clean and is therefore subject to the
+same limitations.
+
+	In UV Clean {\em minor cycles}, in each of which a single source
+component is located and provisionally subtracted, alternate with {\em major
+cycles} in which the newly found sources are properly removed. The number of
+minor cycles between successive major cycles is controlled by an algorithm that
+estimates the buildup of deviations in the residual map due to the provisional
+nature of component subtractions.  The user has a few parameters to control
+this algorithm.
+
+	UV Clean is controlled by the same parameters as H\"ogbom Clean. In
+addition, the number of minor cycles to a major one is controlled by the
+parameters:
+
+%
+\begin{itemize}
+
+\label{.cycle.depth}
+\item   \textref{\bf CYCLE\_DEPTH}{nclean_private_keys.cycle.depth}: The lower
+limit to components to be found in minor cycles relative to the present
+absolute residual-map maximum.
+
+\label{.grating.factor}
+\item \textref{\bf GRATING\_FACTOR}{nclean_private_keys.grating.factor}: A
+multiplier to be applied to the estimate of the maximum error buildup in the
+minor cycles.  The default of 1 is supposed to guarantee that grating responses
+will not erroneously be mistaken for source components.  A lower value allows a
+larger number of minor cycles per major cycle, but should be used only to the
+extent that there is no danger of mistakes. The \textref{\bf COMPON}{.compon}
+clean option can be used to explore this effect prior to starting serious work.
+
+\end{itemize}
+
+	In map-making, a taper rising toward the map edges may have been
+applied to the final map to componsate for the effect of the gridding
+convolution in the UV plane.  The parameter
+\textref{\bf DECONVOLUTION}{nclean_private_keys.deconvolution} controls if the
+effect of this must be taken into account in cleaning.
+
+
+\subsection{ Data clean = Cotton-Schwab Clean}
+\label{.data.clean}
+
+	"Data" Clean is the somewhat unfortunate name given to the
+"Cotton-Schwab" modification of \textref{Clark Clean}{.uv.clean}) in which the
+model subtraction is done in the \textref{SCN file(s)}{scn_descr} from which
+the map was originally made.  In this way aliasing effects are completely
+avoided, albeit at the expense of again much more processing.
+
+	Since a Newstar map does not include a detailed bookkeeping of the SCN
+files and control parameters with which it was made, the user has to respecify
+them as part of the process.  This is not as bad as it may sound, because no
+harm will be done if the new map is made with different specifications provided
+only that a corresponding antenna pattern is generated along with it.  The user
+may actually take advantage of this, e.g.  by specifying a smaller map area if
+he has found that that is all he needs.
+
+	Since the antenna beam plays no role in source subtraction, the
+\textref{\bf PRUSSIAN\_HAT}{.prussian.hat} parameter is not used in Data Clean.
+
+	An important practical point to note is that {\em the residual map
+overwrites the input map}. This is discussed further
+\textref{below}{.residual.maps}.
+
+
+\subsection{"Component" clean: A quick-and dirty Clean}
+\label{.compon}
+
+	Another Clean option is available in NCLEAN, in which only the
+minor-cycle part of a Clark or "Data" Clean is performed.  Since the
+minor-cycle source subtraction is of a sloppy nature, the residual map should
+{\em not} be used as a starting point for further investigations. However, the
+source model can be used, e.g.  as a starting point for
+\textref{Selfcal}{ncalib.redun} or \textref{NMODEL UPDATE}{nmodel_descr}.
+
+	Another possible use is to quickly explore the effect of the {\bf
+CYCLE\_DEPTH} and {\bf GRATING\_FACTOR}
+\textref{parameters}{.cycle.depth} before embarking on a lengthy Clark or Data
+Clean.
+
+
+\section{ Residual maps}
+\label{.residual.maps}
+
+	Residual maps have the same size as their parent map. For H\"ogbom and
+Clark Clean, they are stored in the .WMP file from which the input map was
+taken, under the index
+
+	\verb/<group>.<field>.<channel>.<polarisation>.1.<sequence_number>/
+
+where \verb/<group>.../  are the same as those of the input file, the type 1
+indicates a map and \verb/<sequence_number>/ is the first new number available.
+Thus, derivatives of a map will form a contiguous sequence in the order in
+which they were created.
+
+	For Data Clean the residual map is written in place of the original.
+The idea behind this is that, unlike for the other Clean modes, one may
+backtrack from a Data Clean operation without recourse to the input map: What
+one does instead is to discard the newly found model components and then
+regenerate the input map with the previous model.
+
+	In whichever way one cleans, backtracking implies that one must keep
+track of which residual maps are rejected. There is (as yet?) no mechanism
+available to remove them from a .WMP file except for selectively
+\textref{copying}{nmap_descr.copy} maps to a new .WMP file.
+
+
+
+\section{Missing items to be added}
+\label{.missing}
+
+\begin{itemize}
+\item   Litterature references
+\item   Beam-patch calculation and other details of minor-cycle clean
+\item   RESTORE details
+\end{itemize}
+
+
+

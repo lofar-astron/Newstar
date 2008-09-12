@@ -1,0 +1,133 @@
+!+ WNC.GRP
+!  WNB 880725
+!
+!  Revisions:
+!	WNB 911105	Add .FDW
+!	WNB 911118	Split ATA for DW
+!	WNB 920120	DW: finalise
+!	WNB 920128	Add SW
+!	WNB 920303	Split WNCCVS for SUN compiler error
+!	HjV 920525	Add HP
+!	WNB 921215	Hide .INC
+!	WNB 921216	CUN: WNCFHD, WNCTXT
+!	HjV 930107	Put WNCFHD en WNCTXT .FAL after .CUN
+!	WNB 930325	Forgot WNCCKS
+!	WNB 930526	Add WNCAFX
+!	HjV 930528	Add WNCTRP
+!	HjV 930603	Add WNCSYS, change WNCFCL from .FOR to .FSC
+!	WNB 930825	Add WNCALX, ALY
+!	HjV 931202      Add WNCALO (was entry)
+!	HjV 940217	Add/change missing entry-points/functions
+!	AXC 010628	linux port
+!
+!  General character processing routines for WNB programs
+!
+!  Group definition:
+!
+WNC.GRP
+!
+!  PIN files
+!
+!
+!  Structure files
+!
+!
+!  General command files
+!
+!
+!  Fortran definition files:
+!
+WNC.DSC			!		General include file
+!
+!  Programs:
+!
+TWNC.FOR		!		Test WNC program
+!
+WNCAJ.FOR		!WNCAJ		Get integer value from string
+			!WNCAJA		Get value from string, using arg.list
+WNCALN.FOR		!WNCALN		Significant non-white stringlength (>0)
+			!WNCAL0		Significant length of string (>=0)
+			!WNCALZ		Length of ASCIZ field
+			!WNCALX		Significant non-blank length (>0)
+			!WNCALY		Same, but >=0
+WNCACD.FOR		!WNCACD		Convert string to D
+			!WNCACE		Convert string to E
+			!WNCACJ		Convert string to J
+			!WNCACI		Convert string to I
+			!WNCACB		Convert string to B
+WNCACU.FOR		!WNCACU		Convert string to unsigned integer
+WNCACX.FOR		!WNCACX		Convert string to X
+			!WNCACY		Convert string to Y
+WNCATA.FOR		!WNCATA		Test for alpha
+ WNCAT0.FOR		!WNCASA		Skip if alpha
+			!WNCATD		Test for digit
+			!WNCASD		Skip if digit
+			!WNCATN		Test for name type char
+			!WNCASN		Skip if name type char
+			!WNCATB		Test for blanks
+			!WNCASB		Skip if blanks
+			!WNCATS		Test for separator
+			!WNCASS		Skip if separator
+			!WNCATC		Test for given character
+			!WNCASC		Skip given character
+			!WNCATM		Test for given characters
+			!WNCASM		Skip if one of given characters
+			!WNCAFN		Get a name from string
+			!WNCAFU		Check minimax fit
+			!WNCAFF		Get a full field from string
+			!WNCAFX		Get a full field from string
+			!WNCAFS		Get separator field from string
+			!WNCAFT		Get special separator field from string
+			!WNCAFP		Get special separator field from string
+WNCAUC.FOR		!WNCAUC		Convert string to UC
+			!WNCALC		Convert string to lc
+WNCAUP.FOR		!WNCAUP		Convert 1 char. to UC
+WNCALO.FOR		!WNCALO		Convert 1 char. to lc
+WNCCAE.FOR		!WNCCAE		Convert REAL to angle string
+			!WNCCAD		Convert DOUBLE PRECISION to angle string
+WNCCST.FOR		!WNCCST		Show computing statistics
+			!WNCCSX		Show statistics with text
+WNCCVS.FOR		!		Convert value to string
+ WNCCVS_X.FOR		!WNCCES		REAL
+			!WNCCDS		DOUBLE PRECISION
+			!WNCCJS		INTEGER
+			!WNCCIS		INTEGER*2
+			!WNCCKS		K INTEGER (== J FOR NOW)
+			!WNCCBS		BYTE
+			!WNCCAS		STRING
+WNCCXS.FOR		!WNCCXS		Convert COMPLEX to string
+			!WNCCYS		Convert DOUBLE COMPLEX to string
+WNCEXH.FOR		!WNCEXH		Exit handler
+WNCFAD.FOR		!WNCFAD		Adjust/truncate field
+WNCFCL.FSC		!WNCFCL		Close print files
+WNCFHD.FVX		!WNCFHD		Set/reset header lines
+ WNCFHD.CUN		!WNCFD1		Dummy (AL only)
+ WNCFHD.FAL
+  WNCFHD_X.FOR
+WNCFOP.FSC		!WNCFOP		Open output char. files
+WNCFSV.FOR		!WNCFSV		Set file characteristics
+			!WNCFSN		Set file name
+			!WNCFGV		Get file characteristics
+			!WNCFGN		Get file name
+WNCOUT.FOR		!WNCOUT		Output WNCTXT line
+WNCSAD.FOR		!WNCSAD		Add string to other one
+WNCSYS.FSC		!WNCSYS		Spawn a subprocess
+WNCTIM.FOR		!WNCTIM		HH:MM:SS as string
+			!WNCTIF		HH:MM:SS.SS
+			!WNCTIN		HHMMSS
+			!WNCDAT		DD-MMM-YY
+			!WNCDAF		DD-MMM-YYYY
+			!WNCDAN		YYMMDD
+WNCTRP.FSC		!WNCTRC		Output fatal-error message
+			!WNCTRJ		
+			!WNCTRX		
+WNCTXT.FVX		!WNCTXT		Print/type info
+ WNCTXT.CUN		!WNCTXS		Make string from info
+ WNCTXT.FAL		!WNCTXI		Convert string to info
+  WNCTXT_X.FOR		!WNCTD1,2,3	Dummy (AL only)
+  WNCTXI_X.FOR		!WNCTXS_X	Write to string
+!
+!  Executables
+!
+TWNC.EXE		!		Test WNC routines
+!-

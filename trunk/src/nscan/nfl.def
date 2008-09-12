@@ -1,0 +1,47 @@
+C+ Created from nfl.dsc on 031229 at 12:46:28 at dop19
+C  NFL.DEF
+C  WNB 031229
+C
+C  Revisions:
+C
+C       WNB 930803      Remove .INCLUDE
+C       WNB 930618      Original version
+C                                                                             
+C
+C  Given statements:
+C                                                                             
+C
+C  Result:
+C
+C  NFL.DEF is an INCLUDE file for the NFLAG program
+C  
+C                                                                             
+C
+C  Parameters:
+C                                                                             
+	INTEGER  MXNSET                         ! MAX. # OF SETS
+	  PARAMETER ( MXNSET=64)
+	INTEGER  MXNIFR                         ! MAX. # OF INTERFEROMETERS
+	  PARAMETER ( MXNIFR=120)
+C
+C  Data declarations:
+C                                                                             
+C
+C  NFL common data:
+C                                                                             
+	CHARACTER*24  OPTION                    ! PROGRAM OPTION
+	CHARACTER*3  OPT
+	  EQUIVALENCE (OPT,OPTION)
+	CHARACTER*80  NODIN                     ! INPUT NODE
+	CHARACTER*80  IFILE                     ! INPUT FILE NAME
+	INTEGER  FCAIN                          ! INPUT FCA
+	INTEGER  SETS(0:7,0:64)                 ! SETS TO DO
+C
+C  NFL common block:
+C                                                                             
+	COMMON /NFL_COM/ OPTION,NODIN,IFILE,
+	&              FCAIN,SETS
+C
+C  Given statements:
+C                                                                             
+C-                                                                            

@@ -1,0 +1,276 @@
+The desk-calcutor program DWCALC
+--------------------------------
+
+HISTORY: 
+	 This file was originally written as a VAX/VMS HELP file. The program
+dwcalc was part of the DWARF infrastructure which has been merged into Newstar.
+This file has been taken over essentially as it was found.
+
+	8-oct-86        Ger van Diepen
+	JPH 940718      Update for Newstar
+	JPH 940918      Formatting for line-breaking algorithm
+
+
+DWCALC 
+======
+
+The program DWCALC is a handy desk-calculator, allowing the use of expressions
+(with units), symbols and formulae.  It is derived from the Dutch image
+processing system DWARF.  (Dwingeloo Westerbork Astronomical Reduction
+Facility). 
+
+ The program is started by the command 'dwcalc'.  Qualifiers can be used to
+control the program. If they are given  at the 'dwcalc' command-line, they
+serve as a global qualifier.  Global qualifiers can be overridden for each
+individual expression-line  by ending the line with the qualifiers, preceeded
+by at least one space  (to distinguish it from the division operator).
+
+ The input expressions are read from stdin.  The results are listed on stdout.
+Optionally (part of) input and output can be logged.  All input is converted to
+uppercase, therefore input is NOT case-sensitive.
+
+
+EXPRESSIONS 
+===========
+ After having started the program, the program asks you for an expression.  By
+giving a null-answer the program will be stopped.  Typing a question mark
+starts a help session.  Typing UNIT=? will show you the available units on
+printer or terminal.
+
+Expressions have the normal arithmetical format, using +,-,*,/,**  and
+parentheses. Blanks and unary signs are allowed.  However, note that / cannot
+be preceeded by a blank to distinguish  it from the qualifier-indicator.  The
+relational operators .NOT.,.EQ.,.NE.,.GT.,.GE.,.LE. and .LT.  are also allowed.
+ Also available are:    - some built-in functions (goniometric, etc.)    - unit
+specification and conversion    - special format for time or positions (using
+colons)    - symbol definition and substitution
+
+Integer numbers can be specified in octal or hexadecimal  format (use %O, %X,
+resp.). 
+
+
+FUNCTIONS 
+=========
+
+The following functions (similar to Fortran) can be used in expressions:
+
+	MIN     MAX     (1-10 arguments)
+	SIN     COS     TAN
+	ASIN    ACOS    ATAN     ATAN2
+	ABS     EXP     LOG     LOG10    SQRT
+	TRUNC   ROUND   MOD     SIGN
+
+Default unit for goniometric function is degrees, which can be overridden via
+the /UNIT-qualifier or by giving the unit in the  expression.
+
+The result of SIGN is:
+	-1  for negative values
+	 0  for zero
+	 1  for positive values
+
+Note that conversion to integer format implies rounding.
+
+
+UNITS 
+=====
+
+CALCULATE is able of converting from one unit to another.  It converts the
+units given in the expression to the unit given by  the /UNIT-qualifier. The
+units must belong to the same group (so  conversion from SEC to KM is
+impossible). 
+
+A unit can be given at several places:
+
+	- after a number           e.g. 10DEG
+	- after a subexpression    e.g. (10+3)deg
+	- after a symbol           e.g. PI RAD
+
+ Note that in the last case the blank is significant, else it is  optional.
+
+
+TIME_POSITION 
+-------------
+
+Times and positions can be given in HH:MM:SS (or DD:MM:SS) format using colons
+as separators. A unit may follow the value. Each part can be a floating number,
+which may exceed 60.
+
+The output can also be listed in that format by giving  /UNIT=HMS or /UNIT=DMS.
+
+This sexagesimal format allows for easy addition, subtraction and  conversion
+of times and positions.
+
+
+SYMBOLS 
+=======
+
+Symbols are very useful for storing results and for handling formulae. Both
+symbol substitution and definition is possible in DWCALC. DWCALC will always
+define global symbols. It is also possible to use predefined local or global
+symbols,  either numeric or alphanumeric.
+
+By defining a formula as a symbol, it is very easy to calculate the result of
+the formula for several values of its parameters. E.g.
+
+	$ VOLUME = "4/3*pi*r**3"
+	$ CALC
+	   Expression: r=3
+	   Expression: volume
+	   Expression: r=10
+	   Expression: volume
+
+
+DEFINITION 
+----------
+
+A symbol can be defined by using the constructS:
+
+	symbol_name = expression
+	symbol_name = "expression"
+
+In the first case the expression is evaluated and the result will be assigned
+to the symbol. In the second case the expression-text is assigned to the
+symbol, which is useful for defining formulae.
+
+Note that DCL uses the same procedure.
+
+SUBSTITUTION 
+------------
+
+Symbols can be substituted in an expression by giving its name enclosed in
+apostrophes or giving its name without  apostrophes.
+
+In the former case its value is substituted literally.  In the latter case its
+value is treated as a subexpression. E.g. if I=3+4 then
+
+	3*'i'   results in 3*3+4   = 13 and
+	3*i     results in 3*(3+4) = 21
+
+Note that nested substitution is possible. Circular substitution is detected by
+allowing a maximum of 25 substitutions.
+
+
+Examples 
+========
+
+Convert miles to kilometers
+
+	 $ dwcalc          10mile /unit=km
+
+If a whole series must be done it would be better to do:
+
+	 $ dwcalc/unit=km
+	    10mile
+	    8 mile
+	    (1.25+3.48)mile
+
+Convert right ascension from HH:MM:SS to degrees.
+
+	 $ dwcalc/unit=deg 9:23:48.329 hms
+
+Convert a time to seconds
+
+	 $ dwcalc/unit=sec 9:23:48.329 hr
+
+Do some time calculation
+
+	 $ dwcalc/unit=hms 10:34:48 + 2::45 - :34:56.89
+
+Calculate an expression and define the symbol ABC The result must be an integer
+
+	 $ dwcalc ABC = (2.34 * pi)+8*-cos(135+pi*28) /unit=deg
+
+Define a formula and calculate it for several parameters
+
+	 $ dwcalc
+	    VOLUME = "4/3*PI*R**3"
+	    R=2
+	    VOLUME
+	    R=10
+	    VOLUME
+
+Convert from hexadecimal to decimal
+
+	  %x1a2f
+
+Convert from decimal to hexadecimal
+
+	  2546 /rad=x
+
+/UNIT 
+=====
+
+This qualifier defines the default unit for the given values  and the unit in
+which the result will be expressed.  In this way it can be used for converting
+rom one unit to another.  Note however that conversion between different groups
+of units  is not allowed (e.g. seconds to meters is illegal).
+
+From DCL the available units can be shown via the command PRTUNIT.  From
+CALCULATE they can be shown via UNIT=?.
+
+Default is no units.
+
+
+/RADIX 
+======
+
+This qualifier defines in which radix the output will be listed. Possible
+values are:
+
+     D   decimal
+     O   octal
+     X   hexadecimal
+
+The default is D. O and X force TYPE=J if type is non-integer.
+
+
+/TYPE 
+=====
+
+This qualifier defines in which format the output will be listed. Note that all
+calculations are done in double precision and that  the program tests on
+integer overflow before conversion to an  integer format.  Possible values are:
+
+     B   signed byte
+     I   signed word       (integer*2)
+     J   signed longword   (integer*4)
+     L   logical
+     R   single precision  (real*4)
+     D   double precision  (real*8)
+
+The default is D.
+
+
+/STREAM 
+=======
+
+This qualifier is special to DWARF. It controls the stream of the application
+symbols. The stream-name will be inserted in a symbol-name, if that symbol-name
+ has the format "image_keyword".
+
+Default is no stream.
+
+
+/LIST 
+=====
+
+This qualifier controls if the results will be listed. Normally you will always
+list the result, but in command-files  it can be useful to negate this
+qualifier (i.e. /NOLIST).
+
+Default is list.
+
+
+/LOG 
+====
+
+This qualifier controls if the expressions and results will be written in the
+log-file CALCULATE.LOG (in the default directory). This log-file is written in
+such a way that it can be executed as a DCL command-file or can be used as
+input for the ARCHIVE-programs. This means that most lines will be flagged with
+an exclamation mark  (indicating comments), but symbol definitions are valid
+commands,  which can be executed. In this way users can calculate complex
+expressions and define the  results as symbols in a subprocess and execute the
+log-file in the  main process in order to obtain the results.
+
+Default is no logging.

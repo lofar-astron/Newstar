@@ -1,0 +1,309 @@
+!+ WMPSETS.PEF:  WMP-file Sets specification.
+!  JPH 940812
+!
+!  Revisions:
+!       WNB 930630      Add NGF sub-fields
+!       CMV 930712      Correct typo
+!       CMV 931210      Changed LOOPS to SCN/WMP/MDL/NGF_LOOPS
+!       CMV 931220      Add info about L and O answers to ???_LOOPS/SETS
+!       JPH 940812      Split from nsets.pef
+!                       3-character index names
+!                       improve HELP texts
+!       JPH 940913      Improve LOOPS prompt and help
+!       JPH 940920      Remove () from prompts
+!       JPH 941005      Correct some damage from automatic line merging
+!                       Correct some residuals from nsets.pef
+!       JPH 941018      Sectors --> Images
+!       JPH 941129      Add <grp...> to LOOPS prompt
+!
+!
+!       Ref:    WNDSTA
+!
+KEYWORD=WMP_SETS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	NVALUES=64
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="Images to process:  grp.fld.chn.pol.typ.seq |"
+	HELP="
+	A NEWSTAR .WMP file contains maps and antenna patterns for one or more
+objects. The basic unit of data is the two-dimensional IMAGE representing
+either a MAP of a piece of sky or the synthesised ANTENNA PATTERN. Images are
+addressed through an IMAGE INDEX which is a string of six integers separated by
+dots:
+.
+			grp.fld.chn.pol.typ.seq
+.
+   A GROUP is basically an administrative unit, allowing the user to subdivide
+    his data, e.g. per object.
+.
+   The FIELD and CHANNEL are the field and channel numbers of the observation(s)
+    in the .SCN file from which the image was made. These numbers are defined by
+    the way the observation was made and should be indentical for
+    all observations involved (which could, e.g., be several 12-hour mosaic
+    observations with different baseline sets.).
+.
+   POL is a code indicating the polarisation. The code distinguishes the
+    four components of a full polarisation represntation:
+.
+		0,1,2,3 =  XX.XY.YX.YY or
+		0,1,2,3 =  I,Q,U,V
+.
+    but it is your responsibility to remember which of the two representations
+    applies.
+.
+   TYP codes the type of image: 0 for a map, 1 for an antenna pattern.
+.
+   The image SEQ uence number distinguishes images for which all five of
+    the preceding indices are identical. It is used in particular to distinguish
+    residual maps in a CLEAN sequence. It is your responsibility to know what
+    the different SEQ values represent.
+.
+Index values start at zero. (Remember that for the CHN index 0 is the continuum
+channel.)
+.
+You may select SETS of images for processing through [ranges of] values for the
+five indices, e.g.
+.
+		2.3-5:2.*.1-7.*
+.
+The WILDCARD value '*' means 'all'. Each index may also be specified as a
+RANGE: <first>-<last>[<:increment>]. Indices omitted are assumed to be '*',
+i.e.  ....1.0  means *.*.*.*.1.0. For wildcards at the end the dots may also be
+omitted, i.e. 1.0 means 1.0.*.*.*.*
+.
+The notation 3-5:2 stands for 'from 3 through 5 in steps of 2'. The step must
+be positive; if it is omitted, it is taken to be 1 (as in '1-7' above).
+.
+Multiple image SETS may be specified, separated by comma's: <Set1>,<Set2>,...
+The associated WMP_LOOPS keyword allows even more looping over index values.
+.
+IF YOU WANT TO BE REMINDED OF WHAT IMAGES ARE IN YOUR FILE:
+	Type O or L in response to this prompt to get an Overview or Layout
+	of your .WMP file.
+.
+IF YOU DO NOT YET FEEL COMFORTABLE WITH THESE CONCEPTS MORE HELP IS PROVIDED:
+	Type '@' or '>' to be prompted for each of the 6 indices separately,
+	with more specific explanation per index.
+.
+IF YOU GET BORED WITH 6-NUMBER INDICES:
+	Absolute Cut nrs '#<n>' can be used as an alternative."
+!
+!  Get loop parameters
+!       Ref:    WNDSTA (via WNDXLP)
+!
+KEYWORD=WMP_LOOPS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	NVALUES=16
+	SWITCHES=NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	DEFAULT=""" /ASK"
+	PROMPT="Loop specifications: |-
+nr of cycles, index increment (grp.fld.chn.pol.typ.seq) per cycle |"
+	HELP="
+Using the WMP_LOOPS parameter in combination with your WMP_SETS soecification,
+you may specify repetitions of the operation you are currently defining,
+systematically incrementing the Group, Channel, etc. indices for each new cycle.
+.
+This is done by specifying here pairs of values:
+.
+	n1,incr1, n2,incr2, ...
+.
+In each pair, the first value (n) indicates the number of times the loop has to
+execute; the second value (incr) indicates how the imaqge index is to be
+changed at the start of the successive loops.
+.
+Example:
+	The specification WMP_SETS = grp.fld.1-2.* would select the combination
+of all images of frequency channels 1 and 2 for the field grp.fld. If you wish
+to process 32 sets of successive such pairs of frequency channels, you would
+have to type in all the successive WMP_SETS specifications:
+.
+	grp.fld.1-2, grp.fld.3-4, ....., grp.fld.63-64
+.
+Instead, you may specify WMP_LOOPS=32,0.0.2 and the first index only for
+WMP_SETS. This will cause the program to execute the present operation 32 times
+in a loop, starting with your WMP_SETS specification and then incrementing its
+indices by 0.0.2 for every iteration; this is equivalent to the above 32
+separate runs of the program.
+.
+n must be > 0, and the increment can be any index string with simple positive
+or negative integers. An increment of 0 may be omitted, i.e. the increment
+specifications 0.0.3.0 and ..3 are equivalent.
+.
+Loops may be nested (to a limiting depth of 8 levels). A following loop
+specification is executed inside the preceding one(s).
+.
+Example of NESTED loops:
+	To run your program for 64 fields (fld index), for 10 odd channels (chn
+index) per field, starting at channel 7 and combining all polarisations (pol
+index) every time, specify:
+.
+		WMP_LOOPS=64,.1, 10,..2
+		WMP_SETS=grp.0.7.* (initial set of images)
+.
+The second loop is executed as an inner loop inside the first one, that is, for
+each mosaic subfield the channels are processed in a contiguous sequence.
+.
+IF YOU WANT TO BE REMINDED OF WHAT IMAGES ARE IN YOUR FILE:
+	Type O or L in response to this prompt to get an Overview or Layout
+	of the file for which you need to specify the sets. "
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=WMP_GROUPS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="1st index: grp = groups"
+	HELP="
+Give the group index (range) GRP of an image-Set specification
+						(GRP.fld.chn.pol.typ.seq)
+.
+Possible answers ([]=optional):
+.
+	0               take first (or only) group
+	n1              take group nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over groups n1 through n2 [step n3]
+	*               loop over all available groups (wildcard)
+	n1-[*][:n3]     loop over all available groups,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=WMP_FIELDS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="2nd index: field(s)"
+	HELP="
+Give the field index (range) FLD of an image-Set specification
+						(grp.FLD.chn.pol.typ.seq)
+.
+Possible answers ([]=optional):
+.
+	0               take first (or only) field
+	n1              take field nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over fields n1 through n2 [step n3]
+	*               loop over all fields in the observation (wildcard)
+	n1-[*][:n3]     loop over all fields in the observation,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=WMP_CHANNELS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="3rd index: channel(s)"
+	HELP="
+Give the channel index-range CHN of an image-Set specification
+						(grp.fld.CHN.pol.typ.seq)
+.
+Remember that channel 0 is the 'continuum' channel.
+.
+Possible answers ([]=optional):
+.
+	0               take the continuum channel
+	n1              take channel nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over channels n1 through n2 [step n3]
+	*               loop over all channels for the field (wildcard)
+	n1-[*]          loop over all channels for the field,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=WMP_POLARS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="4th index: polarisation(s)"
+	HELP="
+Give the polarisation index (range) POL of an image-Set specification
+						(grp.fld.chn.POL.typ.seq)
+.
+	POL is a number indicating the polarisation. For interferometer data,
+pol=0,1,2,3 represents XX,XY,YX,YY. For telescope data, pol=0,1 represents X,Y.
+.
+	This index is useful for defining loops (WMP_LOOPS parameter).
+Otherwise you may find the SELECT_XYX parameter more convenient.
+.
+	If you prefer to use WMP_POLARS here, examples of reasonable answers
+are:
+		*       XX, XY, YX, YY
+		0-3:3   XX, YY
+		0       XX
+		3       YY
+.
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=WMP_TYPES
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="5th index: typ = map (0) or antenna (1)"
+	HELP="
+Give the type index (range) TYP of an image-Set specification
+						(grp.fld.chn.pol.TYP.seq)
+.
+This index is most useful in loop specifications (parameter WMP_LOOPS).
+.
+Possible answers:
+.
+	0               maps only
+	1               antenna patterns only
+	0-1 or *        both maps and antenna patterns"
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=WMP_MAPS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="6th index: image sequence number(s)"
+	HELP="
+Give the sequence-number index (range) SEQ of an image-Set specification
+						(grp.fld.chn.pol.typ.SEQ)
+.
+Possible answers ([]=optional):
+.
+	0               take the first image
+	n1              take image nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over images n1 through n2 [step n3]
+	*               loop over all
+			 (wildcard)
+	n1-[*][:n3]     loop over all available ifrs|tels,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values.
+"
+!-

@@ -1,0 +1,17 @@
+%ngf_scn_indices.cap
+
+\begin{figure}[htbp]
+
+\fig{ngf_scn_indices}
+
+\caption{\it
+\label{.ngf.scn.indices}
+Derivation of .NGF-file cut indices from .SCN-file sector indices
+\\
+This diagram schematically indicates how the cut indices in the .NGF file are
+related to the sector indices in the .SCN file, - which in turn are derived
+from the hierarchical structure of the WSRT observation file.
+}
+\end{figure}
+
+

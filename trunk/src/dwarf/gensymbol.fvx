@@ -1,0 +1,357 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_SYMBOL
+C.Keywords:	Symbols
+C.Author:	Ger van Diepen (NFRA, Dwingeloo)
+C.Language:	VAX-Fortran
+C.Environment:	VAX
+C.Comments:
+C	- There are two types of symbols: global and local ones. They are
+C	  stored in separate tables.
+C	- Symbol names should start with an alphabetic character, a dollar
+C	  sign or an underscore. Their maximum length is 255 characters.
+C	  Before being used the names are converted to uppercase and trailing
+C	  blanks will be ignored.
+C	- Symbol values have a maximum length of 255 characters. Blanks
+C	  are significant (including leading and trailing ones).
+C
+C.Version:	830628 GVD - creation of DWCSETSYM, DWCGETSYM, DWCDELSYM
+C.Version:	840426 GVD - value with zero length is replaced by "" (GET)
+C.Version:	850830 JPH - symbolic name LIB$_NOSUCHSYM now in $LIBDEF (V4)
+C.Version:	860114 JPH - add TYPE argument for SET
+C.Version:	890423 FMO - combined into a VGEN source module
+C			- add TYPE argument for DELETE
+C			- return status code and add LVAL argument for GET
+C			- return GEN_SUCCESS for successfull completion
+C			- put error messages in the buffer, don't write them
+C			- return standard GEN_ status codes
+C.Version:	910808 FMO - added SEARCH and dummy routines INIT and EXIT
+C.Version:	910917 GvD - changed table size from 200 to 512 entries
+C.Version:	920224 GvD - no optional arguments in MSG anymore
+C.Version:	940119 CMV - use WNGLUN i.s.o GEN_LUN
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	LOGICAL FUNCTION SYMBOL_INIT ()
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+C.Purpose:	Initialize the symbol facility if not yet done
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C.Notes:
+C	- Dummy routine on the VAX.
+C-------------------------------------------------------------------------
+	SYMBOL_INIT = .TRUE.
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION SYMBOL_DEFINE (NAME,VALUE,TYPE)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	NAME		! (i) name
+	CHARACTER*(*)	VALUE		! (i) value
+	INTEGER*4	TYPE		! (i) type (odd: local, even: global)
+C
+C.Purpose:	Define a new or redefine an old symbol
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS
+C	error	GEN_SYMDEFERR	any error, message left in buffer
+C.Notes:
+C-------------------------------------------------------------------------
+C
+	INCLUDE		'($LIBCLIDEF)'
+C
+	INTEGER*4	MSG_SET  
+	INTEGER*4	LIB$SET_SYMBOL
+C
+	INTEGER*4	IS, TYPE0
+C
+C
+	IF (TYPE) THEN
+		TYPE0 = LIB$K_CLI_LOCAL_SYM
+	ELSE
+		TYPE0 = LIB$K_CLI_GLOBAL_SYM
+	ENDIF
+C
+	IS = LIB$SET_SYMBOL (NAME,VALUE,TYPE0)
+C
+	IF (IS) THEN
+		SYMBOL_DEFINE = GEN_SUCCESS
+	ELSE
+		IS = MSG_SET (IS,0)
+		SYMBOL_DEFINE = MSG_SET (GEN_SYMDEFERR,1)
+		CALL WNCTXT(DWLOG,DWMSG,NAME)
+	ENDIF
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER FUNCTION SYMBOL_SEARCH (INCLIST,EXCLIST,NR,NAME,LNAM)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	INCLIST		!(i) list with symbol names to include
+	CHARACTER*(*)	EXCLIST		!(i) list with symbol names to exclude
+	INTEGER		NR		!(m) symbol nr
+	CHARACTER*(*)	NAME		!(o) symbol name
+	INTEGER		LNAM		!(o) length of the name
+C
+C.Purpose:	Find the first or next symbol with a matching name
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS	also if no matching symbol name does exist
+C	error	GEN_SYMGETERR	any error, message left in buffer
+C.Notes:
+C	- INCLIST and EXCLIST are comma-separated lists of symbol names; the
+C	  names may contain wildcards (*), each matching a substring of zero or
+C	  more characters.
+C	- A matching symbol name is a name that matches at least one INCLIST
+C	  element and does not match any EXCLIST element. Abbreviated matches
+C	  are not recognised.
+C	- If NR.le.0 on input, the first matching name in the list of defined
+C	  symbols and its number (output NR) will be returned.
+C	- If NR.gt.0 on input, the next matching name and its number will be
+C	  returned; the search starts at symbol number NR+1.
+C	- If there is no matching symbol, NR=0, NAME=blank and LNAM=0 will be
+C	  returned.
+C	- If the NAME buffer is too short, the truncated name, its length and
+C	  an error code will be returned.
+C-------------------------------------------------------------------------
+C
+C
+	CHARACTER*(*)	BLANK, COMMA, WILD
+		PARAMETER (BLANK  = ' ')
+		PARAMETER (COMMA  = ',')
+		PARAMETER (WILD   = '*')
+	INTEGER		TABSIZ, NAMSIZ
+		PARAMETER (TABSIZ = 512)	!max nr of symbols
+		PARAMETER (NAMSIZ = 64 )	!max length of names
+C
+	INTEGER		STR_SIGLEN, STR_SKIP_W, STR_COPY_U, STR_MATCH_L
+	INTEGER		MSG_SET  
+	INTEGER		LIB$SPAWN
+C
+	CHARACTER	NAM*(NAMSIZ), LINE*300
+	INTEGER		IS, LUN, LL, PTR, LN, LINC, LEXC, MATCHNR
+	LOGICAL		OK
+C
+	CHARACTER	TABLE_N(TABSIZ)*(NAMSIZ)
+	INTEGER		TABLE_LN(TABSIZ), COUNT
+	LOGICAL		FIRST
+		DATA TABLE_N  /TABSIZ*BLANK/	!names
+		DATA TABLE_LN /TABSIZ*0/	!name-lengths
+		DATA FIRST    /.TRUE./
+		SAVE TABLE_N, TABLE_LN, COUNT, FIRST
+C
+C
+C					Set up
+C
+	NAME = BLANK					!set blank name
+	LNAM = 0					!set zero length
+	NAM = BLANK
+	LN = 0
+	LINC = STR_SIGLEN (INCLIST)			!length of INCLIST
+	IF (LINC.EQ.0) GOTO 900				!no INCLIST: ready
+	LEXC = STR_SIGLEN (EXCLIST)			!length of EXCLIST
+C
+C					List names of all global symbols
+C					- spawn SHOW SYMBOL of all DWARF symbols
+C					- output to scratch file
+C					- don't pass logical names (flag=4)
+C					- extract symbol names and put them
+C					  in a table (with their lengths)
+C
+	IF (FIRST) THEN
+		CALL WNGLUN(LUN)
+		IF (LUN.EQ.0) GOTO 999
+		IS = LIB$SPAWN ('SHOW SYMBOL/GLOBAL %*$%*_%*',,'SYMBOL.TMP',4)
+		IF (.NOT.IS) GOTO 991
+		OPEN (UNIT=LUN,FILE='SYMBOL.TMP',STATUS='OLD')
+		COUNT = 0
+		DO WHILE (.TRUE.)
+			READ (LUN,'(Q,A)',END=100) LL,LINE
+			COUNT = COUNT+1
+			IF (COUNT.GT.TABSIZ) THEN
+			  CALL WNCTXT(DWLOG,
+	1		'Too many symbols (max !SJ)',TABSIZ)
+			  GOTO 100
+			END IF
+			PTR = 1
+			IS = STR_SKIP_W (BLANK,LINE(:LL),PTR)
+			DO WHILE (LINE(PTR:PTR).NE.BLANK)
+				IS = STR_COPY_U (BLANK//WILD,LINE(:LL),PTR,
+	1				TABLE_N(COUNT),TABLE_LN(COUNT))
+				IF (LINE(PTR:PTR).EQ.WILD) PTR = PTR+1
+			END DO
+		END DO
+ 100		CLOSE (UNIT=LUN,DISPOSE='DELETE')
+		CALL WNGLUF(LUN)
+		IF (COUNT.EQ.0) GOTO 900
+		FIRST = .FALSE.
+	END IF
+C
+C					Loop through the symbol table
+C					until a symbol is found that matches
+C					INCLIST but not EXCLIST
+C
+	NR = MAX (1,NR+1)
+	DO NR = NR,COUNT
+		NAM = TABLE_N(NR)			!get symbol name
+		LN = TABLE_LN(NR)			!and its length
+		IS = STR_MATCH_L (NAM(:LN),INCLIST(:LINC),MATCHNR)
+		IF (IS.EQ.1) THEN			!match with INCLIST
+			IF (LEXC.EQ.0) GOTO 900		!no EXCLIST: break
+			IS = STR_MATCH_L (NAM(:LN),EXCLIST(:LEXC),MATCHNR)
+			IF (IS.NE.1) GOTO 900		!no match: break
+		END IF
+		LN = 0					!clear name and go on
+	END DO
+C
+C					Wrap up
+C
+ 900	IF (LN.GT.0) THEN				!proper name found:
+		NAME = NAM(:LN)				! copy it to NAME
+		IF (LEN(NAME).LT.LN) GOTO 998		! buffer too short
+		LNAM = LN				! copy name length
+	ELSE						!otherwise:
+		NAME = BLANK				! return blank NAME
+		LNAM = 0				! return zero length
+		NR = 0					! return zero NR
+	END IF
+	SYMBOL_SEARCH = GEN_SUCCESS
+	RETURN
+C
+ 991	IS = MSG_SET (IS,0)				! SYS$ error
+	GOTO 999
+ 998	LNAM = LEN(NAME)
+	CALL WNCTXT(DWLOG,'Name truncated to !SJ characters',LNAM)
+ 999	SYMBOL_SEARCH = MSG_SET (GEN_SYMGETERR,1)
+	CALL WNCTXT(DWLOG,DWMSG,NAM(:LN))
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION SYMBOL_GET (NAME,VALUE,LVAL)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	NAME		! (i) name
+	CHARACTER*(*)	VALUE		! (o) value
+	INTEGER*4	LVAL		! (o) length of the value
+C
+C.Purpose:	Get the value of a symbol
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS	also if the symbol doesn't exist
+C	error	GEN_SYMGETERR	any error, message left in buffer
+C.Notes:
+C	- First the local symbol table is searched, then the global table.
+C	- If the symbol doesn't exist or an error occured, a blank value
+C	  (length = 0) will be returned.
+C	- If the value has a zero length: return '""' as value, length = 2.
+C	- If VALUE is too short to contain the symbol value, the truncated
+C	  value and an error code will be returned.
+C-------------------------------------------------------------------------
+C
+	INCLUDE		'($LIBDEF)'
+C
+	CHARACTER*(*)	BLANK, NULL
+		PARAMETER (BLANK = ' ')
+		PARAMETER (NULL = '""')
+C
+	INTEGER*4	MSG_SET  
+	INTEGER*4	LIB$GET_SYMBOL
+C
+	CHARACTER*255	VALUE0
+	INTEGER*2	VALLEN, NTRUNC
+	INTEGER*4	IS
+C
+C
+	VALUE = BLANK
+	LVAL = 0
+C
+	IS = LIB$GET_SYMBOL (NAME,VALUE0,VALLEN)
+C
+	IF (IS.EQ.LIB$_NOSUCHSYM) THEN			! symbol not found
+		IS = 1
+	ELSE IF (.NOT.IS) THEN				! other LIB$ error
+		IS = MSG_SET (IS,0)
+	ELSE IF (VALLEN.GT.LEN(VALUE)) THEN		! string overflow
+		LVAL = LEN(VALUE)
+		VALUE = VALUE0(:LVAL)
+		NTRUNC = VALLEN-LVAL
+		IS = MSG_SET (GEN_STROVFLO,1)
+	CALL WNCTXT(DWLOG,DWMSG,NTRUNC)
+	ELSE IF (VALLEN.EQ.0) THEN			! null value
+		LVAL = 2
+		VALUE = NULL
+	ELSE						! normal value
+		LVAL = VALLEN
+		VALUE = VALUE0(:LVAL)
+	ENDIF
+C
+	IF (IS) THEN
+		SYMBOL_GET = GEN_SUCCESS
+	ELSE
+		SYMBOL_GET = MSG_SET (GEN_SYMGETERR,1)
+	CALL WNCTXT(DWLOG,DWMSG,NAME)
+	ENDIF
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION SYMBOL_DELETE (NAME,TYPE)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	NAME		! (i) symbol name
+	INTEGER*4	TYPE		! (i) type (odd: local, even: global)
+C
+C.Purpose:	Delete a local or global symbol
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS	also if the symbol doesn't exist
+C	error	GEN_SYMDELERR	any error, message left in buffer
+C.Notes:
+C-------------------------------------------------------------------------
+C
+	INCLUDE		'($LIBCLIDEF)'
+	INCLUDE		'($LIBDEF)'
+C
+	INTEGER*4	MSG_SET  
+	INTEGER*4	LIB$DELETE_SYMBOL
+C
+	INTEGER*4	IS, TYPE0
+C
+C
+	IF (TYPE) THEN
+		TYPE0 = LIB$K_CLI_LOCAL_SYM
+	ELSE
+		TYPE0 = LIB$K_CLI_GLOBAL_SYM
+	ENDIF
+C
+	IS = LIB$DELETE_SYMBOL (NAME,TYPE0)
+C
+	IF (IS .OR. IS.EQ.LIB$_NOSUCHSYM) THEN
+		SYMBOL_DELETE = GEN_SUCCESS
+	ELSE
+		IS = MSG_SET (IS,0)
+		SYMBOL_DELETE = MSG_SET (GEN_SYMDELERR,1)
+		CALL WNCTXT(DWLOG,DWMSG,NAME)
+	ENDIF
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION SYMBOL_EXIT ()
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+C.Purpose:	Close the symbol facility
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS	always
+C.Notes:
+C	- Dummy routine on the VAX.
+C-------------------------------------------------------------------------
+C
+	SYMBOL_EXIT = GEN_SUCCESS
+	RETURN
+	END

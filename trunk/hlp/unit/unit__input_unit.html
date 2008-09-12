@@ -1,0 +1,32 @@
+<TITLE>Description of INPUT_UNIT (UNIT)</TITLE>
+<H1>Description of general keyword INPUT_UNIT</H1>
+
+<DT><EM>Prompt:</EM> 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, D input 'tape' unit: number or 'D' for 'disk' |
+<DT><EM>Expected input:</EM> Character(1).<P>
+ Specify the input unit for your data: <P>
+	0, ..9    Tape/optical disk/DAT unit 
+	D        Disk <P>
+The correspondence between the unit numbers and the devices on your host 
+machine is defined by the environment variables MAG&lt;n&gt;. The list below shows 
+the values with which NEWSTAR is distributed, but your local installation may 
+be different, so you do wello to check with your local site manager <P>
+   classic 0.5-inch magtape: 
+	0        1600 bpi 
+	1        6250 bpi 
+	2         800 bpi <P>
+   optical disk, formatted as a magtape: 
+	4 
+	5 <P>
+   DAT, ExaByte or similar tape: 
+	6 
+	7 
+	8 
+	9 <P>
+You may enter '*' to get a list of unit numbers available for you, but this 
+will not tell you to what physical devices these correspond. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../unit/unit_comm.html">List of general keywords</A> for UNIT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

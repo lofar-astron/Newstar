@@ -1,0 +1,730 @@
+1 NNews
+ 1000929 Allow reading leiden data from CD-ROM
+ 1000929 Repair problem locating MDL files
+ 1000929 Correct bug in COR data display; add stepping over sets in SCAN display
+ 1000922 Correct double 29 in DCB data from MS
+ 1000922 Solved rounding problem when flagging mosaic data using CHAN
+ 1000922 Added the display of polarisation channels if no ap solution
+ 1000921 Repair milennium bug in update procedure
+ 000309 NSCAN: Allow for CD-ROM directories
+ 000309        Add 99A, 99B for project numbers
+ 000309 NPLOT: phase continuity added
+ 000309        Changed the MXNCH to 8192 to plot long 10s files
+ 000309 ALL: Default for MODEL_ACTION now uses BEAM instead of NOBEAM
+ 000309 NCALIB: fix FCA used for reading data for vzero calculation
+ 000309         solves a problem with DZB data reported by AGB
+ 000309         Added loops to SET -- INIT
+ 000309 NGCALC: Corrected a missing argument that made ngcalc plot crash
+ 000309 NMODEL: Add extra model update modes (but not implement them yet)
+ 000309         Add messages that X* updates not yet implemented.
+ 000309         Corrected update convergence for 'I' only case
+ 000309 NMAP: [C]MEMORY_USE max. 4 --> 32 MB (request by AGB)
+ 980707 System: Various changes for logbook and CD-ROM stuff
+                NFRA: remove ws4, ws5, ws7 stuff, use daw18 for compile/linking
+                add script to read WSRT-logbook
+ 980707 NPLOT: change dot pattern for connecting lines
+ 980707        phase continuity; better connecting lines
+ 980707 NCALIB: For better calculating MIFR
+ 970728 NPLOT: modification related to remove control-C plot control
+ 970605 NPLOT: Make default coordinate contouring grid size 256
+               Some changes for plotting exactly on pole
+ 970530 NPLOT: Correct plotting of coordinates and ticks near pole.
+               A selectable precision (COORD_PREC) possible.
+ 970529 NSCAN UVFITS: Allow multiple BITPIXes, 
+                      better grouping of sets in labels
+                      Extra prompt for BITPIX
+ 970529 System: Included check for non-existent conversion from DEC,L to RA,M
+ 970529 NPLOT: Coordinate plotting near pole
+ 970509 NSCAN/NFLAG: improve formatting of X/Y arrays
+ 970509 NCOPY: add new option SHORTCOPY
+ 970509 NPLOT: plot control through control-C
+  	       SPECIAL options:
+	  	   alternatives for HA scale
+	 	   hour-angle integration
+		   annotation text
+	       new SORT=INVERT option: transposed interferometer order
+	       new data types AGAIN, PGAIN: ampl. and phase of data/model
+	       plot order XXgain, XXphase ... i.s.o. XXgain, YYgain ...
+	       raster lines on tel/interfmr plots
+	       increase font size for 'PLUVO' plots
+	       nonlinear gain scale to accomodate very large and very small gains
+               modification related to control-C plot control in NPLOT
+               correct scales for BAND mode
+ 970509 NCALIB: New algorithm for VZERO calculation
+                Add USIGN to resolve sign ambiguity in Stokes U
+                Calculate and report GZD
+                Revise gain normalisation algorithm (had never been tested!)
+                Revise ME calculation in ncalib.for
+                extend GAIN_NORM help text to include -1 option
+ 970509 System NFRA: do  'setenv LPDEST jet5'  to use new printer
+               Fixes/changes in record/replay
+               Small changes for LICK and WSRT
+               Changes for RUG (add Solaris)
+               Add IONOST for HP
+ 970509 NSCAN: Give error-message in case WNFRD return an error  - bug 229 
+ 970509 All: Filename-problem on Solaris solved  - bug 224 
+             Logging of selected IFRs also in logfile  - bug 228 
+ 970509 NMAP: problem in FITS maps created by NMAP solved  - bug 221 
+ 970509 NCLEAN: fixed crash problem when reading visibility data  - bug 226 
+ 961108 NSCAN: Corrections for archive 
+ 961017 NCOPY: add special option for holographic beam measurements
+ 961017 NCALIB: fix loose ends from earlier change of dispatching codes
+                CCOPY should now work as advertised
+                Renormalisation: Leave undefined corrections (TCOR=0) undefined
+ 961017 NSCAN: Correct use of band8 bandwidth for versions<46
+ 961017 NSCAN UVFITS: Use RR,LL etc instead of XX,YY because of problems with UVLOD in AIPS
+ 961017 All: use . i.s.o. - in interfm display for better visual appearance
+ 960813 NCALIB: correct VZERO calculation
+                suppress 'XY constrains' output in log file
+                correct code for SETCLK (was treated as SETMIFR)
+                correct SHOW output format
+ 960813 NPLOT: correct misleading comment
+ 960813 NSCAN: Add bytecount for CHECK
+ 960813 System: add files for site LICK, add Dec-Alpha/OSF1 in Bonn
+ 960626 NPLOT: change plot annotaion format
+               change interface to ST plot options: ST_ prefix in IFR_MODE
+               replaced by S_ prefix in OPTION
+               new keyword HA_MODE for special effects in vertical scale
+ 960626 NCALIB: For REDUN option: Take all interferometers. (Also 00, 11 etc.)
+ 960626 NMODEL: show RA and DEC in show header also in decimal format
+ 960626 NSCAN/NFLAG: fine-tune overview formatting
+               bug fix in MAXD calculation for NSCSCF
+ 960626 NSCAN: Read correct OH-length for mosaik observations
+ 960626 NCOPY: Fix serious bugs - must have been there for several months!
+               zero IFRMC, IFRAC, emit user message  - bug 141 
+ 960626 System: add files for Solaris system
+                Situation at RUU changed
+ 960520 NCALIB: extend help texts for BASEL_xxx parameters
+ 960513 NCOPY/NPLOT/NGIDS/NCLEAN: warning if /NORUN
+ 960502 Documentation: Several small bugs fixed
+ 960422 NMAP: RA,DEC in header within proper ranges
+              emergency bandage for the HOLOG mess: new keywords OLDHOLOG and NEWHOLOG
+              report filename on open failures
+              find free label if * specified (previously * was equivalent to 1)
+              return to nmadat after most actions
+                 (in batch mode, input EOF will cause nmap to QUIT as before)
+ 960422 NMODEL: option RMERGE: merges model components that are within radius
+                removed bug from UPDATE option QUV
+ 960422 NPLOT: Do not ask IFR_MODE when OPTION=TELESCOPE  - bug 161 
+               Correct MB3 or X exit loop  - bug 200 
+               add plot modes STNORM, STSORT: using ST i.s.o. HA
+ 960422 NSCAN/NFLAG: Type text for COR/UNCOR and if something NOT present  - bug 169 
+ 960422 NSCAN: corrected a bug in precession angle calculation  - bug 0217 
+               Add pol.code for DXB/DCB IF-sets, Increase max number of sets
+ 960422 NFLAG: new options: UXY and VXY 
+ 960422 NCOPY: interferometer selection, SELECT_IFRS parameter
+ 960422 NCALIB: Correct Copy MIFR corrections (SET_OPTION=ICOPY)  - bug 181 
+ 960422 IONOS: Changed averaging (first days, then hours)
+ 960422 All: truncate '.<number>' in mosaic field name to get correct default MDL name
+ 960422 System: add I_HPWSRT.CSH
+                new routine for calculating sidereal time
+                add dwrec|p|n aliases
+ 960130 NMAP RFITS: Do not abort when error in FITS header found
+ 960130 System: correct problem with unlocking of files  - bug 142 
+        System: some small updates, mainly for NFRA purpose
+ 960130 Documentation: remove FULL command in ndoc: replaced by ALL
+ 960130 NCLEAN: Move comments to new line
+ 960130 NSCAN: Change name for Scissor: CONTLINE now OBSMODE
+ 960130 NMODEL: Reminder if INTERN is on  - bug 156 
+ 960130 NFLAG: Explanation for STATISTICS GROUPS option, correct flow, 
+               IFR output  - bug 149 151 153 189 190 
+ 960130 NCALIB: Add message concerning model selection for REDUN  - bug 178 
+                Reset Scan counter for SET ZERO  - bug 185 
+ 960130 NSCAN: Some explanation for layout  - bug 172 
+ 960130 NMAP: REF_COORD RA always positive  - bug 193 
+              RFITS: Message if Disk files not found
+ 960130 NPLOT: merge HjV 941031, 950711, 950718 with my own changes.
+               Fix help text for IFR_MODE  - bug 201 
+ 960130 NFLAG: Comments; add detour into MODE from STATIST branch;  - bug 190 
+               add labels 183, 193 (CMV's fix for bug 190)
+ 960130 All programs: add OVERVIEW=ALTOBS option
+ 960130 System: implements the dwre? commands; 
+ 960130 System: Add LD_LIBRARY_PATH for site UCSB
+ 951215 System: Add new site: AIRUB (Bonn)
+ 951213 Correct REF_COORD backtrack error  - bug 194 
+ 951213 System: Add environment n_www
+                Used to specify your favorite WWW browser.
+                If you don't define it, xmosaic (part of Newstar
+                distibution) will be used.
+                You may change n_www in your newstar_<site>.csh
+                When changing this file, please check it in with: nsh in
+ 951205 SYSTEM: Add site IRABO, add some missing files
+ 951205 MODELS:Adding a new model file for 1127-145 at 21cm
+ 951205        New improved model for 3C295 at 21cm from reduction group
+ 951205        New improved models for 325 MHz (92cm)
+ 951205 NMAP: correction of logic for FIELD_SHIFT/FIELD_CENTRE  - bug 139
+ 951205 NSCAN: Made Scissor interface more robust
+ 951205 NCALIB: correct REDUN output: last column I (= nr of iterns) decimal
+ 951205 Correct scaling of errors (/10 instead of *10)
+ 921205 PPD: Donot remember ?? request, so user retains access to terminal
+             help trough ?  - bug 154 
+ 951205 System: add DAT-device for DAW13 (NFRA-only)
+ 951205 NFLAG: correct EXPLAIN bug showing RMS 3 times 
+ 951205 Documentation: 
+           1. Revision of documentation system - various bug fixes
+              - more robust - better cross-referencing
+           2. groundwork for batch recording system
+ 951205 NMAP: Implement complex summing/rotation measures
+ 951205 NSCAN: Add ARC option for LEIDEN tapes
+        Therefore WARC changed to ARC and added two new sub-options for ARC
+ 950822 New Newstar release: 6.1
+ 950821 NCALIB SET IREF Help text corrected
+ 950821 Scissor: Improve options for ionos, add filpo option
+ 950821 NMAP: Rough trial to produce P^2 maps (pol type LI)
+              Prepare improved polarised intensity map
+ 950714 NCALIB: Include MIFR setting
+                New least squares: better mean errors in polarisation calculations
+                Improved 'complex' solutions for calibration
+                Change in writing interferometer errors for missing telescopes
+                Add option ICOPY for SET_OPTION (Copy MIFR-corrections)
+ 950714 NCLEAN DATA Clean: correct restored map when using DataFactor (new keyword)
+ 950714 NSCAN: Add MDLNODE_PEF (model keyword was missing)
+               Add NSCSCY to NSCSCR for UVLIN type operations
+ 950714 NPLOT: Re-open SCN-file for update when models found  - bug 127 
+               Plot all PHASE residuals in W.U.
+               Add (hidden) keyword PLOT_HEADING (Def. YES / NOASK)
+ 950714 NGCALC: Change SET_ACTION in SECTOR_ACTION, add EDIT
+ 950714 NPLOT/NGCALC: Add A0-plotter, therefore changed options for 
+                    keyword PLOTTER and added keyword PLOT_FORMAT
+ 950714 NMODEL: Update option extended with, a.o., clustering, position only
+                Add constrained update
+                Model update correction for constrained clusters of more 
+                    than 2 sources
+                Added looped updates: not always perfect; slow, and most 
+                    useful for small number of well separated sources/clusters
+ 950714 System: some changes for use in Leiden
+ 950714 Documentation: Use latex2html stuff from Newstar account
+                       Correct some typo's in tex-files
+                       Add plotter_public_intfc.tex and change some other
+ 950714 NFILT: Create the program to calculate continuum from the UV data
+ 950714 NGEN: Change (DE_)APPLY so it has the same options as X_(DE_)APPLY
+ 950530 NSCAN/WARC: Correct handling of Mosaic positions
+ 950530 Update the LSQ test program twnm.for
+ 950516 NSCAN: fixed problem with wrong 0X total power.  - bug 122
+ 950516 Scan-file remembers whether REDUN was done with /DE_APPLY=OTH
+ 950516 NCLEAN: Add keyword DATA_FACTOR for DATA-clean option
+ 950503 TWNM: A new set of least squares routines, incorporating proper error 
+        handling and non-linear solutions are provided. 
+        Documentation is available in lsq.tex/lsq.ps
+ 950502 NCLEAN: DATA clean: HA_RANGE works once more
+ 950502 NCLEAN: Better error message in case outputfile readonly
+ 950502 NCLEAN: Data clean: clip_area back again
+ 950502 NSCAN: Correct AOTH correction if telescopes deleted
+ 950502 NMAP MAKE: correct binning if position of C,D is zero
+ 950502 NSCAN: Add option to read LEIDEN-tapes
+ 950502 Scissor: More client commands, add ionosphere stuff
+ 950502 Scissor: no messages about succesfull connection
+ 950502 NSCAN: Check if IF is present
+ 950303 NSCAN: DE_APPLY corrections set properly if telescope missing
+ 950224 Add test program TWNM for non-linear and complex LSQ testing
+ 950224 When elm NOT available, do  elm alias '/usr/ucb/mail'
+ 950224 Make sure that if still logged in after 7 days with
+        intermediate logins, you can re-init symbol file
+ 950221 NCALIB: Different limits for manual gain
+        NCALIB: Account for /DE_APPLY=OTH in different way when writing back corrections
+ 950220 NPLOT: correction for plotting mosaic IFDATA
+ 950220 NCALIB: larger range for gain corrections (SET MANUAL etc)
+        NCALIB: Do not create non-existing SCN files
+ 950220 NSCAN etc: Giving HA_RANGE=* is equivalent to default range
+ 950220 NSCAN PFITS: Option for shortlist of multiple labels
+ 950220 bug fix: allow for comment following '\' null reply
+ 950220 alert user if he tries to process .psc files
+ 950220 744 --> 644: data files are not executable
+ 950220 update of doc system
+ 950202 NCALIB: restore printing logic to situation before 940912(request by AGB)
+ 950202 NGEN: Add shift and model again
+ 950202 System: Use $HOME in directories i.s.o. tilde
+ 950202 NCALIB: default modelfile back again
+ 950202 Scissor: improved archiving procedures
+ 950202 NSCAN WARC: also pass calculated size of label to MEDIAD
+ 950202 NMAP: RFITS several small bugs fixed  - bug 134 
+ 950126 NSCAN (NFRA): Archiving options
+ 950126 changes in user interface accumulated over several months
+        the algorithms have not been touched
+        minor corrections to prompt/help formatting
+        format and help-text changes
+ 950123 ATNF: do not keep old executables (-NKeep switch)
+ 950123 Correct renaming of log-files etc
+ 950123 NMAP on Alpha: correct alignment
+        NMAP on Alpha: Correct RFITS
+ 950123 complete backtracking on ctrl-D, fix omissions in closing files
+ 950123 NPLOT: Correct HA_SCALE
+ 950123 Correct plotting of Y telescope errors  - bug 135 
+ 950123 Correct alignment errors in NMAP common
+ 950123 NSCAN DUMP: correct size of copied labels
+ 950112 correct scan number for model visibilities in HA-integration
+        this fixes a bug reported to JPH personally by AGB
+ 950112 system: test if we have to rebuild sys_bldppd.exe before 
+                processing psc/pin files
+ 950111 NSCAN: Option WARC updates Scissor
+        NSCAN: Put WSRT Gain corrections in DE_APPY OTHERS
+ 950111 NSCAN: Correction for WARC
+ 950111 NSCAN: Correct WARC for Mosaic observations
+ 950111 donot give an error message for wildcard disk input
+ 950111 NPLOT: Correct scale for pol.vectors
+ 950111 NPLOT: Fix bug with RA =~ 0.0 (No coordinates plotted)
+        NATNF: Select all interf. (Not asked anywhere)
+        System: Add scripts for ESTEC
+        Documentation: Newstar maintenance inside/outside NFRA as html-file
+ 950111 NSCAN DUMP: Pass correct size to Scissor
+ 950111 NMODEL: Option _CONVERT is CONVERT again
+ 950111 show prompt only on terminal or if environment var N_PSCTEST=1
+ 941121 NPLOT: Correct handling of # at WMP_LOOPS
+ 941121 NFLAG: Correct bug in psc-file, occurring at GET option
+ 941115 Documentation: include link to Scissor in homepage
+ 941115 new organisation of program-parameter documentation
+ 941115 adapt hypertext program-parameter help to new organisation
+        add sync mechanism to xmosaic restarting
+ 941115 NFRA: More Scissor commands
+ 941115 NFRA: Allow override of Owner for medium adminitstration
+ 941115 prompt-format control in .psc files, see psc_guide.txt
+ 941115 correct units for correction tables: deg --> rad
+ 941110 NMAP WFITS: Correct bug in CDELT3
+ 941110 NGIDS: Include FLFNODE
+ 941110 All: allow tape-directories on disk
+ 941110 NSCAN: update mediumadm. in Scissor for option DUMP
+ 941110 System: Interface to Scissor
+ 941031 NCALIB: Repair yet another bug in psc-file
+ 941031 PPD: Add missing pef-files in psc-files, typo's in for-files
+ 941027 New Newstar release: 5.1
+ 941027 NMAP FIDDLE: Open/close file when asking WMP_SET_2
+ 941019 NMAP FIDDLE EXTRACT: Correct fieldsize of extracted map
+ 941019 NPLOT: Correct default option after IFDATA choosen
+ 941019 NCOPY: add option to apply corrections to data being copied
+        (request of AGB; primitive implementation only)
+ 941019 NMAP: add FIELD_CENTRE for map-making
+ 940930 NGIDS: Correct plotting of maps with odd-axis length
+ 940930 NMAP: Corrections in RFITS (for FITS files not produced by NMAP)
+ 940930 NCALIB: Bug in COPY repaired
+ 940928 NFLAG: Can use CLIPDATA=2*RMS etc. again.
+               solved problem with write-protected files
+ 940928 NMAP: No longer overwrite tapes when aborted  - bug 125 
+ 940928 All: correct default model-file for broadband 92 cm observations
+ 940928 NCALIB: SET DX etc is now SET OTHERS DX
+        NCALIB: Option SET OTHERS MULTIPLY added
+ 940928 NPLOT: Prompts for scales accept * (=default)
+ 940908 NFLAG: bug in `dryrun' statistics fixed
+        New NFLAG option RT1 (CLIPDATA group)
+ 940901 NMODEL: Changed NMODEL UPDATE to include Polarisation
+        and Linear pol estimator (not written yet)
+ 940901 NGIDS: New flagging mode CLIPFLAG  - bug 115 
+ 940901 All: specifying SELECT_IFRS= -* also switches off autocorrelations
+ 940901 Files opened for writing/updating are now write-locked
+        to prevent multiple writes to the same file
+ 940901 System: changes in X11 interface  - bug 120 
+ 940901 NPLOT: Keep old user-input as default for next plot, 
+        option to abort a series of plots on X11.
+ 940901 No more confusing messages about DWARF symbols
+ 940901 User interface:
+          LOOPS before SETS like everywhere
+          Replace reporting of individual cuts by summaries per 100
+ 940901 ALL: Improve user interface and list output for LAYOUT/OVERVIEW
+ 940901 NMODEL: Correction for pol update
+ 940901 NPLOT: Ask tick-type also if no pixel coordinates asked
+ 940901 NPLOT: Correct bug in overlay of contour map and pol. vectors
+ 940901 NSCAN: Load datasets with 512 channels (or more)
+ 940901 NSCAN/NMAP: UNIT-* now really lists units
+ 940901 NFILT: Tested writing of IFR errors with Qubes
+        Still missing: secondary corrections
+ 940901 NMAP Write FITS: Correct bu causing core dump, correct scale for AP
+ 940901 NPLOT: More space between annotation and axis
+ 940821 NFILT: Add interferometer error writing to Qube options
+ 940821 NMAP: No error if #.. set-specification in FIDDLE
+ 940821 NSCAN LOAD: Use proper channel numbers for observations <1983
+ 940821 NPLOT MAP: Options to suppress annotation with pixel coordinates
+ 940821 NGCALC: Add BASE option to make plots as function of baseline
+        NGCALC CALC: Add CPOLY to make plot with data from fit
+ 940821 NCALIB REDUN: MODEL_OPTION no longer accepts INTERNAL  - bug 121 
+ 940821 NFLAG FLAG: DETERM option ELEVATION added  - bug 111 
+ 940812 NMAP FIDDLE COPY: Keep original comment in map header
+ 940812 All: NODE specification from list (** first, then #nn)
+        Giving * as tapeunit generates list of known ones
+ 940812 NCLEAN: No max. limit on memory size
+ 940803 NCLEAN: prompt for DMEMORY_SIZE with a default value
+        (not tested because this code is not normally executed)
+ 940803 NCLEAN: Bug 67 (Data Clean overwrites input map).  - bug 67 
+        This behaviour is intentional. An explanation
+        is given in the NCLEAN program description.
+ 940721 DEC/Alpha: get rid of <unaligned access> from qsort routine
+ 940721 NFRA: add tape-unit MAG0 (1600 bpi) and MAG1 (6250 bpi) for rzmws0
+ 940721 NGCALC: add DEL function  - bug 117
+ 940721 NPLOT: Add option ISYS to IFDATA to plot Tsys X+Y
+ 940721 NGCALC: Correct extract of IF-data
+        NGCALC: Correct bug in subtraction of poly-fit, show also 
+        for HA in hours
+ 940721 NFLAG: Add MANUAL option HARANGE with repeated prompt  - bug 118 
+ 940721 NMAP: Correct centre of extracted map (FIDDLE EXTRACT)  - bug 114 
+ 940721 NCALIB: bug in SET INIT corrected  - bug 116 
+ 940721 NFLAG: Improved statistics options
+ 940721 NMAP: Add option to read FITS-files  - bug 104 
+        Only tested on FITS-files written with Newstar
+ 940721 ndoc Hyper: respect user's Xmosaic window-size settings
+ 940721 NPLOT: Increase buffers for large DATA plots
+ 940623 NMAP: Correction in Job Summary
+ 940623 NMAP: Correct grouping in output map
+ 940623 WSRT batches: smaller plots
+ 940623 NGCALC: Correct data copy buffer pointer  - bug 113 
+ 940623 NMAP: Correct for crash during MOSCOM
+ 940623 NGIDS: Really set data to BLANK if BLANK_FLAGS=YES
+ 940623 NPLOT: Handle INTERNAL model correctly for RESIDUAL and MODEL - bug 99 
+        NPLOT: Correct default HA scale for X11  - bug 112 
+        NPLOT MAP: Option EDIT for PLOT_POSITIONS
+        NPLOT: Option INTERFEROMETER (corrections per ifr.)
+ 940613 nhyper: Mosaic 2.4 for DEC workstaton
+ 940613 NPLOT: different data-types on one page possible
+ 940613 NMAP: Add job summary log
+ 940613 NSCAN: Make available for old VAX R-series files
+ 940524 NMAP: Also symbol SD=Sin(Dec) defined
+ 940524 NFLAG: Define DWARF symbol RMS after dryrun, this allows
+        specifications like CLIP_LIMIT=5*rms
+ 940524 NCALIB SET INIT: Option to select interferometers  - bug 110 
+ 940524 NCOPY: Copy IF-data, option to strip Model, does not complain - bug 109
+        if data has less polarisations than expected
+ 940524 NPLOT: More sensible default for HA-range
+ 940524 NSCAN LOAD: Adapt for some weird tape-errors
+ 940524 NPLOT on X11: no more accidental "incorrect datatype" messages
+ 940524 NMAP: Make available for old VAX R-series files
+ 940524 NMAP: Extra spaces in output summary (for ABF scripts)
+ 940524 NSCAN: Small error with LOADIF on HP/WSRT solved
+ 940516 Prompts for NODE: ** option also matches lowercase files
+ 940516 NCALIB COPY/SHOW/CCOPY: Hidden keyword CAL_EQUAL to make all
+        input sectors of equal length (=weight)
+ 940516 nhyer: Mosaic 2.4 for Sun and Hp
+ 940516 NMAP FIDDLE MOSCOM: Max. number of input maps increased
+ 940516 NSCAN LIST: Print duration of measurement
+ 940516 NSCAN: Correct CATEG output for RUG/sw
+ 940509 NSCAN: LOADIF option to load Total Power data with uv-data
+        NSCAN SHOW: TP/GN option for SCAN_ACTION to show T.P./Tsys
+ 940509 NSCAN/NFLAG SHOW OVERVIEW: Correct bug in listing
+ 940509 Extensions are now accepted with nodenames (e.g. M31.SCN i.s.o. M31)
+        Warning if node needs to be converted with CVX
+        System: allow global DWARF symbols to be defined by Newstar programs
+        NMAP:  handle flaw of Sun tapeunits when winding up to end-of-file
+        NSCAN: properly handle End-of-File on some Sun tapeunits
+ 940509 NMAP: Declination stored in DWARF symbol PCDEC
+        This allows you to specify e.g. GRID_SIZE=4,4/SIN(PCDEC)
+ 940509 NPLOT: Add option IFDATA (keyword: OPTION) and 
+               keyword IF_MODE to plot Total Power data
+ 940509 NSCAN LOADIF: Various bugs corrected
+ 940509 NGCALC: Add option IFDATA (keyword: OPTION) and 
+                keyword IF_MODE to extract Total Power data
+ 940509 NPLOT: Option to label sources with proper names in map-plot
+ 940509 All: You can get a list of matching nodes by giving **
+        or name_of_directory/*
+ 940509 NMAP: Increase size of output map for MOSCOM
+ 940509 NGIDS: Increase buffer size for large MOSCOM maps
+ 940509 NCALIB SET: Options IFR and MIFR for interf. corrections  - bug 98 
+        NSCAN/NFLAG SHOW: SCAN_OPTION Ifr to list these corrections
+ 940509 NPLOT: Freq.bands back in plots with IFR_MODE=BAND
+ 940425 NSCAN UVFITS: Correct labeling of polarisations  - bug 88 
+ 940425 NCLEAN UVCOVER: No crash if Mapsize<FFTsize
+ 940425 NPLOT: Option to plot identification with sources in maps
+ 940425 All: proper correction for Faraday rotation once more  - bug 102 
+ 940425 NMAP: Bug removed from NVS and CVX 
+ 940418 NSCAN LOAD: Warning if Leiden tape, comments for old tape versions
+ 940418 NPLOT MODEL: default model file, INTERN handled correctly
+ 940418 NMODEL etc: Change in SHOW submenu, SHOW option in MODIFY
+ 940418 NMAP: Warning if input data with different pointing centra selected
+        NMAP: Do not create non-existing SCN files
+        NMAP: INTERN option works with MODEL_OPTION
+ 940418 System: DWARF startup more reliable, default dir. for models
+ 940418 NSCAN/NFLAG: Corrected bug in NSCSCM (in NSCSCR)
+ 940418 NSCAN/NFLAG SHOW: bug in T option corrected, phase shown unscaled
+ 940418 NGIDS DATA: Phases in range -180,180 (used to be 0,360)  - bug 77 
+ 940418 NGIDS: better text if INTERN option used  - bug 94 
+ 940411 DWARF: Unix environment variables (setenv) now recognised as symbols
+ 940411 NCALIB: Selection of telescopes possible for ZERO and COPY/CCOPY
+ 940411 NMAP: Show flux in areas with option SHOW CONT CONT D/N/O
+ 940411 NPLOT: Solved some little problems
+ 940411 NSCAN: Reading data period july 1978 - january 1984 possible - bug 73 
+ 940329 NMODEL/NCALIB: Solved HP bug at WSRT
+        NSCAN: Proper sequence number in LIST option
+ 940329 DWARF: ?? also works if you were reading something on a server
+ 940317 NFLAG: removed bug which caused an extra Scan
+        NFLAG: added option QXY (to CLIPDATA group)
+        NFLAG: added switch (use MODE) to disable 'dry-run'
+ 940317 NSCAN: Do not ask OVERVIEW question for Layout...
+ 940316 NGIDS: Correct handling of INTERN option for models  - bug 79 
+ 940316 NSCAN: Levels in Overview 
+ 940315 DWARF: proper handling of paths in restore and save
+ 940304 NMAP etc: Proper sign of V in model subtraction  -  bug 74 
+ 940303 NSCAN LIST: Proper date/time
+ 940303 NSCAN/NFLAG SHOW: Correct negative phases
+ 940301 NCALIB: Add space between HA and Pol. in output list
+ 940301 Models: Correct test for equality U,Q,V
+ 940301 NCALIB: "Flux-unknown" bit in model header determines default 
+        for SOLVE gain
+ 940301 NSCAN/NFLAG SHOW: Option to display corrected data  - bug 53
+ 940228 All: Propoer Faraday rotation, model for x+ etc dipoles
+ 940228 NCOPY: Bug causing segmentation violation removed
+ 940228 NMODEL: Changed MODEL_OPTION user interface,
+        default file for READ model is calibrator model
+ 940228 NCALIB: added (linear) differential shifts
+ 940228 NGEN: New keyword MODELB: search directory for models
+ 940224 NPLOT: Problems with mosaick observations solved
+ 940224 DWARF: Correct handling of quotes and slashes in qualifiers 
+        passed to dwe
+ 940224 NSCAN: New command LIST to list contents of WSRT tapes
+ 940223 NSCAN: Proper conversions for reading WSRT data on DECStations
+ 940223 DWARF: Streams work again
+ 940223 DWARF: DATAB feature switched off if DATAB set to "*" (including the
+        quotes, use dws ngen to set this)
+ 940221 NCOPY now copies all flags i.s.o. removing them
+ 940218 DWARF: Show version when program is started
+ 940218 NGIDS: Option to blank flagged datapoints
+ 940218 NCALIB: Changed format of log-line (tag for Reduce scripts)
+ 940218 NSCAN Remote tapes: tell server who is calling
+ 940216 NGEN: Add keyword MEMORY 
+ 940215 NMAP: Default HA-range -90,90 for WSRT  - bug 4
+        NMAP: Allow specification of Grid size (give "" at FIELD_SIZE) - bug 5 
+        NCALIB: SOLVE and COMPLEX always asked  - bug 60 
+        NSCAN/NFLAG Show: Give category/type in printout
+ 940214 NCOPY: remove relics of simulation
+ 940208 NSCAN: Remote tape-units
+ 940203 NGIDS: New keyword ALL_POLS, no empty flag files, 
+               Name of input Node and Sets in (ASCII) flag files.
+ 940203 NMAP: Suppress unnecessary creation of new groups when looping
+ 940203 Fitting NPLOT to the needs of the reduction group  - bug 59
+        which means: Plot AP or CS on one page (= 'old' PLOTAP)
+                     More plots on one page
+        NPLOT: add BANDPASS option to make (ifr, ch) plots - bug 26
+ 940202 DWARF/System: Changes for DEC Alpha/OSF1 and general cleanup  - bug 57 
+ 940126 NGIDS: Increase effective size of buffer
+ 940120 NFLAG: Extended IHAMIN,IHAMAX to 180 degr
+ 940120 DWARF: open ppd-file readonly
+ 940117 NGIDS: Correct bug in data-range/model subtraction, better min/max
+ 940117 NSCAN/NFLAG: Better printing of FREQ in Sector header (no 0.xxxE04)
+ 931223 NPLOT: Keyword SCN_LOOPS included
+ 931221 NGIDS: Correct some SUN specific Fortran and typos
+ 931221 NGIDS: Correct zoom and HA step, some more on-line help
+ 931220 NSCAN, NMAP, NGCALC: New EDIT format, new OVERVIEW option for SHOW.
+        Answer L or O to any ???_SETS/LOOPS prompt to get the Layout or an
+        overview of the corresponding file.
+ 931217 NSCAN: report which interferometer in case of Format error
+ 931217 NGIDS: Read SCN files directly and flag them with gids regions - bug 65 
+ 931216 General: old logfiles (>5 days) no longer purged
+ 931216 NFLAG: Fully reworked new version
+ 931216 All: Make LOOPS more specific (SCN_LOOPS etc)  - bug 3 
+ 931215 All: Read special (ACORM=0) tapes
+ 931215 NCALIB: cater for possible phase ambiguities in complex gain averaging
+ 931215 NCALIB: Make Complex solution (only a possibility) and some small
+                text changes
+ 931215 New (931117) version of giplib and gids for cv
+ 931215 NMODEL: Add REDIT, FEDIT model action
+ 931206 NGEN: New dummy program NGEN for use in batch scripts
+ 931206 NMAP: Changed text  - bug 42 
+ 931202 System: Problem solved with character entry (for HP-UX 09.01)
+ 931202 NPLOT/X11: Plot crosses in maps (again)  - bug 40 
+ 931130 NGIDS allows SLICE
+ 931130 NSCAN: correct default label for output disk files
+ 931130 NSCAN: report old and new indices for each new index being made
+ 931124 NSCAN/NFLAG: W option shows all weights including values of 0
+ 931123 Error with structures in WNTINC. Recompile some DSC  - bug 63
+ 931123 WNTINC: Proper _T for multiple sub-structures
+ 931123 NMAP Show: Layout extended (and some minor changes)
+ 931123 NPLOT: starts with white display
+ 931117 NCLEAN: Better userinteraction for AREA=, INST corrected in Beam Clean
+ 931117 System: xmosaic 2.0 and various minor improvements
+ 931116 DWARF: can now use . as well as $ for stream, dwv: new option /SHORT
+ 931116 NSCAN/NFLAG SHOW: Sector action does not stop in batch  - bug 61 
+ 931112 All: bug fix to clock correction
+ 931111 Fire off X11 window right at the beginning and keep it.  - bug 27 
+ 931110 NCALIB: baseline-pole correction fixed
+ 931105 NSCAN/NFLAG: Changed default for SECTOR_ACTION to NEXT
+ 931102 Models: Default option for MODEL_ACTION is now NOBEAM!!!!
+ 931008 Models: Automatic correction for beam shape at different frequencies,
+		positions, instruments has been included in all model
+		handling and calculations.
+		NMODEL EDIT option has been added to be able to change the
+		model header without conversion (part of the old CONVERT),
+		NMODEL CONVERT will convert everything
+		In model data calculations the automatic beaming can be
+		suppressed by the MODEL_ACTION NOBEAM. Note that if you
+		specify BEAM with an existing (old) calculated model, the
+		complete model will be recalculated.
+ 930924 NGCALC: Bug with 1D plots fixed
+ 930922 NSCAN: Option SHOW is back in NSCAN (but it also remains in NFLAG)
+ 930913 NSCAN: Correction of UVFITS output for incomplete data
+ 930826 NFLAG: New options TOPOL, STAT, ... New sequence in OPERATION_...
+               (now goes back to FLAG_MODE, OPERATION_0).
+               Bug in interferometer coding for ASCII files corrected.
+ 930825 NPLOT: Bug in PS output corrected. Also, printing to A3 should 
+               now switch back to A4 properly
+ 930806 NFLAG: Option ARESID for flaggin on Selfcal/Align residuals
+        NFLAG: Option PUT repaired 
+ 930802 NSCAN: NVS handles IQUV to XYX conversion properly for more than
+               one channel, proper weight check.
+ 930722 NPLOT: Changed keyword PLUVO in IFR_MODE(normal,spectral,sort)
+             normal: plot ifr vs ha, ifr order (00,01,...,dd)
+             spectral: spectral channel vs ha, per ifr (old PLUVO)
+             sort: ifr vs ha, baseline sort
+ 930706 NPLOT: RULE plots will now be plotted horizontal (C10)
+ 930701	New version of NGCALC with more expression functions and SHIFT
+	Calculate option. The new features can only be used for freshly
+	extracted data; there is no possibility to add the necessary
+	data to the existing NGF files by, e.g. NVS option. Old data
+	can still be used for all other options.
+ 930628	New NPLOT (NGCALC) X11 driver. You can now select the plotsize as
+	fraction of screen (default 0.75; value > 0.0, <= 1.0) by:
+		setenv PGPLOT_XW_WIDTH value
+	and get all plots without waiting (and without seeing end result) by:
+		setenv PGPLOT_XW_CLICKLEFT 0
+ 930622	New NFLAG SHOW SCAN T option to guess calibrator phases selfcal start
+ 930622	Add some flagging possibilities to NGIDS for UV data
+ 930619	A new program: NFLAG contains now the SHOW and FLAG(DELETE) options
+	originally in NSCAN
+ 930616	New option added to set a field shift in SCN (in NCALIB), and to
+	"de-"apply it if wanted (all programs)
+ 930610	Flagging in NSCAN has been redefined, and options added. Read ? text
+	for details
+ 930608	The data format has been changed to cater for multiple flagging layers
+	and absolute (rather than relative) weights per data point.
+	SCN files made before this date will give a message:
+	"run NSCAN/NMAP NVS first". Run NSCAN NVS to convert the data to the
+	new format.
+	"DELETE" is now called "FLAGGING", and a new NGEN keyword UFLAG has
+	been introduced to be able to selectively include flagged data in
+	your processing. Like other NGEN keywords (e.g. APPLY) it can be
+	set as a switch on dwe; a dws NGEN or dws "program" or by
+	dwe "program"/ASK.
+	NSCAN SHOW has been extended to show the flags set for the DATA W
+	option, and a SET_ACTION FLAGS has been added to give an overview
+	of flags per cube slice.
+ 930606	Added ionospheric refraction, baseline pole, d(x,y,x), clock and
+	frequency correction.
+	Limited edges of mosaic output to suppress noisy data
+ 930524 Many keywords now have a more meaningfull name.
+ 930519 Read/Write to DAT-devices on HP now possible
+ 930513 NCALIB/NGCALC: New method for complex Least Squares
+        NPLOT:  Solved problem when plotting with one (positive or negative) 
+                contour causes crashes. (A42)
+        Problem with keyword DELETE_NODE solved (came in a loop). (A47)
+        NGIDS:  Reorganised the program for future (interactive deleting)
+        NMODEL: New option: FIND to find sources in map
+ 930503 NMODEL: Problem with core-dump when type-error solved (A40)
+                Model update was wrong for fields with negative declination.
+        NSCAN:  Problem with flagging of two polarisations corrected (A41)
+        NSCAN/NCALIB: Message will be printed when the program creates a new
+                SCN-file. Happens when name of non existing-file typed in (A43)
+        NCLEAN: Problems solved with noise values in the latest restore-step of
+                data-clean (came from original iso. residual map). (A44)
+        NGIDS:  now totally independent from GIPSY (A49)
+        NATNF:  Phase problem solved (A50)
+ 930304 NMAP:   Writing cubes contiguous
+ 930210 NPLOT:  Default contours now available.
+                Default PLOTTER will now be PSP, default SIZE will be 1.3, 1.3
+ 920205 The problems on the HP with default value 0 have been solved.
+        Also some printout on the screen will fit on one line.
+ 921222 NPLOT:  Display option X11 now partly available for UNIX machines
+                (Do NOT use halftone; some options will NOT work correct yet)
+ 921218 Changed KEYWORD=LOG. All programs have now default YES iso. SPOOL
+ 921106 Programs changed for J2000 and allow HA outside -90 - +90 degrees.
+ 921022 NATNF, NSCAN and NMAP are now able to use mag-tapes on UNIX system.
+        Do a setenv to see which mag-tapes are available.
+        NPLOT and NGCALC can now plot on A3-plotter (B17).
+ 920903 Many problems solved by WNB during his stay in Dwingeloo
+        NGCALC: New program for data calculation and plotting (C2)
+        NATNF:  New program to handle RPFITS files
+        NSCAN:  Split mosaic data (B1)
+                Error in old WSRT-tapes (1987) .. pointing set (A33)
+                Wrong MJD when not correct ended WSRT observation (A34)
+                Faster mosaic splitsing (2 times faster) (A35)
+                Conversion LINOBS (I,Q,U,V) to XX,XY,YX,YY (B14)
+        NMAP:   UV circular weighting function (B5)
+                A option/loop (in FIDDLE/ADD) for line-data (B6)
+                MOSCOM option to use noise as weight (B11)
+                Extended NMAP fits header (B12)
+                Change coordinates if shift (A23)
+                Noise for extract/copy in NMAP (A28)
+                Precission angle calculation (A30)
+                Calculate offsets in map (A32)
+                Logics MAP statistics (A36)
+        NMODEL: Delete of non-clean components (B3)
+                Delete of sources inside dl,dm box (B13)
+                Merge source models: sometimes recalculate everything (A31)
+                RSHOW problem solved (A22)
+        NPLOT:  Option to plot hourangle against frequency for a baseline 
+                polarisation (C7)
+                Halftone plotting problem solved (A19)
+                Plot message by selfcal/align residuals with model (A24)
+                On SUN: Problem plots bigger than A4 solved (A26)
+        NCLEAN: Changed sign restore beam angle (A20)
+ 920728 NGIDS:  New program to load maps into GIDS
+                (GIDS = Groningen Image Display System)
+ 920714 NSCAN updated for Online System nr. 63 (Change in extended FD)
+ 920626 New delete option DCLOW, same as DNCLOW, but for cleaning components
+        NMAP:   Problem with Beam-option correctred (B4)
+                Problem with fsum corrected (A18)
+                Problem with model subtraction for polarisation sources 
+                with RM corrected (A16)
+ 920623 Name of software-pakket changed from N-series into NEWSTAR
+        (Netherlands East West Synthesis Telescope Array Reduction-package)
+ 920609 NSCAN:  Problem with flagging of two polarisations corrected (A12)
+                Layout for MJD(start) corrected (A14)
+        NMAP:   Problem with source subtraction corrected (A15)
+                Problem with "LAYOUT" option for WMP-file corrected (A13)
+ 920504 NMAP:   Problem with data in HA-baseline format corrected.
+        NSCAN:  Problem with delete options (Rnoise Anoise) corrected (A11)
+ 920407 Problem with option CVX to DEC-workstation corrected.
+        NPLOT:  Use of double loops for plotting a MAP corrected (A5)
+                Plotting more than one 'data', 'residuals' or 
+                'telescope corrections' problem corrected.
+        NMODEL: Symmetirc extended sources problem corrected (A6)
+        NCLEAN: Epoche problem corrected (A9)
+        NMAP:   Writing REAL or AMP data from .WMP file to grey-scale
+                problem corrected.
+ 920131 NCLEAN with an unsaved residual map corrected
+ 920131 NCLEAN major cycle statistics printout corrected
+ 920130 NPLOT re-write to use full page in portrait mode
+ 920129 NPLOT output to EPS and EPP can be viewed on the DECstation (if files
+        produced there or ftp'ed) with the command: dxpsview &
+        or with the PostScript preview application
+        These files can also be incorporated in WordMarc (and other) documents
+ 920128 Spool error PS plots
+ 920128 Change prompt error in NMAP FIDDLE
+ 920119 NMODEL UPDATE corrected for use of B1950 models
+ 920119 NCALIB SELFCAL corrected for use of B1950 models
+ 920117 NCLEN COMPON option
+ 920117 NCLEAN restoring for extended sources
+ 920117 NCLEAN restoring for non-clean point sources
+ 920116 NCLEAN URESTore option for clean components
+ 920116 NPLOT large plots now ok
+ 920115 NCLEAN UVCOVER with restore option
+ 920109 NSCAN UVFITS memory related crashes for large jobs solved
+ 920109 NMODEL option to delete low-level non-clean changed in definition
+ 920108 NCLEAN Clark type clean (UVCOVER) please test and comments
+ 911230 NMODEL UPDATE corrected for logical error for clean components
+ 911230 NMODEL new option DNCLOW to delete low-level non-clean components
+ 911230 NPLOT better RA, DEC coordinates
+ 911227 NPLOT renewed with ruled surface and polarisation vector possibilities
+ 911227 Correct conversion to/from other coordinates in NMODEL
+ 911219 A new set of Plot routines incorporated in NPLOT (maybe problems)
+ 911209 Correct interferometer selection POL NCALIB
+ 911115 All (de-)beams have a maximum limit of a factor 100   
+ 911105 MAPs made before today at 10:00 will not properly combine in MOSCOM
+ 911105 NMAP FIDDLE MOSCOM will combine mosaic fields properly weighted
+ 911104 Correct de-selection of clean components (X)UPDATE in NMODEL
+ 911031 WERR option NSCAN will correct mosaic HA tape error
+ 911025 All HA's on WSRT tape for mosaic wrong
+ 911024 NMAP reference coordinate (mosaic) option checked
+ 911023 NPLOT RES definition changed for Ampl and Phase
+ 911014 NSCAN DELETE new CLIP option
+ 911009 NCALIB: SET RENORM option added
+ 911009 NMAP: correct multiple polarisations output
+ 911008 Default: No complex for NCALIB pure redundancy
+ 911007 Instrumental polarisation in first version
+ 911004 NCALIB POLAR VZERO options CALC APPLY MANUAL ASK in first version
+ 911003 The ncopy command will transfer and convert files from VAX
+ 910930 NPLOT: repair logics
+ 910930 NCALIB POLAR COPY has loops
+ 910930 NCALIB REDUN check on extreme values
+ 910927 Multiple input sets ok in NMAP; NPLOT option order reversed
+ 910923 Add SET,COPY,EDIT option to POLAR option in NCALIB
+ 910923 Correct sign of shift in NMAP
+ 910918 Add option to NPLOT to only plot XY,YX
+ 910918 quota directory|filename ... gives size (may have wildcards) (Alliant)
+ 910917 Correct bug in all programs that mistreated APPLY and DE_APPLY
+ 910917 Status of options as described in ITR198a
+        Can be printed (on VAX) by: $ wm/print user5:[wnb.itr]itr2a.wnb
+ 910917 The following programs exist:
+        NSCAN, NMODEL, NCALIB, NMAP, NCLEAN, NPLOT (+NGEN for parameters only)

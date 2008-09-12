@@ -1,0 +1,309 @@
+%  ncalib_redun.tex  v1.2 04/08/93 JEN  
+%       JPH 940406      Technical changes  
+%       JPH 951107      Break a paragraph that was too long for ndoc  
+%       JPH 960326      Further fix for this problem  
+
+\newcommand{\be}{\begin{enumerate}} 
+\newcommand{\ee}{\end{enumerate}} 
+\newcommand{\I}{\item} 
+
+
+\chapter{NCALIB REDUN: Redundancy, Align and Selfcal} %  
+\tableofcontents %  
+\section{Overview}  
+
+        The NCALIB option {\bf REDUN} actually covers three related methods of
+estimating telescope gain and phase errors from the uv-data itself: Redundancy,
+Selfcal and Align. All three methods require the socalled `Selfcal assumption',
+which states that all phase and gain errors are {\em telescope-based}.   
+% (line break for sake of ndoc - donot remove leading blank)  
+ This means that the errors can be fully decomposed into contributions from
+individual telescopes, and that interferometer-based errors can be ignored.
+This assumption implies a drastic reduction in the number of {\em independent}
+errors in the data taken with an N-telescope array: from $N(N-1)/2$ to $N-1$
+per integration interval.  This relatively small number of independent errors
+can be determined with a {\em least-squares fitting} technique.  
+
+        Any {\em interferometer-based} errors (e.g.  thermal noise or
+correlator errors) violate the basic Selfcal assumption, and cause propagating
+errors in the solution.  Fortunately, the WSRT correlators only contribute very
+small interferometer errors (typically $<$0.01\%),  
+but the S/N per uv-sample should be at least 2-5 for a good solution.  
+
+        Independent solutions can be obtained for telescope gain and phase
+errors, because they are mathematically `orthogonal'.  
+
+\begin{itemize}  
+\item {\bf Selfcal:}  
+        The telescope gain and phase errors are estimated by comparing the
+uv-data with a model of the observed source.  In WSRT Selfcal, the information
+from redundant spacings can be added as {\em extra constraints} on the Selfcal
+solution.  Since this extra information is model-independent, the Selfcal
+process is less likely to converge to the wrong result.  
+
+\item {\bf Redundancy:}  
+        Telescope gain and phase errors are estimated by comparing the uv-data
+of `redundant' interferometers, i.e.  interferometers that have the same
+baseline length and orientation.  Since this is a comparative method, the
+absolute gain (flux) and the absolute phase gradient (position) cannot be
+determined.  The result is a set of `internally perfect' HA-scans, that still
+have to be `aligned' (see below) to each other in flux and position.  
+
+\item {\bf Align:}  
+        The absolute gain and the absolute phase gradient for misaligned
+HA-scans can be determined with the help of a source model.  This is similar to
+Selfcal, except that one only solves for one parameter per HA-scan, rather than
+for N telescope errors.  This has the advantage that the source model may be
+less perfect, and the SNR of the uv-data may be lower.  Therefore, this method
+may also be used to remove ionosferic phase gradients from data that have too
+little SNR to warrant Redundancy or Selfcal.  
+
+\end{itemize}  
+
+        The figures of this section may help to illustrate the effects of these
+three methods.  There is also a description of the relevant mathematical
+formalism.  Finally, this section contains processing examples and an
+explanation of the output that is produced on the screen and in the log file.  
+
+\input{../fig/ncalib_3c48.cap}  
+\input{../fig/ncalib_scan.cap}  
+
+
+%=============================================================================  
+%\include{form_redun}                   % REDUN mathematical formalism  
+%=============================================================================  
+
+\input{../fig/ncalib_matrix.cap}  
+\input{../fig/ncalib_vispace.cap}  
+
+
+%=============================================================================  
+\section{Redundancy}  
+\label{.redundancy}  
+
+        Redundancy-only is selected by {\bf not} specifying a source model. The
+resulting telescope gain and phase errors are stored in the Scan file headers,
+as REDC.  
+
+**** Put new script here ****  
+
+
+%=============================================================================  
+\section{Align}  
+\label{.align}  
+
+        Align is selected by specifying a source model, and explicitly
+specifying the {\bf ALIGN\_OPTION}.  It is then assumed by default that the
+Scan is `perfect', i.e.  that all 14 telescopes are grouped together.  In that
+case, only two parameters have to be determined: the absolute gain, and the
+absolute phase gradient over the array. Experienced users can specify
+multi-parameter solutions for more than one independent groups of telescopes by
+manipulating the {\bf FORCE\_FREEDOM} keyword.  The {\bf MWEIGHT} keywords are
+used to give greater weight to those baselines (by length), for which the model
+is `known' to be most accurate.  
+
+        The resulting telescope gain and phase corrections are stored in the
+Scan headers, as ALGC.  
+
+*** Put new script here ****  
+
+%=============================================================================  
+\section{Selfcal}  
+\label{.selfcal}  
+
+        Selfcal is selected by specifying a source model, and explicitly
+specifying `Selfcal' to the {\bf ALIGN\_OPTION}.  Redundancy constraints
+(equations) are included automatically if redundant spacings have been selected
+with {\bf SELECT\_IFRS}.  The {\bf MWEIGHT} keywords are used to give greater
+weight to those baselines (by length), for which the model is `known' to be
+most accurate.  
+
+        The resulting telescope gain and phase corrections are stored in the
+Scan headers, as ALGC.  
+
+*** Put new script here ****  
+
+
+%=============================================================================  
+\newpage  
+\section{Discussion of the screen/log output}  
+\label{.log.output}  
+
+The following information per HA-scan may be printed in the LOG-file and/or
+displayed on the terminal screen (keyword {\bf SHOW\_LEVEL}).  
+
+\slong{  HA    Rk  A(\%) P(deg) A(WU)  P(WU) Amax    Aavg   Arms    dAmax  
+dPmax  I}  
+\sskip  
+\slong{Set: 0.0.0.0}  
+\slong{ 11.53X New phase constraints:}  
+\slong{           1   1   1   1   1   1   1   1   1   1   1   1   1   1}  
+\slong{ 11.53X 01   0.6   0.2   12.9    7.1  2012  2000.0   5.2    1.9 67 0.5
+58 3}  
+\setc  
+
+\vspace*{-10mm}  
+\begin{tabbing} +++++\=+++++\=+++++\=+++++\=+++++\=+++++\=+++++\=+++++\=+++++\=
+\kill %tabs  
+\\ \> HA        \> (e.g. -83.86X) \>\> Hour-angle (degr) and polarisation  
+\\ \> Rk        \> (e.g. 12)    \>\> Rank of the gain and phase solution
+matrices  
+\\ \> A(\%)     \> (e.g. 3.3)   \>\> RMS gain residual (\%)  
+\\ \> P(deg)    \> (e.g. 2.2)   \>\> RMS phase residual (degr)  
+\\ \> A(WU)     \> (e.g. 1.6)   \>\> RMS gain residual (WU=Westerbork Unit)  
+\\ \> P(WU)     \> (e.g. 1.8)   \>\> RMS phase residual (WU)  
+\\ \> Amax      \> (e.g. 63)    \>\> Maximum ampl (WU)  
+\\ \> Aavg      \> (e.g. 50.1)  \>\> Average ampl (WU)  
+\\ \> Arms      \> (e.g. 5.1)   \>\> RMS ampl (WU)  
+\\ \> dAmax     \> (e.g. -12.4 23) \>\> largest gain  
+\\ \> dPmax     \> (e.g. 6.3 CD) \>\> largest phase residual (WU), ifr=CD  
+\end{tabbing}  
+
+
+\slong{X average amplitude= 2000.005 (0.892)}  
+\sskip  
+\slong{X overall noise (gain, phase in W.U.):     14.2     11.1}  
+\sskip  
+
+\begin{itemize}  
+\item   {\bf Average amplitude:}  
+
+\item   {\bf Average gain and phase errors per telescope:}  
+        Over the whole observation (or rather, the part that has just been
+processed). These numbers can also be calculated separately by means of NCALIB
+option SHOW.  
+
+\item   {\bf Overall noise:}  
+        Useful for automatic deletion of `bad' scans (see NSCAN).
+Redundancy-only is model-independent, so the overall noise should be equal to
+the thermal noise. If not, it is an indication of problems. A difference
+between SELFCAL noise and Redundancy-only noise is an  indication of the
+completeness of the SELFCAL model (caution: there are different interferometers
+involved).  
+
+\item   {\bf Graphs:}  
+        There are three kinds of line-printer graphs produced in the log-file.
+They give various overall gain and phase quantities per interferometer. The
+baseline length increases to the right. The gain axis (A) is on the left, and
+the phase axis (P) on the right.  
+  \begin{itemize}  
+  \item {\bf Graph: Average residual error X (W.U.):}  
+  \item {\bf Graph: Average residual error X (\%, deg):}  
+  \item {\bf Graph: RMS X (W.U.):}  
+  \end{itemize} %  
+\end{itemize}  
+
+
+        The SELFCAL and Redundancy residuals contain a wealth of information
+about the quality of the data and the completeness of the SELFCAL model. The
+user is urged to make residual plots by means of the program NPLOT.  
+
+
+%=============================================================================
+ 
+\section{QDETAILS: Hidden parameters}  
+\label{.qdetails}  
+
+        For all REDUN options, the user is prompted for `more details?' by the
+NCALIB keyword QDETAILS.  Hidden behind this are a number of keywords that may
+be manipulated by experienced users in special cases. Their default values are
+optimised for normal use, and wil be printed in the NCALIB LOG-file.  
+
+\skeyword{BASEL\_CHECK}  
+\sprompt{(M)}  
+\sdefault{ = 0.5 M:}  
+\suser{\scr}  
+\scomment{ Criterion for two baselines to be considered redundant, i.e. of
+identical length.}  
+
+\skeyword{WEIGHT\_MIN}  
+\sprompt{(Minimum weight accepted)}  
+\sdefault{= 0.01:}  
+\suser{\scr}  
+\scomment{The weight of Selfcal and Redundancy equations is proportional to the
+amplitude of their uv-data. If the amplitude is very small, the information
+will be very noisy, and may do more harm than good to the solution. Therefore,
+it may be excluded by raising the value of WEIGHT\_MIN, as a fraction of the
+maximum weight.}  
+
+\skeyword{SOLVE}  
+\sprompt{(Solve for gain, phase (Y/N)}  
+\sdefault{= YES,YES:}  
+\suser{\scr}  
+\scomment{Normally, both a gain and a phase solution will be required. But it
+is possible to ask for only one at a time.}  
+
+\skeyword{COMPLEX}  
+\sprompt{(Complex solution (Y/N)}  
+\sdefault{ = NO:}  
+\suser{\scr}  
+\scomment{The non-linear conversion to gain and phase skews the gaussian
+distribution of the noise on the measured cos/sine values. Therefore, gain and
+phase solutions will produce a `noise bias', which is more serious for low S/N
+data. This can be avoided by specifying a `complex solution' (see also section  
+...)}  
+
+\skeyword{FORCE\_PHASE}  
+\sprompt{()}  
+\sdefault{ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  
+\suser{\scr}  
+\scomment{If the visibility phases are close to $\pm 180~degr$, the conversion
+from cos/sine to phase may cause phase ambiguities (jumps) of 360 degr. This
+will cause problems in the phase solution, where the phases are assumed to be
+on a linear scale between $\pm \infty$. In order to avoid this, the user may
+specify initial phase corrections for all telescopes, which will be used to
+move the data away from $\pm 180~degr$ before processing. This is of course
+taken into account for the total correction afterwards.}  
+
+\skeyword{CONTINUITY}  
+\sprompt{(Continuity in solution (Y/N)}  
+\sdefault{= YES:}  
+\suser{\scr}  
+\scomment{Normally, the HA-scans are processed in HA-order. The gain and phase
+errors determined for the last Scan may be used to correct the data of the next
+Scan {\em before} processing. (This is of course taken into account for the
+total correction afterwards).  This approach is useful to keep phases away from
+$\pm 180~degr$, where they may cause unwanted phase-ambiguity problems.}  
+
+\skeyword{CHECKS}  
+\sprompt{(Maximum deviations)}  
+\sdefault{ = 5,5,3:}  
+\suser{\scr}  
+\scomment{The user may set some threshold values for an automatic check on the
+quality of the solution of each HA-scan. A warning will be issued in the log
+whenever the tresholds are exceeded. However, no further action is taken by the
+program!}  
+
+\newcommand{\void}[1]{} 
+\void{  
+\section{Pathological situations} 
+
+        It may happen that NCALIB fails to produce a decent solution from the
+latter observations: The errors reported for the amplitude and phase noises are
+mucj larger than one could reasonably expect. This is a sure sign of trouble:
+Apart from obvious causes such as interference, it may be a consequence of
+improper phase corrections applied in the on-line observing system. 
+
+        The trouble comes from the fact that under such conditions NCALIB may
+not be able to correctly resolve the 360-degree phase ambiguity inherent in
+determining a visibility's phase. This kind of problem can be fixed with a
+little bit of work. 
+
+\be 
+\I      Determine whether the problem occurs in the XX or YY interferometers or
+both. The remaining steps must be applied to each separately. 
+
+\I      Use the \textref{NSCAN}{nscan_descr} SHOW option to display the table
+of amplitudes and phases in a representative scan.  
+
+\I      Take a good look at the lower triangle where the phases are displayed.
+What you must expect is to find (probably one) telescope(s) for which the
+phases in different interferometers flip wildly between two values, one in the
+vicinity of +180 degrees and the other of -180 degrees. 
+
+\I      Re-execute your Selfcal run, but this time use the FORCE_PHASE
+parameter to force the phases for the suspected telecope to either + or - 180
+degrees, e.g. if Telescope 3 give problems, specify FORCE_PHASE = ,,,180. 
+\ee      }  
+
+

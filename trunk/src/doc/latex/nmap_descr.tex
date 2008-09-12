@@ -1,0 +1,289 @@
+%
+% @(#) nmap_descr.tex  v1.2 04/08/93 JEN
+%
+\chapter{The Program NMAP}
+\tableofcontents
+
+\section{ Introduction}
+\label{.intro}
+
+	The \NEWSTAR program NMAP makes maps (images) from the uv-data in a
+SCN-file, and stores them in a WMP-file. The input data may be combined in many
+different ways, to produce maps that range from simple to quite exotic.  As a
+by-product, antenna patterns may be calculated (and stored in the same .WMP
+file), for use in \textref{NCLEAN}{nclean_descr}.
+
+	The program NMAP also allows the user to manipulate maps in a .WMP file,
+and to convert them to other formats.
+
+	A .WMP file may contain various kinds of maps that are {\em related in
+some way}, i.e. different frequency channels, polarisations, pointing centres
+(mosaicking), antenna patterns, CLEAN residuals, and even gridded uv-data. Each
+{\em image} in a .WMP file consists of a 2-dimensional array of pixel values,
+withj a header containing descriptive information. A 'hypercube' of images
+in a .WMP file can have maps of different sizes. For more information about the
+structure of the .WMP file, see the \textref{.WMP file}{wmp_descr} description.
+
+%==============================================================================
+\section{Overview of NMAP options}
+\label{.options}
+
+The program NMAP offers the following main options:
+
+\begin{itemize}
+\item {\bf  MAKE:}      Make map(s) and/or antenna patterns
+\item {\bf  SHOW:}      Show/edit map (header) data.
+			See section on WMP File Description.
+\item {\bf  FIDDLE:}    Perform all kinds of operations on maps.
+\item {\bf  W16FITS:}   Write FITS tape/disk with 16 bits data.
+\item {\bf  W32FITS:}   Write FITS tape/disk with 32 bits data.
+\item {\bf  FROM\_OLD:} Convert from old (R-series) format to WMP format.
+\item {\bf  TO\_OLD:}   Convert from WMP format to old (R-series) format.
+\item {\bf  CVX:}       Convert a WMP-file from other machine's format
+			to local machine's.
+\item {\bf  NVS:}       Convert a WMP file to newest version.
+			This option should be run if indicated by the program).
+\item {\bf  QUIT:}      Quit the program NMAP.
+\end{itemize}
+
+
+
+%==============================================================================
+\section{Option MAKE: Making maps}
+\label{.make}
+
+	An overview of the user interface for the MAKE option is shown in
+\figref{.nmap.make} and its companion \figref{.nmap.make.q}.
+
+\input{../fig/nmap_make.cap}
+
+
+%-----------------------------------------------------------------------------
+\subsection{Types of output images}
+\label{.make.output}
+
+	The program NMAP produces (multiple) images of the following types:
+
+\begin{itemize}
+
+\item {\bf  MAP:} Normal map of the uv-data or the uv-model (the
+uv-representation of the Selfcal model) from the SCN-file.
+Various linear combinations of the four measured polarisations can be specified
+with the keyword {\bf MAP\_POLAR}, to produce:
+
+  \begin{itemize}
+  \item {\bf  XX, YY, XY or YX-maps:} Use XX, YY, XY or YX data only
+  \item {\bf  I-map:}   (XX+YY)/2
+  \item {\bf  Q-map:}   (-XX+YY)/2
+  \item {\bf  U-map:}   (-XY+YX)/2
+  \item {\bf  V-map:}   (XY+YX)*i/2
+  \item {\bf  L-map:}   XX or YY or (XX+YY)/2 if both present
+  \item {\bf  *I-map:}  any of the above, but multiplied with $\sqrt{-1}$
+  \end{itemize}
+
+NB: Note that parallel dipoles (++) are assumed here.
+Observations with `crossed' dipoles (+x) require linear combinations of
+all four polarisations. This can be done in the map plane (see NMAP
+option {\bf FIDDLE\_OPTION}).
+
+\item {\bf  AP:}        Antenna pattern (Replace uv-data by 1's)
+\item {\bf  COS:}       Assume input sines to be zero
+\item {\bf  SIN:}       Assume input cosines to be zero
+\item {\bf  AMPL:}      Assume input phases to be zero
+\item {\bf  PHASE:}     Assume input amplitudes to be one
+\end{itemize}
+
+It is also possible to store {\bf uv-data} in a WMP file, for display purposes.
+The uv-data is `gridded' (convolved onto a rectangular grid).
+
+\begin{itemize}
+\item {\bf  COVER:}     Gridded uv-coverage (data replaced by 1's)
+\item {\bf  REAL:}      Real part of the gridded uv-data
+\item {\bf  IMAG:}      Imaginary part of the gridded uv-data
+\item {\bf  AMPL:}      Amplitude of the gridded uv-data
+\item {\bf  PHASE:}     Phases of the gridded uv-data
+\end{itemize}
+
+
+%----------------------------------------------------------------------------
+\subsection{Operations on the input data}
+\label{.make.input}
+
+\input{../fig/nmap_make_q.cap}
+
+\begin{itemize}
+\item {\bf Data selection}: The uv-data that go into a map may be
+selected in various ways:
+  \begin{itemize}
+  \item One or more SCN-files.
+  \item Sets within a SCN-file (e.g. frequ channels, pointing centres).
+  \item HA-Scans within each Set (HA-range).
+  \item Polarisations (XX,YY,XY,YX).
+  \item Individual iterferometers
+  \item An area in the uv-plane
+  \item Clip-level
+  \end{itemize}
+
+\item {\bf Data correction}:
+Various correction factors are stored in the Set and Scan headers of the
+SCN-file. They may be applied to the uv-data at the moment that they are
+read from disk for processing. Application of correction is controlled
+by the NGEN keywords {\bf APPLY} and {\bf DE\_APPLY}
+(see the section `Common Features of \NEWSTAR Programs' in this Cookbook).
+
+\item {\bf Data conversion}:
+The uv-data may be converted in various ways:
+  \begin{itemize}
+  \item Subtraction of a source model.
+  \item Combination of different polarisations (XX,YY,XY,YX).
+  \item Conversion to amplitudes or phases.
+  \end{itemize}
+
+\item {\bf Data weighting:}
+  \begin{itemize}
+  \item {  NATURAL:}  Take each individual measured point separately,
+			without weighting for the UV track covered by it.
+  \item {  STANDARD:} Weight each observed point with the track length covered
+			on the UV plane,
+			and average redundant baselines on a per set basis.
+  {\it (default)}
+  \item {  FULL:}     Weight each point according to the actual UV point
+			density. In this case care is taken of all local UV
+			plane density enhancements,
+			but it necessitates an extra pass through the data.
+  \end{itemize}
+
+\item {\bf Data tapering:}
+  \begin{itemize}
+  \item {  GAUSS:}      $\exp(-baseline^{2})$
+  {\it (default)}
+  \item {  LINEAR:}     max(0,1-baseline/taper\_value)
+  \item {  NATURAL:}    no taper
+  \item {  OVERR:}      $1/baseline$
+  \item {  RGAUSS:}     $\exp(-baseline^{2})/baseline$
+  \end{itemize}
+
+\item {\bf Data convolution:} (onto a rectangular grid in the uv-plane)
+  \begin{itemize}
+  \item {  GAUSS:}      Gaussian type with $4\times 4$ grid points
+  \item {  P4ROL:}      Prolate spheroidal function with $4\times 4$ grid points
+  \item {  P6ROL:}      Prolate spheroidal function with $6\times 6$ grid points
+  \item {  EXPSINC:}    $sinc\times\exp$ on $6\times 6$ grid points
+  {\it (default)}
+  \item {  BOX:}        A square box
+  \end{itemize}
+\end{itemize}
+
+At this point, the data are either stored in the WMP file as gridded uv-data
+(usually for display purposes), or Fouries transformed into an image.
+
+%==============================================================================
+
+\section{Option MAKE: example}
+\label{.make.example}
+
+The following is an example of making a `normal' map (and its antenna pattern),
+using the program defaults. This is usually sufficient to get a satisfactory
+result. Experienced users may experiment with some of the more advanced
+options.
+
+**** Put new script here ****
+
+
+%------------------------------------------------------------------------------
+
+\subsection{QMAPS: Hidden map options}
+\label{.make.qmaps}
+
+The more advanced map-making options are hidden behind the NMAP keyword {\bf
+QMAPS}. If skipped, the (context-sensitive) default values will give a
+satisfactory result in most cases.
+Their values will be printed in the NMAP log-file.
+For more information on each of these
+keywords, see the on-line Help text (type `?'), which is also printed in the
+`Summary of NMAP keywords' in this Cookbook.
+
+**** Put new script here ****
+
+
+%------------------------------------------------------------------------------
+\subsection{QDATAS: Hidden map options}
+\label{.make.qdatas}
+
+The more advanced data-selection options are hidden behind the NMAP keyword
+{\bf QDATA}. If skipped, the (context-sensitive) default values will give a
+satisfactory result in most cases.
+Their values will be printed in the NMAP log-file.
+For more information on each of these
+keywords, see the on-line Help text (type `?'), which is also printed in the
+`Summary of NMAP keywords' in this Cookbook.
+
+\sprompt{QDATAS}
+\sprompt{(More data handling details?)}
+\sdefault{ = NO:}
+\suser{y}
+
+(To be added later).
+
+%==============================================================================
+
+\section{Option FIDDLE: Operations on maps}
+\label{.fiddle}
+
+\input{../fig/nmap_handle.cap}
+
+The NMAP keyword {\bf FIDDLE\_OPTION}
+offers the user a wide range of possibilities to
+perform oparations on maps in WMP files:
+
+All relevant data are copied from the first (or only) input map.
+If 2 maps are required (ADD,AVER,POL,ANGLE) all pairs of SETS\_1 and
+SETS\_2 will produce an output map.
+SUM will average all SETS\_1 maps.
+MOSCOM will produce a single output map from all specified input maps.
+The others will produce an output for each SETS\_1.
+BEAM, DEBEAM and FACTOR will overwrite the input maps.
+F is a specified multiplication factor.
+
+\begin{itemize}
+\item {\bf  ADD:}  $F1\times map1 + F2\times map2$
+\item {\bf  AVER:}  $(F1\times map1 + F2\times map2)/(abs(F1)+abs(F2))$
+\item {\bf  SUM:}  Various averages of maps.
+In all cases the summation produces
+a weighted average map over all SETS\_1, the weight depending on the type:
+  \begin{itemize}
+  \item {\bf  SUM:}  weight(i)= 1
+  \item {\bf  NSUM:}  weight(i)= normalisation factor of map
+  \item {\bf  BSUM:}  weight(i)= bandwidth
+  \item {\bf  BNSUM:}  weight(i)= bandwidth $\times$ normalisation factor
+  \item {\bf  FSUM:}  weight(i)= factor given by the user.
+		Up to 8 factors can be given,
+		which will be used in a cyclic fashion if more needed
+  \item {\bf  NSSUM:}  weight(i)= $1/(map noise^{2})$
+  \item {\bf  QUIT:}  finished
+  \end{itemize}
+\item {\bf  POL:}  $\sqrt{map1^{2} + map2^{2}}$,
+		unless $< F1$, then 0
+\item {\bf  ANGLE:}  $0.5\times \arctan{(map1/map2)}$ (radians),
+		unless $POL < F1$, then 0
+\item {\bf  EXTRACT:}  extract an area of maps
+\label{.copy}
+\item {\bf  COPY:}  copy maps
+\item {\bf  BEAM:}  correct maps for primary beam
+\item {\bf  DEBEAM:}  de-correct maps for primary beam
+\item {\bf  FACTOR:}  $F1\times map$
+\item {\bf  MOSCOM:}  combine all specified maps
+		(referenced to same mosaic position) into one output map.
+		The noise of the individual maps may be used as weight.
+\item {\bf  QUIT:}  quit the fiddle option.
+\end{itemize}
+
+
+
+%==============================================================================
+
+\section{Option FITS: Conversion to FITS format}
+\label{.fits}
+
+There are two separate NMAP options ({\bf W16FITS} and {\bf W32FITS}.
+

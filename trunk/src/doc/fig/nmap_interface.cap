@@ -1,0 +1,60 @@
+%nmap_interface.cap
+
+%\begin{figure}[htbp]
+
+%\fig{nmap_interface}
+
+%\caption{\it
+%Overview of NMAP's parameter interface.
+%\\
+%\\ See also companion figures:
+%\\ \indent \figref{.nmap.make} and \figref{.nmap.make.q} for the map-making
+%interface;
+%\\ \indent \figref{.nmap.handle}  for the {\em other} options.
+%}
+%\label{.nmap.interface}
+%\end{figure}
+
+
+\begin{figure}[htbp]
+
+\fig{nmap_make}
+
+\caption{\it
+Overview of NMAP's map-making interface.
+%This diagram expands the {\em other options} stub in \figref{.nmap.interface}.
+\\
+\\ See \figref{.nmap.make.q} for the QMAPS and QDATS branches; by default,
+these branches are bypassed.
+\\
+\\ (The rightmost column in the diagram is irrelevant for map-making in NMAP.)
+}
+\label{.nmap.make}
+\end{figure}
+
+
+\begin{figure}
+% The asterisks indicate parameters also prompted for in DATA CLEAN. These must
+% be changed to confom with nmap_make.fig.
+
+\fig{nmap_make_q}
+
+\caption{\it
+Overview of the optional detailed-question sequences of the map-making
+interface. This diagram expands the {\em QMAPS} and {\em QDATAS} stubs in
+\figref{.nmap.make}.
+}
+\label{.nmap.make.q}
+\end{figure}
+
+
+%\begin{figure}
+
+%\fig{nmap_handle}
+
+%\caption{\it
+%Overview of NMAP's map-handling interface. This diagram expands the {\em other
+%options} stub in \figref{.nmap.interface}.
+%}
+%\label{.nmap.handle}
+%\end{figure}

@@ -1,0 +1,36 @@
+Efficient use of the dbx debugger on the SUNs
+---------------------------------------------
+
+(contributed by JPH 940919; based on research by CMV)
+
+
+	For the convenience of programmers who want to use dbx with Newstar
+programs, the objects in the Newstar libraries are routinely compiled with the
+-g option (Newstar nsh option 'build -d') which creates objects including the
+necessary symbolic information. When an executable is built with this same
+option, all this information is carried over, resulting in a .exe file in which
+all modules are accessible to dbx.
+
+	This is very convenient for a programmer who needs access not only to
+modules that he is modifying in his own shadow system but also to other
+unmodified modules in the master libraries; indeed, there is no need for him to
+copy master files to his shadow system for the mere purpose of recompiling them.
+	The disadvantage is that the .exe file carries a huge ballast of
+symbolic information (typically several hundred thousands of items) which take
+a long time (many minutes) to load at the expense of a more than unmodest
+consumption of machine resources.
+
+	CMV found the following simple procedure to load only those symbols
+that one actually needs:
+
+	> dbx
+	dbx> modules select <object_1>.o, <object_2>.o, ...
+	dbx> debug <$n_exe/<program>.exe
+	dbx> <set breakpoints or whatever>
+	dbx> run
+
+Should one discover in the subsequent debugging session that more modules are
+needed, then one may restart the above sequence without leaving dbx.
+Breakpoints and the like remain valid, but the modules selected before must
+again be spelled out, - this is not nice but usually one needs only a few ...
+

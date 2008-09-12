@@ -1,0 +1,78 @@
+C+ WNTIV9.FOR
+C  WNB 930501
+C
+C  Revisions:
+C
+	SUBROUTINE WNTIV9(STR,PT,OP,NOP)
+C
+C  Help routines for WNTIVG
+C
+C  Result:
+C
+C	CALL WNTIV9( STR_C*:I, PT_J:IO, OP_J(0:*):I, NOP_J:IO)
+C				Set correct unary operator on OP stack
+C	CALL WNTIV8( STR_C*:I, PT_J:IO, OP_J(0:*):I, NOP_J:IO)
+C				Set correct binary operator on OP stack
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'WNT_O_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	CHARACTER*(*) STR		!INPUT STRING
+	INTEGER PT			!PTR INTO STRING
+	INTEGER OP(0:*)			!OPERATOR STACK
+	INTEGER NOP			!# IN OP
+C
+C  Function references:
+C
+	LOGICAL WNCASC			!TEST CHARACTER
+C
+C  Data declarations:
+C
+C-
+C
+C WNTIV9
+C
+	IF (WNCASC(STR,PT,'(')) THEN		!START WITH (
+	  OP(NOP)=OP_LB				!INDICATE (
+	ELSE IF (WNCASC(STR,PT,'+')) THEN
+	  OP(NOP)=OP_SP
+	ELSE IF (WNCASC(STR,PT,'-')) THEN
+	  OP(NOP)=OP_SM
+	ELSE
+	  OP(NOP)=0				!UNKNOWN
+	END IF
+	GOTO 800
+C
+C WNTIV8
+C
+	ENTRY WNTIV8(STR,PT,OP,NOP)
+C
+	IF (WNCASC(STR,PT,'+')) THEN
+	  OP(NOP)=OP_PL
+	ELSE IF (WNCASC(STR,PT,'-')) THEN
+	  OP(NOP)=OP_MI
+	ELSE IF (WNCASC(STR,PT,'*')) THEN
+	  OP(NOP)=OP_MU
+	ELSE IF (WNCASC(STR,PT,'/')) THEN
+	  OP(NOP)=OP_DV
+	ELSE
+	  OP(NOP)=0				!UNKNOWN
+	END IF
+	GOTO 800
+C
+C READY
+C
+ 800	CONTINUE
+	NOP=NOP+1				!COUNT OPERATOR SEEN
+C
+	RETURN
+C
+C
+	END

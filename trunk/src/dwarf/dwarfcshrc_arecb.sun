@@ -1,0 +1,19 @@
+#  dwarfcshrc_arecb.ssc
+#  HjV 930914
+# 
+#  Revisions:
+# 
+# 	Environment for DWARF programs
+#	Call by inserting in .cshrc as source dwarfcshrc_arecb.sun
+# 
+	setenv ROOTDWARF     /usr/local/newstar/dwarf
+        if (! $?HOSTTYPE) then
+           setenv HOSTTYPE `arch`
+        endif
+	if ($HOSTTYPE =~ sun*) then
+	  setenv LIBDWARF      /usr/local/newstar/lib/dwarf
+	  setenv SYSDWARF      /usr/local/newstar/exe
+	  setenv EXEDWARF      'USR[LOCAL.NEWSTAR.EXE]'
+	endif
+	source $ROOTDWARF/dwarfcshrc.sun
+	source $ROOTDWARF/dwarf_alias.sun

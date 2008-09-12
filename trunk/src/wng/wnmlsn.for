@@ -1,0 +1,185 @@
+C+ WNMLSN.FOR
+C  WNB 950330
+C
+C  Revisions:
+C
+	SUBROUTINE WNMLSN(MAR,SOL,MU,SD)
+C
+C  Solve triangular normal equations with rank defects
+C
+C  Result:
+C
+C	CALL WNMLSN( MAR_J:O, SOL_E(0:N-1,0:M-1):O, MU_E(0:M-1):O,
+C			SD_E(0:M-1):O)
+C				Solve triangular normal equations. MAR gives
+C				the matrix.
+C				The solution will be given in SOL, with the
+C				adjustment error MU, and the standard
+C				deviation in SD. I.e. MU is per weight,
+C				SD per observation.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'LSQ_O_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER MAR				!AREA POINTER
+	REAL SOL(0:*)				!SOLUTION
+	REAL MU(0:*)				!ADJUSTMENT ERROR
+	REAL SD(0:*)				!STANDARD DEVIATION
+C
+C  Entry points:
+C
+C
+C  Function references:
+C
+	INTEGER WNMLGR				!GET ROW POINTER ARRAY
+	INTEGER WNMLGK				!GET KNOWN COLUMN
+C
+C  Data declarations:
+C
+	INTEGER NUN				!# OF UNKNOWNS
+	INTEGER M				!# OF KNOWNS
+	INTEGER N				!# TO SOLVE
+	INTEGER NR				!RANK
+	INTEGER KNV				!KNOWN VECTOR POINTER
+	INTEGER ERV				!ERROR VECTOR POINTER
+	INTEGER PIVV				!PIVOT VECTOR POINTER
+	INTEGER SOLV				!SOLUTION VECTOR POINTER
+	DOUBLE PRECISION DMU			!FOR M.E.
+C-
+C
+C INTRO
+C
+	N=A_J(MAR+LSQ_N_J)			!# TO SOLVE
+	M=A_J(MAR+LSQ_M_J)			!# KNOWNS
+	NUN=A_J(MAR+LSQ_NUN_J)			!# UNKNOWNS
+	NR=A_J(MAR+LSQ_R_J)			!RANK
+	ERV=A_J(MAR+LSQ_ERROR_J)-LERR__N	!ERROR VECTOR
+	PIVV=A_J(MAR+LSQ_PIV_J)			!PIVOT TABLE
+	SOLV=A_J(MAR+LSQ_SOL_J)			!SOLUTION AREA
+C
+C SOLVE
+C
+	DO I=0,M-1				!FOR ALL DATA VECTORS
+	  ERV=ERV+LERR__N			!POINTER ERROR VECTOR
+	  KNV=WNMLGK(MAR,I)			!POINTER KNOWN VECTOR
+C
+C INVERTED PRESENT
+C
+	  IF (IAND(A_J(MAR+LSQ_BITS_J),LSQ_U_INVERTED).NE.0) THEN
+	    DO I1=0,NR-1			!ALL UNKNOWNS
+	      J0=WNMLGR(MAR,I1)
+	      A_D(SOLV+I1)=0
+	      DO I2=0,I1-1
+		J1=WNMLGR(MAR,I2)
+		A_D(SOLV+I1)=A_D(SOLV+I1)+A_D(J1+I1)*A_D(KNV+I2)
+	      END DO
+	      DO I2=I1,NR-1
+		A_D(SOLV+I1)=A_D(SOLV+I1)+A_D(J0+I2)*A_D(KNV+I2)
+	      END DO
+	    END DO
+	    DMU=0
+	    DO I1=0,NR-1
+	      DMU=DMU+A_D(SOLV+I1)*A_D(KNV+I1) 	!MAKE RMS
+	    END DO
+	    DMU=A_D(ERV+LERR_LL_D)-DMU 		!CHI**2
+	    SD(I)=SQRT(MAX(0D0,DMU/MAX(1D0,A_D(ERV+LERR_N_D)-NUN))) !PER OBS.
+	    A_D(ERV+LERR_CHI2_D)=SD(I) 		!SAVE
+	    IF (A_D(ERV+LERR_W_D).GT.0D0) DMU=DMU/A_D(ERV+LERR_W_D) !PER
+								    !WEIGHT
+	    DMU=DMU*A_D(ERV+LERR_N_D)
+	    MU(I)=SQRT(MAX(0D0,DMU/MAX(1D0,A_D(ERV+LERR_N_D)-NUN))) !PER WEIGHT
+	    DO I1=0,N-1				!RETURN SOLUTION
+	      SOL(I1+I*N)=A_D(SOLV+I1)
+	    END DO
+C
+C SOLVE
+C
+	  ELSE
+	    DO I1=0,NR-1			!ALL UNKNOWNS
+	      A_D(SOLV+I1)=A_D(KNV+A_J(PIVV+I1))
+	      DO I2=0,I1-1
+		I3=WNMLGR(MAR,I2) 		!ROW POINTER
+		A_D(SOLV+I1)=A_D(SOLV+I1)-
+	1	    A_D(I3+I1)*A_D(SOLV+I2)/A_D(I3+I2) !STEP 1
+	      END DO
+	    END DO
+	    DO I1=NR-1,0,-1
+	      I3=WNMLGR(MAR,I1) 		!ROW POINTER
+	      DO I2=I1+1,NR-1
+		A_D(SOLV+I1)=A_D(SOLV+I1)-
+	1	    A_D(I3+I2)*A_D(SOLV+I2) 	!SOLUTION
+	      END DO
+	      A_D(SOLV+I1)=A_D(SOLV+I1)/A_D(I3+I1)
+	    END DO
+	    DMU=0
+	    DO I1=0,NR-1
+	      DMU=DMU+A_D(SOLV+I1)*A_D(KNV+A_J(PIVV+I1)) !MAKE RMS
+	    END DO
+	    DMU=A_D(ERV+LERR_LL_D)-DMU 		!CHI**2
+	    SD(I)=SQRT(MAX(0D0,DMU/MAX(1D0,A_D(ERV+LERR_N_D)-NUN))) !PER OBS.
+	    A_D(ERV+LERR_CHI2_D)=SD(I) 		!SAVE
+	    IF (A_D(ERV+LERR_W_D).GT.0D0) DMU=DMU/A_D(ERV+LERR_W_D) !PER
+								    !WEIGHT
+	    DMU=DMU*A_D(ERV+LERR_N_D)
+	    MU(I)=SQRT(MAX(0D0,DMU/MAX(1D0,A_D(ERV+LERR_N_D)-NUN))) !PER WEIGHT
+C           
+C MISSING RANK
+C           
+	    DO I1=NR,N-1			!MAKE B2=-G1'*.X1'
+	      A_D(SOLV+I1)=0
+	      DO I2=0,NR-1
+		I3=WNMLGR(MAR,I2) 		!ROW POINTER
+		A_D(SOLV+I1)=A_D(SOLV+I1)-
+	1	    A_D(SOLV+I2)*A_D(I3+I1)
+	      END DO
+	    END DO
+C           
+C SOLVE X2
+C           
+	    DO I1=NR,N-1			!ALL UNKNOWNS
+	      DO I2=NR,I1-1
+		I3=WNMLGR(MAR,I2) 		!ROW POINTER
+		A_D(SOLV+I1)=A_D(SOLV+I1)-
+	1	    A_D(I3+I1)*A_D(SOLV+I2)/A_D(I3+I2) !STEP 1
+	      END DO
+	    END DO
+	    DO I1=N-1,NR,-1
+	      I3=WNMLGR(MAR,I1) 		!ROW POINTER
+	      DO I2=I1+1,N-1
+		A_D(SOLV+I1)=A_D(SOLV+I1)-
+	1	    A_D(I3+I2)*A_D(SOLV+I2) 	!SOLUTION
+	      END DO
+	      A_D(SOLV+I1)=A_D(SOLV+I1)/A_D(I3+I1)
+	    END DO
+C
+C FINAL X1
+C
+	    IF (NR.LT.N) THEN
+	      DO I1=0,NR-1
+		I3=WNMLGR(MAR,I1)		!ROW POINTER
+		DO I2=NR,N-1
+		  A_D(SOLV+I1)=A_D(SOLV+I1)+
+	1	      A_D(SOLV+I2)*A_D(I3+I2)
+		END DO
+	      END DO
+	    END IF
+C           
+C SOLUTION
+C
+	    DO I1=0,N-1				!RETURN SOLUTION
+	      SOL(A_J(PIVV+I1)+I*N)=A_D(SOLV+I1)
+	    END DO
+	  END IF
+	END DO
+C       
+	RETURN
+C       
+C       
+	END

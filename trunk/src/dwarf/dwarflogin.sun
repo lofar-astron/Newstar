@@ -1,0 +1,36 @@
+#  dwarflogin.ssc
+#	WNB 930302
+#
+#  Revisions:
+#	WNB 930302	Make ssc
+#
+#	DWARF initialisation. Call as ind(warf)
+#
+setenv DWARF_SYMBOLS ~/SYMBOL_DIR/SYMBOL.$$
+if (! -e ~/SYMBOL_DIR) then
+  "mkdir" ~/SYMBOL_DIR
+  echo "Created subdirectory ~/SYMBOL_DIR"
+endif
+if (-e ~/SYMBOL_DIR/SAVSYMBOLS) then
+  "cp" ~/SYMBOL_DIR/SAVSYMBOLS $DWARF_SYMBOLS
+  echo "Symbols restored from ~/SYMBOL_DIR/SAVSYMBOLS"
+else
+  "touch" $DWARF_SYMBOLS
+endif
+chmod 644 $DWARF_SYMBOLS
+"find" ~/SYMBOL_DIR/SYMBOL.*  -atime +7 -exec "rm" "{}" ";"   >& /dev/null
+#
+$SYSDWARF/initdw.exe $$+INTERACTIVE
+#
+$SYSDWARF/let.exe >/dev/null <<endlet
+YES   = .TRUE.
+YE    = .TRUE.
+Y     = .TRUE.
+NO    = .FALSE.
+N     = .FALSE.
+PI    = 3.141592653589793
+PIRAD = 3.141592653589793 RAD
+endlet
+#
+if (-e $ROOTDWARF/dwarfini.hlp) more $ROOTDWARF/dwarfini.hlp
+#

@@ -1,0 +1,26 @@
+# dwarfcshrc_rug.ssc
+#  HjV 930226
+#
+#  Revisions:
+#	WNB 930302	Make ssc
+#	HjV 930706	Change name of disk (dj3 iso. dj2)
+#
+#	Environment for DWARF programs
+#	Call by sourcing in .cshrc (login.com)
+#
+setenv ROOTDWARF     ~newstar/dwarf
+if ($HOSTTYPE =~ al*) then
+  setenv SYSDWARF      /dj3/users/newstar/exe/sal
+  setenv LIBDWARF      /dj3/users/newstar/lib/sal/dwarf
+  setenv EXEDWARF      'DJ3[USERS.NEWSTAR.EXE.SAL]'
+else if ($HOSTTYPE =~ hp*) then
+  setenv SYSDWARF      /dj3/users/newstar/exe/shp
+  setenv LIBDWARF      /dj3/users/newstar/lib/shp/dwarf
+  setenv EXEDWARF      'DJ3[USERS.NEWSTAR.EXE.SHP]'
+else
+  setenv SYSDWARF      /dj3/users/newstar/exe/ssw
+  setenv LIBDWARF      /dj3/users/newstar/lib/ssw/dwarf
+  setenv EXEDWARF      'DJ3[USERS.NEWSTAR.EXE.SSW]'
+endif
+source $ROOTDWARF/dwarfcshrc.sun
+source $ROOTDWARF/dwarf_alias.sun

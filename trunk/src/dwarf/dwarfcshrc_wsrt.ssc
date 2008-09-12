@@ -1,0 +1,20 @@
+# dwarfcshrc_wsrt.ssc
+#  HjV 930226
+#
+#  Revisions:
+#	WNB 930302	Make ssc
+#
+#	Environment for DWARF programs
+#	Call by sourcing in .cshrc (login.com)
+#
+#ifdef wn_vax__
+#else
+if (! $?host) set host=`hostname`
+setenv ROOTDWARF     /users/srt/nst/dwarf
+if ($host =~ wsrt*) then
+  setenv SYSDWARF      /users/srt/nst/exe
+  setenv EXEDWARF      'USERS[SRT.NST.EXE]'
+endif
+source $ROOTDWARF/dwarfcshrc.sun
+source $ROOTDWARF/dwarf_alias.sun
+#endif

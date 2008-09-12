@@ -1,0 +1,12 @@
+set history=100
+set prompt="> "
+#
+# Replace xxx with proper routing in following (eg ~dwarf)
+#
+source xxx/dwarfcshrc
+#
+# Replace xxx with proper routing in following (e.g. ~wnb)
+#	and yyy with proper site (eg nfra, atnf, rug)
+#
+source xxx/wng/wngcshrc_yyy.sun
+source $WNG/wnxcshrc.sun

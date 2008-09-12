@@ -1,0 +1,214 @@
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*.Ident:	GENSW_GET_PARM
+/*.Keywords:	Program Parameters, Get Value
+/*.Author:	Ger van Diepen (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	SUN
+/*.Comments:
+/*.Version:	920202 GvD - creation
+/*.Version:	940121 CMV - keey only get_parm_ for Alliant
+/*.Version:	CMV 031205 - Changed for stdarg
+/*--------------------------------------------------------------------------*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*	INTEGER*4 FUNCTION GET_PARM (KEYWORD,ARRAY,NBYT,NR,DEFSTR,
+/*	1					DEFARR,NRDEF,FLAGS,STROUT)
+/*
+/*					Required arguments:
+/*
+/*	CHARACTER*(*)	KEYWORD		! (i) program's parameter name
+/*	<datatype>	ARRAY(*)	! (o) data array
+/*	INTEGER*4	NBYT		! (i) total length of array in bytes
+/*
+/*					Optional arguments:
+/*
+/*	INTEGER*4	NR		! (o) nr of filled elements in array
+/*	CHARACTER*(*)	DEFSTR		! (i) default value (given as a string)
+/*	<datatype>	DEFARR(*)	! (i) default value (given as an array)
+/*	INTEGER*4	NRDEF		! (i) nr of elements in DEFARR
+/*	INTEGER*4	FLAGS		! (i) control flags
+/*	CHARACTER*(*)	STROUT		! (o) last value set
+/*
+/*.Purpose:	Get a value set for a program parameter
+/*.Returns:	See GETPARM.FOR
+/*.Notes:
+/*	GET_PARM is only an interface to GET_PARM_N/GET_PARM_C to
+/*	fill in optional arguments.
+/*	GET_PARS is a similar routine for WNDPAR (in the N-series), which
+/*	creates an argument list itself.
+/*-------------------------------------------------------------------------*/
+
+
+#include <stdarg.h>
+
+	int get_parm_ (char* key, char* array,int *nbyt,...)
+/*	char *key;
+	char *array;
+	int  *nbyt;
+	va_dcl*/
+	{
+#ifdef wn_al__
+	    va_list args;
+	    int i,is,nrarg,adr;
+	    int lista[7];
+	    int listl[8];
+ 
+	    char d_strout;
+/*
+functions
+*/
+	    int write_msg_();
+	    int get_parm_call();
+
+
+/*
+Get all arguments by looping through them until a values is found < 65536.
+This is based on the fact that addresses are >= 65536, string lengths are
+passed by value and are < 65536 and that the first argument is a string.
+Null-arguments will be passed as 0.
+So we have arguments until >0 and < 65536.
+*/
+	    va_start (args,nbyt);
+	    nrarg = 0;
+	    while (nrarg<7) {
+		adr = va_arg (args, int);
+		if (adr>0 && adr<65536)
+		    break;
+		lista[nrarg++] = adr;
+	    }
+/*
+If we have more than 6 variable arguments, the call was invalid.
+Print a message for that and return status 2.
+Note that 30 is the length of the string.
+*/
+	    if (nrarg>6) {
+		is = 2;				/* status */
+		i  = 0;				/* flags  */
+		fprintf(stderr,"Invalid GET_PARM argument list");
+		return(30);
+	    }
+/*
+Now get the possible corresponding string lengths.
+Also get string length of keyword and possibly array.
+*/
+	    i = 0;
+	    while (i<nrarg+2) {
+		listl[i++] = adr;
+		adr = va_arg (args, int);
+	    }
+	    va_end (args);
+/*
+Now call the real GET_PARM.
+*/
+	    return get_parm_call (key,array,nbyt,nrarg,lista,listl,1,&d_strout);
+#endif
+	}
+
+#ifdef wn_al__
+
+	get_parm_call (key,array,nbyt,nrarg,lista,listl,lenout,strout)
+	char *key;
+	char *array;
+	int  *nbyt;
+	int   nrarg;
+	int  *lista[];
+	int   listl[];
+	int   lenout;
+	char *strout;
+	{
+	    int i,is;
+	    int defs,defa,stro;
+	    int lens,lena,leno;
+ 
+	    int d_nr,d_nrdef,d_flags;
+	    char d_defstr,d_defarr;
+/*
+functions
+*/
+	    int get_parm_n();
+	    int get_parm_c();
+/*
+Now fill in defaults for non-given arguments.
+Set a switch indicating if a possible character argument is given.
+Shift the lengths if a string is inserted.
+*/
+	    d_nr     = -2147483648;		/* undef_j */
+	    d_defstr = ' ';
+	    d_defarr = -128;			/* undef_b */
+	    d_nrdef  = -2147483648;
+	    d_flags  = 0;
+
+	    defa  = 1;				/* initially DEFARR given */
+	    defs  = 1;				/* initially DEFSTR given */
+	    stro  = 1;				/* initially STROUT given */
+	    if (nrarg<=0 || lista[0]==0)		/* no NR */
+		lista[0] = &d_nr;
+	    if (nrarg<=1 || lista[1]==0) {		/* no DEFSTR */
+		defs     = 0;
+		lista[1] = (int *) &d_defstr;
+	    }
+	    if (nrarg<=2 || lista[2]==0) {		/* no DEFARR */
+		defa     = 0;
+		lista[2] = (int *) &d_defarr;
+	    }
+	    if (nrarg<=3 || lista[3]==0)		/* no NRDEF */
+		lista[3] = &d_nrdef;
+	    if (nrarg<=4 || lista[4]==0)		/* no FLAGS */
+		lista[4] = &d_flags;
+	    if (nrarg<=5 || lista[5]==0) {		/* no STROUT */
+		stro     = 0;
+		lista[5] = (int *) strout;
+	    }
+/*
+Now call GET_PARM_N first.
+If that fails because the datatype is C, we call GET_PARM_C.
+Pass the lengths correctly.
+*/
+	    lens = 1;				/* set default string lengths */
+	    lena = 1;
+	    leno = lenout;
+	    i = 1;				/* Only key is a string */
+	    if (defs)
+		lens = listl[i++];
+	    if (stro)
+		leno = listl[i];
+	    is = get_parm_n_ (key,
+			      array,
+			      nbyt,
+			      lista[0],
+			      lista[1],
+			      lista[2],
+			      lista[3],
+			      lista[4],
+			      lista[5],
+			      listl[0],			/* len(key) */
+			      lens,			/* len(defstr) */
+			      leno);			/* len(strout) */
+
+	    if (is == 0) {
+		i = 2;				/* key and array are strings */
+		if (defs)
+		    lens = listl[i++];
+		if (defa)
+		    lena = listl[i++];
+		if (stro)
+		    leno = listl[i];
+		is = get_parm_c_ (key,
+				  array,
+				  nbyt,
+				  lista[0],
+				  lista[1],
+				  lista[2],
+				  lista[3],
+				  lista[4],
+				  lista[5],
+				  listl[0],		/* len(key) */
+				  listl[1],		/* len(array) */
+				  lens,			/* len(defstr) */
+				  lena,			/* len(defarr) */
+				  leno);		/* len(strout) */
+	    }
+
+	    return is;
+	}
+#endif
+

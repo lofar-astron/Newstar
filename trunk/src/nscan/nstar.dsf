@@ -1,0 +1,16 @@
+!+ NSTAR.DSF
+!  WNB 930803
+!
+!  Revisions:
+!	WNB 931015	Some text changes only
+!	WNB 930803	Original version
+!
+!	Define general Newstar program parameters
+!
+!	NSTAR.DSF defines the general environment for all
+!		NSTAR .DSC files
+!	Use as: %INCLUDE=NSTAR_DSF
+!
+%LOCAL=NSTAR_TEL=14				!# OF TELESCOPES
+%LOCAL=NSTAR_IFR=NSTAR_TEL*(NSTAR_TEL+1)/2	!# OF INTERFEROMETERS
+!-

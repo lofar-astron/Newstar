@@ -1,0 +1,124 @@
+C+ NSCSTG.FOR
+C  WNB 900306
+C
+C  Revisions:
+C	WNB 910301	Add looping type specification
+C	WNB 910307	Add NSCSTL
+C	WNB 910327	Use general routine WNDSTG
+C	JPH 941005	NSCSTD. Comments
+C	JPH 960610	Store DLDM in ad-hoc common block
+C
+C
+	LOGICAL FUNCTION NSCSTG(FCA,SETS,STHE,STHP,SNAM)
+C
+C  Get next set
+C
+C  Result:
+C
+C	NSCSTG_L = NSCSTG( FCA_J:I, SETS_J(0:7,0:*):IO, STHE_E(0:*):O,
+C				STHP_J:O, SNAM_J(0:7):O)
+C				Get next set in file FCA, using the
+C				specification in SETS (see WNDSTA).
+C				NSCSTG will be .false. if no more sets.
+C				STHE will be the header of the set, STHP the
+C				diskpointer. SNAM is the full name of the
+C				group, coded. A check is made for the right
+C				version.
+C
+C	NSCSTH_L = NSCSTH( FCA_J:I, SETS_J(0:7,0:*):IO, STHE_E(0:*):O,
+C				STHP_J:O, SNAM_J(0:7):O)
+C				Same, but no check for version
+C
+C	NSCSTL_L = NSCSTL( FCA_J:I, SETS_J(0:7,0:*):IO, STHE_E(0:*):O,
+C				STHP_J:O, SNAM_J(0:7):O,
+C				OFFSET_J(0:7):I)
+C				As NSCSTG, but the check in the set list SETS
+C				is done with offsets OFFSET. OFFSET is an array
+C				to be maintained by WNDXLI/WNDXLN
+C
+C	NSCSTD_L = NSCSTD( FCA_J:I, SETS_J(0:7,0:*):IO, STHE_E(0:*):O,
+C				STHP_J:O, SNAM_J(0:7):O,
+C				OFFSET_J(0:7):I)
+C				Delete link to the set header, no version check
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'STH_O_DEF'		!SET HEADER
+	INCLUDE 'DLDM_DEF'
+C
+C  Parameters:
+C
+C
+C  Entry points:
+C
+	LOGICAL NSCSTH			! NO VERSION CHECK
+	LOGICAL NSCSTL			! OFFSET FOR LOOPS
+	LOGICAL NSCSTD			! delete data linkage
+C
+C  Arguments:
+C
+	INTEGER FCA			!FILE TO SEARCH
+	INTEGER SETS(0:7,0:*)		!SETS TO DO
+ 	REAL STHE(0:*)			! sector header
+	INTEGER STHP			!POINTER TO SET HEADER
+	INTEGER SNAM(0:7)		!FULL SET NAME
+	INTEGER OFFSET(0:7)		!CHECK OFFSET FOR LOOPS
+C
+C  Function references:
+C
+	LOGICAL WNFRD			!READ DISK
+	LOGICAL WNDSTG			!FUNCTIONS THAT DO THE WORK
+	LOGICAL WNDSTH,WNDSTL,WNDSTD
+C
+C  Data declarations:
+C
+C-
+	NSCSTG=WNDSTG(FCA,SETS,STHHDV,STHP,SNAM)	!GET SET
+	GOTO 10
+C
+C NSCSTH
+C
+	ENTRY NSCSTH(FCA,SETS,STHE,STHP,SNAM)
+C
+	NSCSTH=WNDSTH(FCA,SETS,STHHDV,STHP,SNAM)	!GET SET
+	GOTO 10
+C
+C NSCSTL
+C
+	ENTRY NSCSTL(FCA,SETS,STHE,STHP,SNAM,OFFSET)
+C
+	NSCSTL=WNDSTL(FCA,SETS,STHHDV,STHP,SNAM,OFFSET)	!GET SET
+	GOTO 10
+C
+C Read SET HEADER
+C
+ 10	CONTINUE
+	IF (NSCSTG) THEN				!ONE FOUND
+	  IF (.NOT.WNFRD(FCA,STHHDL,STHE(0),STHP)) GOTO 900 !READ SET HEADER
+	END IF
+	DLDM(0)=STHE(STH_DLDM_E)
+	DLDM(1)=STHE(STH_DLDM_E+1)
+C
+	RETURN
+C
+C ERROR
+C
+ 900	CONTINUE
+	DO I=1,7
+	  SETS(I,0)=0					!RESET SEARCH
+	END DO
+	NSCSTG=.FALSE.					!NO MORE
+C
+	RETURN
+C
+C
+C NSCSTD
+C
+	ENTRY NSCSTD(FCA,SETS,STHE,STHP,SNAM,OFFSET)
+C
+	NSCSTD=WNDSTD(FCA,SETS,STHHDV,STHP,SNAM,OFFSET)	! GET SET, delete link
+	RETURN
+C
+C
+	END

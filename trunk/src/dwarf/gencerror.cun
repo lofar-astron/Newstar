@@ -1,0 +1,51 @@
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*.Ident:	GENSW_CERROR
+/*.Keywords:	C Error Message
+/*.Author:	Ger van Diepen (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	SUN
+/*.Comments:
+/*.Version:	911231 GvD - creation
+/*--------------------------------------------------------------------------*/
+
+#include <errno.h>
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	gen_cerror_ (msg,leng)
+	char	msg[];			/* (o) error message		    */
+	int	leng;			/* (i) max. length of msg	    */
+	{
+
+/*.Purpose:	Get message for errno
+/*.Notes:
+/*--------------------------------------------------------------------------*/
+
+	    extern int errno;
+	    extern int sys_nerr;
+	    extern char *sys_errlist[];
+
+	    int   l;
+	    char *mp;
+	    char m[16];
+
+	    char *sprintf();
+
+/*
+Put errornr in string and copy to user-string
+Get pointer to error message (if string long enough)
+Copy the message (up to leng characters)
+*/
+	    mp = sprintf (m, "Errno %d: ", errno);
+	    l  = strlen  (m);
+	    strncpy (msg,m,leng-1);
+	    if (leng > l+1) {
+	      if (errno>0 && errno<sys_nerr) {
+		mp = sys_errlist[errno];
+		strncpy (msg+l,mp,leng-1-l);
+	      }
+	    }
+/*
+Ended successfully
+*/
+	    return 1;
+	}

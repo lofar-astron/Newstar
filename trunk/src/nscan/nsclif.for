@@ -1,0 +1,285 @@
+C+ NSCLIF.FOR
+C  CMV 940425
+C
+C  Revisions:
+C	CMV 940425	Created
+C	CMV 940513	Correct size of IF-block
+C       HjV 940524	Change some argument calls
+C	CMV 940930	Pass data higher up through TPBUF
+C       HjV 950508	Correct check TP-data (did overwrite array)
+C
+C
+	LOGICAL FUNCTION NSCLIF(INFCA,SHP,IFHJ,IFHE,STHJ,
+	1			VS,FVERS,BECODE,SFREQ,BINT,
+	1			TPBUF,DBUF,OBUF)
+C
+C  Read WSRT IF-sets from tape into SCN file. A pointer to the IF header
+C  is returned in STHJ. We do NOT split mosaic data here.
+C
+C  Result:
+C
+C	NSCLIF_L = NSCLIF( INFCA_J:I, SHP_J:I, 
+C			IFHJ_J(0:*):IO, IFHE_E(0:*):IO, STHJ_J(0:*):O,
+C			VS_J:I,FVERS_J:I, BECODE_C(4):I, SFREQ_J:I, BINT_J:I,
+C			TPBUF_I(2,0:1,0:STHTEL-1,0:*):O,
+C			DBUF_I(2,0:*):I, OBUF(2,0:1,0:STHTEL-1,0:*))
+C				INFCA indicates the file to read, SHP the
+C				record number of the SH block. IFHJ and IFHE
+C				are pointers to the IF-header. STHJ is a 
+C				pointer to the (template) set header.
+C				VS the software version (e.g.42).
+C				FVERS the tape version.
+C				BECODE the Back-End code (e.g. DLB).
+C				SFREQ is spacing frequency points.
+C				BINT is the basic integration time (10 s).
+C				TPBUF contains total power data
+C				DBUF and OBUF are input and output buffers
+C				Data is written to disk if IFSETS>0
+C				otherwise it is only returned in TPBUF
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NSC_DEF'
+	INCLUDE 'SHW_O_DEF'			!SH BLOCK
+	INCLUDE 'SHW_T_DEF'
+	INCLUDE 'IHW_O_DEF'			!IH BLOCK
+	INCLUDE 'IHW_T_DEF'
+	INCLUDE 'STH_O_DEF'			!SET HEADER
+	INCLUDE 'IFH_O_DEF'			!IF-SET HEADER
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER INFCA				!INPUT FILE DESCRIPTOR
+	INTEGER SHP				!RECORD # SH BLOCK
+	INTEGER IFHJ(0:*)			!IF-Header
+	REAL IFHE(0:*)				!IF-Header
+	INTEGER STHJ(0:*)			!SET HEADER
+	INTEGER VS				!TAPE SOFTWARE VERSION
+	INTEGER FVERS				!TAPE FORMAT VERSION
+	CHARACTER*4 BECODE			!BACKEND CODE
+	INTEGER SFREQ				!SFREQ FROM OH
+	INTEGER BINT				!BASIC INTEGRATION IN SEC
+C
+	INTEGER*2 TPBUF(2,0:1,0:STHTEL-1,0:MXDATN-1)	!BUFFER FOR IF-DATA
+						! Noise on/off,X/Y,Tel,Scn
+	INTEGER*2 DBUF(2,0:MXDATN-1)			!INPUT BUFFER
+	INTEGER*2 OBUF(2,0:1,0:STHTEL-1,0:MXDATN-1)	!OUTPUT BUFFER
+C
+C  Function references:
+C
+	LOGICAL WNFRD				!READ DATA
+	LOGICAL WNFWR				!WRITE DATA
+	INTEGER WNFEOF				!FILE POSITION
+C
+C  Data declarations:
+C
+	BYTE SHW(0:SHWHDL-1)			!SH RECORD
+	  INTEGER*2 SHWI(0:SHWHDL/2-1)
+	  INTEGER   SHWJ(0:SHWHDL/4-1)
+	  REAL SHWE(0:SHWHDL/4-1)
+	  EQUIVALENCE (SHW,SHWI,SHWJ,SHWE)
+	BYTE IHW(0:IHWHDL-1)			!IH RECORD
+	  INTEGER*2 IHWI(0:IHWHDL/2-1)
+	  INTEGER   IHWJ(0:IHWHDL/4-1)
+	  REAL IHWE(0:IHWHDL/4-1)
+	  EQUIVALENCE (IHW,IHWI,IHWJ,IHWE)
+	REAL SUMP,SUMR				!INTEGRATE
+	INTEGER N				!# OF INTEGRATED POINTS
+	INTEGER IPTS		!Number of basic int.times per input point
+	INTEGER OPTS		!Number of basic int.times per output point
+	INTEGER NPTS		!Number of output points
+	REAL HAB				!START HA
+	INTEGER*2 DBH_T(2,2)			!TRANSLATE DATA
+	  DATA DBH_T/2,0,0,1/
+C-
+C
+C INIT
+C
+	NSCLIF=.TRUE.				!ASSUME OK
+	DBH_T(2,1)=2*MXDATN			!ENOUGH TRANSLATION
+	IFHJ(IFH_TPINT_J)=0			!SET UNKNOWN
+	IFHJ(IFH_NTP_J)=0			!SET UNKNOWN
+	IFHJ(IFH_NIF_J)=0			!DO NOT LOAD FOR NOW
+	CALL WNGMVZ(MXDATN*STHTEL*4*LB_I,OBUF)	!CLEAR OUTPUT BUFFERS
+	CALL WNGMVZ(MXDATN*STHTEL*4*LB_I,TPBUF)
+C
+C READ SH
+C
+	IF (.NOT.WNFRD(INFCA,SHWHDL,SHW,SHP*SRTRCL)) THEN !READ SH BLOCK
+	  CALL WNCTXT(F_TP,'!/Read error SH block #!UJ (!XJ)',
+	1			SHP,E_C)
+	  GOTO 900				!FINISH
+	END IF
+	IF (IBMSW) CALL WNTTIL(SHWHDL,SHW,SHW_T) !TRANSLATE
+	IF (DECSW) CALL WNTTDL(SHWHDL,SHW,SHW_T)
+	IF (SHWI(SHW_CBI_I).NE.32767 .OR.
+	1		SHW(SHW_CBT_1).NE.ICHAR('S') .OR.
+	1		SHW(SHW_CBT_1+1).NE.ICHAR('H')) THEN
+	  CALL WNCTXT(F_TP,'!/Cannot find SH block #!UJ',SHP)
+	  GOTO 900
+	END IF
+C
+C REPAIR SH (skip BFREQ and BANDNR correction, we do not use them here)
+C
+	IF (FVERS.LT.3) SHWI(SHW_STIM_I)=SHWI(SHW_STIM_I)*6
+	IF (FVERS.LT.6) SHWI(SHW_BANDNR_I)=SHWI(SHW_BANDNR_I)/4
+C
+C We do not write the SH since the Polarisation sets also have one.
+C
+C READ IFRS
+C
+	DO I=0,SHWI(SHW_NENT_I)-1		!ALL INTERFEROMETERS
+	  I1=SHW_IFR_1+I*SHWI(SHW_LENT_I)	!TABLE ENTRY
+	  I2=I1/LB_I				!AS I2
+	  I4=I1/LB_J				!AS I4
+	  J=SHWJ(I4+IFR_NIH_J)*SRTRCL		!DISK POINTER IH
+	  IF (.NOT.WNFRD(INFCA,IHWHDL,IHW,J)) THEN !READ IH BLOCK
+	    CALL WNCTXT(F_TP,'!/Read error IH block #!UJ (!XJ)',
+	1		J/SRTRCL,E_C)
+	    GOTO 10				!NEXT
+	  END IF
+	  IF (IBMSW) CALL WNTTIL(IHWHDL,IHW,IHW_T) !TRANSLATE
+	  IF (DECSW) CALL WNTTDL(IHWHDL,IHW,IHW_T)
+	  IF (IHWI(IHW_CBI_I).NE.32767 .OR.
+	1		IHW(IHW_CBT_1).NE.ICHAR('I') .OR.
+	1		IHW(IHW_CBT_1+1).NE.ICHAR('H')) THEN
+	    CALL WNCTXT(F_TP,'!/Cannot find IH block #!UJ',J/SRTRCL)
+	    GOTO 10
+	  END IF
+C
+C REPAIR IH
+C
+	  IF (FVERS.LT.3) IHWI(IHW_STIM_I)=IHWI(IHW_STIM_I)*6
+	  IF (VS.LT.53) THEN
+	    IHWE(IHW_INTT_E)=IHWI(IHW_INCT_I)
+	  END IF
+	  IF (VS.LT.60) THEN
+	    IHWI(IHW_DWELT_I)=IHWI(IHW_INCT_I)
+	    IHWI(IHW_DRADT_I)=IHWI(IHW_INCT_I)
+	  END IF
+	  IF (FVERS.LT.2) THEN			!UPDATE IFR CODE
+	    I1=NINT(MOD(IHWI(IHW_INFNR_I),40)/2.)	!FIXED
+	    I2=NINT(IHWI(IHW_INFNR_I)/40.)+9+MOD(IHWI(IHW_INFNR_I),2)	!MOVABLE
+	    IHWI(IHW_INFNR_I)=256*I1+I2
+	  END IF
+C
+C Something undocumented: INFNR has bit 0x4000 on...
+C
+	  IHWI(IHW_INFNR_I)=MOD(IHWI(IHW_INFNR_I),16384) !Clear "sign-bit"
+C
+C We only read Total Power data (WTEL=28, OTEL=0..27) for the while. 
+C
+	  I5=MOD(IHWI(IHW_INFNR_I),256)		!GET IF NUMBER
+	  IF (IHWI(IHW_INFNR_I)/256.NE.28 .OR.
+	1	I5.LT.0.OR.I5.GT.(2*STHTEL-1)) GOTO 10 !SKIP IF NOT TP DATA
+C
+C Check integeration time
+C
+	  IPTS=IHWI(IHW_INCT_I)/BINT		!BINT's per input point
+	  IF (IFSETS.GT.0) THEN
+	    OPTS=IFSETS/BINT			!BINT's per output point
+	    NPTS=IHWI(IHW_NDATP_I)*IPTS/OPTS	!Number of output points
+	  ELSE
+	    OPTS=IPTS
+	    NPTS=IHWI(IHW_NDATP_I)
+	  END IF
+	  HAB=IHWE(IHW_HAB_E)+
+	1	CVUTST*(OPTS-IPTS)/2.*BINT/24./3600. !START HA
+C
+	  IF (IFHJ(IFH_TPINT_J).EQ.0) THEN	!NOT YET KNOWN
+	     IFHJ(IFH_TPINT_J)=IHWI(IHW_INCT_I)	!SAVE INCREMENT TIME
+	     IFHE(IFH_HAB_E)=HAB		!SAVE START HOUR ANGLE
+	     IFHE(IFH_IFHAB_E)=IHWE(IHW_HAB_E)	!IDEM, ORIGINAL
+	     IFHE(IFH_HAI_E)=OPTS*BINT*CVUTST/3600./24.	!INCREMENT
+	     IFHJ(IFH_NTP_J)=NPTS		!SAVE # OF OUTPUT POINTS
+	  ELSE IF (ABS(HAB-IFHE(IFH_HAB_E)).GE.
+	1		0.1E0/24./3600.) THEN	!NOT SAME HA
+	     CALL WNCTXT(F_TP,
+	1	'Inconsistent IF set, ifrs have different hour angles')
+	     GOTO 10
+	  END IF
+C
+C Read data 
+C
+	  I1=MOD(IHWI(IHW_INFNR_I),2)		!X or Y
+	  I2=MOD(IHWI(IHW_INFNR_I),256)/2	!Telescope
+	  I3=IHWI(IHW_NDATP_I)*4
+	  IF (.NOT.WNFRD(INFCA,I3,DBUF,
+	1			J+SRTRCL*IHWJ(IHW_LIH_J))) THEN !READ DB BLOCK
+	    CALL WNCTXT(F_TP,'!/Read error DB block #!UJ (!XJ)',
+	1			J/SRTRCL,E_C)
+	    GOTO 10				!NEXT
+	  END IF
+	  IF (IBMSW) CALL WNTTIL(I3,DBUF,DBH_T) !TRANSLATE
+	  IF (DECSW) CALL WNTTDL(I3,DBUF,DBH_T)
+C
+C Copy into output buffer
+C
+	  DO I3=0,IHWI(IHW_NDATP_I)
+	     TPBUF(1,I1,I2,I3)=DBUF(1,I3)
+	     TPBUF(2,I1,I2,I3)=DBUF(2,I3)
+	  END DO
+C
+C Average into write array ODAT(On/Off,Dipole,Tel,Ha)
+C
+	  IF (IFSETS.GT.0) THEN
+	    J1=0				!Input pointer
+	    DO I3=0,NPTS-1			!All output points
+	      SUMP=0				!INTEGRATE
+	      SUMR=0
+	      N=0
+	      DO I4=0,OPTS-1			!# OF 10 SEC OUTPUT INTEGRAT.
+	        J3=J1/IPTS			!DATA POINT
+	        IF (DBUF(1,J3).NE.IUND .AND. DBUF(2,J3).NE.IUND) THEN
+	          SUMP=SUMP+DBUF(1,J3)		!ADD
+	          SUMR=SUMR+DBUF(2,J3)
+	          N=N+1
+	        END IF
+	        J1=J1+1				!NEXT 10 SEC
+	      END DO
+	      IF (N.EQ.OPTS) THEN		!OK POINT
+	         OBUF(1,I1,I2,I3)=NINT(SUMP/N)	!OUTPUT DATA
+	         OBUF(2,I1,I2,I3)=NINT(SUMR/N)
+	      END IF
+	    END DO
+	  END IF
+C
+C Next telescope
+C
+ 10	  CONTINUE
+	END DO
+C
+C Write IFH and data to the scan-file, return pointer in STHJ
+C
+	IF (IFSETS.GT.0) THEN
+	  J=WNFEOF(FCAOUT)			!WRITE AT END OF FILE
+	  I1=4*STHTEL*IFHJ(IFH_NTP_J)*LB_I	!LENGTH OF DATA
+	  IF (.NOT.WNFWR(FCAOUT,IFHHDL,IFHJ,J)) THEN	!WRITE HEADER
+	     CALL WNCTXT(F_TP,'Error writing IFH to scan file')
+	     GOTO 900
+	  END IF
+	  IF (.NOT.WNFWR(FCAOUT,I1,OBUF,J+IFHHDL)) THEN	!WRITE DATA
+	     CALL WNCTXT(F_TP,'Error writing IF data to scan file')
+	     GOTO 900
+	  END IF
+C
+	  STHJ(STH_IFHP_J)=J			!SAVE POINTER
+	  STHJ(STH_IFHL_J)=IFHHDL+I1		!SAVE LENGTH
+C
+	END IF
+C
+	RETURN					!READY
+C
+C ERROR FINISH
+C
+ 900	CONTINUE
+	NSCLIF=.FALSE.
+C
+	RETURN
+C
+C
+	END

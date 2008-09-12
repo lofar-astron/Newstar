@@ -1,0 +1,112 @@
+C+ WNGLUN.FSC
+C  WNB 890202
+C
+C  Revisions:
+C	WNB 921215	Make FSC for vx al hp dw sw cv
+C
+	SUBROUTINE WNGLUN(LUN)
+C
+C  Get/free LUN
+C
+C  Result:
+C
+C	CALL WNGLUN ( LUN_J:O)  Get in LUN a free Fortran logical unit,
+C					or zero if none available.
+C	CALL WNGLUF ( LUN_J:IO) Free LUN as log. unit, and make it zero.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+#ifndef wn_vx__
+	INTEGER MXNLUN				!MAX. # OF LUNS
+	  PARAMETER (MXNLUN=64)
+	INTEGER OFFLUN				!LOWEST LUN
+	  PARAMETER (OFFLUN=20)
+#endif
+C
+C  Arguments:
+C
+	INTEGER LUN			!LUN TO SET OR TO FREE
+C
+C  Entry points:
+C
+C
+C  Function references:
+C
+#ifdef wn_vx__
+	INTEGER LIB$GET_LUN		!GET LUN
+#endif
+C
+C  Data declarations:
+C
+#ifndef wn_vx__
+	INTEGER LUNLST(MXNLUN)			!LUN LIST
+	  EXTERNAL LUN_BD			!INITIALISE
+C
+C  Commons:
+C
+	COMMON /LUN_COM/ LUNLST
+#endif
+C-
+C
+C GET LUN
+C
+#ifdef wn_vx__
+	E_C=LIB$GET_LUN(LUN)			!GET LUN
+	IF (.NOT.E_C) LUN=0			!ERROR
+#else
+	LUN=0					!ASSUME ERROR
+	DO I=1,MXNLUN				!FIND FREE LUN
+	  IF (LUNLST(I).EQ.0) THEN		!FOUND
+	    LUN=I+OFFLUN			!SET LUN
+	    LUNLST(I)=I				!SET FILLED
+	    GOTO 10				!READY
+	  END IF
+	END DO
+ 10	CONTINUE
+#endif
+C
+	RETURN
+C
+C FREE LUN
+C
+	ENTRY WNGLUF(LUN)
+C
+#ifdef wn_vx__
+	CALL LIB$FREE_LUN(LUN)			!FREE LUN
+#else
+	IF (LUN.GT.OFFLUN .AND. LUN.LT.OFFLUN+MXNLUN) THEN
+	  I=LUN-OFFLUN
+	  IF (LUNLST(I).EQ.I) LUNLST(I)=0	!SET FREE
+	END IF
+#endif
+	LUN=0					!SET NOT PRESENT
+C
+	RETURN
+C
+C
+	END
+#ifndef wn_vx__
+C
+C INITIALISE LUN LIST
+C
+	BLOCK DATA LUN_BD
+C
+C  Parameters:
+C
+	INTEGER MXNLUN				!MAX. # OF LUNS
+	  PARAMETER (MXNLUN=64)
+C
+	INTEGER LUNLST(MXNLUN)			!LUN LIST
+	  DATA LUNLST/MXNLUN*0/
+C
+C  Commons:
+C
+	COMMON /LUN_COM/ LUNLST
+C
+C
+	END
+#endif

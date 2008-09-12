@@ -1,0 +1,91 @@
+C	Include module CLI_1
+C	Created by BLDDEF from: USER5:[OLNON.SYS]CLI.DEF; on 13-SEP-91
+C
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	DEF_CLI
+C.Keywords:	Command-line interpreter control block, Definition
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	DWARF-DEF
+C.Environment:	VAX or Alliant
+C.Comments:
+C.Version:	881128 FMO - creation
+C.Version:	910913 FMO - allow up to 20 arguments (was 10)
+C-------------------------------------------------------------------------
+C
+C
+C			Sizes
+C
+	INTEGER*4  CLI__MXNR
+	PARAMETER (CLI__MXNR            =20)                    !maximum nr of arguments allowed
+	INTEGER*4  CLI__LNAM
+	PARAMETER (CLI__LNAM            =16)                    !maximum length of argument names
+C
+C			Control block
+C
+	INTEGER*4  CLI_LENGTH
+	PARAMETER (CLI_LENGTH           =1)         !&1     !#J !generated: field to contain the block length
+	INTEGER*4  CLI_TYPE
+	PARAMETER (CLI_TYPE             =2)         !&1     !#J !generated: field to contain the block type
+	INTEGER*4  CLI_NRARG
+	PARAMETER (CLI_NRARG            =3)         !&1     !#J !nr of arguments in use
+	INTEGER*4  CLI_NRPAR
+	PARAMETER (CLI_NRPAR            =4)         !&1     !#J !nr of parameters
+	INTEGER*4  CLI_NREXP
+	PARAMETER (CLI_NREXP            =5)         !&1     !#J !nr of expression-type parameters
+	INTEGER*4  CLI_NRQUA
+	PARAMETER (CLI_NRQUA            =6)         !&1     !#J !nr of qualifiers
+	INTEGER*4  CLI_NAME
+	PARAMETER (CLI_NAME             =7)         !&320   !#C !argument names
+	INTEGER*4  CLI_ATTR
+	PARAMETER (CLI_ATTR             =87)        !&20    !#J !attributes
+	INTEGER*4  CLI_STAT
+	PARAMETER (CLI_STAT             =107)       !&20    !#J !status codes
+	INTEGER*4  CLI_IDPRO
+	PARAMETER (CLI_IDPRO            =127)       !&20    !#J !prompt string ID's
+	INTEGER*4  CLI_IDDEF
+	PARAMETER (CLI_IDDEF            =147)       !&20    !#J !default value ID's
+	INTEGER*4  CLI_IDVAL
+	PARAMETER (CLI_IDVAL            =167)       !&20    !#J !value string ID's
+	INTEGER*4  CLI__LENGTH
+	PARAMETER (CLI__LENGTH          =186)                   !generated: block length (in longwords)
+	INTEGER*4  CLI__TYPE
+	PARAMETER (CLI__TYPE            =31)                    !generated: block type
+	INTEGER*4	CLI__DEFTYP
+	PARAMETER	(CLI__DEFTYP=31)
+	INTEGER*4	CLI__DEFVSN
+	PARAMETER	(CLI__DEFVSN=1)
+C
+	EXTERNAL	CLI_BLOCK
+C
+C Common block specification
+C
+	INTEGER*4 CLI$LENGTH
+	EQUIVALENCE (CLI$LENGTH,CLI__(0))
+	INTEGER*4 CLI$TYPE
+	EQUIVALENCE (CLI$TYPE,CLI__(4))
+	INTEGER*4 CLI$NRARG
+	EQUIVALENCE (CLI$NRARG,CLI__(8))
+	INTEGER*4 CLI$NRPAR
+	EQUIVALENCE (CLI$NRPAR,CLI__(12))
+	INTEGER*4 CLI$NREXP
+	EQUIVALENCE (CLI$NREXP,CLI__(16))
+	INTEGER*4 CLI$NRQUA
+	EQUIVALENCE (CLI$NRQUA,CLI__(20))
+	CHARACTER*16 CLI$NAME(20)
+	EQUIVALENCE (CLI$NAME,CLI__(24))
+	INTEGER*4 CLI$ATTR(20)
+	EQUIVALENCE (CLI$ATTR,CLI__(344))
+	INTEGER*4 CLI$STAT(20)
+	EQUIVALENCE (CLI$STAT,CLI__(424))
+	INTEGER*4 CLI$IDPRO(20)
+	EQUIVALENCE (CLI$IDPRO,CLI__(504))
+	INTEGER*4 CLI$IDDEF(20)
+	EQUIVALENCE (CLI$IDDEF,CLI__(584))
+	INTEGER*4 CLI$IDVAL(20)
+	EQUIVALENCE (CLI$IDVAL,CLI__(664))
+	BYTE CLI__(0:743)
+	INTEGER*4 CLI_(186)
+	EQUIVALENCE (CLI_,CLI__)
+C
+	COMMON /CLI_COMMON/ CLI_
+C

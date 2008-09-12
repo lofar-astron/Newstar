@@ -1,0 +1,94 @@
+1 DWARFnews
+
+
+ 911210	Some improvements have been made to DWARF.
+	The main improvement is that a program is starting faster because
+	the symbol handling software is much faster. The number of symbols
+	allowed is unlimited, but of course you should not let it grow too
+	much. The symbol files are now located in a separate subdirectory,
+	which is automatically created by .dwarflogin when it does not exist.
+	.dwarflogout saves your symbol files and deletes symbol files older
+	than 1 week.  You should therefore use
+		source $SYSDWARF/.dwarflogout    in your logout file.
+	Secondly the EXEC call is used as much as possible to start the
+	programs. This has the benefit that no shell is created to run the
+	program and that EXECUTE disappears after having started the program.
+	Thirdly some environment variables resembling the VAX logical names
+	have been defined. These are $SYSDWARF, $RUNDWARF and $LIBDWARF.
+	These variables should be used as much as possible instead of the
+	~dwarf construction, because they are more system independent.
+	At last a few minor bugs have been removed.
+
+ 910913	The following DWARF command aliases have been defined:
+	dwc	for dwclear (see 910814)
+	dwe	for dwexe (see below)
+	dwl	for dwlet (see 910814)
+	dwn	for dwnews (display this file)
+	dwr	for restore (see 910814)
+	dws	for specify
+	dwsa	for dwsave (see 910814)
+	dwv	for dwview (see 910817)
+
+	The DWARF command dwexe has been installed. It behaves roughly like
+	the EXE*CUTE command on the VAX, e.g.:
+	dwexe 'program$stream <qualifiers>'
+		runs the program in the given stream taking the qualifiers
+		into account.
+	The following qualifiers are recognized:
+	/[no]ask /[no]save /[no]test	(as on the VAX);
+	/input=<file>		lets the program read input from the file;
+	/nowait			runs the program in the background (it will
+				stop when it needs input from the terminal);
+	/batch			runs the program in the background, but lets
+				the program take its input from the null device
+				and writes the output to <prognam><stream>.log;
+	/debug			executes the program under dbx;
+	/norun			for N-type programs: runs the program in
+				specify mode: only asks for parameter input
+				and saves the answers in external defaults);
+				for other programs: only saves any ask, save
+				or test switch given (as on the VAX);
+	/nolog or /log=<value>
+	/nodatab
+	/noinfix
+	/noapply or /apply=<list>
+	/node_apply or /de_apply=<list>
+				are only recognized for N-type programs; first,
+				defaults for the corresponding program
+				parameters are specified according to the
+				qualifiers 	given.
+
+ 910817	Command dwview installed (similar to DWARF/VAX's VIEW):
+	Examples:
+	dwview
+		lists all external defaults (specified or restored)
+	dwview 'program$stream'
+		lists all program parameters and their current defaults
+		(external or PPD) in the given or current stream
+	dwview 'program /external'
+		only lists the program parameters with external defaults
+	dwview 'name_list /input=save_file'
+		lists all saved parameter defaults matching the namelist
+
+ 910814	Some more VAX/DWARF commands have been activated on the Alliant.
+	The command lines given below are meant to show all the possible
+	qualifiers; all their names can be abbreviated to a single letter.
+	The quotes suppress the interpretation of meta-characters by the shell.
+
+	dwclear 'list /exclude=list /confirm /log=long'
+		clears the listed parameter defaults (list required)
+	dwsave 'list /output=file /exclude=list /confirm /log=short'
+		saves the listed defaults in the file
+		(default: save all defaults in .dwarfsave.sav)
+	restore 'file /include=list /exclude=list /confirm /overwrite /nolog'
+		restores (all) defaults from the file
+	dwlet 'name=value /log=short'
+		defines a global symbol
+	prtunits
+		displays DWARF units and conversion factors
+
+ 910806	External defaults are no longer automatically carried over from your
+	previous session. However, you can activate this option by copying
+	~dwarf/protologout to ~/.logout. From then on, when you log out, all
+	the defaults are saved in the file ~/symbol.sav and, when you log in
+	again, DWARF's login procedure will restore them.

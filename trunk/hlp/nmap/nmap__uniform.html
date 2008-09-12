@@ -1,0 +1,29 @@
+<TITLE>Description of UNIFORM (NMAP)</TITLE>
+<H1>Description of general keyword UNIFORM</H1>
+
+<DT><EM>Prompt:</EM> NATURAL, STANDARD, FULL Measure function for UV coverage
+<DT><EM>Expected input:</EM> Character(8).<P>
+Specify the way the UV coverage should be determined: <P>
+	STANDARD: Weigh each observed point with the track length it covers in 
+		   the UV plane, and average sets of redundant baselines. This 
+		   method accounts properly for the fact that the density of 
+		   measured points is inversely proportional to the baseline,  
+		   for the multiplicity of redundant baselines and for 
+		   variations in integration times. <P>
+	FULL:     Weigh each point according to the actual UV point density. In 
+		   this case care is also taken of all local UV plane density 
+		   enhancements, e.g. because there is overlap between 
+		   observations. <P>
+	NATURAL:  Take each individual measured point separately, without 
+		   weighing for the UV track covered by it. This option gives 
+		   the maximum possible signal/noise ratio in your map, but it 
+		   generally weighs the short baselines much too heavily which 
+		   results in a very fat synthesized beam. <P>
+Of these options, FULL gives the cleanest synthesized beam, but it is slower 
+because it necessitates an extra read pass over the .SCN-file data. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_comm.html">List of general keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

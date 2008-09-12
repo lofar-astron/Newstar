@@ -1,0 +1,113 @@
+C+ WNFTFC.FOR
+C  WNB 890724
+C
+C  Revisions:
+C	WNB 930811	Get rid of L_
+C
+	INTEGER FUNCTION WNFTFC(FCA)
+C
+C  Test correct FCA
+C
+C  Result:
+C
+C	WNFTFC_J = WNFTFC( FCA_J:IO)	Make sure FCA exists. Return values are:
+C					 0: FCA does not exist
+C					 1: FCA is disk FCA
+C					-1: FCA is tape MCA
+C	WNFLFC_J = WNFLFC( FCA_J:I)	Link FCA in queue
+C	WNFUFC_J = WNFUFC( FCA_J:I)	Unlink FCA from queue
+C
+C  PIN references:
+C
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'FCQ_DEF'			!FCA QUEUE
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER FCA				!FCA POINTER
+C
+C  Entry points:
+C
+	INTEGER WNFLFC				!LINK FCA
+	INTEGER WNFUFC				!UNLINK FCA
+C
+C  Function references:
+C
+	INTEGER WNGARA				!GET ADDRESS
+C
+C  Data declarations:
+C
+C
+C  Equivalences:
+C
+C
+C  Commons:
+C
+C-
+	WNFTFC=0					!ASSUME ERROR
+	IF (FCA.EQ.0) RETURN				!NOT THERE
+	J=FCAQUE					!FIRST IN LIST
+	DO WHILE (J.NE.0)				!SCAN LIST
+	  J1=(J-A_OB)/LB_J				!DUMMY ARRAY INDEX
+	  IF (J.EQ.FCA) THEN
+	    IF (A_J(J1+1).EQ.0) THEN			!FCA
+	      WNFTFC=1					!INDICATE
+	    ELSE
+	      WNFTFC=-1					!INDICATE MCA
+	    END IF
+	    RETURN					!READY
+	  END IF
+	  J=A_J(J1)					!NEXT POINTER
+	END DO
+	FCA=0						!NOT FOUND
+C
+	RETURN
+C
+C WNFLFC
+C
+	ENTRY WNFLFC(FCA)				!LINK FCA/MCA
+C
+	WNFLFC=0					!ASSUME ERROR
+	IF (FCA.EQ.0) RETURN				!NOT THERE
+	J1=(FCA-A_OB)/LB_J				!DUMMY ARRAY INDEX
+	A_J(J1)=FCAQUE					!LINK
+	FCAQUE=FCA
+	IF (A_J(J1+1).EQ.0) THEN			!FCA
+	  WNFLFC=1					!INDICATE
+	ELSE
+	  WNFLFC=-1					!INDICATE MCA
+	END IF
+C
+	RETURN
+C
+C WNFUFC
+C
+	ENTRY WNFUFC(FCA)				!UNLINK FCA/MCA
+C
+	WNFUFC=0					!INDICATE UNLINKED
+	IF (FCA.EQ.0) RETURN				!NOT THERE
+	J=FCAQUE					!FIRST IN LIST
+	J2=WNGARA(FCAQUE)				!WHERE TO PUT
+	DO WHILE (J.NE.0)				!SCAN LIST
+	  J1=(J-A_OB)/LB_J				!DUMMY ARRAY INDEX
+	  J3=(J2-A_OB)/LB_J
+	  IF (J.EQ.FCA) THEN				!FOUND
+	    A_J(J3)=A_J(J1)				!UNLINK FROM CHAIN
+	    GOTO 10					!READY
+	  END IF
+	  J2=J						!PREVIOUS POINTER
+	  J=A_J(J1)					!NEXT POINTER
+	END DO
+ 10	CONTINUE
+	FCA=0						!SET UNLINKED
+C
+	RETURN
+C
+C
+	END

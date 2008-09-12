@@ -1,0 +1,58 @@
+;+ WNMRND.MVX
+;  WNB 911125
+;
+;  Revisions:
+;
+	.TITLE	WNMRND		RANDOM NUMBER GENERATOR
+	.IDENT	/WNB.01/
+;
+;  Random number generator (mainly for WNP)
+;
+;  Result:
+;
+;	CALL WNMRIN( SEED_J:I)		Initiate generator
+;	J = WNMRNJ()			Random value
+;
+;  Program section:
+;
+	.PSECT	WNCODE,PIC,USR,CON,REL,LCL,SHR,EXE,RD,NOWRT,NOVEC,LONG
+;
+;  Symbol definition:
+;
+;
+;  Global references:
+;
+;
+;  Commons:
+;
+;-
+	.PAGE
+	.SUBTITLE	RANDOM INITIATOR
+;
+.ENTRY	WNMRIN,0
+;
+	MOVL	#3,SEED			;SET SEED
+	RET
+;
+	.PAGE
+	.SUBTITLE	RETURN RANDOM VALUE
+;
+.ENTRY	WNMRNJ,0
+;
+;;	MULL3	SEED,#69069,R0
+	MULL3	SEED,#843314861,R0
+	ADDL	#453816693,R0
+;;	INCL	R0
+	MOVL	R0,SEED
+	RET
+;
+	.PAGE
+	.SUBTITLE	DATA
+;
+	.PSECT	WNDATA,PIC,USR,CON,REL,LCL,SHR,NOEXE,RD,WRT,NOVEC,LONG
+;
+SEED:	.LONG	3
+;
+;
+;
+	.END

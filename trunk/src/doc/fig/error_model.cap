@@ -1,0 +1,20 @@
+%error_model.cap
+\begin{figure}
+
+\fig{error_model}
+
+\caption[]{\it
+\label{.error.model}
+%
+NEWSTAR's Selfcal error model.
+\\
+The sums of all phase and gain errors that occur in the path between the source
+and the correlator differ per telescope and polarisation, i.e. per IF channel.
+Each IF channel contributes one and the same error to all interferometers in
+which it is connected. The correlator is assumed in first instance to be
+error-free; this is almost perfectly true for the WSRT in most observing modes.
+\\
+See text for further explanation.
+}
+\end{figure}
+

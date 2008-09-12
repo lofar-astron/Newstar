@@ -1,0 +1,71 @@
+%
+%  @(#) hb_cook_preamble.tex
+% Macros for the hypertext version of Newstar documents.  Simplified
+% versions of the print macros are used because latex2html does neither
+% know nor need most of the more advanced commands. 
+
+% Note that expansions starting in ~ must start immediately after the opening {
+
+% History:
+%	JPH 940615	Separate cook and print versions of hb_preamble
+%	JPH 941104	Fix \svbegin/end malfunction (see note below)
+%	JPH 950213	Define \centering
+%	JPH 950825	All cross-ref macros here i.s.o. through code in 
+%			 doc_cook
+%	JPH 951016	Argt on \whichrefs 
+%
+% Standard LaTeX macros
+%
+	\newcommand{\centering}{}
+%
+% scripting macros
+%
+	\newcommand{\scmd}[1]{~\\\hspace{2mm} $>$\ {\sf #1}}	
+	\newcommand{\skeyword}[1]{\\$\bigotimes$\ {\bf #1}}
+	\newcommand{\sprompt}[1]{~{\footnotesize #1}}
+	\newcommand{\sdefault}[1]{~{\small #1}}
+	\newcommand{\suser}[1]{~\hspace{1mm}\fbox{\large \sf #1}}
+	\newcommand{\sline}[1]{
+		\\\hspace*{3mm}{\tt #1}}
+	\newcommand{\slong}[1]{
+		\\\hspace*{-10mm}{\tt #1}}
+	\newcommand{\sskip}{}
+	\newcommand{\sinline}[1]{
+		\normalsize \hspace*{\fill}\-\hspace*{\fill}\mbox{\it #1} }
+	\newcommand{\scomment}[1]{\\{\it #1} }
+	\newcommand{\setc}{
+		~\\\hspace*{7mm}$\vdots$ }
+	\newcommand{\scr}{~{\small \sf $<$CR$>$}}
+	\newcommand{\seof}{~{\small \sf $<$EOF$>$} }
+	\newcommand{\spbegin}{ }
+	\newcommand{\spend}{ }
+	\newcommand{\svbegin}{ }
+	\newcommand{\svend}{ }
+%
+% referencing macros
+%
+	\newcommand{\eqref}[1]{\htmladdnormallink{equation}{ \##1}}
+	\newcommand{\Eqref}[1]{\htmladdnormallink{Equation}{ \##1}}
+	\newcommand{\figref}[1]{\htmladdnormallink{figure}{ \##1}}
+	\newcommand{\Figref}[1]{\htmladdnormallink{Figure}{ \##1}}
+ 	\newcommand{\ascref}[2]{\htmladdnormallink{#1}{#2}}
+	\newcommand{\Ascref}[2]{\htmladdnormallink{{\bf #1}}{#2}}
+	\newcommand{\textref}[2]{\htmladdnormallink{#1}{#2}}
+	\newcommand{\Textref}[2]{\htmladdnormallink{{\bf #1}}{#2}}
+	\newcommand{\psref}[2]{\htmladdnormallink{#1}{#2}}
+	\newcommand{\Psref}[2]{\htmladdnormallink{{\bf #1}}{#2}}
+	\newcommand{\srcref}[2]{\htmladdnormallink{#1}{#2}}
+	\newcommand{\Srcref}[2]{\htmladdnormallink{{\bf #1}}{#2}}
+	\newcommand{\whichref}[2]{#1}
+%
+% macros that did not work with latex2html and were therefore implemented in 
+%  docScript.csh 
+%
+%	\newcommand{\textref}[3]{
+%		\htmladdnormallink{#1}{../#2/#2.html\##3} }
+%	\newcommand{\eqref}...
+%
+% \svbegin \svend are intended to define a smaller type font so that verbatim
+%  text will fit the standard window width, but latex2html ignores such commands
+%  as \small. Therefore, doc_cook translates the verbatim environment into a
+%  rawhtml environment with <PRE>.

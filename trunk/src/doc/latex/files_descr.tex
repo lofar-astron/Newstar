@@ -1,0 +1,542 @@
+%       JPH 940916      Make compilable
+%
+% @(#) files_descr.tex v1.2 04/08/93 JEN
+%
+% History:
+%       JPH 940602      minor changes
+%       JPH 940914      Bug fix
+%
+
+\chapter{ \NEWSTAR data-file organisation and the programs' associated user
+interfaces} 
+
+{\it Contributed by J.E. Noordam, August 1993} 
+
+
+\tableofcontents 
+
+
+\section{\NEWSTAR data and ancillary file types} 
+
+The \NEWSTAR programs recognize three major types of data files, which are
+identified by their extension: 
+\\
+\\ .SCN files: uv-data and uv-model 
+\\ .MDL files: SELFCAL source model 
+\\ .WMP files: maps of various kinds 
+
+\NEWSTAR programs also produce a number of ancillary files, with the following
+extensions (the list may no longer be complete): 
+\\
+\\ .PLT-files: to be plotted 
+\\ .LOG-files: to be printed 
+\\ .NGF-files: produced by NGALC 
+\\ .MNG-files: used to make plots with the MONGO package 
+
+	The relations between these files and the \NEWSTAR programs are shown
+in \figref{.newstar.overview}. 
+
+\input{../fig/newstar_overview.cap} 
+
+
+%========================================================================
+\section{Directories and nodes (files)} 
+\label{.nodes} 
+
+	For historical reasons, the \NEWSTAR programs refer to data files as
+{\bf nodes} in a {\bf database}.  In fact, they are just files in a directory.
+Users are recommended to use a separate sub-directory for each data reduction
+project. 
+
+	However, although they refer to the same thing, there is a slight
+difference between {\bf node names} used by the user and the actual {\bf file
+names}: Node names are a series of alpha-numeric character strings separated by
+dots, e.g.: 
+
+\begin{verbatim} 
+    mynode 
+    mynode.21cm.yesterday.s.x.c.d.file.dd 
+\end{verbatim} 
+
+The maximum length of a node name is 80 characters (which means maximally 39
+dots). This is converted to a {\em file name} by: 
+\\
+- appending the extension (.SCN, .MDL or .WMP), \\ 
+- converting all dots (.) to underscores (\_), \\ 
+- converting all lowercase to uppercase, 
+- replacing the underscore nearest but less than 47 to a dot. (?) \\ 
+\\
+This file name is then prefixed with the current database (default nothing). 
+
+	Parts of a node name can be set aside for short-hand use.  This can be
+done by the INFIX keyword (see COMMON keywords), or in a node specification by
+enclosing a part in parenthesis ().  This enclosed part will from then on be
+available to all programs that are run in {\bf the current stream}.  Reference
+to `the infix' is made by typing a \#, e.g.: 
+
+\begin{verbatim} 
+    mynode.21(cm.yesterday.s.x.c.d.file.d)d 
+\end{verbatim} 
+
+Typing {\tt mynode.92\#e} will then produce {\tt
+mynode.92cm.yesterday.s.x.c.d.file.de} 
+
+The database (directory) name can also be included in the node definition: 
+
+\begin{verbatim} 
+    wnb/data/mynode 
+    ../other/mynode.21cm.yesterday.s.x.c.d.file.dd 
+\end{verbatim} 
+
+	If a database is specified in this way, it will be saved in such a way
+that all subsequent program runs {\bf in the same stream} that have no explicit
+database specified, will use it, including the currently running program at all
+its further node questions. 
+
+
+
+%===============================================================================
+\section{The \NEWSTAR data files (SCN, MDL, WMP)} 
+
+	These three \NEWSTAR data files are each described in detail in their
+own `File Description' chapter in this Handbook.  In this Overview section, it
+is explained how the basic units (called Sets) in such a file can be selected
+individually or in groups.  For each of the three data files, an overview is
+given of the various ways in which the user may interact with these `objects',
+with references to the relevant program options. 
+
+
+%-------------------------------------------------------------------------------
+\subsection{Data file logical organisation: Sets} 
+\label{data.sets} 
+
+	The three main \NEWSTAR data file (node) types are logically organised
+in the same way: they consist of a number of basic units called `Sets', which
+can be selected by the user in two ways: 
+
+\begin{itemize} 
+\item 
+	By {\bf direct reference} to an absolute set index: {\tt \#ir} selects
+set nr {\tt ir}, in which {\tt ir} can be a range of contiguous sets (see
+below).  Direct reference is only useful if the user knows exactly how the
+various Sets are ordered in the file. 
+
+\item 
+	By {\bf indexed reference} to a series of indices that represent
+parameters like map or channel nr.  A `selector' consists of a series on
+integer indices, separated by points.  The indices may also be specified as
+ranges of indices or wildcards ($\ast$).  For instance: {\tt ir1.ir2.*.ir4}
+selects all Sets with index values in the indicated ranges. 
+
+\end{itemize} 
+
+	{\bf Index ranges} ({\tt ir}) can take the following forms {\bf (NB:
+Indices start at 0!)}: 
+
+\begin{tabular}{ll} {\bf int}               &single index value at this level
+\\ {\bf $\ast$}            &wildcard: all possible index values at this level
+\\ {\bf int-}              &all index values at this level, starting at `int'
+\\ {\bf int1-int2[:int3]}  & 
+		index values `int1' through `int2' by step `int3' (dflt=1) \\
+{\bf int1:int3}         &interpreted as int1-$\ast$:int3 \\ {\bf omitted}
+    &in the middle: interpreted as $.\ast$ 
+				($.. \equiv .\ast.$) \\ {\bf omitted}
+&at the end: interpreted as $.\ast$ 
+				($..2 \equiv \ast.\ast.2.\ast.\ast.\ast$) \\ 
+\end{tabular} 
+
+
+%------------------------------------------------------------------------
+\subsection{Using loops} 
+\label{loops} 
+
+	Sometimes a program must be run more than once for the same 
+SCN-file, but for different Sets.  In that case, the {\bf LOOPS} keyword can
+used to specify subsequent ranges of Sets.  A loop is specified by means of a
+pair of values: The first value indicates how often the loop should execute,
+the second specifies an increment to be given to the Set specification at each
+run. 
+
+	For example: {\tt loops=3,..2} indicates that the program has to run
+three times, each time incrementing the 3rd Set index by 2.  So, if the first
+Set (selected with the keyword SETS) was {\tt 0.0-3.2.5.*}, the program will be
+run three times, for the Sets 
+
+\begin{verbatim} 
+   0.0-3.2.5.*.
+   0.0-3.4.5.*.
+   0.0-3.6.5.*.
+\end{verbatim} 
+
+{\bf Nested loops} can be specified by stringing loop definitions (pairs of
+values) together.  For instance: {\tt loops=3,..2,5,...3} adds an inner loop of
+5 program runs in which the 4th Set index is incremented by 3 each time: 
+
+\begin{verbatim} 
+   0.0-3.2.5.*.   0.0-3.2.8.*.   0.0-3.2.11.*.
+		  0.0-3.2.14.*.   0.0-3.2.17.*.
+   0.0-3.4.5.*.   0.0-3.4.8.*.   0.0-3.4.11.*.
+		  0.0-3.4.14.*.   0.0-3.4.17.*.
+   0.0-3.6.5.*.   0.0-3.6.8.*.   0.0-3.6.11.*.
+		  0.0-3.6.14.*.   0.0-3.6.17.*.
+\end{verbatim} 
+
+
+%===============================================================================
+\section{Overview of interactions with the SCN file} 
+\label{scn} 
+
+	The SCN-file contains uv-data, and possibly the uv-representation of a
+source model.  A single SCN-file may contain uv-data of different (but related)
+observations. 
+
+	For more information, see the dedicated SCN-file section in this
+chapter of the Handbook, and also the section on the program NSCAN.  It
+contains a description of the structure and the contents of the 
+SCN-file. 
+
+
+%------------------------------------------------------------------------------
+\subsection{Creating SCN files} 
+\label{scn.create} 
+
+- From WSRT circle files: NSCAN option LOAD. \\ 
+- From ATCA (Australia Telescope Compact Array) files: NATNF.\\ 
+- From old (R-series) SCN-files: NSCAN option FROM\_OLD.\\ 
+- Simulated uv-data: NSIMUL? (not implemented yet).\\ 
+
+%------------------------------------------------------------------------------
+\subsection{Inspecting the contents of a SCN file} 
+\label{scn.inspect} 
+
+- File Layout: NSCAN option SHOW\\ 
+- File header: NSCAN option SHOW\\ 
+- Set headers: NSCAN option SHOW\\ 
+\hspace*{5mm} - Telescope (dipole) angle/ellipt corr: NCALIB option POLAR
+SHOW\\ 
+- Scan headers: NSCAN option SHOW\\ 
+\hspace*{5mm} - Telescope gain/phase corr: NCALIB option SHOW\\ 
+- uv-data (corrected, converted): NSCAN option SHOW\\ 
+- Display of (gridded) uv-data or uv-model: See WMP file below.\\ 
+- Plot telescope gain/phase corr (REDC+ALGC+OTHC): NPLOT option TELESCOPE\\ 
+- Plot Redundancy/Selfcal residuals: NPLOT option RESIDUAL\\ 
+- Plot uv-data or uv-model: NPLOT option DATA or MODEL\\ 
+- Print average telescope gain/phase corr (R+A+O): NCALIB option SHOW\\ 
+- Extract various astrophysical info: NGCALC\\ 
+
+%------------------------------------------------------------------------------
+\subsection{Editing the header information of a SCN file} 
+\label{scn.int} 
+
+	Almost every value (observation parameters, corrections, etc) in the
+SCN-file headers may be edited manually by means of NSCAN option 
+SHOW EDIT.  This means that, even if there is no specific \NEWSTAR routine to
+change something, it can always be done by hand.  This may be laborious in some
+cases, {\em but at least it is possible!}.  This feature is particularly useful
+in those (rare) cases where erroneous information has somehow been put in the
+header during the observations in Westerbork. 
+
+%------------------------------------------------------------------------------
+\subsection{Applying corrections to uv-data} 
+\label{scn.apply} 
+
+	In general, uv-data in a SCN-file is {\em never physically modified}.
+Corrections may be applied (or de-applied) to the uv-data whenever the data is
+read into memory to be processed.  The user may specify which corrections are
+applied (or de-applied) by specifying the value of the general \NEWSTAR
+keywords APPLY and DE\_APPLY, which are used by all \NEWSTAR programs that
+handle uv-data.  Use {\tt dws NGEN} 
+(see Common features of \NEWSTAR programs). 
+
+%------------------------------------------------------------------------------
+\subsection{Modyfing the stored corrections} 
+\label{scn.modify} 
+
+{\bf Zeroeing} selected corrections: NCALIB option SET ZERO 
+
+{\bf Set Header} (corrections that are `constant' in time):\\ 
+- Any value: NSCAN option SHOW EDIT\\ 
+- POLC (dipole angle error and ellipticity corr):\\ 
+\hspace*{5mm} - Estimation: NCALIB option POLAR CALC\\ 
+\hspace*{5mm} - Manual: NCALIB option POLAR SET, EDIT, ZERO\\ 
+\hspace*{5mm} - Copying from calibrator: NCALIB option POLAR COPY\\ 
+
+{\bf Scan Header} (corrections that vary per HA):\\ 
+- Any value: NSCAN option SHOW EDIT\\ 
+- Telescope (dipole) gain/phase corr:\\ 
+\hspace*{5mm} - Estimation: NCALIB option REDUN \\ 
+\hspace*{10mm} - Redundancy (no model): REDC\\ 
+\hspace*{10mm} - Align: ALGC\\ 
+\hspace*{10mm} - Selfcal ALGC\\ 
+\hspace*{5mm} - Manual: NCALIB option SET MANUAL, ZERO, RENORM \\ 
+\hspace*{5mm} - Copying from calibrator: NCALIB option SET COPY, CCOPY, LINE\\ 
+- Phase Zero Difference: OTHC\\ 
+\hspace*{5mm} - Estimation: NCALIB option POLAR VZERO CALC, APPLY, ASK, SCAN \\ 
+\hspace*{5mm} - Manual: NCALIB option POLAR VZERO MANUAL, ASK\\ 
+\hspace*{5mm} - Copying from calibrator: NCALIB option POLAR VZERO COPY\\ 
+- Extinction corr (manual): NCALIB option SET EXTINCT\\ 
+- Refraction corr (manual): NCALIB option SET REFRACT\\ 
+- Faraday corr (input of ionosonde data): NCALIB option SET FARADAY\\ 
+
+%------------------------------------------------------------------------------
+\subsection{Modifying a uv-model in the SCN-file} 
+\label{scn.uvmodel} 
+
+	See Overview of interactions with MDL file below. 
+
+%------------------------------------------------------------------------------
+\subsection{Reorganisation of SCN files} 
+\label{scn.reorg} 
+
+- Create new `Job' from Sets in the same SCN-file: NSCAN option REGROUP\\ 
+- Create a `secondary' SCN-file (data selection, correction): NCOPY\\ 
+  (not implemented yet)\\ 
+- Delete SCN-file: Use UNIX command {\tt rm <xxx>.SCN} (be careful!)\\ 
+
+%------------------------------------------------------------------------------
+\subsection{Export of uv-data from SCN files} 
+\label{scn.export} 
+
+- To UVFITS format (AIPS): NSCAN option UVFITS, PFITS\\ 
+- To old (R-series) SCN-file format: NSCAN option TO\_OLD\\ 
+- To WMP file (as gridded uv-data or maps): NMAP option MAKE\\ 
+
+
+
+%==============================================================================
+\section{Overview of interactions with an MDL file} 
+\label{mdl.inter} 
+
+	A MDL file contains a collection of source model components. 
+This may consist of a mixture of {\bf multi-parameter components} and ordinary
+{\bf CLEAN components}.  The MDL file may also contain {\bf reference
+coordinates} (obtained from a SCN-file) for the position of the field centre
+and the observing frequency. 
+
+	For more information, see the dedicated MDL-file section in this
+chapter of the Cookbook, and also the section on the program NSCAN.  It
+contains a description of the structure and the contents of the 
+MDL-file. 
+
+	NOTE: Note that the model in the MDL file may be manipulated by means
+of NMODEL {\bf options} (i.e.  options of the program NMODEL), or by MDL {\bf
+handles}.  The latter operations (e.g.  READ, WRITE, EDIT, 
+SHOW) are available in all the programs that deal with source models: 
+NCALIB, NMAP, NCLEAN, NSCAN, NMODEL.
+
+%----------------------------------------------------------------------------
+\subsection{Adding source components to an MDL file} 
+\label{mdl.generate} 
+
+- Manual, by specifying source parameters: MDL handle ADD.\\ 
+- Automatic search of a map (in a WMP file): NMODEL action FIND\\ 
+- CLEANing a map (in a WMP file): NCLEAN option BEAM, UVCOVER, COMPON\\ 
+- Save model from SCN file in an MDL file: NMODEL option SAVE\\ 
+- Convert old (R-series) model to \NEWSTAR MDL file format.\\ 
+
+%----------------------------------------------------------------------------
+\subsection{Modifying a model in an MDL file} 
+\label{mdl.modify} 
+
+Modifying {\bf source components}:\\ 
+- Improve source parameters by fitting to the uv-data: 
+		NMODEL option UPDATE, XUPDATE\\ 
+- Manual editing: MDL handle EDIT, FEDIT\\ 
+- Delete:\\ 
+\hspace*{5mm} - All components: MDL handle CLEAR, ZERO\\ 
+\hspace*{5mm} - Selected components: 
+		MDL handle DELETE, DNCLOW, DCLOW, DAREA\\ 
+\hspace*{5mm} - Selected components: MDL handle EDIT, FEDIT\\ 
+- Calibrate (position, flux): MDL handle CALIB\\ 
+- Combine components at the same position: MDL handle MERGE\\ 
+- Correct for primary beam attenuation: NMODEL option BEAM, DEBEAM\\ 
+
+Modifying {\bf reference coordinates}:\\ 
+- Change epoch or coordinate system: NMODEL option CONVERT\\ 
+NB: Reference position and frequency are obtained from SCN-file.\\ 
+
+%----------------------------------------------------------------------------
+\subsection{Inspecting, displaying and sorting an MDL model} 
+\label{mdl.inspect} 
+
+Inspecting:\\ 
+- Show list of components: MDL handle SHOW (screen) or PRINT (log-file)\\ 
+- Idem, in RA/DEC coordinates: MDL handle RSHOW, RLIST\\ 
+- Show source list statistics: MDL handle TOT \\ 
+
+Displaying:\\ 
+- As gridded uv-model from SCN file: See WMP file below\\ 
+- As a map of the uv-model in the SCN-file: See WMP file below\\ 
+- As position markers in a map: NPLOT option MAP\\ 
+- As `restored' components in a CLEAN residual map: NCLEAN option UREST \\ 
+
+Sorting:\\ 
+- According to decreasing flux: MDL handle SORT, WRITE(!)\\ 
+- According to the value of another source parameter: MDL handle FSORT\\ 
+
+
+%----------------------------------------------------------------------------
+\subsection{Relation with the uv-model in the .SCN file} 
+\label{mdl.uvmodel} 
+
+	The source components in an MDL file may be Fourier transformed to the
+uv-plane, to the uv-coordinates of the uv-data in a SCN-file. 
+This {\bf uv-model} is then `saved' in the SCN-file, together with a copy of
+the MDL source components that produced it. 
+
+	Whenever a uv-model is needed (e.g.  for Selfcal in NCALIB, or source
+subtraction in NMAP) the user is always asked to specify a {\bf input model}
+explicitly, even if there is already a {\bf saved uv-model} in the SCN-file.
+This input model may be specified either by reading 
+(and editing) components from an MDL-file, or by editing source components
+manually.  In the following, the Fourier transform of the input model will be
+called the {\bf input uv-model}.  The user may choose (keyword MODEL\_ACTION)
+one of the following possibilities: 
+
+- {\bf Merge:} Replace the saved uv-model with the input uv-model, 
+	and use it. \\ 
+- {\bf Add:} Add the input uv-model to the saved uv-model in the SCN-file, 
+	and use it.\\ 
+- {\bf New:} Replace the saved uv-model in the SCN file by the input uv-model, 
+	and use it.\\ 
+- {\bf Temporary:} Use the input uv-model, 
+	but do not change the saved uv-model in the SCN-file.\\ 
+- {\bf Increment:} Use the sum of the saved uv-model and the input uv-model, 
+	but do not change the saved uv-model in the SCN-file. \\ 
+
+	NOTE: \NEWSTAR regards the saved uv-model as {\em applied corrections},
+i.e.  corrections that were applied (added) to the cosmic noise before the
+uv-data were put into the SCN file.  Hence, to subtract the saved uv-model from
+the data, one could specify `MOD' to the (NGEN) keyword DE\_APPLY! Specifying
+`MOD' to the (NGEN) keyword APPLY will restore a model that was subtracted from
+the data before it was put in the SCN file (?). 
+
+%----------------------------------------------------------------------------
+\subsection{The various uses of an MDL model} 
+\label{mdl.uses} 
+
+{\bf Present uses} of an MDL model:\\ 
+- To solve for telescope gain/phase errors (Selfcal, Align): 
+	NCALIB option REDUN\\ 
+- To subtract sources from the uv-data: NMAP option MAKE\\ 
+- To combine multiple observations:\\ 
+\hspace*{5mm} - With different frequencies (broad-band mapping)\\ 
+\hspace*{5mm} - With different pointing centres (mosaicking)\\ 
+\hspace*{5mm} - With different observing times\\ 
+- To deal with instrumental polarisation\\ 
+- To undo large Faraday `rotation measures'\\ 
+- To detect variability \\ 
+- To simulate uv-data: clumsy at the moment\\ 
+
+
+{\bf Potential uses} of an MDL model:\\ 
+- To deal with non-isoplanaticity\\ 
+- To simulate uv-data: NSIMUL (not yet implemented)\\ 
+
+
+
+%===============================================================================
+\section{Overview of interactions with a WMP file}
+\label{wmp.inter} 
+
+	A WMP file contains a collection of 2-dimensional arrays, that are
+related in some way (but that can have different dimensions).  These may be
+maps for various frequencies (line data) or pointing centres 
+(mosaicking), antenna patterns and CLEAN residual maps.  Even rectangular
+arrays of (gridded) uv-data may be put in a WMP file, for display purposes. 
+
+	For more information, see the dedicated WMP-file section in this
+chapter of the Cookbook, and also the section on the program NSCAN.  It
+contains a description of the structure and the contents of the 
+WMP-file. 
+
+
+%------------------------------------------------------------------------------
+\subsection{Creating maps in WMP files} 
+\label{wmp.create} 
+
+- Making maps/ap's from uv-data (or uv-model) in SCN-file: NMAP option MAKE\\ 
+\hspace*{5mm} - Many types of maps:
+XX,YY,XY,YX,I,Q,U,V,cos,sin,ampl,phase,...\\ 
+- Residual maps: NCLEAN option BEAM, UVCOVER\\ 
+- Restored maps: NCLEAN option UREST\\ 
+- Gridded uv-data from SCN-file: NMAP option MAKE REAL, IMAG, AMPL, PHASE\\ 
+\hspace*{5mm} - In various forms: real or imaginary parts,ampl,phase,...\\ 
+- Gridded uv-coverage from SCN-file: NMAP option MAKE COVER\\ 
+- Copy maps: NMAP option FIDDLE COPY\\ 
+- Extract areas from maps: NMAP option FIDDLE EXTRACT\\ 
+- Convert from old (R-series) map files: NMAP option FROM\_OLD\\ 
+
+{\bf Delete} WMP files: 
+Use operating system UNIX: {\tt rm <....>.WMP} (be careful!) 
+
+
+%------------------------------------------------------------------------------
+\subsection{Inspecting the contents of a WMP file} 
+\label{wmp.inspect} 
+
+- Show header information: NMAP option SHOW.\\ 
+- Display images on color screen (X): NGIDS\\ 
+- Make plots on X-screen or plotter: NPLOT option MAP 
+\hspace*{5mm} - Various types: contour, greyscale, polar, ruled surface\\ 
+
+%------------------------------------------------------------------------------
+\subsection{Editing the WMP header information} 
+\label{wmp.edit} 
+
+- Edit header information: NMAP option SHOW.\\ 
+
+%------------------------------------------------------------------------------
+\subsection{Operations on WMP images} 
+\label{wmp.oper} 
+
+	Although \NEWSTAR has primarily been designed for WSRT {\em uv-data}
+processing it offers some powerful image-plane features: 
+
+- Various map operations (very powerful): NMAP option FIDDLE\\ 
+\hspace*{5mm} - Add, subtract, average, extract, copy, mosaic, etc\\ 
+- Cleaning and restoring: NCLEAN option BEAM, UREST\\ 
+- Finding strong sources: NMODEL option FIND\\ 
+
+	For many astrophysical projects, this will be sufficient. 
+However, for moreadvanced operations astrophysical image analysis, the user
+should transfer the images from the WMP file to other packages 
+(e.g.  GIPSY, AIPS) by means of the FITS format: NMAP option W16FITS, 
+W32FITS.
+
+
+%===============================================================================
+\section{Auxiliary \NEWSTAR files} 
+
+%------------------------------------------------------------------------------
+\subsection{.LOG files} 
+\label{log} 
+
+	Each \NEWSTAR program run produces a log-file, with the name {\tt
+<progname>.LOG}.  It contains the `vital information' about the program run:
+keyword values (including the hidden ones) and essential results.  In some
+cases (e.g.  NCALIB REDUN), the user may specify how much information is
+printed in the log-file (keyword SHOW\_LEVEL). 
+
+	The user may specify (NGEN keyword LOG) what happens with the log-file
+upon completion: it may be spooled automatically to the line printer, or thrown
+away, or kept for later inspection.  In the latter case, the log-file is
+automatically renamed with a unique name (e.g. {\tt NCA<alphanumeric>.LOG})
+when the program is run again. 
+
+%------------------------------------------------------------------------------
+\subsection{.PLT files} 
+\label{plt} 
+
+	All plot files produced by the programs NPLOT and NGCALC have the
+extension .PLT.  The file names usually begin with the 3-4 letter code of the
+selected PLOTTER option (PSP, PAL, EMS etc), followed by a unique combination
+of alphanumeric characters derived from the date and time of creation. 
+
+%------------------------------------------------------------------------------
+\subsection{.NGI files} 
+\label{ngi} 
+
+	NGI files are used to store the various information that the program
+NGCALC extracts from the SCN-file. 
+

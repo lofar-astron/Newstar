@@ -1,0 +1,232 @@
+!+ NSC.GRP
+!  WNB 900118
+!
+!  Revisions:
+!	WNB 910814	Add NSCSCT
+!	WNB 910820	Add NSCSCW
+!	WNB 910826	Delete NSCSTA
+!	WNB 910828	Add NGEN.PIN
+!	WNB 910910	Add NSCCOP
+!	WNB 911031	Add NSCWE0, 1
+!	WNB 920127	Add DO_NSERIES
+!	WNB 920826	Add NSCSCM
+!	WNB 920827	Add NSCSCI
+!	WNB 921007	Add NCOPY.COM
+!	WNB 921212	Add PEF; change PIN to PSC
+!	WNB 921221	Add NSCWE2
+!	WNB 921231	Remove DO_NSERIES
+!	HjV 930309	Add NSETS.PEF
+!	HjV 930426	Add NCOMM.PEF, NCOMM.PSC
+!	HjV 930528	Add SCN.DSC
+!	WNB 930606	Delete NCOMM.PSC
+!	WNB 930610	Add NSCDF0,9,1,2
+!	WNB 930615	Add NSCDF5,6,7,8,S
+!	WNB 930616	Add DLF.DSC, DLH.DSC
+!	WNB 930617	Create NSCDF5.FOR
+!	HjV 930618	Add CBITS.DSC
+!	WNB 930619	Remove NSCDEL, NSCPRT, NSCDF*, DLH.DSC, DLF.DSC
+!	WNB 930803	Add NSTAR.DSF
+!	WNB 930819	Add NSCNOP
+!	WNB 930824	Add NSCIF1, NSCTLS, TL1
+!	WNB 930825	Add NSCPLS,PL1,PL2,NSCHAS,HA1
+!	WNB 930901	Add NSCRIF
+!	HjV 930914	Add NSCSCW (Split from NSCSCR)
+!	CMV 931115	Changed ncopy.sun to ncopy.csh
+!	CMV 931116	Add NSHOW.PEF for SHOW keywords
+!	WNB 931126	Change order  NSHOW.PEF
+!	JPH 931206	Add NGEN.FOR
+!	WNB 940216	Add QUB.DSC, NSCQ*
+!	HjV 940217	Add/change missing entry-points/functions
+!	WNB 940227	Add NSCSIA
+!	CMV 940425	Add IFH.DSC, NSCLIF and NSCGIF
+!	HjV 940607	Add RFH.DSC, RSH.DSC and RSC.DSC
+!	HjV 940726	Add missing entry-point NSCGF1 and NSCGF2
+!	WNB 940729      Add NSCQC0, NSCQW0
+!	WNB 940801	Add NSCQW1, NSCQC1, NSCQC2, NSCQS4
+!	WNB 940803	Add NSCQFN, NSCQFR, NSCQSR, NSCQR0
+!	WNB 940811	Add NSCSWI, NSCSCX
+!	WNB 940812	Add NSCQE0/1, NSCQWA/M/F
+!	CMV 940821	Add SCNSETS.PEF
+!	HjV 940928	Remove NSCHA1
+!	JPH 941005	NSCSTD
+!	JPH 941017	Add SCNNODE.PEF BSETS.PEF, SELECT.PEF, UNIT.PEF
+!			Remove NCOMM.PEF, NSETS.PEF
+!	CMV 940930	Add NSCGGN
+!	HjV 950130	Add NLEIDEN.FOR, NLEIRD.FOR,NLEIWD.FOR, FDL.DSC, IHL.DSC
+!	WNB 950704	Add NSCSCY
+!	HjV 951120	Add NLEILU
+!	JPH 960613	Add DLDM
+!
+!  Scan handling
+!
+!  Group definition:
+!
+NSC.GRP
+!
+!  Command files
+!
+NCOPY.CSH		!		Copy data from other machine
+ NCOPY.COM
+!
+!  PIN files
+!
+NGEN.PEF		!		General include file
+!!NCOMM.PEF		!		old: all NODE and selection keywords
+!!NSETS.PEF		!		old: all SETS keywords
+SCNNODE.PEF		!		SCN_NODE keywords
+SCNSETS.PEF		!		SCN_SETS keywords
+SELECT.PEF		!		selection within SETS
+UNIT.PEF		!		tape-unit keywords
+NSHOW.PEF		!		Parameters for SHOW option (NSCAN/NFLAG)
+!
+NGEN.PSC		!		General parameters
+NSCAN.PSC		!		Parameters for NSCAN
+!
+!  Structure files
+!
+NSTAR.DSF		!		Defines overall # of telescopes etc.
+!
+CBITS.DSC		!		Symbolic names for mask bits
+QUB.DSC			!		Sacn Qube infrastructure
+!
+FDW.DSC			!		FD block
+FDX.DSC			!		FD extension block
+IHW.DSC			!		IH block
+OHW.DSC			!		OH block
+SCW.DSC			!		SC block
+SHW.DSC			!		SH block
+SCH.DSC			!		Scan header block
+STH.DSC			!		Set header block
+DLDM.DSC		!		Copy of STH_DLDM in a common block
+IFH.DSC			!		IF-data header block
+RFH.DSC			!		R-series file header
+RSH.DSC			!		R-series set header
+RSC.DSC			!		R-series scan and data header
+FDL.DSC			!		LEIDEN FD block
+IHL.DSC			!		LEIDEN IH block
+!
+!  Fortran definition files:
+!
+NSC.DSC			!		Program common/parameters
+SCN.DSC			!		Hierarchy of SGH levels
+!
+!  Programs:
+!
+NSCAN.FOR		!		Main routine
+NGEN.FOR		!		Dummy program to allow setting
+!					NGEN parameters
+NLEIDEN.FOR		!NLEIDEN	Load LEIDEN data in SCN file
+NLEILU.FOR		!NLEILU		List LEIDEN data on tape
+NLEIRD.FOR		!NLEIRD		Read LEIDEN data into TMP file
+NLEIWD.FOR		!NLEIWD		Write LEIDEN data to SCN file
+NSCCLP.FOR		!NSCCLP		Calculate prec. rotation angle
+NSCCOP.FOR		!NSCCOP		Copy scan sets
+NSCCVX.FOR		!NSCCVX		Convert from VAX to local format
+NSCCV1.FOR		!NSCCV1		Conversion help routine
+NSCDAT.FOR		!NSCDAT		Get program data
+NSCDMP.FOR		!NSCDMP		Dump tape to disk
+NSCGIF.FOR		!NSCGIF		Get IF/Total power data
+			!NSCGF1		Return begin HA, HA incr. and # of TP points
+			!NSCGF2		Print header information
+NSCGGN.FOR		!NSCGGN		Get Gain correction for TPon/off values
+NSCHAS.FOR		!NSCHAS		Select HA_RANGE
+NSCIFS.FOR		!NSCIFS		Select interferometers
+			!NSCIF1		Select interferometers per instrument
+NSCINI.FOR		!NSCINI		Initialise program
+NSCLLI.FOR		!NSCLLI		List WSRT data on tape
+NSCLOD.FOR		!NSCLOD		Load WSRT data in SCN file
+NSCLRD.FOR		!NSCLRD		Read WSRT data into TMP file
+NSCLWD.FOR		!NSCLWD		Write WSRT data to SCN file
+NSCLIF.FOR		!NSCLIF		Read/write WSRT IF-sets to SCN file
+NSCMBL.FOR		!NSCMBL		Make baselines
+NSCNOP.FOR		!NSCNOP		Make new option values in scan
+NSCNVS.FOR		!NSCNVS		Make newest version
+NSCOFR.FOR		!NSCOFR		From OLD format
+NSCOTO.FOR		!NSCOTO		To OLD format
+NSCPFH.FOR		!NSCPFH		Print general file header
+NSCPFL.FOR		!NSCPFL		Print file layout
+NSCPLS.FOR		!NSCPLS		Select XYX polarisations to use
+			!NSCPL1		Same, use instrument
+			!NSCPL2		Select Stokes or XYX pol. to use
+NSCPSH.FOR		!NSCPSH		Print set header
+NSCPSL.FOR		!NSCPSL		Print scan header
+NSCPUV.FOR		!NSCPUV		Print FITS tape
+NSCQC0.FOR		!NSCQC0		Compare Qube entries
+			!NSCQC1		Compare Qube field entries
+			!NSCQC2		Compare Qube freq entries
+NSCQE0.FOR		!NSCQE0		Sort and write ifr errors
+			!NSCQE1		Clear ifr error table
+NSCQFN.FOR		!NSCQFN		Get next field
+			!NSCQFR		Reset field search
+NSCQOP.FOR		!NSCQOP		Open Qube infrastructure
+			!NSCQCL		Close Qube infrastructure
+NSCQR0.FOR		!NSCQR0		Find an IFR scan
+NSCQS0.FOR		!NSCQS0		Sort Qube on Frequency
+			!NSCQS1		Sort Qube on HA
+			!NSCQS2		Sort Qube on J fields
+			!NSCQS3		Sort Qube on E fields
+			!NSCQS4		Sort Qube on D fields
+NSCQSR.FOR		!NSCQSR		Read a Qube 'scan'
+NSCQW0.FOR		!NSCQW0		Write Qube list part (sorted)
+			!NSCQW1		Merge QUBE parts
+NSCQWA.FOR		!NSCQWA		Write additive ifr errors in Qube
+			!NSCQWM		Write multiplicative ifr errors in Qube
+NSCQWF.FOR		!NSCQWF		Force possible ifr errors from buffer
+NSCREG.FOR		!NSCREG		Re-group sets in sub-groups
+NSCRIF.FOR		!NSCRIF		Read interferometer table information
+NSCSAD.FOR		!NSCSAD		Get corrections to (de-)apply
+			!NSCSAZ		Get correction to put to zero
+NSCSCR.FOR		!NSCSCR		Read scan data and header
+			!NSCSCH		Read scan header only
+			!NSCSCT		Read scan telescope corrections
+			!NSCSCX		Read scan corrections
+			!NSCSCY		Read scan correctiosn
+			!NSCSCM		Read scan model data
+			!NSCSCI		Get interferometer corrections
+			!NSCSCF		Read data and flags
+NSCSCW.FOR		!NSCSCW		Write scan header only
+			!NSCSDW		Write scan number SCN to FCA
+			!NSCSFW		Write scan number SCN to FCA using FLW
+NSCSIF.FOR		!NSCSIF		Read interferometer table info
+			!NSCSIA		Calculate some table info
+			!		(old, use NSCRIF)
+NSCSTG.FOR		!NSCSTG		Get next set specified
+			!NSCSTH		Get next set, no version check
+			!NSCSTL		Get next set with loop info
+			!NSCSTD		Same, delete index link to set
+NSCSWC.FOR		!NSCSWC		Write correction in scan header
+			!NSCSWU		Write corrections and m.e.'s
+NSCSWI.FOR		!NSCSWI		Write interferometer corrections
+NSCTLS.FOR		!NSCTLS		Select telescopes
+			!NSCTL1		Same, use instrument
+NSCUMF.FOR		!NSCUMF		Make FITS line
+			!NSCUMS		Make FITS line from string data
+			!NSCUMB		Make FITS binary data
+NSCUVF.FOR		!NSCUVF		Write UVFITS tape/disk
+NSCUV0.FOR		!NSCUV0		Write UVFITS header
+NSCUV1.FOR		!NSCUV1		Write UVFITS AN header
+NSCUV2.FOR		!NSCUV2		Write UVFITS FQ header
+NSCUV3.FOR		!NSCUV3		Write UVFITS SU header
+NSCUV4.FOR		!NSCUV4		Write UVFITS SN header
+NSCUV5.FOR		!NSCUV5		Write UVFITS BP header
+NSCUWB.FOR		!NSCUWB		Write FITS line from buffer
+			!NSCUWS		Write FITS line from string
+			!NSCUWL		Write FITS data from buffer
+			!NSCUWF		Fill FITS record
+NSCWE0.FOR		!NSCWE0		Correct mosaic WSRT tape error in HA
+			!NSCWE1		Correct constant HA error
+			!NSCWE2		Flop sign phase
+NSCXES.FOR		!NSCXES		General edit area
+NSCXFH.FOR		!NSCXFH		Show file header area complete
+			!NSCEFH		Edit file header
+NSCXSH.FOR		!NSCXSH		Show set header area complete
+			!NSCESH		Edit set header
+NSCXSL.FOR		!NSCXSL		Show scan header area complete
+			!NSCESL		Edit scan header
+NSCXXS.FOR		!NSCXXS		General show area
+!
+!  Executables
+!
+NSCAN.EXE		!		Scan handling
+NGEN.EXE
+!-

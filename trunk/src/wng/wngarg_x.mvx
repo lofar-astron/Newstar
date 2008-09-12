@@ -1,0 +1,41 @@
+;+ WNGARG_X.MVX
+;  WNB 890308
+;
+;  Revisions:
+;	WNB 930818	Split in WNGARG_X.MVX and WNGARG.FVX
+;
+	.TITLE	WNGARG_X	ARGUMENT MANIPULATION
+	.IDENT	/WNB.01/
+;
+;  Argument list manipulation
+;
+;  Result:
+;
+;	J = WNGARG_X()			Address of argument list (point at
+;					# of arguments) of containing routine
+;
+;  Program section:
+;
+	.PSECT	WNCODE,PIC,USR,CON,REL,LCL,SHR,EXE,RD,NOWRT,NOVEC,LONG
+;
+;  Symbol definition:
+;
+	$SFDEF					;CALL FRAME OFFSETS
+;
+;  Global references:
+;
+;-
+	.PAGE
+	.SUBTITLE	ADDRESS OF ARGUMENT LIST
+;
+.ENTRY	WNGARG_X,0
+;
+	MOVL	SF$L_SAVE_FP(FP),R0		;PREVIOUS FP
+	BEQL	1$				;NONE
+	MOVL	SF$L_SAVE_AP(R0),R0		;PRE-PREVIOUS AP
+;
+1$:	RET
+;
+;
+;
+	.END

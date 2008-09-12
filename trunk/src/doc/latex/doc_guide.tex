@@ -1,0 +1,789 @@
+
+% NOTES: 
+%       1. This is a "meta"-document, i.e. a document that describes LaTeX 
+% commands using \verb and \verbatim. Latex2html understands verbatim 
+% environments incompletely and is prone to the mistake of trying to execute 
+% commands within them. To prevent this from happening, the escape sequence
+",," 
+% is used instead of a "\" where necessary. 
+%       \verb/ndoc Cook/ preserves these through LaTeX2html and then
+substitutes 
+% them in the .html file. 
+%       \verb/ndoc Print/ removes them before submitting the file to LaTeX. 
+% 
+% History 
+%       JPH 940628      Original 
+%       JPH 940719      Fix errors, expand/clarify at various places 
+%       JPH 940915      Add caption bug; \ref bug 
+%                       Revise Figures section to reflect new methods 
+%                       Revise sectioning/subsectioning 
+%       JPH 940916      Make compilable 
+%       JPH 941027      Add escapes for sequences that were unintendedly 
+%                        translated 
+%       JPH 941031      Remove keyref 
+%       JPH 941110      Shift position of /label in figure declaration 
+%       JPH 941121      Replace "\<escape>" by ",," to make robust against 
+%                        changes/variants of unix utilities. (Perhaps a more 
+%                        "improbable" escape sequence must be found.) 
+%                       Use rawhtml environment for script section. 
+%       JPH 950213      Fix some '\verb/,,textref\' which cause 'Ouput line too 
+%                        long' and 'Undefined control sequence': Replace \ by
+'' 
+%       HjV 950615      Use $n_l2h iso. ~jph. Correct some typo's 
+%       JPH 950824      Replace \s by ,,s. Update sections on referencing 
+%                        commands 
+%       JPH 951016      LaTeX caption bug. - doc_sources_and_print.cap. 
+%       JPH 960326      Line-too-long bug.
+%       JPH 960508      Formulas-in-l2h section at end
+% 
+% 
+\newcommand{\bi}{ \begin{itemize} } 
+\newcommand{\ei}{ \end{itemize} } 
+\newcommand{\noi}{ \noindent} 
+\newcommand{\ndoc}{ \verb/ndoc/} 
+\newcommand{\ltoh}{ \verb/latex2html/ } 
+\newcommand{\tex}{ \verb/.tex/ } 
+
+
+\chapter{Guide for writing and maintaining \NEWSTAR documents} 
+
+\tableofcontents 
+
+\section{ Summary of \NEWSTAR LaTeX commands } 
+
+        For quick reference use the following list of special LaTeX commands
+available in the \NEWSTAR documentation system: 
+\\ \\ 
+\textref{ascref}{.cross.ref.other} \\ 
+\textref{Ascref}{.cross.ref} \\ 
+\textref{caption}{.caption} \\ 
+\textref{chapter}{.layout} \\ 
+\textref{eqref}{.eqref} \\ 
+\textref{Eqref}{.eqref} \\ 
+\textref{fig}{.caption} \\ 
+\textref{figref}{.figref} \\ 
+\textref{Figref}{.figref} \\ 
+\textref{label}{.cross.ref.latex} \\ 
+\textref{ps}{.ps} \\ 
+\textref{psref}{.cross.ref.other} \\ 
+\textref{Psref}{.cross.ref} \\ 
+\textref{ref}{.cross.ref.latex}: {\em Not to be used} \\ 
+\textref{tableofcontents}{.layout} \\ 
+\textref{textref}{.cross.ref.latex} \\ 
+\textref{Textref}{.cross.ref} \\ 
+\textref{whichref}{.cross.ref} \\ 
+
+
+\section{ The \NEWSTAR documentation system} 
+
+        The \NEWSTAR documentation system provides documentation in two forms:
+An on-line hypertext system based on the public-domain program "xmosaic" and
+standard LATeX documents. Both forms are derived from a single set of LaTeX
+source files; for the hypertext form, the public-domain translator \ltoh is
+used. 
+
+        Broadly speaking, authors are free to use the standard LaTeX
+constructs. In particular, \ltoh handles tabular material, mathematical
+formulas and the inclusion of diagrams very well. Writers should be aware,
+however, that every bit of math-mode text is translated into a little bitmap
+that must be loaded separately for display. This considerably slows down both
+the processing by \verb/ndoc Cook/ and the display by xmosaic. 
+
+         Simple macros defined through 
+\verb/,,newcommand/ can be used freely, but complicated nesting of macros
+should be avoided. 
+
+        To satisfy the specific needs of the \NEWSTAR system and circumvent
+some deficiencies of \ltoh, the guidelines given below should be followed. 
+
+
+\subsection{ LaTeX and ASCII documents} 
+
+        The official format for \NEWSTAR document sources is LaTeX. It is,
+however, considered more important that documentation exist at all than that it
+have a finished form. {\em Users are strongly invited to submit any bits of
+text that they consider to be of potential use to others.} Such contributions
+will quickly be integrated with the system and the \NEWSTAR group will assume
+responsibility for their further maintenance, including their eventual
+conversion to or integration with the LaTeX document collection. 
+
+
+\section{ Guidelines for writing LaTeX documents} 
+
+\subsection{ General layout} 
+\label{.layout} 
+
+\bi 
+\item   Preamble 
+
+        The document compiler \ndoc automatically inserts a preamble including
+the \verb/,,begin{document}/ and also appends the \verb/,,end{document}/. The
+source of a document may add private preamble elements such as 
+\verb/,,newcommand/ definitions. Apart from that, the first document line is
+the 
+\verb/,,chapter/ line: 
+
+\item \verb/,,chapter{<text>}/ 
+
+        The chapter is the basic documentation unit. \ndoc formats the argument 
+\verb/<text>/ as a hypertext or printed document title. 
+
+
+\item \verb/,,tableofcontents/ 
+
+        This creates a standard table of the chapter's contents in the printed
+document and an equivalent unnumbered table with links to the
+(sub)(sub)sections in the hypertext display. 
+
+
+\item   \verb/,,[sub]sub]]section{<text>}/ 
+
+        These commands produce standard section headings, numbered in the
+printed document, unnumbered in the hypertext display. 
+\ei 
+
+
+\section{ Cross-references} 
+\label{.cross.ref} 
+
+        In writing documents, the placeholder \verb/,,whichref{text}{}/ can be
+used for references whose target is not yet known. 
+
+        For most referencing commands, a companion with the leading character
+capitalised is available; these work the same way except that the text argument
+is printed in boldface. This feature is intended for use in the documentation
+home-page document, \verb/hb_contents.tex/. 
+
+
+\subsection{ Cross-references to text in LaTeX documents } 
+\label{.cross.ref.latex} 
+
+        Cross-references must work in both the printed and hypertext versions
+of a document. For this reason, {\it the standard LaTeX \verb/,,ref/ command is
+unsuitable} and the rules given below must be followed instead. 
+
+\bi 
+\item   \verb/,,label{.<label>}/ 
+
+        A label name {\em must start in a dot} as shown. LaTeX {\em forbids the
+use of underscores in labels}, even if they are escaped by a backslash; it is
+recommended to use {\em dots} instead. 
+
+\item   \verb/,,textref{<text>}{.<label>}/ 
+
+        This is translated for the printed document as \verb/<text> (sec.
+<section number>)/. In the hypertext display, \verb/<text>/ becomes a hypertext
+link to \verb/<label>/. \verb/<text>/ may have a local format of its own, e.g. 
+\verb/{\em <text>}/ or \verb/{\bf <text>}/. 
+
+\item   \verb/,,textref{<text>}{<file name>.<label>}/ 
+
+        This is the form for a reference to a label in an external file. In the
+printed document it becomes \verb/<text>/ with a numbered footnote showing the
+directory and name of the target file's source and the target label. 
+
+        \verb/<file name>/ is the name of a .tex file (without the .tex
+extension!) in directory \verb:\$n\_doc/latex:; the name may contain {\em
+neither dots nor uppercase characters}, but underscores are allowed (and need
+not to be quotes with a backslash). 
+
+\item   \verb/,,whichref{<text>}{}/ 
+
+         can be used as a placeholder for a \verb/,,textref/ whose target is as
+yet unknown. 
+
+\ei 
+
+\subsection{ Cross-references to other types of documents} 
+\label{.cross.ref.other} 
+
+        The documentation system also contains ASCII documents and PostScript
+documents imported from elswehere. Such documents may be referred to through
+the following commands: 
+
+\bi 
+\item   \verb/,,ascref{<text>}{<file name>}/ 
+\item   \verb/,,psref{<text>}{<file name>}/ 
+\ei 
+
+        \verb/<file name>/ is the name (without extension!) of a .txt file in
+directory \verb:\$n\_doc/txt: or of a .ps file in directory \verb:\$n\_hlp:;
+the name may contain {\em neither dots nor uppercase characters}, but
+underscores are allowed (and need not to be quotes with a backslash). 
+
+\bi 
+\item   \verb/,,srcref{<text>}{<directory><file name><extension>}/ 
+\ei 
+
+        This command is used to refer to program code or WNTINC table
+definitions (.dsc files). \verb/directory/ must be specified relative to 
+\verb/n_src/ and the file extension must be included. 
+
+
+\subsection{ Equations and equation references} 
+\label{.eqref} 
+
+        The commands \verb/,,Eqref{.<label>}/ and \verb/,,eqref{.<label>}/ are
+entirely analogous to the \textref{figure references}{.figref} 
+\verb/,,Figref/ and \verb/,,figref/. 
+
+
+\section{ Figures and figure references} 
+\label{.fig} 
+
+        Figures with their captions reside in the directory 
+\verb:\$n\_doc/fig:. A figure consists of two components: 
+\bi 
+
+\item   a \verb:<name>.cap: {\em caption file} containing a caption and a the
+directive to include the figure. 
+
+\item   the diagram proper in the form of either an \verb/xfig/ drawing 
+\verb:<name>.fig:, or a binary (e.g. \verb/<name>.ps/ or \verb/<name>.gif/)
+file. 
+\ei 
+
+        A figure with its caption is included in a document source file through
+the command 
+
+\verb:  ,,input{../fig/<name>.cap: \ 
+
+In the printed document, figure and caption are included in the standard way.
+In the hypertext display the word \verb/FIGURE/ is included, followed by the
+caption text, with a hypertext link from FIGURE to a postscript file. \ndoc
+generates that file automatically from the .fig file. 
+
+
+\subsection{ Caption files} 
+\label{.caption} 
+
+        The purpose of the caption file (as opposed to spelling out the caption
+text in the document source) is to enable the figure with its caption to exist
+as an independent unit that can be included in more than one document and also
+exist outside the context of any document. 
+
+        The caption file must not only provide the caption, but also the title
+under which the figure may be listed in the Handbook Overview. It is therefore
+important to adhere strictly to the following format: 
+
+
+\begin{verbatim} 
+        ,,begin{figure}[htbp] 
+          ,,fig{<name>} 
+          ,,caption[]{<optional LaTeX commands, e.g. \it> 
+        <title> 
+        <optional LaTeX commands, e.g. \> <optional remainder of caption> 
+        } 
+          ,,label{.<label>} 
+        ,,end{figure} 
+\end{verbatim} 
+
+\noi Examples can be found in the 
+\verb:/\$n\_doc/fig: directory. 
+
+        You are free to choose the label; the recommended choice, however, is
+the file name with underscores replaced by dots. (Remember that underscores are
+illegal in labels and that labels must start with a dot.) 
+
+        Comment lines (but no {\em empty} lines!) may be arbitrarily added,
+except that the \verb/<title>/ line must {\em immediately follow} the 
+\verb/,,caption/ command. 
+
+
+\subsection{ Xfig figures} 
+\label{.xfig} 
+
+        \verb/.fig/ files may be created without any restrictions with the
+public-domain program \verb/xfig/. It is not necessary to produce a postscript
+file with this program. \ndoc/ will take the \verb/.fig/ file and convert it
+automatically. 
+
+        Often, figures drawn on a convenient scale on a workstation screen will
+not fit on a standard A4 page. \ndoc/ may be instructed to automatically reduce
+its scale by including in the figure a text line 
+
+\verb/  <file name>.fig <nn>/ % 
+It is best to put this text in an inconspicuous corner and a small font (e.g.
+10pt as opposed to a standard 20pt). 
+
+
+\subsection{ Postscript figures} 
+\label{.ps} 
+
+        It is also possible to include Postscript figures produced in other
+ways than through xfig: Use the command \verb/,,ps{<filename>}/ instead of 
+\verb/,,fig/ and place the postscript file \verb/<filename>.ps/ in the
+directory \verb:/\$n\_doc/bin: with a soft link to it in \verb/\$n\_hlp/. If it
+can not be easily recovered, it is advisable to protect it against accidental
+deletion! 
+
+
+\subsection{ Figure references} 
+\label{.figref} 
+
+        For references to figures, use 
+
+\verb/  ,,figref{.<label>}/ and \verb/  ,,Figref{.<label>}/ 
+
+\noi These commands translate to hypertext links \verb/figure/ or \verb/Figure/
+in the hypertext document, and to a standard reference \verb/figure <n>/ or 
+\verb/Figure <n>/ in the printed document. 
+
+
+\section{ Session transcripts} 
+
+        Verbatim transcripts of pieces of terminal dialogue controlling program
+execution are an important ingredient to documentation. Such transcripts are
+easily produced through the command 
+
+        \verb/ndoc S[cript] <file name>/ 
+
+This starts a cshell script session in which you execute the program of which
+you want a transcript. After exit from the script session, the collected script
+is automatically formatted into a LaTeX file \verb/<file name>.trs/; what
+remains for you to do is to cut out the irrelevant parts and perhaps add some
+comments. A sample section of such a file is shown below 
+
+\spbegin 
+\svbegin \begin{verbatim} % 
+,,spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+. 
+,,skeyword{USE\_SCN\_NODE} ,,sprompt{(input node name)} ,,sdefault{= *:}
+,,suser{?} % 
+,,svbegin ,,begin{verbatim} 
+ Specify the node name from which the corrections should be calculated. 
+ * indicates the same as the output node name. 
+\end{verbatim}\svend 
+\verb/,,end{verbatim},,svend/ 
+\svbegin\begin{verbatim} ,,spend
+%.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-. 
+% 
+,,spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+. 
+,,skeyword{USE\_SCN\_NODE} ,,sprompt{(input node name)} ,,sdefault{= *:}
+,,suser{*} ,,sinline{Use the same SCN file} ,,spend
+%.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-. 
+% 
+,,spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+. 
+,,skeyword{USE\_SCN\_SETS} ,,sprompt{(Set(s) of input uv-data Sectors:
+g.o.f.c.s)} ,,sdefault{= "":} ,,suser{2.0.0.0.0} ,,sinline{Sets in job 2}
+,,spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-. 
+% 
+,,spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+. 
+,,skeyword{HA\_RANGE} ,,sprompt{(DEG) (HA range)} ,,sdefault{= *:}
+,,suser{,,scr} ,,sinline{Use all scans in these sets} % 
+,,svbegin ,,begin{verbatim} 
+   0123456789ABCD 
+ 0 -+++++++++++++ 
+ 1  -++++++++++++ 
+ 2   -+++++++++++ 
+ 3    -++++++++++ 
+ 4     -+++++++++ 
+ 5      -++++++++ 
+ 6       -+++++++ 
+ 7        -++++++ 
+ 8         -+++++ 
+ 9          -++++ 
+ A           -+++ 
+ B            -++ 
+ C             -+ 
+ D              - 
+\end{verbatim}\svend 
+\verb/,,end{verbatim}\svend/ 
+\svbegin\begin{verbatim}
+,,spend%.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-./ 
+\end{verbatim}\svend 
+\spend 
+
+        The file consists of sections delimited by \verb/,,spbegin/ and 
+\verb/,,spend/, each consisting of a prompt with its reply and the ensuing
+output from the computer. LaTeX will treat these sections as blocks in which a
+page break can not occur. The following LaTeX commands are used: 
+
+\bi 
+
+\item   \verb/,,skeyword/, \verb/,,sprompt/ and \verb/,,sdefault/ are the
+components of a program prompt; 
+
+\item   \verb/,,suser/ is the user's reply (in which \verb/,,scr/ represents a
+null reply (carriage return only) and \verb/,,seof/ an end-of-file
+(control-D)).; 
+
+\item   \verb/,,sinline/ is an inline comment typed in during the session (an
+exclamation mark plus text following the answer to a prompt); 
+
+\item   \verb/,,svbegin/ and \verb/,,svend/ delimit the verbatim section in
+which computer output is rendered. 
+
+\ei 
+
+        It is necessary to check these scripts with some care. The system does
+occasionally get confused by the way the parameter interface splits long input
+and output lines. The errors are usually easily corrected. 
+
+\bi 
+
+\item   To replace parts of lengthy computer output, e.g. by ellipses; note
+that, since this occurs inside \verb/verbatim/ sections, LaTeX commands such as 
+\verb/,,vdots/ can not be used. A line consisting of just three dots gives a
+satisfactory effect. 
+
+\item   To add \verb/,,sinline/ comments. These must be placed either
+immediately following \verb/,,suser/ commands or between an 
+\verb/,,end{verbatim}/ and the adjacent \verb/,,svend/. 
+
+\item   To reduce the size of verbatim sections that are more than 80
+characters wide (e.g. sections from a log file). 
+
+\ei 
+
+
+\section {Documentation directories} 
+
+\input{../fig/doc_sources_and_hyper.cap} 
+\input{../fig/doc_sources_and_print.cap} 
+
+        The documentation system encompasses three classes of files. The
+document source files reside in subdirectories of \verb/$n_doc/; the code
+source files which may also be referenced reside in subdirectories of 
+\verb/$n_src/. All hypertext files reside in a tree of subdirectories rooted in 
+\verb/\$n\_hlp/. The interrelations of all these files are shown in 
+\figref{.doc.sources.and.hyper}. 
+
+        The following types of source texts are used: 
+\bi 
+\item   Narrative LaTeX source texts: \verb:$n_doc/latex/<name>.tex: 
+
+\item   Caption LaTeX source texts: \verb:$n_doc/fig/<name>.cap: 
+
+\item   Standardised LaTeX files describing the private and public program
+parameter interfaces: \verb:$n_doc/intfc/<name>.tex:. These files incorporate 
+\verb/.tef/ files derived from the program-parameter definition files
+(\verb/<name>.psc/). 
+
+\item   ASCII texts: \verb:$n_doc/txt/<name>.txt: 
+
+\item   Postscript files for which no source exists: \verb:$n_doc/ps/<name>.ps: 
+
+\item   Code sources: \verb:$n_src/<directory>/<name>.<extension>: 
+\ei 
+
+        In processing, temporary files are created in the current directory;
+their names either contain the string \verb/\_tmp./ or end in \verb/.tmp/. 
+\ndoc normally deletes them when exiting. 
+
+        \verb/latex2html/, invoked by \verb/ndoc Cook/, translates each file 
+\verb/<name>.tex/ into a file 
+\verb:\$n\_hlp/<name>/<name>.html:. A large number of 
+\verb/.html/ files are therefore in subdirectories of 
+\verb/\$n\_hlp/. 
+
+        \verb/ndoc Print/ creates .ps PostScript text files in \verb/\$n\_hlp/. 
+        \verb/ndoc Fig/ creates .fps PostScript diagram files in 
+\verb/\$n\_hlp/. 
+
+
+
+
+\section {Processing commands} 
+
+\subsection{ Programmer's commands: Processing individual files } 
+
+        The commands are of the form 
+
+        \verb/ndoc <operation> [-<option>] <file>/ 
+
+        \verb/<file>/ is the full file name including the extension, and it
+must be in the current directory. Wildcards may be used. 
+
+        The \verb/<operation>/ and \verb/-<option>/ arguments may be
+abbreviated and are case-insensitive. The following operations and options are
+available: 
+
+\bi 
+\item   \verb/P[rint]/ creates [a] PostScript file[s] from [a] .tex source
+file[s], with the following options: 
+  \bi 
+  \item[] \verb/-S[yntax]/ do nothing else; 
+  \item[] \verb/-V[iew]/ display the output using ghostview; 
+  \item[] \verb/-P[rint]/ print the PostScript output. 
+  \ei 
+
+\verb/Print/ uses the LaTeX program. It attempts to suppress the verbose output
+of this program by filtering out everything except essential error messages. If
+you encounter a problem that you can not solve, submit your source file to the 
+\NEWSTAR group for diagnosis. 
+
+\item   \verb/C[ook]/ creates a Hypertext file from [a] .tex document[s]. This
+operation makes use of \ltoh. This program may crash over LaTeX syntax errors
+without properly analysing them. {\em It is therefore recommended to first do a 
+\verb/Print -Syntax/ check.} 
+
+\item   \verb/K[ey]/ creates Hypertext files from [a] .pin, .psc or .pef
+file[s] 
+
+\item   \verb/L[ink]/ creates the softlinks from the \verb/n_hlp/ directory to
+the \verb:$n_doc/txt: and \verb:$n_src: directories. 
+\ei 
+
+        \ndoc checks the dates of its input and output files. If the output is
+newer than the date, \ndoc emits a message and proceeds with the next input
+file. This check is incomplete in that it does not check the status of 
+\verb/,,input/ files such as figure captions. 
+
+        There are two ways of bypassing this check: 
+\bi 
+\item   Setting the environment variable \verb/n_force/. 
+\item   \verb/touch/ing the inpout file to set its modification time to the
+present time. 
+\ei 
+
+        When working in a shadow system, \ndoc makes no difference between hard
+copies and soft links to the master system: Both are unconditionally compiled. 
+
+
+\subsection{ \NEWSTAR manager's commands: Maintaining the documentation system
+} 
+
+        To recompile the entire documentation collection from its sources, one
+uses the command 
+
+\verb/          ndoc All/ 
+
+\noindent \ndoc will ask which parts of the system to recompile, the default
+being 'yes' for all subsystems. In this mode of operation \ndoc bypasses the
+check for an up-to-date output file. 
+
+        One of the actions available in \verb/ndoc All/ is a systematic check
+of the correspondence between source and output files. This is a very useful
+action because it clears up leftovers of obsolete documents and pinpoints areas
+of trouble. 
+
+
+
+
+\section{ Debugging .tex files} 
+
+        \ndoc goes a long way in filtering from the verbiage that LaTeX spews
+out the essential diagnostics. It shows the essential section of LaTeX output
+where the error is reported (including a line number) plus five lines of text
+in the middle of which the error was found. Very often this information
+suffices to pinpoint the error. If it does not, you may have to take a better
+look either at your source or at the \verb/<file name>_tmp.tex/ file that is
+the file LaTeX was actually processing. Note that the line number reported
+refers to this latter file! 
+
+        Specific errors that have been encountered and are not covered by this
+diagnosis mechanism are described below. 
+
+
+\subsection{ Temporarily disabling parts of .tex files} 
+
+        \ndoc provides a simple facility for "commenting out" large parts of 
+\tex input files: \verb/.c+/ and \verb/.c-/ can be inserted (on lines
+containing nothing else) to delimit a piece of text that must be ignored. This
+has proved very useful to quickly pinpoint the location where an error occurs. 
+
+
+\subsection{ Specific errors} 
+
+\subsection{ LaTeX bugs} 
+
+        Both \verb/ndoc Print/ and \verb/ndoc Cook/ make use of LaTeX and may
+therefore be affected by LaTeX bugs. For cases not covered here, refer to "The
+LaTex Book", which is probably the best informed source about that program. 
+
+\bi 
+\item   Symptom: 
+        {\em The word \verb/dump/ appears in the place of a Figure or Table.} 
+
+        This is an obscure problem. One situation in which it has been observed
+is when a \verb/,,figure/ environment is put at the very start of a document,
+i.e. without any preceding text. (This condition will not occur for regular
+documents but may occur in test situations.) It has also been seen in a case
+where a \verb/tabular/ environment was nested inside a \verb/table/, in which
+case the solution was to remove the \verb/table/ environment. 
+
+\item   Symptom: 
+        {\em LaTeX complains about a 'runaway argument' in a \verb/,,caption/
+environment.} 
+
+        This may happen when the optional argument in square brackets is
+omitted. As of 940914, this argument is automatically provided for by 
+\verb/doc_preprocess.csh/. 
+
+\item   Symptom: 
+        {\em ndoc Print runs without reporting any error, but produces a
+PostScript file in which figure references appear without numbers filled in.} 
+
+        This happens when the \verb/,,label/ directive in a \verb/figure/
+declaration is placed before the \verb/,,caption/ command.! 
+
+\item   Symptom: 
+        {\em LaTeX reports: TeX capacity exceeded, sorry [parameter stack
+size=60].} 
+
+        This has been seen to happen when a \verb/,,section/ title argument is
+too complicated, e.g. because it contains italicised text. 
+
+\item   Symptom: 
+        {\em LaTeX finds a \$ or \_ in a \verb/,,textref/ file argument that is
+not escaped by a preceding backslash.} 
+
+        This may happen when the expansion of a command defined through 
+\verb/,,newcommand/ contains a \textref{referencing command}{.cross.ref}. Fix
+the problem by including escape charaters in the \verb/,,newcommand/
+definition. 
+
+\item   Symptom: 
+        {\em LaTeX complains about "Paragraph ended before \verb/,,sbox/ was
+complete" in a figure caption.} 
+
+        The \verb/,,caption/ environment appears to be sensitive to formatting.
+In particular new paragraphs (i.e. blank lines) and \verb/,,indent/ commands
+have been noted to produce this nasty error. In some cases it was found
+necessary to put the \verb/,,label/ before the \verb/,,caption/. 
+\ei 
+
+
+\subsection{ Processing errors in ndoc} 
+
+        When LaTeX reports an error to \ndoc, \ndoc displays a five-line text
+section in the middle of which the error occurred. This is not from the
+original input text, but from the preprocessed text as it was eventually
+presented tp LaTeX. Most errors are easily recognised and traced back to the
+input \tex file. 
+
+\bi 
+\item   Symptom: 
+        An error occurs which is associated with lines from the .tex input that
+were concatenated by ndoc. 
+
+        This may very well be an error in the algorithm used by ndoc to merge
+paragraphs into single long lines. It is not necessarily clear why LaTeX does
+not accept the long line. An any rate, the recommended action is to check with
+the \NEWSTAR manager. 
+
+\item   Symptom: 
+        ndoc cook stops with message 
+\verb/           nawk: record `[...]' has too many fields/ 
+
+        In preprocessing documents, ndoc formats paragraphs into single lines
+to make it easier to identify LaTeX command sequences. Find the offending
+paragraph in you documents and insert \verb/<newline><blank>/ at some
+appropriate place. The leading paragraph will inhibit the merger of the two
+parts of the paragraph, yet LaTeX will format the two parts into one paragraph.
+ 
+\ei 
+
+
+\subsection{Processing errors in \protect\verb/ndoc Cook/} 
+
+        The program \ltoh on which \verb/ndoc Cook/ is based is rather lax on
+checking LaTeX syntax but may stumble over the consequences of an error missed.
+{\it It is therefore strongly recommended to first check the syntactical
+correctness of the .tex file through \verb/ndoc P/}. 
+
+\bi 
+\item   Symptom: 
+        \verb/.DVI file can't be opened/ 
+
+        \ltoh runs LaTeX on a selection from the .tex file consisting of
+formulas, tabular material and diagrams. This run failed to produce a 
+\verb/.dvi/ file, but \ltoh gobbled up all the error information. This error
+may be due to improper configuration of your system, {\em e.g.} a misplaced 
+\verb/.sty/ file. It is virtually impossible to diagnose except by using a 
+\textref{modified version of \ltoh}{.latex2html}. 
+
+\item   Symptom 
+\begin{verbatim} The nplot_descr.aux file was not found, so sections will not
+be numbered and cross-references will be shown as icons. 
+\end{verbatim} 
+
+        Your .tex file contains a \verb/,,ref/ directive. Convert al 
+\verb/,,ref/s to \verb/,,textref/s. 
+
+\item   Symptom: 
+        Commands that are normally accepted are reported as unknown. 
+
+        This is likely to be the result of a syntax error. (For example, a
+missing \verb/,,end{itemize}/ will cause \verb/,,item/ to be reported as
+unknown.) Check your input file by running \verb/ndoc Print/ on it. 
+
+\item   Symptom: 
+        \verb/xmosaic/ can not find a file pointed at by a hypertext link. 
+
+        Note the file name appearing at the bottom of the \verb/xmosaic/ window
+when you point at the reference. This reference should be in either of the
+forms: 
+
+        \verb:<file name>/<file name>.html 
+\indent \verb:../<file name>/<file name>.html 
+
+If it starts in a \verb:/:, you have to replace your \ltoh by the 
+\textref{modified version}{.latex2html}. 
+
+\item   Symptom: 
+        \verb/latex2html/ warns that the \verb/.aux/ file was not found but
+otherwise \verb/ndoc Cook/ seems to complete normally. 
+
+        The precise nature of this error is not understood, but it seems to
+indicate that something is wrong in a cross-reference. (e.g. a LaTeX 
+\verb/,,ref/ command). It has been seen to occur when a \verb/,,ref/ with a
+label name containing dots is used (cf. the section on \textref{cross
+references}{.cross.ref}). 
+\ei 
+
+
+\appendix
+
+\section{\protect\ltoh} 
+\label{.latex2html} 
+
+        \ltoh is a public-domain perl script created by Nikos Drakos at Leeds
+University, England (Email: nikos@cbl.leeds.ac.uk) and available through
+anonymous ftp. It has been found to be a reliable and highly capable program.
+Apart from configuring it to the local environment, two changes were found
+necessary: 
+
+\bi 
+\item   All lines containing the string \verb:s/\W//g: must be commented out by
+prefixing them with a \verb/#/. This makes \ltoh capable of handling relative
+file references and removes an inconsistency it the processing of labels and
+references. 
+
+\item   After the line 
+
+\indent \verb/system("$LATEX $$_images.tex");/ 
+
+insert the lines 
+
+\begin{verbatim} 
+        if (!-e "20756_images.dvi") 
+          {system("cat 20756_images.log"); die "Failure to process formulas"; } 
+\end{verbatim}
+\ei 
+
+\subsection{ Formulas and the like in \protect\ltoh}
+\label{.formulas}
+
+        LaTeX allows many constructs, such as formulas, tables etc., for which
+there is no HTML counterpart (yet). \ltoh converts each single occurrence of
+these into a little picture file that is linked in-line into the \verb/.html/
+document. The pictures are stored in \verb/.xbm/ files in the same directory as
+the \verb/.html/ file.
+
+        Since building these pictures is a very time-consuming process, \ltoh
+seeks to reuse them as much as possible whenever it recompiles a \verb/.tex/
+file. To this end, it maintains an administration in the file \verb/images.pl/
+in the \verb/.html/ file's directory. Therefore, to insure the integrity of the
+.html document, both the \verb/.xbm/ files and \verb/images.pl/ must be left in
+place. As of May 1996, \verb/doc_cook.csh/ contains a section of code that
+finds all in-line picture references in the renewed \verb/.html/ file, reports
+any referred-to files that are missing and deletes unreferenced \verb/.xbm/
+files.
+
+        In cases a \verb/.xbm/ file is reported missing, the way to get it
+rebuilt is to delete \verb/images.pl/ in order to force \ltoh to rebuild all
+the picture files from scratch.  
+
+
+

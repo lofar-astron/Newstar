@@ -1,0 +1,149 @@
+!+ GEN.GRP
+!  WNB 920915
+!
+!  Revisions:
+!       HjV 921031      Genaral update
+!       HjV 921207      Add routine and entry names
+!       WNB 921209      Delete dwfldef
+!       HjV 930226	Change some .FOR to .FUN; add VAX-files (.FVX and .MVX)
+!	CMV 930712	Added GEN_SIZE (for more function in help)
+!	CMV 930922	Changed all INC to DEF
+!	CMV 940120	Removed a whole bunch of routines (replaced by
+!			equivalent calls to WNG stuff)
+!	CMV 940131	Moved .DEF files to relevant grp's, 
+!			removed DEFVSNLST.FOR
+!	HjV 940301	Add PRTUSE
+!	JPH 941111	Remove GENMOSAIC (now XMOSAIC_RESTART in sys.grp)
+!	CMV 94114	Keep GENMOSAIC. No used, but don't want it to 
+!				disappear yet.
+!	JPH 951108	Add GENFLUSH.CUN
+!	HjV 960618	Remove GENFLUSH.CUN
+!       AXC 010628	Changes for linux port
+!
+!  General routines for DWARF programs
+!
+!  Group definition:
+!
+GEN.GRP
+!
+!  Masks for program development
+!
+!  PIN files
+!
+!  Structure files
+!
+!  Help files
+!
+!
+!  General command files
+!
+!
+!  Initialisation command files
+!
+!
+!  Fortran definition files:
+!
+!
+!  Programs:    
+!
+BLBCOMPARE.FOR          !BLB_COMPARE
+			!BLB_COMPAR1
+FILNAM.FUN              !FILNAM_FULL
+  FILNAM.FVX            !FILNAM_SPLIT
+GENBRDCAST.FOR          !GEN_BRDCAST
+GENCALL.MVX		!GEN_CALL
+GENCLRBLX.FOR           !CLEAR_BLB		Replace by WN later
+			!GEN_CLRBLB
+			!CLEAR_BLI
+			!GEN_CLRBLI
+			!CLEAR_BLJ
+			!GEN_CLRBLJ
+			!CLEAR_BLR
+			!GEN_CLRBLR
+			!CLEAR_BLD
+			!GEN_CLRBLD
+GENCVT.FOR              !GEN_CVT
+			!GEN_CVT_NR_D
+			!GEN_CVT_D_NR
+			!GEN_CVT_NR_L
+GENERRNO.CHP            !IERRNO
+			!GERROR
+GENEXECL.CUN            !GEN_EXECL      Start a program on behalf of 
+  GENEXECL.FVX          !                       another (FORTRAN) program
+GENFORIOS.FUN           !GEN_FORIOS_VMSERR
+  GENFORIOS.FVX         !GEN_FORIOS
+GENGETFOR.FSC           !GEN_GETFOR
+GENGETMSG.FOR           !GEN_GETMSG
+GENGETPAR.CUN           !GET_PARM       Get a value set for a program parameter
+  GENGETPAR.FVX         !
+GENINPUT.FUN            !GEN_INPUT
+  GENINPUT.FVX          !GEN_INPUT_AST
+GENISATERM.FSC          !GEN_ISATERM
+GENISATTY.CUN           !GEN_ISATTY     Test if file desriptor is associated 
+			!                       with a terminal
+GENMIXFNM.MVX           !GEN_MIXFNM
+GENMOSAIC.CUN	!GEN_MOSAIC	Start xmosaic on-line help browser
+GENMOVBLX.FOR           !MOVE_BLB
+			!GEN_MOVBLK
+			!MOVE_BLI
+			!GEN_MOVBLI
+			!MOVE_BLJ
+			!GEN_MOVBLJ
+			!MOVE_BLR
+			!GEN_MOVBLR
+			!MOV_BLD
+			!GEN_MOVBLD
+GENOUTPUT.FOR           !GEN_OUTPUT
+			!GEN_OUTPUT_NOCR
+GENSIZE.CUN		!GEN_SIZE	Get size of terminal screen
+  GENSIZE.FVX		!
+GENSYMBOL.FUN           !SYMBOL_SEAR
+  GENSYMBOL.FVX         !SYMBOL_INIT
+			!SYMBOL_DEFINE
+			!SYMBOL_SEARCH
+			!SYMBOL_GET
+			!SYMBOL_DELETE
+			!SYMBOL_EXIT
+GENSYMBOLC.CUN          !
+GENSYSTEM.CUN           !GEN_SYSTEM     Execute command in a subprocess
+  GENSYSTEM.FVX         !
+GENTERMSW.FUN           !GEN_TERMSW
+  GENTERMSW.FVX         !
+!
+MSG.FOR                 !MSG_INIT	Set program name and output files
+			!MSG_SET	Convert Message code
+!
+PPDFILE.FSC             !PPD_FILE_FIND
+			!PPD_FILE_OPEN
+			!PPD_FILE_CLOSE
+PRTUSE.FSC		!PRTUSE		Print line in $n_import/newstar.use
+!
+STRCHECK.FOR            !STR_CHECK_ALPH
+			!STR_CHECK_NUM
+			!STR_CHECK_ANUM
+			!STR_CHECK_ANUM_
+			!STR_CHECK_ANUMX
+			!STR_CHECK_ANUMA
+STRCOLLAPS.FOR          !STR_COLLAPS
+STRCOPY.FOR             !STR_COPY
+			!STR_COPY_W
+			!STR_COPY_R
+			!STR_COPY_U
+STRLENGTH.FOR           !STR_SIGLEN
+STRMATCH.FOR            !STR_MATCH
+			!STR_MATCH_A
+			!STR_MATCH_L
+STRREAD.FOR             !STR_READ_B
+			!STR_READ_I
+			!STR_READ_J
+			!STR_READ_R
+			!STR_READ_D
+STRSKIP.FOR             !STR_SKIP_U
+			!STR_SKIP_PAST
+			!STR_SKIP_W
+STRUPCASE.FOR           !STR_UPCASE
+			!STR_UPCCPY
+!
+!  Executables
+!
+!-

@@ -1,0 +1,29 @@
+<TITLE>Description of POLAR_OPTION (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword POLAR_OPTION</H1> 
+
+<DT><EM>Prompt:</EM> action on polarisation corrections| CALC, VZERO; COPY, SET, ZERO; SHOW, EDIT; QUIT
+<DT><EM>Expected input:</EM> Character(8).<P>
+Specify action to perform on polarisation corrections: <P>
+   Calculate corrections from calibrator visibilities. The new correction values 
+   are ADDED to existing ones: <P>
+        CALC     calculate dipole corrections <P>
+        VZERO    select the set of operations dealing with the phase-zero 
+                 difference ('PZD') between the X and Y channel groups <P>
+   Copy/set corrections. The new corrections values generally OVERWRITE the 
+   existing ones: <P>
+        COPY     create dipole corrections in target sectors by copying them 
+                  from one source sector <P>
+        SET      set dipole corrections manually <P>
+        ZERO     zero dipole corrections <P>
+   Inspection: <P>
+        SHOW     show dipole corrections <P>
+        EDIT     edit dipole corrections <P>
+   Other: <P>
+        QUIT     exit from POLAR <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

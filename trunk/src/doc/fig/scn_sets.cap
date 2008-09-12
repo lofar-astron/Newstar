@@ -1,0 +1,31 @@
+% scn_sets.cap
+%
+% JPH 	941123	\ps --> \fig
+
+\begin{figure}{hbtp}
+
+\fig{scn_sets}
+%
+\caption[]{\it
+\label{.scn.sets}
+Schematic overview of the organisation of the uv-data in the SCN-file.
+
+	The basic unit is the Sector, which can be selected by means of
+five integer parameters, divided by dots (g.o.f.c.s).  Each starts at
+zero (!), and can be a wildcard ($\ast$, meaning all) or a specific
+range with an increment (e.g.  3-15:3, or 4-).  The uv-data within a
+Sector can be selected by HA range, polarisation (XX,XY,YX,YY) and
+interferometers (9A, 8$\ast$, -FF etc). 
+
+	There are headers with information at three levels:
+\\ - The {\bf file header} describes controls access to the various parts,
+but contains no astronomical information.
+\\ - Each {\bf sector header} contains information about the source, 
+and observational parameters like pointing centre, frequency etc.  It
+also contains polarisation corrections.  
+\\ - Each {\bf scan header}
+contains information about HA etc.  It also contains various phase and
+gain corrections per telescope. 
+}
+
+\end{figure}

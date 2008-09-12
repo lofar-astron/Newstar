@@ -1,0 +1,242 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	BPD_REF
+C.Keywords:	PPD file, Build, Cross References
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	DWARF-Fortran
+C.Environment:	VAX or Alliant
+C.Comments:
+C		Common variables used:
+C	INTEGER*4	BPD$REFNR	! (m) nr of references
+C	CHARACTER*16	BPD$REFNAM(*)	! (m) names of referenced PPD files
+C
+C.Version:	900415 FMO - recreation
+C.Version:	900502 FMO - new GEN_LUN module
+C.Version:	920213 GvD - no optional arguments anymore
+C.Version:	920424 GvD - only call LIST_CLOSE if OLDLUN>=0
+C.Version:	930923 CMV - logical names for new maintenance system
+C.Version:	940118 CMV - used WNCFOP, WNCALN i.s.o. DWARF stuff
+C.Version:	940211 WNB - change file inquire
+C.Version:	010629 AXC - Linux port
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION BPD_REF_UPDATE (PPDREF)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PPDREF		! (i) name of referenced PPD file
+C
+C.Purpose:	Add the name to the reference list
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C	fatal	PPD_REFEXCMAX	too many references
+C.Notes:
+C-------------------------------------------------------------------------
+C
+	INCLUDE 'BLDPPD_2_DEF'
+C
+	INTEGER*4	STR_MATCH_A, MSG_SET
+C
+	INTEGER*4	IS, NR
+C
+C
+C					If the complete name doesn't
+C					occur in the list, add it
+C
+	IS = 0
+	IF (BPD$REFNR.GT.0)
+	1		IS = STR_MATCH_A (PPDREF,BPD$REFNR,BPD$REFNAM,NR)
+	IF (IS.NE.1) THEN
+		IF (BPD$REFNR.EQ.BPD__REFMAX) GOTO 999
+		BPD$REFNR = BPD$REFNR+1
+		BPD$REFNAM(BPD$REFNR) = PPDREF
+	ENDIF
+C
+	BPD_REF_UPDATE = PPD_SUCCESS
+	RETURN
+C
+ 999	BPD_REF_UPDATE = MSG_SET (PPD_REFEXCMAX,0)
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION BPD_REF_WRITE (PROGNAM)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PROGNAM		! (i) name of the new PPD file
+C
+C.Purpose:	Write a new version of the PPD cross-reference file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C	false status returned by referenced modules
+C.Notes:
+C	Existing references from <prognam>.PPD are removed, and the new
+C	ones are added.
+C-------------------------------------------------------------------------
+C
+	INCLUDE 'BLDPPD_2_DEF'
+C
+	CHARACTER*(*)	REFFILE
+		PARAMETER (REFFILE = 'PPD.REF')
+C
+	INTEGER*4	GEN_FORIOS
+	INTEGER*4	FILNAM_FULL
+	INTEGER		WNCAL0
+	LOGICAL		WNFOP
+C
+	CHARACTER	OLDSPEC*80, NEWSPEC*80, LINE*32, NAMPPD*16
+	INTEGER*4	IS, LO, LN, LL, OLDLUN, NEWLUN
+	LOGICAL		EXIST
+	INTEGER		FCAT
+C
+C
+C					Open DWARF's PPD reference file
+C
+	OLDLUN = -1
+	IS = FILNAM_FULL (REFFILE,OLDSPEC,LO,'n_exe')
+	IF (IAND(IS,1).EQ.0) GOTO 999
+	EXIST=WNFOP(FCAT,OLDSPEC(:LO),'R')
+	IF (EXIST) THEN
+		CALL WNFCL(FCAT)
+		IS=0 
+		CALL WNGLUN(OLDLUN)
+		IF (OLDLUN.EQ.0) GOTO 999
+		OPEN (UNIT=OLDLUN,FILE=OLDSPEC(:LO),
+#ifdef wn_li__
+	1	   STATUS='OLD',ERR=998)
+#else
+	1	   READONLY,STATUS='OLD',ERR=998)
+#endif
+
+	ENDIF
+C
+C					Open new user's PPD reference file
+C						in the current directory
+C
+	IS = FILNAM_FULL (REFFILE,NEWSPEC,LN,' ')
+	IF (IAND(IS,1).EQ.0) GOTO 997
+	NEWLUN=-1
+	CALL WNCFOP(NEWLUN,NEWSPEC(:LN))
+	IF (NEWLUN.EQ.-1) GOTO 997
+C
+C					Copy the records with references
+C					from other PPD files
+C
+	IF (EXIST) THEN
+	   LL = 0
+	   DO WHILE (LL.GE.0)
+	      READ(OLDLUN,'(A)',IOSTAT=IS) LINE
+	      IF (IAND(IS,1).EQ.0) GOTO 995
+	      LL=WNCAL0(LINE)
+	      IF (LL.GT.0 .AND. LINE(:16).NE.PROGNAM) 
+	1	  CALL WNCTXT(NEWLUN,'!AS',LINE)
+	   ENDDO
+	ENDIF
+C
+C					Add records with the references
+C					from the new PPD file
+C
+	NAMPPD = PROGNAM
+	DO I = 1,BPD$REFNR
+	   CALL WNCTXT(NEWLUN,'!AS!AS',NAMPPD,BPD$REFNAM(I))
+	ENDDO
+C
+	IS = PPD_SUCCESS
+ 995	CALL WNCFCL(NEWLUN)
+ 997	IF (OLDLUN.GE.0) THEN
+	    CLOSE(OLDLUN)
+	    CALL WNGLUF(OLDLUN)
+	ENDIF
+ 999	BPD_REF_WRITE = IS
+	RETURN
+C
+ 998	BPD_REF_WRITE = GEN_FORIOS (OLDSPEC(:LO))
+	IF (OLDLUN.GE.0) CALL WNGLUF(OLDLUN)
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION BPD_REF_LIST (PROGNAM,PRTFLAGS)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PROGNAM		! (i) name of the new PPD file
+	INTEGER*4	PRTFLAGS	! (i) disposition flags
+C
+C.Purpose:	Create a list of PPD files referencing the new PPD file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C	false status returned by referenced modules
+C.Notes:
+C	Existing references from <prognam>.PPD are removed, and the new
+C	ones are added.
+C-------------------------------------------------------------------------
+C
+C
+	LOGICAL    L__FALSE
+	PARAMETER (L__FALSE = .FALSE.)
+C
+	CHARACTER*(*)	REFFILE, LISTYPE
+		PARAMETER (REFFILE = 'PPD.REF')
+		PARAMETER (LISTYPE = '.RLIS')
+C
+	INTEGER		WNCALN
+	INTEGER*4	FILNAM_FULL
+C
+	CHARACTER	REFSPEC*80, LINE*32, LISTSPEC*80, TMP*80
+	INTEGER*4	IS, LR, LL, LP, LS, REFLUN, LISTID
+	LOGICAL*4	REF_FOUND
+C
+C
+C					Open the user's PPD reference file
+C					  in the current directory
+C
+        IS = FILNAM_FULL (REFFILE,REFSPEC,LR,' ')
+        IF (IAND(IS,1).EQ.0) GOTO 999
+	IS=0
+        CALL WNGLUN(REFLUN)
+	IF (REFLUN.EQ.0) GOTO 998
+        OPEN(UNIT=REFLUN,FILE=REFSPEC(:LR),STATUS='OLD',IOSTAT=IS)
+        IF (IAND(IS,1).EQ.0) GOTO 998
+C
+C					Open the PPD reference list file
+C					  in the current directory
+C
+	LISTID = -1
+	LP = WNCALN(PROGNAM)
+	TMP=PROGNAM(:LP)//LISTYPE
+	IS = FILNAM_FULL (TMP,LISTSPEC,LS,' ')
+	IF (IAND(IS,1).NE.0) CALL WNCFOP(LISTID,LISTSPEC(:LS))
+	IF (LISTID.EQ.-1) GOTO 997
+C
+C					Fill the print header
+C
+	CALL WNCFHD(LISTID,2,'The following PPD files use !AS.PPD'//
+	1	' as external reference :',PROGNAM(:LP))
+	IF (IAND(IS,1).EQ.0) GOTO 996
+C
+C					Read the references to the new PPD file
+C					and write them to the print file
+C
+	REF_FOUND = .FALSE.
+	LL = 0
+	DO WHILE (LL.GE.0)
+	   READ(REFLUN,'(A)',IOSTAT=IS) LINE
+	   IF (IAND(IS,1).EQ.0) GOTO 996
+	   LL=WNCALN(LINE)
+	   TMP=PROGNAM(:LP)//':'
+	   IF (LL.GT.16 .AND. LINE(17:).EQ.TMP) THEN
+	      REF_FOUND = .TRUE.
+	      CALL WNCTXT(LISTID,'!2_!AS',LINE(:16))
+	   ENDIF
+	ENDDO
+	IF (.NOT.REF_FOUND) CALL WNCTXT(LISTID,'!2_no references')
+C
+	IS = PPD_SUCCESS
+ 996	CALL WNFCL(LISTID)
+ 997	CLOSE(REFLUN)
+ 998	CALL WNGLUF(REFLUN)
+ 999	BPD_REF_LIST = IS
+	RETURN
+	END

@@ -1,0 +1,38 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	GEN_ISATERM
+C.Keywords:	Terminal
+C.Author:	Ger van Diepen (NFRA, Dwingeloo)
+C.Language:	DWARF-Fortran
+C.Environment:	VAX/VMS & UNIX
+C.Comments:
+C.Version:	920528 GvD - Created
+C.Version:	930201 HjV - make FSC
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	LOGICAL FUNCTION GEN_ISATERM (LUN)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	INTEGER		LUN		! (i) LUN to be tested
+C
+C.Purpose:	Test if a LUN is associated with a terminal;
+C.Returns:	TRUE = yes    FALSE = not
+C.Notes:
+C-------------------------------------------------------------------------
+C
+#ifdef wn_hp__
+	INTEGER		FNUM, GEN_ISATTY
+ 
+	INTEGER		IS, FD
+ 
+	FD = FNUM (LUN)			!get File Descriptor
+	IS = GEN_ISATTY (FD)
+	GEN_ISATERM = IS.NE.0		!0 = false
+#else
+	LOGICAL		ISATTY
+ 
+	GEN_ISATERM = ISATTY (LUN)
+#endif
+	RETURN
+	END

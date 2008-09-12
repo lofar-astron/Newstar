@@ -1,0 +1,746 @@
+%
+% @(#) nflag_descr.tex  v1.2 04/08/93 JEN
+% HjV 950615    Separate parts by indenting text or by using two blank lines
+% JPH 951016    Revision
+%
+\newcommand{\Em}[1]{{\em #1\/}}
+\newcommand{\bi}{ \begin{itemize} }
+\newcommand{\ei}{ \end{itemize} }
+
+
+\chapter{The Program NFLAG}
+
+\Em{\center
+Contributed by Johan Hamaker, October 1995.\\
+Revision of original docyment by Jan Noordam, August 1993.
+}
+
+\Em{
+This is a preliminary version of a new document replacing the old version of
+August 1993 by J.E. Noordam. The information in it is thought to be accurate
+but known to be incomplete. It should, however, in its present from help the
+user to get to grips with NFLAG's overwhelming user interface and functionality.
+}
+
+\tableofcontents
+
+%================================================= Standard subsection =======
+\section{Overview}
+\label{.overview}
+
+	The basic function of NFLAG is to mark visibility points in a .SCN file
+as faulty by 'flagging' them, i.e. by setting bits in the 'flag mask'
+associated with each point. In general, visibilities thus flagged will be
+considered no longer to exist; in this sense flagging is equivalent to
+deletion, but unlike deletion it is reversible, i.e. flag bits can be cleared
+at a later time. It is also possible to instruct processing programs to ignore
+flag bits and treat flagged visibilities as valid.
+
+	A secondary function in NFLAG, not further described here, is the SHOW
+option through which one may explore the contents of a .SCN file. For a
+description, see the descriptions of \textref{NSCAN}{nscan_descr} and its
+\textref{parameter interface}{nscan_private_intfc}.
+
+
+\section{ The \NEWSTAR flags concept}
+\label{.flag.concept}
+
+	The simplest way to get rid of bad visibilities is by \Em{deleting}
+them. Typically this is done by replacing each bad value by a special value
+that processing programs recognise as an instruction to ignore the data point.
+Since its original value is overwritten, a deleted data point is irreversibly
+lost.
+
+	The first step toward refinement is to \Em{flag} visibilities as bad
+without overwriting them; processing programs ignore those data for which the
+flag is set. Since the original value is retained, is can be 'undeleted' by
+clearing the flag; flagging is therefore also known as 'reversible deletion'.
+This method is a well-known one, because it is implemented AIPS.
+
+	In \NEWSTAR, it is carried a step further by differentiating between a
+number of different reasons for which a visibility may be considered bad.
+Rather than a single flag, \NEWSTAR associates a complete \Em{flag byte} with
+each visibility point: Thus one has not a single bit to play with, but eight
+different ones.     The advantage of this approach is that different flagging
+operations can be treated independently of one another. This makes it possible
+in many cases to backtrack form a flagging operation that produced undesirable
+results and thus introduces an important margin of safety: For instance, a
+selection made in a laborious manual flagging session cannot be accidentally
+undone by a subsequent automatic clipping operation going wrong.
+
+	Five of the eight bits in the flag byte are used by NFLAG, the user may
+use the remaining three in whichever way he wishes. By default, programs bypass
+all visibilities for which any one of the eight flags is set; it is also
+possible, however, to instruct a program to ignore certain flags. The three
+user-definable flag-types can be used for experiments with different selections
+of uv-data. (This is analogous to the use of different flag tables in AIPS.)
+
+	Below is a list of the flags defined by \NEWSTAR. The numbers shown in
+parentheses are the bit number (LSB=0) and hexadecimal values for these flags:
+\bi
+
+\item   MANUAL (bit 7, 80): NFLAG sets this flag when the user explicitly
+selects data points for flagging by specifying their coordinates (sector index,
+hour-angle range etc.)
+
+\item   CLIP (bit 6, 40): This flag is set in operations that select bad data
+by comparing them against some limit, e.g. a maximum for their cos or sin
+components or their selfcal residual amplitiude.
+
+\item   NOISE (bit 5, 20):  This flag is set in operations that select groups
+of bad data by checking their noise levels, e.g. those that NCALIB has
+calculated and stored in the .SCN file in a \whichref{REDUN}{} or
+\whichref{SELFCAL} operation.
+
+\item   ADDitive (bit 4, 10):  This flag is set in operations that select
+groups of bad data by comparing their average value against some limits
+
+\item   SHADowing (bit 3, 08):  This flag is set in operations that select bad
+data on the basis of some function of their coordinates, e.g. the length of the
+projected baseline or a geometry in which shadowing occurs.
+
+\ei
+The remaining three bits are known as U1 (bit 2, 04), U2 (bit 1, 02) and U3
+(bit 0, 01).
+
+	The \NEWSTAR visibility flagging scheme gives the user unprecedented
+flexibility for reversible data-editing, although its very power makes it a
+little more difficult to understand and use than a simple scheme such as AIPS's.
+
+
+\section{ Flagging logistics}
+\label{.logistics}
+
+	The only program that actiually sets and clears flags is NFLAG. It
+contains a number of options to select bad data on a varied range of criteria
+and set flags accordingly. To verify the effect, it also offers the option to
+\whichref{count flags}{.} over various cross-sections or projections of the
+\textref{data hypercube}{scn_file.hypercube} and \whichref{tabulate}{.} the
+results.
+
+	Another option is to select flags on a display of some two-dimensinal
+cross section through the hypercube, using the program \whichref{NGIDS}{}.
+NGIDS then produces a file with flagging commands which may subsequently be
+\whichref{read and executed} by NFLAG.
+
+	On a micro-level, it is possible to inspect the individual flag bytes
+in individual scans through the \textref{SHOW}{.overview} option.
+
+
+\subsection{ Visibility and scan-header flags}
+\label{.header.flags}
+
+	In addition to the flag bytes associated with the individual
+visibilities, the \textref{scan header}{scn_file.scan} also contains a flag
+byte. Through the flags in this byte one may invalidate the scan as a whole.
+This is obviously a more expedient way to handle flagging, since a single
+computer instruction will flag or test the entire scan.
+
+	In the present implementation of NFLAG, visibility flagging and
+scan-header flagging operate independently. That is, when the header is flagged
+the corresponding flags on the individual visibilities are left unchanged, and
+if the header is later unflagged those flags come back into force. On one hand
+this introduces some additional independence between different flagging
+operations as discussed \textref{above}{.flag.concept}. On the other hand it
+forces upon the user a technical distinction between two types of flagging that
+are functionally equivalent: The user must contend with such flagging
+operations as
+%
+\textref{HASCANS}{nflag_private_intfc.ops.scans},
+\textref{CLHEAD}{nflag_private_intfc.ops.manual},
+\textref{TOHEAD, TODATA}{nflag_private_intfc.ops.fcopy},
+statistics specifiers such as
+\textref{SCANS}{nflag_private_intfc.ops.statist}.
+(Unfortunately, the keywords used are not an example of clarity and
+consistency...)
+
+
+
+\section{ Primary and secondary visibility (hyper)cubes}
+\label{.hypercubes}
+
+	We assume here that the concept of the visibility
+\textref{hypercube}{scn_file.hypercube} is understood. We recall that the
+group/observation, mosaic-subfield, frequency-channel and (for a mosaic
+observation) the successive hour-angle 'cuts' are selected through the compound
+\textref{sector index}{scn_file.SCNSUM.indices}; the scan's hour-angle, and
+within a scan the interferometer and polarisation are selected by direct
+specification.
+
+	At the very start, NFLAG asks you to select a \Em{primary data
+hypercube} to operate on, through the parameters
+\bi{}
+\item\Textref{SCN\_NODE}{scnnode_public_intfc.scn.node}:
+	.SCN file;
+\item   \Textref{SCN\_SETS}{scnsets_public_intfc.scn.sets}:
+	sets of sectors, i.e. one ore more combinations of group, observation,
+	mosaic subfield, frequency channels and hour angle cuts;
+\item   \Textref{HA\_RANGE}{select_public_intfc.ha.range}:
+	hour-angle range;
+\item   \Textref{SELECT\_IFRS}{select_public_intfc.select.ifrs}:
+	interferometers;
+\item   \Textref{SELECT\_XYX}{select_public_intfc.select.xyx}
+	polarisations.
+\ei
+
+\noindent This primary cube may later be redefined partly or completely through
+the MODE branch of NFLAG which is accessible from \whichref{several places}{.}
+in the program.
+
+	For certain operations, one may narrow down the range of visibilities
+to be operated on by defining a \Em{secondary hypercube}; the data volume
+operated upon will then be the cross section of the primary and secondary
+cubes. Secondary-cube definition is limited to the latter three of the
+parameters listed above; note, in particular, that it is not presently possible
+to define a secondary frequency-channel range because that definition is part
+of the SCN\_SETS parameter.
+
+	A word of caution is in order about the effect of data-cube definitions
+in operations that affect the \textref{\Em{scan-header}}{.header.flags} flags.
+Since such actions operate on the entire scan, \Em {the ranges of
+interferometers and polarisations (parameters \Em{SELECT\_IFRS} and
+\Em{SELECT\_XYX}) that you defined for your hypercubes have no effect}.
+
+
+\section{ The flagging branch of NFLAG}
+\label{.flagging.branch}
+
+\input{../fig/nflag_flag.cap}
+
+\input{../fig/nflag_operate.cap}
+
+	The flagging branch is where the actual work of NFLAG is done. All
+commands that change flag setting on visibility points or scan headers are to
+be found here. The flagging options are shown in the upper left box in
+\figref{.nflag.flag} A detailed overview of the branch is given in
+\figref{.nflag.operate}.
+
+
+\section{ The INSPECTion branch of NFLAG}
+\label{.inspection.branch}
+
+\input{../fig/nflag_inspect.cap}
+
+	The purpose of the inspection branch is to provide overviews of the
+flags present. Generally speaking, the bulk of the visibilities is much too
+large for making useful graphic or tabular representations of the individual
+flag settings. For most purposes, however, the information one needs can be
+represented in the form of tables of flag counts along various cross-sections
+of the visibility hypercube. Such tables is what the inspection commands
+produce.
+
+	A schematic overview of the branch is given in \figref{.nflag.inspect}.
+
+	From the INSPECT branch, it is possible also to make a detour into the
+\textref{MODE}{.mode.branch} or \textref{STATISTICS}{.statist.branch} branch.
+
+
+\section{ The STATISTics branch of NFLAG}
+\label{.statist.branch}
+
+\input{../fig/nflag_statist.cap}
+
+	The purpose of the statistics branch is to provide statistical
+overviews of the visibility data. Generally speaking, the bulk of the
+visibilities is much too large for making useful graphic or tabular
+representations of the individual values (except with \whichref{NGIDS}). For
+flagging purposes, however, much of the information one needs can be
+represented in the form of tables of data statistics along various
+cross-sections of the visibility hypercube. Such tables is what the statistics
+commands produce.
+
+	A schematic overview of the branch is given in \figref{.nflag.statist}.
+
+	From the STATISTICS branch, it is possible also to make a detour into
+the INSPECT branch.
+
+
+\section{ NFLAGS environment paremeters: The MODE branch}
+\label{.mode.branch}
+
+%\input{../fig/nflag_mode.cap}
+
+
+
+\section{ Selection of bad visibilities on an X11 display }
+\label{.x11}
+
+\input{../fig/nflag_gids.cap}
+
+	For detailed point-by-point flagging of visibilities the flagging modes
+of NFLAG are much too cumbersome. For this purpose one may instead use a
+combination of
+\bi
+\item   NGIDS, to select data points with a cursor on a two-dimensional display
+of a cross section through the visibility hypercube in which data values are
+represented by colours;
+
+\item   NFLAG, to do the actual flagging of the selected points.
+\ei
+The procedure is schematically represented in \figref{.nflag.gids}.
+
+
+.c+
+
+{\bf The user is urged to work through the examples in this section before
+starting to use NFLAG. Quite a lot of valuable (and sometimes essential)
+information is available in the on-line HELP text.}
+
+
+
+%------------------------------------------- Option NFLAG subsubsection ------
+\newpage
+\subsection{Example: two flagging operations}
+\label{.example1}
+
+	This example has been annotated, so that it may serve as a first
+introduction to the use of NFLAG option FLAG. Starting with an unflagged
+SCN-file, two successive flagging operations are shown, using two different
+flag types (MANUAL and SHADOW). The results of this particular example
+are shown in the description of NFLAG option SHOW, later in this section.
+
+
+**** Put new script here ***
+
+
+{\it  The other FLAG\_OPTIONs deal with the NFLAG internal flag list:
+Clearing it and copying flags to/from the two types of flag files.
+This will be dealt with in a later example of GET/PUT.
+Now the uv-data hypercube will be defined, to which the subsequent
+(un)flagging operations will be limited:}
+
+
+**** Put new script here ***
+
+
+{\it In an FILLED data hypercube, all interferometers and all polarisations are
+selected. Some operations will then set flags in the Scan header, rather than
+in the individual uv-data. The user should be aware of this when inspecting
+flags, and in subsequent unflagging operations.}
+
+
+**** Put new script here ***
+
+
+{\it At least one FLAG\_MODE must be specified here, e.g. FLAG.
+The specified FLAG\_MODEs will be active from here onwards.
+NOCORRECT indicates that no corrections will be applied to the uv-data when
+they are read in.
+In the following (un)flagging operations, their default flag types will be
+used, since we have not used the option UFLAG to override them.}
+
+
+{\it  First, some individual interferometers will be flagged, using the manual
+operation IFR. Its default flag has type MANUAL. This operation has its own
+interferometer selection, which can only {\em narrow} the hypercude specified
+above.}
+
+
+**** Put new script here ***
+
+
+{\it The message per (affected) Scan is the result of the flag-mode SHOW,
+which will now be turned off. The second operation that will be
+shown here is the flagging of uv-data that are affected by `shadowing',
+i.e. the partial blocking of the field of view of one telescope by another.
+This is called a `deterministic algorithm', since it only uses known
+instrumental parameters like HA, elevation and telescope position.
+The operation has the default flag type SHADOW.}
+
+
+**** Put new script here ***
+
+
+{\it For real flagging of shadowed data, the actual diameter of 25m for WSRT
+telescopes should of course be given here. This example is to demonstrate
+a serendipitous alternative use of this operation, i.e. the flagging of
+all baselines with a {\em projected} size of less than 200m.}
+
+
+{\it  The result of these two flagging operations may now be verified
+with NFLAG option SHOW. This is done, for this particular example, in
+the description of option SHOW at the end of this section.}
+
+
+**** Put new script here ***
+
+
+%------------------------------------------- Option NFLAG subsubsection ------
+\newpage
+\subsection{Example: resetting all flags}
+\label{.reset}
+
+The following example is very important for users who have lost their way
+in the many options and operations of NEWSTAR flagging, and want to start
+with a clean slate. It also emphasizes the two questions that users should
+constantly ask themselves: Which flag types are being affected, and are they
+affected in the Scan header or in the individual uv-data?
+
+
+**** Put new script here ***
+
+
+{\it Note the use of UFLAG to select all (8) flag types, This overrides the
+default flag types of any subsequent flagging operations.}
+
+
+**** Put new script here ***
+
+
+{\it This takes care of the flags in the individual uv-data. To make sure
+that also the flags in the Scan headers are reset, another operation must
+be performed:}
+
+
+**** Put new script here ***
+
+
+{\it Now all flags in this SCN-file have been reset.
+This may be verified with NFLAG option SHOW.}
+
+
+
+%------------------------------------------- Option NFLAG subsubsection ------
+\newpage
+\subsection{The internal flag list: GET and PUT}
+\label{.list}
+
+The program NFLAG uses an internal flag list to store flags temporarily
+in the process of copying them from one place to another. This is
+illustrated in the block diagram NFLAG\_001.fig.
+
+
+The flag list can be filled in either of two ways:
+
+\begin{enumerate}
+\item
+From the uv-data in the SCN-file, in one or more GET operations. The user
+should keep in mind that each GET operation will add entries to the list.
+the list should be explicitly CLEARed when necessary.
+\item
+From one of the two kinds of flag file, i.e. an FLF-file (LOAD) or an
+ASCII flag file (READ). The reverse operations (UNLOAD and WRITE) are
+also possible.
+Thus, to store flags that are set in a SCN-file in a flag-file, they must
+first be GOT into the internal list, and then UNLOADED or WRITTEN to
+a flag-file.
+\end{enumerate}
+
+The PUT operation, with which flags are copied from the internal flag list
+to the uv-data is very powerful, because it is possible to specify a
+socalled PUT\_RANGE. This is a range in the four `dimensions' channel, HA,
+ifr and polarisation. For each entry in the flag list, not only the
+corresponding uv-data point will be flagged, but a 4-dimensional hypercube
+around it. For example: if some automatic algorithm has detected interference
+in one frequency channel, it is possible to flag all frequenct channels at
+that particular HA and ifr in this way.
+
+%------------------------------------------- Option NFLAG subsubsection ------
+\newpage
+\subsection{The two kinds of flag files}
+\label{.file}
+
+Flags may be stored into two different files: the FLF-file is (much) smaller
+because the information is stored in a compact format. The same information
+can also be stored in an ASCII file (default name FLAG.LOG), which can be
+inspected and edited with a normal text editor. It is up to the user to
+choose between these two kinds of file.
+
+When printed, the ASCII file looks as follows:
+
+\begin{verbatim}
+> more FLAG.LOG
+ !+ Flagging file FLAG.LOG
+ !  Created by NOORDAM on 930715 at 17:06:18 at rzmws0
+ !  Flags:
+ !       MAN : 80  CLIP: 40  NOIS: 20  ADD : 10
+ !       SHAD: 08  U3  : 04  U2  : 02  U1  : 01
+ !  Types:
+ !       00:  Interprete Ifr field as interferometer
+ !       01:  Interprete Ifr field as baselines in m
+ !  Data following an ! are seen as comments
+ !  Remaining fields have format:
+ !       *:          all values
+ !       value:      single value
+ !       val1=val2:  value range (inclusive)
+ !
+ !-
+ !Flag  Type  Channel       Hour-angle          Ifr         Pol
+ 40     00    0             -88.74              *           *
+ 40     00    0             -88.49              *           *
+ 40     00    0             -88.24              *           *
+ 40     00    0             -87.99              *           *
+ 80     00    0             -10.02              *           *
+ 80     00    0             -9.77               *           *
+ 80     00    0             -9.52               *           *
+ 80     00    0             -9.27               *           *
+ 80     00    0             -9.02               *           *
+ 80     00    0             -8.77               *           *
+\end{verbatim}
+
+Note the two flag types, MANUAL (80) and NOISE (40), which have obviously been
+set in two different flagging operations.
+{\it (NB: the use of the word `type' for the second column is a bit cunfusing
+here: it has no relation to the flag type!)}
+
+
+%============================================================================
+\newpage
+\section{Interactive flagging using NGIDS}
+\label{.interactive}
+
+In the following, a complete sequence of steps will be shown:
+~\\ - Making a `map' of uv-data in a WMP file, using NMAP
+~\\ - Displaying the uv-data on the screen, using NGIDS
+~\\ - Specifying areas of uv-data to be flagged, using mouse and NGIDS
+~\\ - Writing the flags from NGIDS to an ASCII flag-file
+~\\ - Printing the ASCII flag-file to inspect it
+~\\ - Reading the flags into the NFLAG internal flag list
+~\\ - Copying the flags to the uv-data in the SCN-file, using PUT
+~\\ See the block diagram NFLAG\_001.fig.
+
+%------------------------------------------------------------------------
+\subsection{Putting the uv-data into a WMP file}
+\label{.interactive.wmp}
+
+**** Put new script here ****
+
+
+%------------------------------------------------------------------------
+\subsection{Displaying the WMP file with NGIDS}
+\label{.interactive.display}
+
+**** Put new script here ****
+
+%------------------------------------------------------------------------
+\subsection{Interactively specifying flags in NGIDS}
+\label{.interactive.flag}
+
+**** Put new script here ****
+
+%------------------------------------------------------------------------
+\subsection{Transferring flags with an ASCII flag file}
+\label{.interactive.flag.file}
+
+**** Put new script here ****
+
+
+\begin{verbatim}
+> more DEMOFLAG.LOG
+
+ !+ Flagging file DEMOFLAG.LOG
+ !  Created by NOORDAM on 930724 at 17:18:00 at rzmws0
+ !  Flags:
+ !       MAN : 80  CLIP: 40  NOIS: 20  ADD : 10
+ !       SHAD: 08  U3  : 04  U2  : 02  U1  : 01
+ !  Types:
+ !       00:  Interprete Ifr field as interferometer
+ !       01:  Interprete Ifr field as baselines in m
+ !  Data following an ! are seen as comments
+ !  Remaining fields have format:
+ !       *:          all values
+ !       value:      single value
+ !       val1=val2:  value range (inclusive)
+ !
+ !-
+ !Flag  Type  Channel       Hour-angle          Ifr         Pol
+ 80     00    *             -62.67              6D          *
+ 80     00    *             7.52=   38.10       9D          *
+ 80     00    *             -28.08=   32.59     1B=8B       *
+\end{verbatim}
+
+**** Put new script here ****
+
+
+{\it This is not quite the result we expected. A GET operation produces a
+separate entry for every HA-Scan. What we see here is the compact notation
+produced by NGIDS. This is partly explainable: we have forgotten to
+CLEAR the internal flag list of NFLAG before doing the GET operation
+(remember that each GET {\em adds} entries to the list).
+But we must conclude that GET has not added any entries to it in this
+case, so there must be something wrong.....}
+
+
+%================================================= Standard subsection =======
+\newpage
+\section{NFLAG option SHOW}
+\label{.show}
+
+{\bf The option SHOW} allows the user to inspect the contents of a SCN-file:
+the general layout, the contents of headers at the various levels
+(i.e. file header, Sector header and Scan header), and the uv-data itself.
+Until july 1993, this functionality used to be part of the program NSCAN.
+Its use is demonstrated in some detail in another section of this Cookbook:
+`Description of the NEWSTAR SCN-file'. In this section, we will only
+draw attention to the use of the SHOW option to inspect flags that are set
+in the uv-data or in the Scan header.
+
+
+%------------------------------------------- Option SHOW subsubsection ------
+\subsection{A short tour of SHOW}
+\label{.show-tour}
+
+The NFLAG option SHOW allows the user to inspect the SCN-file at successively
+deeper levels: File layout and header, Sector header, Scan header (including
+header flags) and finally Scan data (including weights and flags):
+
+**** Put new script here ****
+
+%------------------------------------------- Option SHOW subsubsection ------
+\subsection{Inspecting flags per Sector}
+\label{.show-sector}
+
+It is possible to inspect the total number of flags for each interferometer
+in a Sector (i.e. many consecutive Scans). Each flagged uv-data point is
+counted for `one', even if more than one of the 8 flag types have been set.
+
+**** Put new script here ****
+
+
+%------------------------------------------- Option SHOW subsubsection ------
+\subsection{Inspecting flags per Scan}
+\label{.show-scan}
+
+The flag-bytes of individual uv-data can be inspected too:
+
+**** Put new script here ****
+
+The flag code is the sum of the codes of all the flag types that are set
+for a particular uv-data sample. Thus, for some only the flag of type
+MANUAL (80) is set, for others only type SHADOW(08), and a few have
+them both (88).
+
+Note that the weights of all uv-data that are flagged (any flag type) have
+been made negative. This is used internally, to speed up NEWSTAR programs.
+
+%------------------------------------------- Option SHOW subsubsection ------
+\subsection{Inspecting flags in the Scan header}
+\label{.show-header}
+
+
+If flags are set in the Scan header, they may be inspected as follows:
+
+**** Put new script here ****
+
+The flag (type MANUAL, code 80) is visible in BITS.
+
+
+%================================================= Special subsection ========
+\newpage
+\section{Ideas for improvements}
+\label{.improve}
+
+Efficient data editing is now the highest priority for NEWSTAR. The program
+NFLAG, and the interactive flagging option in the program NGIDS, have been
+created in a very short time, to meet the needs of important new NEWSTAR users
+(notably the WHISP project and the operational groups in Westerbork and
+Dwingeloo). Although some of the most important options have been implemented
+(and partly tested), there is ample room for improvement.
+
+The user is invited to add ideas and suggestions to the list below. This list
+is not necessarily in order of importance, and certain things will not get done
+very soon. Some ideas can be implemented rapidly: the program NFLAG has been
+designed as a frame-work, in which a wide range of flagging operations can be
+relatively easily provided and/or modified. Other improvements are clearly
+desirable, but the required effort may not be justifiable for an interim
+package (waiting for AIPS++). However, the list below will play an important
+role in determining the list of priorities for the fall of 1993.
+
+\begin{itemize}
+
+\item
+Flagging operation ARESID (comparable to RRESID at level OPERATION\_0).
+The Align/Selfcal residue for each
+indivudual uv-data point is used as a criterion to flag that data point.
+The advantage over RRESID is that all interferometers are involved.
+The disadvantage is that a good source model is required.
+The most urgent application is the treatment of calibrator observations
+(for which good models exist) by the operational NFRA groups.
+
+\item
+Flagging operation DCOFFSET, to detect DC offsets caused by the ageing
+correlator.
+
+\item
+Automatic batch procedures (ABP) for certain flagging operations,
+for use by the operational groups in Westerbork and Dwingeloo.
+Ideally, they should lead to a succinct Quality Report for a particular
+observation, possibly with suggestions for action if necessary (Expert
+System).
+
+\item
+Easy availability of the necessary information to set limit values for
+flagging criteria. For instance, the overall Redundancy noise for the
+entire Sector when using the operation RRESID.
+
+\item
+The possibility of using `general' limit values for flagging criteria,
+instead of explicit numeric values.
+For instance: upper limit is 2*REDNS, or 3.5*SIGMA etc.
+
+\item
+More detailed inspection tools for the flags that are set in the uv-data. At
+this moment there is only the possibility to show all flags (of any type) per
+interferometer for a particular Sector. This is only useful to see whether or
+not a certain interferometer has been flagged. Moreover, it is cumbersome to
+have to leave NFLAG option FLAG, and to enter NFLAG option SHOW.
+
+\item
+A SHOW option to view the internal flag list. Perhaps this could be
+gradually extended to a full set of tools to edit the flag list, comparable
+to the tools for a list of source model components.
+
+\item
+More user-friendly interactive flagging with the NGIDS display.
+This includes better use of available GIDS functionality to
+indicate data to be flagged, and improvement of the display of vital
+reference data (ifr, baseline, HA, channel, value etc) at all times.
+
+\item
+At this moment, the NFLAG flagging operations work directly on the uv-data
+in the SCN-file. It might be preferable to collect the flags in the internal
+flag list first, to be copied to the uv-data (PUT) or an external file after
+inspection.
+
+\item
+Reading the uv-data into NGIDS directly from the SCN-file.
+The present implementation requires the intermediairy steps via the program
+NMAP and the WMP file. This was easier to implement, but is more cumbersome
+for the user. Ideally, the user would of course like to interact directly
+with the uv-data in the SCN-file, in both directions (like in AIPS TVFLAG).
+
+\item
+In some ways, it may be easier to determine which uv-data are `bad' from the
+the line graphics plots produced by NPLOT.
+
+\item
+Filtering operations on frequency-spectra, comparable to the AIPS option UVLIN.
+The latter simply calculates and subtracts the average from the spectrum of
+each individual uv-sample, to `remove' the continuum, and thus to enhance the
+line. This technique could be
+refined to subtracting low-order polynomials from the spectra.
+Moreover, the effects of strong sources that are far outside the primary beam
+could be filtered out by removing high-frequency ripples from the spectra.
+
+\item
+\item
+\item
+\item
+\item
+\item
+\end{itemize}
+
+
+	NB: The concept of a flag-file, which may also be edited, is
+potentially quite powerful. The information in such a flag-file
+specifies flag type, and ranges for frequency channel, HA, ifr and
+polarisation. Since these ranges may be wild-cards (*), the flag-files
+may be used to copy flags from a calibrator observation to a real observation.
+
+	The use of data flags by NEWSTAR programs is entirely analogous
+to the use of uv-data corrections: they are applied `on-the-fly'
+whenever uv-data are read  in for processing. The default is that all
+8 flag types are tested for. But the user may specify that one or more
+flag types are to be ignored, by means of the general (NGEN) keyword
+UFLAG. This is of course analogous to the use of the NGEN keywords
+APPLY and DE\_APPLY for on-the-fly corrections.

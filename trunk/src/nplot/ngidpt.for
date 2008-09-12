@@ -1,0 +1,120 @@
+C+ NGIDPT.FOR
+C  WNB 930514
+C
+C  Revisions:
+C	CMV 931220	Change call to N_GDI_PGPLOT
+C
+C
+	LOGICAL FUNCTION NGIDPT(GID,COMPR,TEAR,RB,RBUF,BUT)
+C
+C  Get point from GIDS screen
+C
+C  Result:
+C       NGIPNT_L = NGIPNT( GID_J:I, COMPR_J:I, TEAR_J(0:3), RB_E:(2):IO,
+C		RBUF_E(2):O, BUT_J:O)
+C				Give for GIDS display GID the position
+C				of the cursor if MB1 pressed in RBUF, and
+C				return .FALSE. after MB3.
+C				RB gives the screen coordinates, and will
+C				be filled if initially -1 with centre.
+C				COMPR gives a possible area compression.
+C				TEAR is the area displayed in edge-format
+C				BUT returns button pressed (or 0 if error)
+C
+C       
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER GID			!DISPLAY ID
+	INTEGER COMPR			!COMPRESSION
+	INTEGER TEAR(0:3)		!EDGE-FORMAT AREA DISPLAYED
+	REAL RB(2)			!SCREEN X,Y
+	REAL RBUF(2)			!RETURNED X,Y IN USER COORDINATES
+	INTEGER BUT			!BUTTON PRESSED
+C
+C  Function references:
+C
+	INTEGER N_GDI_PGPLOT		!GET DATA INFO
+	INTEGER N_GDI_FRAME		!GET FRAME INFO
+	LOGICAL WNFRD			!READ DISK
+C
+C  Data declarations:
+C
+	REAL RB1(4)			!PGPLOT DATA
+	REAL GLO(2),GHI(2),GLH(4)	!FRAME DATA
+	  EQUIVALENCE (GLO,GLH),(GHI,GLH(3))
+	CHARACTER*4 CBUF
+C-
+C
+C INIT
+C
+	NGIDPT=.TRUE.				!ASSUME OK
+	I=N_GDI_PGPLOT(GID,6,RB1,4,LEN(CBUF),CBUF) !WINDOW
+	IF (I.LT.0) THEN			!ERROR
+	  E_C=I
+	  GOTO 900
+	END IF
+	IF (RB(1).EQ.-1. .OR. RB(2).EQ.-1.) THEN
+	  RB(1)=RB1(2)/2+1			!POINT TO CENTRE
+	  RB(2)=RB1(4)/2+1
+	END IF
+C
+C GET DATA POINT FROM USER
+C
+ 10	CONTINUE
+	I=N_GDI_FRAME(GID,GLO,GHI)		!CURRENT FRAME AREA
+	IF (I.LT.0) THEN			!ERROR
+	  E_C=I
+	  GOTO 900
+	END IF
+	I=N_GDI_PGPLOT(GID,17,RB,2,LEN(CBUF),CBUF) !GET DATA POINT
+	IF (I.LT.0) THEN			!ERROR
+	  E_C=I
+	  GOTO 900
+	END IF
+	IF (CBUF(1:1).EQ.'1') THEN		!MB1
+	  BUT=1
+	ELSE IF (CBUF(1:1).EQ.'2') THEN
+	  BUT=2					!MB2
+	ELSE IF (CBUF(1:1).EQ.'3') THEN
+	  BUT=3					!MB3
+	  E_C=0					!READY
+	  GOTO 900
+	ELSE
+	  GOTO 10				!RETRY
+	END IF
+	IF (RB(1).LT.RB1(1) .OR. RB(1).GT.RB1(2) .OR.
+	1	RB(2).LT.RB1(3) .OR. RB(2).GT.RB1(4)) GOTO 10 !OUT WINDOW
+	DO I=1,2				!CORRECT FOR CURRENT FRAME
+	  RBUF(I)=(RB(I)/(RB1(2*I)+1.))*
+	1		(GHI(I)-GLO(I))*(1.+1./(RB1(2*I)+1.))+
+	1		GLO(I)
+	END DO
+	DO I=1,2
+	  RBUF(I)=ANINT(COMPR*(RBUF(I)))	!CORRECT FOR COMPRESS
+	END DO
+	DO I=1,2
+	  IF (RBUF(I).LT.TEAR(2*I-2) .OR.
+	1		RBUF(I).GT.TEAR(2*I-1)) GOTO 10 !OUTSIDE AREA
+	END DO
+	GOTO 800
+C
+C ERROR
+C
+ 900	CONTINUE
+	NGIDPT=.FALSE.
+	BUT=0					!NO BUTTON PRESSED
+C
+ 800	CONTINUE
+C
+	RETURN
+C
+C
+	END

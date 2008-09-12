@@ -1,0 +1,49 @@
+!+ ABP.GRP
+!  WNB 920915
+!
+!  Revisions:
+!       HjV 921104      Remove NGIDS
+!       HjV 930226	Add ABPX_NPLOT
+!	HjV 930924	Add ABPX_NFLAG
+!
+!  General routines for DWARF programs
+!
+!  Group definition:
+!
+ABP.GRP
+!
+!  Masks for program development
+!
+!  PIN files
+!
+!  Structure files
+!
+!  General command files
+!
+!
+!  Initialisation command files
+!
+!
+!  Fortran definition files:
+!
+!
+!  Programs:
+!
+ABPX_NCALIB.FOR         !ABPX_NCALIB
+ABPX_NCLEAN.FOR         !ABPX_NCLEAN
+ABPX_NFLAG.FOR		!ABPX_NFLAG
+ABPX_NMAP.FOR           !ABPX_NMAP
+ABPX_NMODEL.FOR         !ABPX_NMODEL
+ABPX_NPLOT.FOR          !ABPX_NPLOT
+ABPX_NSCAN.FOR          !ABPX_NSCAN
+!
+!  Executables
+!
+ABPX_NCALIB.EXE         !
+ABPX_NCLEAN.EXE         !
+ABPX_NFLAG.EXE 		!
+ABPX_NMAP.EXE           !
+ABPX_NMODEL.EXE         !
+ABPX_NPLOT.EXE		!
+ABPX_NSCAN.EXE          !
+!-

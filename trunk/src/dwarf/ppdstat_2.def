@@ -1,0 +1,116 @@
+C	Include module PPDSTAT_2
+C	Created by BLDDEF from: _$1$DIA3:[TESTDWARF.SRC.DEF]PPDSTAT.DEF; on 17-OCT-90
+C
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	DEF_PPDSTAT
+C.Keywords:	PPD File, Mapped, Status Array
+C.Author:	Kasper Kombrink (NFRA, Dwingeloo)
+C.Language:	DWARF-DEF
+C.Environment:	VAX
+C.Comments:
+C.Version:	850813 KK  - version 1
+C.Version:	890125 FMO - version 2, new DEF syntax
+C--------------------------------------------------------------------
+C
+C		Status array of the currently mapped PPD file
+C		(all fields are 0 when no PPD file is mapped)
+C
+	INTEGER*4  PPS_LENGTH
+	PARAMETER (PPS_LENGTH           =1)         !&1     !#J !generated: field to contain the block length
+	INTEGER*4  PPS_TYPE
+	PARAMETER (PPS_TYPE             =2)         !&1     !#J !generated: field to contain the block type
+C					Location of the map
+C					- filled by PPD_INIT
+C					- cleared by PPD_EXIT
+C
+	INTEGER*4  PPS_MAPB
+	PARAMETER (PPS_MAPB             =1)         !&1     !#J !address 1-st byte of mapped PPD file
+	INTEGER*4  PPS_MAPE
+	PARAMETER (PPS_MAPE             =2)         !&1     !#J !address last byte of mapped PPD file
+C
+C					Location of the various areas
+C					- filled by PPD_INIT
+C					- UNDEF_J if the area is empty
+C					- cleared by PPD_EXIT
+C
+	INTEGER*4  PPS_INXB
+	PARAMETER (PPS_INXB             =3)         !&1     !#J !address 0-th byte of index area
+	INTEGER*4  PPS_PARB
+	PARAMETER (PPS_PARB             =4)         !&1     !#J !address 0-th byte of parameter description area
+	INTEGER*4  PPS_HLPB
+	PARAMETER (PPS_HLPB             =5)         !&1     !#J !address 0-th byte of help area
+	INTEGER*4  PPS_PROTB
+	PARAMETER (PPS_PROTB            =6)         !&1     !#J !address 0-th byte of prototype description area
+	INTEGER*4  PPS_NRINX
+	PARAMETER (PPS_NRINX            =7)         !&1     !#J !number of index entries
+C
+C					Location of the current description
+C					- 0 if none is selected
+C					- modified by several routines
+C
+	INTEGER*4  PPS_NXTPAR
+	PARAMETER (PPS_NXTPAR           =8)         !&1     !#J !address 0-th byte of parameter description
+	INTEGER*4  PPS_NXTPROT
+	PARAMETER (PPS_NXTPROT          =9)         !&1     !#J !address 0-th byte of prototype description
+	INTEGER*4  PPS_ENTYP
+	PARAMETER (PPS_ENTYP            =10)        !&1     !#J !type of last selected description (0=param, 1=proto)
+	INTEGER*4  PPS_NRINXPR
+	PARAMETER (PPS_NRINXPR          =11)        !&1     !#J !index number of last selected description
+C
+C					Description of the FAB
+C					- filled by PPD_INIT
+C					- cleared by PPD_EXIT
+C
+	INTEGER*4  PPS_FABADR
+	PARAMETER (PPS_FABADR           =12)        !&1     !#J !FAB address
+	INTEGER*4  PPS_FABSIZ
+	PARAMETER (PPS_FABSIZ           =13)        !&1     !#J !FAB size
+	INTEGER*4  PPS__LENGTH
+	PARAMETER (PPS__LENGTH          =13)                    !generated: block length (in longwords)
+	INTEGER*4  PPS__TYPE
+	PARAMETER (PPS__TYPE            =21)                    !generated: block type
+	INTEGER*4	PPDSTAT__DEFTYP
+	PARAMETER	(PPDSTAT__DEFTYP=24)
+	INTEGER*4	PPDSTAT__DEFVSN
+	PARAMETER	(PPDSTAT__DEFVSN=2)
+C
+	EXTERNAL	PPDSTAT_BLOCK
+C
+C Common block specification
+C
+	INTEGER*4 PPS$LENGTH
+	EQUIVALENCE (PPS$LENGTH,PPS__(0))
+	INTEGER*4 PPS$TYPE
+	EQUIVALENCE (PPS$TYPE,PPS__(4))
+	INTEGER*4 PPS$MAPB
+	EQUIVALENCE (PPS$MAPB,PPS__(0))
+	INTEGER*4 PPS$MAPE
+	EQUIVALENCE (PPS$MAPE,PPS__(4))
+	INTEGER*4 PPS$INXB
+	EQUIVALENCE (PPS$INXB,PPS__(8))
+	INTEGER*4 PPS$PARB
+	EQUIVALENCE (PPS$PARB,PPS__(12))
+	INTEGER*4 PPS$HLPB
+	EQUIVALENCE (PPS$HLPB,PPS__(16))
+	INTEGER*4 PPS$PROTB
+	EQUIVALENCE (PPS$PROTB,PPS__(20))
+	INTEGER*4 PPS$NRINX
+	EQUIVALENCE (PPS$NRINX,PPS__(24))
+	INTEGER*4 PPS$NXTPAR
+	EQUIVALENCE (PPS$NXTPAR,PPS__(28))
+	INTEGER*4 PPS$NXTPROT
+	EQUIVALENCE (PPS$NXTPROT,PPS__(32))
+	INTEGER*4 PPS$ENTYP
+	EQUIVALENCE (PPS$ENTYP,PPS__(36))
+	INTEGER*4 PPS$NRINXPR
+	EQUIVALENCE (PPS$NRINXPR,PPS__(40))
+	INTEGER*4 PPS$FABADR
+	EQUIVALENCE (PPS$FABADR,PPS__(44))
+	INTEGER*4 PPS$FABSIZ
+	EQUIVALENCE (PPS$FABSIZ,PPS__(48))
+	BYTE PPS__(0:51)
+	INTEGER*4 PPS_(13)
+	EQUIVALENCE (PPS_,PPS__)
+C
+	COMMON /PPDSTAT/ PPS_
+C

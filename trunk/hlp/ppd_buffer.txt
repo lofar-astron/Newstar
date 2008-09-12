@@ -1,0 +1,41 @@
+Aanpassen van de grootte van de ppd help-text buffer
+----------------------------------------------------
+
+(bijdrage van H.J. Vosmeijer/J.P. Hamaker, 940829)
+
+
+Als het compileren van een .pin/.psc/.pef file stuk loopt op een te kleine
+werk-buffer in sys_bldppd, moeten zowel deze buffer als een daarmee
+corresponderende buffer in de Newstar executables worden vergroot. Dit veresit
+de volgende wijzigingen in files in $n_src/dwarf, gevolgd door een gepaste
+reeks 'nsh build's
+
+
+Om de werk-buffer in cpl_2.def te vergroten moet het volgende
+gebeuren (b.v. van 5000  naar 10000 bytes):
+
+In cpl_2.def:
+  1. verander 5000 in 10000 in parameter (cpl__wrklmax = 5000)
+
+  2. verander 5000 in 10000 in parameter (cpl_wrkbuf = 421)  !&5000 !#C
+
+  3. hoog alle adressen op met 5000 (=(nieuw-oud)=(10000-5000)) voor de
+     variabelen die  NA  CPL_WRKBUF  en  VOOR  CPL__LENGTH  komen.
+     Dit zijn dus de waarden na het = teken)
+
+  4. pas CPL__LENGTH aan (=(CPL_ERRNTOT+3)/4)
+
+  5. verander 5000 in 10000 in CHARACTER*5000 CPL$WRKBUF
+
+  6. hoog alle waarden op met 5000 (=(nieuw-oud)=(10000-5000)) voor de
+     variabelen die  NA  CPL$WRKBUF  komen.
+
+In onderstaande files in genoemde regels 5000 in 10000 veranderen:
+   cplblock.for:   CHARACTER*5000  CPL$WRKBUF
+   cplread.for:    CHARACTER       KEYWORD*80, VALUE*5000
+   bpdbuild.for:   CHARACTER       VALUE*5000
+   bpdstore.for:   CHARACTER       STRING*5000, NAME*16
+   ppdhelp.fsc:    CHARACTER       WORK*5000, WORK2*80, LINE*80
+   ppdprompt.for:  CHARACTER       WORK*5000, PROGSTRM*80, KEYWORD*16
+
+

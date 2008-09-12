@@ -1,0 +1,22 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*.Ident:	GENUN_SYSTEM
+/*.Keywords:	Spawn subprocess
+/*.Author:	Ger van Diepen (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	UNIX
+/*.Comments:	
+/*.Version:	920528 GvD - creation
+/*-----------------------------------------------------------------------*/
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+gen_system_ (comm)
+	char *comm;			/* (i) command to be executed */
+{
+
+/*.Purpose:	Execute command in a subprocess
+/*.Returns:	Exit status of command
+/*.Notes:
+/*-----------------------------------------------------------------------*/
+
+	    return system(comm);
+}

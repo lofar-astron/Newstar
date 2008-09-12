@@ -1,0 +1,156 @@
+!+ NMO.GRP
+!  WNB 900327
+!
+!  Revisions:
+!	WNB 910809	Add PRM, HMT, HMF
+!	WNB 910809	Add WRI
+!	WNB 910814	Add BEM
+!	WNB 910909	Add ADC, DAY
+!	WNB 911230	Add NMOANC
+!	WNB 920107	Add NMOAM2
+!	WNB 920113	Add PTI
+!	WNB 920626	Add NMOACD
+!	WNB 921202	Add NMOMUJ
+!	WNB 921208	Add NMORDA
+!	WNB 921211	Change PEF/PSC
+!	WNB 921217	Add NMOFNA
+!	WNB 930514	Add NMOFMD; make NMODEL.FSC
+!	WNB 930623	Remove NMOUPD6,7,8
+!	WNB 930819	Change NMOMUM into NMOMU4
+!	WNB 930825	Add NMOCIX,CXI
+!	WNB 930826	Add NMOCIY,CXX; BMD.DSC, NMOBMR,BMF,BMV
+!	WNB 930928	Split off NMOBMV
+!	WNB 931008	Remove NMOCV1
+!	WNB 931011	Add NMOPRS
+!	HjV 940217	Add/change missing entry-points/functions
+!	HjV 940303	Add NMODAV, NMODAW
+!	CMV 940428	Add NMONAM and NMONM1
+!	WNB 950628	Add MDU.DSC; remove PRX,S,P,E
+!	AXC 010628	linux port
+!
+!  Model handling
+!
+!  Group definition:
+!
+NMO.GRP
+!
+!  PIN files
+!
+NMODEL.PEF		!General include file
+NMODEL.PSC
+!
+!  Structure files
+!
+MDH.DSC			!		Model header
+MDL.DSC			!		Model line
+MDU.DSC			!		Model update area
+BMD.DSC			!		Beam values
+!
+!  Fortran definition files:
+!
+NMO.DSC			!		Program common/parameters
+!
+!  Programs:
+!
+NMODEL.FSC		!		Main routine
+NMOADD.FOR		!NMOADD		Add a source
+			!NMOAED		Edit a source
+			!NMOADL		Delete sources
+			!NMOANC		Delete non-clean low-level
+			!NMOACD		Delete clean low-level
+			!NMOAMG		Merge sources
+			!NMOAM1		Merge sources
+			!NMOAM2		Merge sources
+			!NMOAFB		Edit B field
+			!NMOAFJ		Edit J field
+			!NMOAFE		Edit E field
+			!NMOADC		Calibrate source list
+			!NMOAAD		Delete sources in area
+NMOBEM.FOR		!NMOBEM		Correct model for beam
+			!NMOBED		De-correct model for beam
+NMOBMF.FOR		!NMOBMF		Get range and beam for instrument
+NMOBMR.FOR		!NMOBMR		Read beam values from user
+NMOBMV.FOR		!NMOBMV		Get beam value for l,m,freq 
+NMOCVS.FOR		!NMOCVS		Convert source list format
+NMOCIX.FOR		!NMOCIX		Convert Stokes to XYX
+			!NMOCIY		Convert Stokes to XYX and average
+NMOCXI.FOR		!NMOCXI		Convert XYX to Stokes
+			!NMOCXX		Convert XYX to wanted
+NMOCVT.FOR		!NMOCVT		Convert source list format
+NMOCVX.FOR		!NMOCVX		Convert VAX to local format
+NMODAT.FOR		!NMODAT		Get program data
+			!NMODAW		Get program data for handle 
+			!NMODAV		As NMODAV and test 'unknown-flux' bit
+			!NMODAX		External call for handle options
+			!NMODAY		Call for possible output
+NMOEXT.FOR		!NMOEXF		From external to internal format
+			!NMOEXT		From internal to external format
+NMOFMD.FOR		!NMOFMD		Get manually sources in map
+NMOFND.FOR		!NMOFND		Find pos. sources in map
+			!NMOFNA		Find pos/neg sources
+NMOGSH.FOR		!NMOGSH		Copy general source header
+NMOHED.FOR		!NMOHCD		Clear data part header
+			!NMOHMD		Move data part header
+			!NMOHZD		Clear data and # of sources
+			!NMOHMF		Move from a general header to a local
+			!NMOHMT		Move from local to general header
+NMOINI.FOR		!NMOINI		Init program
+NMOMSC.FOR		!NMOMSC		Calculate model in scan
+			!NMOMSL		Calculate model with scan offsets
+NMOMSG.FOR		!NMOMSG		Get model from scan file
+NMOMSS.FOR		!NMOMSS		Set model data in scan file
+NMOMST.FOR		!NMOMST		Get set related constants
+NMOMU4.FOR		!NMOMU4		Calculate model fringes for 4 pol.
+NMOMUC.FOR		!NMOMUC		Calculate model fringes
+			!NMOMU1		Calculate model fringes one source
+			!NMOMUA		Calculate additive model fringes
+NMOMUI.FOR		!NMOMUI		Get model action for scan save
+			!NMOMUJ		Specify model action for scan save
+NMOMUP.FOR		!NMOMUP		Prepare model list for scan handling
+NMOMUV.FOR		!NMOMUV		Get UV coordinates for model calculation
+NMONAM.FOR		!NMONAM		Find proper name for model component
+			!NMONM1		Initialise name-list
+NMONVS.FOR		!NMONVS		Make newest version of model file
+NMOOFR.FSC		!NMOOFR		Convert from old format
+NMOOTO.FOR		!NMOOTO		Convert to old format
+NMOPRT.FOR		!NMOPRT		Print source list
+			!NMOPRR		Print source list in RA/DEC format
+			!NMOPTT		Print totals from source list
+			!NMOPTI		Print totals from local list
+			!NMOPRU		Print source list with updates
+			!NMOPRM		Print sources from specified model
+NMORDS.FOR		!NMORDS		Read source list from node
+			!NMORDD		Determine difference between lists
+			!NMORDX		Read source list
+			!NMORDM		Add source lists
+			!NMORDA		Add source lists
+			!NMORDC		Copy source list
+			!NMORDZ		Empty source list
+			!NMORDH		Get some header data
+NMOSLI.FOR		!NMOSLI		Get general source list
+			!NMOSLG		Get a source list
+			!NMOSLD		Delete a source list
+NMOSRT.FOR		!NMOSRT		Sort model
+NMOSR0.FOR		!NMOSR0		Sort compare	intensity
+			!NMOSR1				l,m
+			!NMOSR2				J field
+			!NMOSR3				E field
+			!NMOSR4				B field
+			!NMOSR5				distance
+			!NMOSR6				l,m
+			!NMOSR7				m,l
+			!NMOSR8				polarisation
+NMOUPD.FOR		!NMOUPD		Update source flux/position
+NMOUP0.FOR		!NMOUP0		Init. update LSQ
+			!NMOUP1		Make update equations
+			!NMOUP2		Solve update
+			!NMOUP3		Show results
+			!NMOUP9		Clear LSQ data update
+NMOWRI.FOR		!NMOWRI		Write source file
+NMOWRS.FOR		!NMOWRS		Write source file
+			!NMOWRX		Write external source file
+!
+!  Executables
+!
+NMODEL.EXE		!		Scan handling
+!-

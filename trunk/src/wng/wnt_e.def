@@ -1,0 +1,216 @@
+C+ Created from wnt.dsc on 970828 at 17:01:51 at daw18
+C  WNT_E.DEF
+C  WNB 970828
+C
+C  Revisions:
+C
+C       WNB 931216      New edit default for D/E unformatted items
+C       WNB 930902      Make 32 array indices, 64 field length
+C       WNB 930801      Original version
+C                                                                             
+C
+C  Result:
+C
+C  WNT.DSC describes the include files (WNT_O.DEF[.inc],
+C  	WNT.DEF [.inc]) for the WNTINC program.
+C  	Most WNTI* routines need:
+C  	INCLUDE 'WNT_O_DEF' and
+C  	INCLUDE 'WNT_DEF'
+C                                                                             
+C
+C       Specification of edit tables:
+C
+C The character (_EC) table contains:
+C       fieldname, pattern, units, special code
+C The integer (_EJ) table contains:
+C       offset, #of values, edit (0=allowed), unit length
+C                                                                             
+C
+C  WNTB edit definitions:
+C                                                                             
+	INTEGER WNTBEDL,WNTB__EL
+	  PARAMETER (  WNTBEDL=5,               ! Length table
+	1              WNTB__EL=5)
+	CHARACTER*12 WNTB_EC(4,5)
+	INTEGER WNTB_EJ(4,5)
+	  DATA WNTB_EC(1,1),WNTB_EC(2,1),WNTB_EC(3,1),WNTB_EC(4,1)
+	1      /'CCNT','SJ',' ',' '/
+	  DATA WNTB_EJ(1,1),WNTB_EJ(2,1),WNTB_EJ(3,1),WNTB_EJ(4,1)
+	1      /0,1,0,4/
+	  DATA WNTB_EC(1,2),WNTB_EC(2,2),WNTB_EC(3,2),WNTB_EC(4,2)
+	1      /'CNT','SJ',' ',' '/
+	  DATA WNTB_EJ(1,2),WNTB_EJ(2,2),WNTB_EJ(3,2),WNTB_EJ(4,2)
+	1      /4,1,0,4/
+	  DATA WNTB_EC(1,3),WNTB_EC(2,3),WNTB_EC(3,3),WNTB_EC(4,3)
+	1      /'ELEN','SJ',' ',' '/
+	  DATA WNTB_EJ(1,3),WNTB_EJ(2,3),WNTB_EJ(3,3),WNTB_EJ(4,3)
+	1      /8,1,0,4/
+	  DATA WNTB_EC(1,4),WNTB_EC(2,4),WNTB_EC(3,4),WNTB_EC(4,4)
+	1      /'BPTR','SJ',' ',' '/
+	  DATA WNTB_EJ(1,4),WNTB_EJ(2,4),WNTB_EJ(3,4),WNTB_EJ(4,4)
+	1      /12,1,0,4/
+	  DATA WNTB_EC(1,5),WNTB_EC(2,5),WNTB_EC(3,5),WNTB_EC(4,5)
+	1      /'JPTR','SJ',' ',' '/
+	  DATA WNTB_EJ(1,5),WNTB_EJ(2,5),WNTB_EJ(3,5),WNTB_EJ(4,5)
+	1      /16,1,0,4/
+C
+C  WNTI edit definitions:
+C                                                                             
+	INTEGER WNTIEDL,WNTI__EL
+	  PARAMETER (  WNTIEDL=4,               ! Length table
+	1              WNTI__EL=4)
+	CHARACTER*12 WNTI_EC(4,4)
+	INTEGER WNTI_EJ(4,4)
+	  DATA WNTI_EC(1,1),WNTI_EC(2,1),WNTI_EC(3,1),WNTI_EC(4,1)
+	1      /'FTYP','SJ',' ',' '/
+	  DATA WNTI_EJ(1,1),WNTI_EJ(2,1),WNTI_EJ(3,1),WNTI_EJ(4,1)
+	1      /0,1,0,4/
+	  DATA WNTI_EC(1,2),WNTI_EC(2,2),WNTI_EC(3,2),WNTI_EC(4,2)
+	1      /'LCOM','SJ',' ',' '/
+	  DATA WNTI_EJ(1,2),WNTI_EJ(2,2),WNTI_EJ(3,2),WNTI_EJ(4,2)
+	1      /4,1,0,4/
+	  DATA WNTI_EC(1,3),WNTI_EC(2,3),WNTI_EC(3,3),WNTI_EC(4,3)
+	1      /'PCOM','SJ',' ',' '/
+	  DATA WNTI_EJ(1,3),WNTI_EJ(2,3),WNTI_EJ(3,3),WNTI_EJ(4,3)
+	1      /8,1,0,4/
+	  DATA WNTI_EC(1,4),WNTI_EC(2,4),WNTI_EC(3,4),WNTI_EC(4,4)
+	1      /'PFOR','SJ',' ',' '/
+	  DATA WNTI_EJ(1,4),WNTI_EJ(2,4),WNTI_EJ(3,4),WNTI_EJ(4,4)
+	1      /12,1,0,4/
+C
+C  WNTV edit definitions:
+C                                                                             
+	INTEGER WNTVEDL,WNTV__EL
+	  PARAMETER (  WNTVEDL=4,               ! Length table
+	1              WNTV__EL=4)
+	CHARACTER*12 WNTV_EC(4,4)
+	INTEGER WNTV_EJ(4,4)
+	  DATA WNTV_EC(1,1),WNTV_EC(2,1),WNTV_EC(3,1),WNTV_EC(4,1)
+	1      /'NAM','AL',' ',' '/
+	  DATA WNTV_EJ(1,1),WNTV_EJ(2,1),WNTV_EJ(3,1),WNTV_EJ(4,1)
+	1      /0,1,0,16/
+	  DATA WNTV_EC(1,2),WNTV_EC(2,2),WNTV_EC(3,2),WNTV_EC(4,2)
+	1      /'TYP','SJ',' ',' '/
+	  DATA WNTV_EJ(1,2),WNTV_EJ(2,2),WNTV_EJ(3,2),WNTV_EJ(4,2)
+	1      /16,1,0,4/
+	  DATA WNTV_EC(1,3),WNTV_EC(2,3),WNTV_EC(3,3),WNTV_EC(4,3)
+	1      /'VAL','SJ',' ',' '/
+	  DATA WNTV_EJ(1,3),WNTV_EJ(2,3),WNTV_EJ(3,3),WNTV_EJ(4,3)
+	1      /20,1,0,4/
+	  DATA WNTV_EC(1,4),WNTV_EC(2,4),WNTV_EC(3,4),WNTV_EC(4,4)
+	1      /'STR','AL',' ',' '/
+	  DATA WNTV_EJ(1,4),WNTV_EJ(2,4),WNTV_EJ(3,4),WNTV_EJ(4,4)
+	1      /24,1,0,64/
+C
+C  WNTF edit definitions:
+C                                                                             
+	INTEGER WNTFEDL,WNTF__EL
+	  PARAMETER (  WNTFEDL=16,              ! Length table
+	1              WNTF__EL=16)
+	CHARACTER*12 WNTF_EC(4,16)
+	INTEGER WNTF_EJ(4,16)
+	  DATA WNTF_EC(1,1),WNTF_EC(2,1),WNTF_EC(3,1),WNTF_EC(4,1)
+	1      /'BTYP','SJ',' ',' '/
+	  DATA WNTF_EJ(1,1),WNTF_EJ(2,1),WNTF_EJ(3,1),WNTF_EJ(4,1)
+	1      /0,1,0,4/
+	  DATA WNTF_EC(1,2),WNTF_EC(2,2),WNTF_EC(3,2),WNTF_EC(4,2)
+	1      /'ALEN','SJ',' ',' '/
+	  DATA WNTF_EJ(1,2),WNTF_EJ(2,2),WNTF_EJ(3,2),WNTF_EJ(4,2)
+	1      /4,1,0,4/
+	  DATA WNTF_EC(1,3),WNTF_EC(2,3),WNTF_EC(3,3),WNTF_EC(4,3)
+	1      /'DTP','SJ',' ',' '/
+	  DATA WNTF_EJ(1,3),WNTF_EJ(2,3),WNTF_EJ(3,3),WNTF_EJ(4,3)
+	1      /8,1,0,4/
+	  DATA WNTF_EC(1,4),WNTF_EC(2,4),WNTF_EC(3,4),WNTF_EC(4,4)
+	1      /'ULEN','SJ',' ',' '/
+	  DATA WNTF_EJ(1,4),WNTF_EJ(2,4),WNTF_EJ(3,4),WNTF_EJ(4,4)
+	1      /12,1,0,4/
+	  DATA WNTF_EC(1,5),WNTF_EC(2,5),WNTF_EC(3,5),WNTF_EC(4,5)
+	1      /'SLEN','SJ',' ',' '/
+	  DATA WNTF_EJ(1,5),WNTF_EJ(2,5),WNTF_EJ(3,5),WNTF_EJ(4,5)
+	1      /16,1,0,4/
+	  DATA WNTF_EC(1,6),WNTF_EC(2,6),WNTF_EC(3,6),WNTF_EC(4,6)
+	1      /'DIM','SJ',' ',' '/
+	  DATA WNTF_EJ(1,6),WNTF_EJ(2,6),WNTF_EJ(3,6),WNTF_EJ(4,6)
+	1      /20,1,0,4/
+	  DATA WNTF_EC(1,7),WNTF_EC(2,7),WNTF_EC(3,7),WNTF_EC(4,7)
+	1      /'REFP','SJ',' ',' '/
+	  DATA WNTF_EJ(1,7),WNTF_EJ(2,7),WNTF_EJ(3,7),WNTF_EJ(4,7)
+	1      /24,1,0,4/
+	  DATA WNTF_EC(1,8),WNTF_EC(2,8),WNTF_EC(3,8),WNTF_EC(4,8)
+	1      /'NINI','SJ',' ',' '/
+	  DATA WNTF_EJ(1,8),WNTF_EJ(2,8),WNTF_EJ(3,8),WNTF_EJ(4,8)
+	1      /28,1,0,4/
+	  DATA WNTF_EC(1,9),WNTF_EC(2,9),WNTF_EC(3,9),WNTF_EC(4,9)
+	1      /'INIP','SJ',' ',' '/
+	  DATA WNTF_EJ(1,9),WNTF_EJ(2,9),WNTF_EJ(3,9),WNTF_EJ(4,9)
+	1      /32,1,0,4/
+	  DATA WNTF_EC(1,10),WNTF_EC(2,10),WNTF_EC(3,10),WNTF_EC(4,10)
+	1      /'EDIP','SJ',' ',' '/
+	  DATA WNTF_EJ(1,10),WNTF_EJ(2,10),WNTF_EJ(3,10),WNTF_EJ(4,10)
+	1      /36,1,0,4/
+	  DATA WNTF_EC(1,11),WNTF_EC(2,11),WNTF_EC(3,11),WNTF_EC(4,11)
+	1      /'TLEN','SJ',' ',' '/
+	  DATA WNTF_EJ(1,11),WNTF_EJ(2,11),WNTF_EJ(3,11),WNTF_EJ(4,11)
+	1      /40,1,0,4/
+	  DATA WNTF_EC(1,12),WNTF_EC(2,12),WNTF_EC(3,12),WNTF_EC(4,12)
+	1      /'OFF','SJ',' ',' '/
+	  DATA WNTF_EJ(1,12),WNTF_EJ(2,12),WNTF_EJ(3,12),WNTF_EJ(4,12)
+	1      /44,1,0,4/
+	  DATA WNTF_EC(1,13),WNTF_EC(2,13),WNTF_EC(3,13),WNTF_EC(4,13)
+	1      /'ENT','SJ',' ',' '/
+	  DATA WNTF_EJ(1,13),WNTF_EJ(2,13),WNTF_EJ(3,13),WNTF_EJ(4,13)
+	1      /48,1,0,4/
+	  DATA WNTF_EC(1,14),WNTF_EC(2,14),WNTF_EC(3,14),WNTF_EC(4,14)
+	1      /'SREF','SJ',' ',' '/
+	  DATA WNTF_EJ(1,14),WNTF_EJ(2,14),WNTF_EJ(3,14),WNTF_EJ(4,14)
+	1      /52,1,0,4/
+	  DATA WNTF_EC(1,15),WNTF_EC(2,15),WNTF_EC(3,15),WNTF_EC(4,15)
+	1      /'IND','SJ',' ',' '/
+	  DATA WNTF_EJ(1,15),WNTF_EJ(2,15),WNTF_EJ(3,15),WNTF_EJ(4,15)
+	1      /56,64,0,4/
+	  DATA WNTF_EC(1,16),WNTF_EC(2,16),WNTF_EC(3,16),WNTF_EC(4,16)
+	1      /'NAM','AL',' ',' '/
+	  DATA WNTF_EJ(1,16),WNTF_EJ(2,16),WNTF_EJ(3,16),WNTF_EJ(4,16)
+	1      /312,1,0,64/
+C
+C  WNTD edit definitions:
+C                                                                             
+	INTEGER WNTDEDL,WNTD__EL
+	  PARAMETER (  WNTDEDL=2,               ! Length table
+	1              WNTD__EL=2)
+	CHARACTER*12 WNTD_EC(4,2)
+	INTEGER WNTD_EJ(4,2)
+	  DATA WNTD_EC(1,1),WNTD_EC(2,1),WNTD_EC(3,1),WNTD_EC(4,1)
+	1      /'REP','SJ',' ',' '/
+	  DATA WNTD_EJ(1,1),WNTD_EJ(2,1),WNTD_EJ(3,1),WNTD_EJ(4,1)
+	1      /0,1,0,4/
+	  DATA WNTD_EC(1,2),WNTD_EC(2,2),WNTD_EC(3,2),WNTD_EC(4,2)
+	1      /'STR','AL',' ',' '/
+	  DATA WNTD_EJ(1,2),WNTD_EJ(2,2),WNTD_EJ(3,2),WNTD_EJ(4,2)
+	1      /4,1,0,36/
+C
+C  WNTE edit definitions:
+C                                                                             
+	INTEGER WNTEEDL,WNTE__EL
+	  PARAMETER (  WNTEEDL=4,               ! Length table
+	1              WNTE__EL=4)
+	CHARACTER*12 WNTE_EC(4,4)
+	INTEGER WNTE_EJ(4,4)
+	  DATA WNTE_EC(1,1),WNTE_EC(2,1),WNTE_EC(3,1),WNTE_EC(4,1)
+	1      /'EDIT','SJ',' ',' '/
+	  DATA WNTE_EJ(1,1),WNTE_EJ(2,1),WNTE_EJ(3,1),WNTE_EJ(4,1)
+	1      /0,1,0,4/
+	  DATA WNTE_EC(1,2),WNTE_EC(2,2),WNTE_EC(3,2),WNTE_EC(4,2)
+	1      /'PAT','AL',' ',' '/
+	  DATA WNTE_EJ(1,2),WNTE_EJ(2,2),WNTE_EJ(3,2),WNTE_EJ(4,2)
+	1      /4,1,0,12/
+	  DATA WNTE_EC(1,3),WNTE_EC(2,3),WNTE_EC(3,3),WNTE_EC(4,3)
+	1      /'UNIT','AL',' ',' '/
+	  DATA WNTE_EJ(1,3),WNTE_EJ(2,3),WNTE_EJ(3,3),WNTE_EJ(4,3)
+	1      /16,1,0,12/
+	  DATA WNTE_EC(1,4),WNTE_EC(2,4),WNTE_EC(3,4),WNTE_EC(4,4)
+	1      /'SPEC','AL',' ',' '/
+	  DATA WNTE_EJ(1,4),WNTE_EJ(2,4),WNTE_EJ(3,4),WNTE_EJ(4,4)
+	1      /28,1,0,12/
+C-                                                                            

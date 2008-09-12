@@ -1,0 +1,51 @@
+%ncalib_scan.tex
+\begin{figure}[hbtp]
+
+\fig{ncalib_scan}
+\label{.ncalib.scan}
+
+\caption[.]{\it
+The effects of Redundancy, Selfcal and Align on the visibilities
+in a single HA-scan. 
+\\ \\
+In all four pictures, the broken line represents the `true'
+visibility amplitudes and phases, as a function of baseline length (u). 
+The actual uv-data are given by crosses.  Note the multiple uv-data for
+redundant baselines.  The source model in this example (full line) is an
+off-axis point source. 
+\\ \\
+{\bf Redundancy}: In (a), he actually measured uv-samples are
+scattered, because of instrumental errors.  After Redundancy calibration
+(b), the amplitudes and phases of redundant baselines are the same
+(except for a little residual scatter caused by noise).  The result is
+an `internally perfect HA-scan', i.e.  its shape is as it should be, but
+two parameters are still missing: the absolute flux and the absolute
+position in the sky.  A map made in this stage would show radial stripes
+around strong sources. 
+\\ \\
+{\bf Align}: In (c), the perfect HA-scans that are produced by
+Redundancy are `Aligned' with the help of a model of the observed
+source.  The `rigid' Scans are moved as a whole to fit the model in a
+{\em weighted least-squares} sense.  Arrows indicate the two parameters
+that are determined by Align: one to shift all amplitudes vertically,
+and one to rotate all phases around the origin.  Note that the outcome
+can be influenced by giving more weight to certain baselines. 
+\\ \\
+{\bf Selfcal}: In `normal' Selfcal (d), the source model is used to
+determine $2N$ telescope gain and phase errors.  Since this number of
+independent parameters is larger than the two that were needed for
+Align, the Scan is less `rigid'.  This means that the data have greater
+freedom to adapt themselves to the {\em wrong} source model. 
+\\ \\
+To counter this effect, Redundancy constraints can be added to
+the Selfcal solution In the \NEWSTAR implementation.  If the Redundancy
+constraints would be given infinite weight, the outcome would be
+identical to that of Redundancy followed by Align.  However, this has
+the disadvantage that a Redundancy solution may have `frozen-in' errors
+caused by noise in certain critical baselines.  Such errors may be
+`thawed out' by giving more weight to Selfcal (model) constraints.  In
+the present implementation, Selfcal and Redundancy constraints have
+equal weights, which may be close to optimum. 
+}
+
+\end{figure}

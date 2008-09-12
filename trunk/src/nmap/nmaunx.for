@@ -1,0 +1,61 @@
+C+ NMAUNX.FOR
+C  WNB 910327
+C
+C  Revisions:
+C
+	SUBROUTINE NMAUNX(UVD,CSMAP)
+
+C
+C  Determine uniform coverage
+C
+C  Result:
+C
+C	CALL NMAUNX( UVD_E(0:1):I, CSMAP_J(0:*):O)
+C				Determine the UV distribution of point UVD
+C				in CSMAP.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NMA_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	REAL UVD(0:1)			!U, V COORDINATE
+	INTEGER CSMAP(0:*)		!OUTPUT PLANE
+C
+C  Function references:
+C
+C
+C  Data declarations:
+C
+	INTEGER U			!U CELL
+	INTEGER V			!V CELL
+C-
+C
+C INIT
+C
+	U=NINT(UVD(0))				!U CELL
+	V=NINT(UVD(1))				!V CELL
+	I=U-ULOB				!RELATIVE START U
+C
+C ACTUAL CONVOLUTION
+C
+	IF (I.LT.0) THEN			!LEFT-HALF OF PLANE
+	  J=ABS(I)				!TAKE CONJUGATE
+	  J1=-V-VLOW				!OFFSET V
+	ELSE
+	  J=I
+	  J1=V-VLOW
+	END IF
+	IF (J.GE.USIZE) J=J-USIZE		!WRAP AROUND
+	J=J*VSIZE+J1				!ARRAY POINTER
+	CSMAP(J)=CSMAP(J)+1			!COUNT POINT
+C
+	RETURN
+C
+C
+	END

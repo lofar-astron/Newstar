@@ -1,0 +1,19 @@
+#  dwarflogout.ssc
+#  GvD 911203
+#
+#  Revisions:
+#	WNB 930302	Make ssc
+#
+#	Save DWARF symbols
+#
+#ifdef wn_vax__
+$ DELETE/SYMBOL/GLOBAL LOGOUT
+$ NAME=F$SEARCH("SYS$LOGIN:LOGOUT.COM")
+$ IF NAME.NES."" THEN @'NAME'
+$ LOGOUT
+#else
+if ($?DWARF_SYMBOLS) then
+  echo "Symbols will be saved in ~/SYMBOL_DIR/SAVSYMBOLS"
+  "cp" $DWARF_SYMBOLS ~/SYMBOL_DIR/SAVSYMBOLS
+endif
+#endif

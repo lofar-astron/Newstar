@@ -1,0 +1,26 @@
+obscure_bugs.txt
+
+A collection of obscure Newstar bugs and their antidotes
+--------------------------------------------------------
+
+	Like any system its size, Newstar is sensitive to programming errors
+that are eaily made. Some of these may result in very obscure behaviour that
+may be difficult to diagnose. This document is meant to formalise our
+collective knowledge in this area. Anyone who solves a problem of this type is
+invited to record his experience here so others after him may benefit from it.
+
+
+Symptom: When exiting, the program emits a series of messages
+-------
+	mv: <file name> is identical to <filename>
+
+Cause: The first argument in a WNCTXT call should be a bitmask (normally F_T or
+F_TP). Omitting it or putting something else in its place may cause this type
+of behaviour.
+(JPH 940909)
+
+
+Symptom: Program crashes with IOT 6 (?)
+-------
+Cause: Division by 0 (and probably other arithmetic exceptions)
+(JPH 940909)

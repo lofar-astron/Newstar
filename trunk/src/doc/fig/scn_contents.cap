@@ -1,0 +1,23 @@
+%scn_contents.tex
+\begin{figure}
+\fig{scn_contents}  
+\caption[.]{\it 
+\label{.scn.contents}
+UV data and correction model in the .SCN file
+
+	The SCN-file contains uv-data and its corrections.  It can also
+contain the uv-representation (i.e.  mapped to the uv-coordinates of the
+uv-data) of a SELFCAL source model.  The reason for this approach is
+that it is a very time-consuming process to transform a model of many
+many ($>100$) source components to the uv-plane. 
+
+	If the uv-model is available, it may be used for various
+``casual'' purposes (e.g.  calculating SELFCAL residues, or subtraction
+from the uv-data) without a large time-penalty.  It is also much quicker
+to recalculate the uv-model when only a few of the many source
+components have changed. 
+
+	Obviously, the component-representation (a copy of a .MDL file)
+of the stored uv-model must also be kept in the SCN-file. 
+}
+\end{figure}

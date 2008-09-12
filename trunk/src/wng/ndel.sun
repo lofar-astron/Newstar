@@ -1,0 +1,288 @@
+#  ndel.ssc
+# 	WNB 920208
+# 
+#  Revisions:
+#	WNB 920922	Add l switch to ar
+#			Add .fun type
+#	WNB 921002	Overhaul
+#	WNB 921012	Add question
+#	WNB 921016	Wrong nxup called
+#	WNB 921113	Postpone ar
+#	WNB 921122	Delete .uin
+#	WNB 921130	Change tr for HP
+#	WNB 921202	Include .pef
+#	WNB 921204	Limit tlbdel for HP
+#	WNB 921208	Limit update; log data
+#	WNB 921209	Include include files; -a0 switch
+#	WNB 921211	Add PSC
+#	WNB 921215	Typo
+#	WNB 921215	Add FSC, CSC, CUN
+#	WNB 921218	Add SSC
+#	HJV 921221	Delete -f in chmod
+#	WNB 921222	Typo SSC; streamline psc ssc
+#	WNB 921230	Add HP length; make SSC
+#	JPH 930225	Typo. - Use grep -v to remove line from nxldef
+#	WNB 930325	Cater for different fold
+#	WNB 930330	Add .a.. and .x..
+#	WNB 930405	Suppress some error messages (VAX)
+#	WNB 930803	Add .dsf
+#	WNB 940210	Typo FSC handling (vx__ iso vax__)
+# 
+# 	Delete routines in nxec system. Use as:
+#
+#		source $WNG/ndel.sun	(UNIX)
+#		@WNG:NDEL <file>	(VAX)
+#
+#	The command file uses a lot of local nxec variables, and
+#	environment variables: WNG, WNG_TLB, WNG_OLB, WNG_TYPE
+#	command files: nxup
+#
+#  Delete a file.
+#
+	set msgt="" ; set b1="Done: "			# message text/ok
+	if ("$cd_a" == "0") then			# ask question?
+	  echo -n "Delete ${lobh}.$lobe ? (Y, N) [N]: "
+	  set loo="$<"
+	  switch ($loo)
+	    case [yY]*:					# do delete
+	      breaksw
+	    default:					# no delete
+	      goto NDERR
+	  endsw
+	endif
+	set msgt="$msgt deleted"			# indicate deleted
+	if ("$cd_c" == "-") goto NDG2			# no compile
+	if ($lobe == fsc || $lobe == fun) then
+	  goto NDF					# FSC
+	else if ($lobe == for || $lobe == f$ext) then
+	  goto NDF					# Fortran
+	else if ($lobe == cee || $lobe == c$ext || $lobe == cun \
+			|| $lobe == csc) then
+	  goto NDC					# C
+	else if ($lobe == m$ext) then
+	  goto NDM					# Macro
+	else if ($lobe == ssc) then
+	  goto NDSS					# SSC
+	else if ($lobe == hlp) then
+	  goto NDH					# Help
+	else if ($lobe == dsc) then
+	  goto NDD					# DSC
+	else if ($lobe == def || $lobe == pef || $lobe == dsf) then
+	  goto NDDF					# def,pef,dsf
+	else if ($lobe == inc) then
+	  goto NDDF					# (dwarf) inc
+	else if ($lobe == psc) then
+	  goto NDPS					# PSC
+	else if ($lobe == pin) then
+	  goto NDP					# PIN
+	else if ($lobe == a$ext) then
+	  goto NDALB					# special olb
+	else if ($lobe == x$ext) then
+	  goto NDXEX					# special exe
+	endif
+NDG2:							# others
+#
+#  Others
+#
+NDOTH:
+	if (-e ${lobh}.$lobe) then
+	  'rm' ${lobh}.$lobe				# delete
+	endif
+	if ($cd_l == 0) then				# library
+	  if ("$WNG_TYPE" == "hp") then
+	    set l02=`echo ${lobh}.$lobe | ${fold}14`	# limit name
+	  else
+	    set l02=`echo ${lobh}.$lobe | ${fold}15`
+	  endif
+	  if ("$lobe" =~ [ax]??) then
+	    if ($?taxdel) then
+	      if (`echo $taxdel | wc -c` > 800) then
+	        echo "Update ${l_d}_ax.tlb" | tee -a $c_upd
+	        ar dl $WNG_TLB/${l_d}_ax.tlb $taxdel
+	        setenv taxdel "$l02"			# save for ar
+	      else
+	        setenv taxdel "$taxdel $l02"		# save for ar
+	      endif
+	    else
+	      setenv taxdel "$l02"			# save for ar
+	    endif
+	    set l02=$WNG_TLB
+	    set l00=$l02:h ; set l01=$l02:t
+	    set l00=$l00:t/$l01
+	    set msgt="$msgt [$l00/${l_d}_ax.tlb]"
+	  else
+	    if ($?tlbdel) then
+	      if (`echo $tlbdel | wc -c` > 800) then
+	        echo "Update ${l_d}.tlb" | tee -a $c_upd
+	        ar dl $WNG_TLB/${l_d}.tlb $tlbdel
+	        setenv tlbdel "$l02"			# save for ar
+	      else
+	        setenv tlbdel "$tlbdel $l02"		# save for ar
+	      endif
+	    else
+	      setenv tlbdel "$l02"			# save for ar
+	    endif
+	    set l02=$WNG_TLB
+	    set l00=$l02:h ; set l01=$l02:t
+	    set l00=$l00:t/$l01
+	    set msgt="$msgt [$l00/${l_d}.tlb]"
+	  endif
+	endif
+	goto NDEX					# ready
+#
+# Ready
+#
+NDERR:
+	set b1="Not:  "
+NDEX:
+	echo "$b1 ${lobh}.$lobe $msgt" | tee -a $c_upd
+	goto RETURN
+#
+#  Fortran
+#
+NDF:
+	set lot=f					# Fortran extension
+NDF1:
+	if (-e $WNG_LINK/${lobh}.$lot) then
+	  'rm' $WNG_LINK/${lobh}.$lot			# delete link
+	endif
+	'rm' ${lobh}.o >& /dev/null			# remove object
+	'rm' $WNG_OLB/${lobh}.o >& /dev/null
+	if ("$cd_l" != "-") then
+	  set l02=$WNG_OLB
+	  set l00=$l02:h ; set l01=$l02:t
+	  set l00=$l00:t/$l01
+	  if ($?olbdel) then
+	    if (`echo $olbdel | wc -c`> 800) then
+	      echo "Update ${l_d}.olb" | tee -a $c_upd
+	      ar dl $WNG_OLB/${l_d}.olb $olbdel
+	      setenv olbdel "${lobh}.o"			# save for ar
+	    else
+	      setenv olbdel "$olbdel ${lobh}.o"		# save for ar
+	    endif
+	  else
+	    setenv olbdel "${lobh}.o"			# save for ar
+	  endif
+	  set msgt="$msgt [$l00/${l_d}.olb]"
+	endif
+	goto NDOTH					# ready
+#
+# FSC
+#
+#
+#  Macro
+#
+NDM:
+	set lot=s					# Macro extension
+	goto NDF1					# finish
+#
+#  C
+#
+NDC:
+	set lot=c					# C extension
+	goto NDF1					# finish
+#
+#  SSC
+#
+NDSS:
+	set findb=(${lobh}.sun ${lobh}.com)		# do SUN
+	goto NDOTH
+#
+#  Help
+#
+NDH:
+	goto NDOTH					# not yet written###
+#
+#  DSC
+#
+NDD:
+	set findb=""					# for repeat
+	if (-e ${lobh}.def) set findb=($findb ${lobh}.def)
+	if (-e ${lobh}_bd.for) set findb=($findb ${lobh}_bd.for)
+	if (-e ${lobh}.inc) set findb=($findb ${lobh}.inc)
+	if (-e ${lobh}_o.def) set findb=($findb `ls ${lobh}_?.*`)
+	goto NDOTH					# ready
+#
+#  PSC
+#
+NDPS:
+	set findb=(${lobh}.pin)
+	goto NDOTH
+#
+#  PIN
+#
+NDP:
+	set l00="a13"
+	set l01="ppd"
+NDP1:
+	if (-e $WNG_OLB/${lobh}.$l01) then
+	  'rm' $WNG_OLB/${lobh}.$l01
+	endif
+	if ("$cd_u" != "-" && $?EXEDWARF_UNIX) then	# update
+	  csh -f $WNG/nxup.sun $l00 "$u_d" "${lobh}.$l01" "$lobh:t"
+	  set msgt="$msgt updated($u_d)"
+	endif
+	goto NDOTH					# finish
+#
+#  Special EXE
+#
+NDXEX:
+	if (-e $WNG_OLBEXE/wng/${lobh}.exe) then
+	  'rm' $WNG_OLBEXE/wng/${lobh}.exe
+	endif
+	goto NDOTH					# finish
+#
+#  Special OLB
+#
+NDALB:
+	if (-e $WNG_OLB/${lobh}.olb) then
+	  'rm' $WNG_OLB/${lobh}.olb
+	endif
+	goto NDOTH					# finish
+#
+#  def
+#
+NDDF:
+	set lot=`echo ${lobh}.$lobe | tr $Lowc $Upc`	# make UC
+	if ("$cd_u" != "-") then			# update
+	  set lot=`echo ${lobh}_$lobe | tr $Lowc $Upc`	# make UC
+	  set lotr=`echo ${lobh} | tr $Lowc $Upc`	# make UC
+	  set lob="../$cwd:t/${lobh}.$lobe"		# file name
+	  foreach i ($c_dir)
+	    unset loa
+	    if ($lobe == inc && $cwd:t == dwarf) then
+	      set loa="../$i/$lotr"
+	    else if ($lobe == inc) then
+	      set loa="../$i/${lobh}_$lobe"
+	    else if ($lobe == def || $lobe == pef || $lobe == dsf) then
+	      set loa="../$i/$lot"
+	    endif
+	    if ($?loa) then				# to do
+	      'rm' $loa >& /dev/null
+	      if ($cwd:t == $i) then
+	        if (-e $WNG/nxldef.sun) then
+	          'cp' $WNG/nxldef.sun nxl$pid$dep.tmp
+	          set loc="	rm -f $loa:t >& /dev/null; ln -s $lob $loa:t"
+	          set loc='"'"$loc # $c_date"'"'
+##	          set lod="$0 !~ /'"$loa:t"'/ {print $0}"
+##	          awk "$lod" nxl$pid$dep.tmp >! nxln$pid$dep.tmp
+		  grep -v "$loa:t" nxl$pid$dep.tmp >! nxln$pid$dep.tmp 
+
+	          sort -bf +0.1 nxln$pid$dep.tmp > $WNG/nxldef.sun
+	          chmod +rx $WNG/nxldef.sun
+	          'rm' nxl*$pid$dep.tmp >& /dev/null
+	        endif
+	      endif
+	    endif
+	  end
+	  set msgt="$msgt updated($u_d)"
+	endif
+	goto NDOTH					# finish
+#
+# EXE files
+#
+#
+# Exit
+#
+RETURN:
+

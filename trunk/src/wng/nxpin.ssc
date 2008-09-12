@@ -1,0 +1,214 @@
+#  nxpin.ssc
+# 	WNB 921210
+# 
+#  Revisions:
+#	WNB 921230	Creation message
+#	WNB 921230	Make SSC
+#	WNB 930105	HP error embedded newline
+#	WNB 930429	Make awk for Unix and VMS
+#	HjV 930518	Typo
+#	WNB 930615	Delete .TMP propoerly
+# 
+# 	Convert a .psc (on standard in) to a pin file (on standard out)
+#		by expanding includes. End given by single line "endend";
+#		error messages given in efnm.
+#	Use as:
+#		csh -f $WNG/nxpin.sun efnm	(Unix)
+#		@WNG:NXPIN psc pin error	(VAX)
+#
+#	Uses environment variables:
+#		WNG			where to find wng-type sources
+#
+# Intro
+#
+#ifdef wn_vax__
+$	ON ERROR THEN GOTO EXEX
+$	PID=F$EXTRACT(4,4,F$GETJPI("","PID"))		!FOR FILES
+$	DEP=F$ENVIRONMENT("DEPTH")
+$       IF F$SEARCH("WNG:GAWK.EXE") .EQS. ""            !NO AWK PRESENT
+$       THEN
+$         NAWK="Y"                                      !NO AWK
+$       ELSE
+$         NAWK="$WNG:GAWK"                              !AWK PRESENT
+$       ENDIF
+$	CLOSE/ERROR=LA1 NXPI'PID''DEP'			!MAKE SURE
+$ LA1:	CLOSE/ERROR=LA2 NXPE'PID''DEP'
+$ LA2:
+$	S1="!+ Created from ''P1' on ''F$TIME()' "+ -
+		"at ''F$GETSYI("NODENAME")'"
+$	S2="!-"
+#else
+	onintr exex					# finish neatly
+	if ($?echo) unset echo				# no verify
+	if ($?verbose) unset verbose			# no verbose
+	if ($?nawk) unset nawk				# no nawk
+	if (-x /usr/bin/nawk) set nawk="/usr/bin/nawk"
+	set c_date=(`date`)				# date
+	set pid=$$
+	set lfile=$1:r					# input file name
+	set lfile=$lfile:t
+	set tval="[Ii][Nn][Cc][Ll][Uu][Dd][Ee]=*"	# for check
+	set tval1="*[Ii][Nn][Cc][Ll][Uu][Dd][Ee]*"
+	set txtb1='BEGIN {print "\!\!"; print "\!\! Include ' # text
+	set txtb2='"; print "\!\!"}'
+	set txte1='END {print "\!\!"; print "\!\! End include '
+	set txte2='"; print "\!\!"; print "endend"}'
+	set s1=\!"+ Created from ${lfile}.psc on $c_date at `hostname`"
+	set s2=\!"-"
+	if (! $?nawk) then
+	  echo "$s1"					# intro
+	  echo "$s2"
+	endif
+#endif
+#
+# Open files
+#
+#ifdef wn_vax__
+$	IF NAWK
+$	THEN
+$	  OPEN/ERROR=ERR/READ NXPI'PID''DEP' 'P1'
+$	  WRITE 'P2' "''S1'"
+$	  WRITE 'P2' "''S2'"
+$	ENDIF
+#endif
+#
+# Read input
+#
+#ifdef wn_vax__
+$	IF NAWK						!NO AWK
+$	THEN
+$ LP1:
+$	  READ/ERROR=ERR/END=LP2 NXPI'PID''DEP' L0	!READ LINE
+$	  L2=F$EDIT(L0,"COLLAPSE,UNCOMMENT,UPCASE")	!FOR CHECK
+$	  IF F$EXTRACT(0,8,L2) .EQS. "INCLUDE="		!DO INCLUDE
+$	  THEN
+$	    L1=F$EXTRACT(8,-1,L2)			!FILE NAME
+$	    IF F$SEARCH("''L1'") .EQS. ""		!NO FILE
+$	    THEN
+$	      IF F$SEARCH("''P3'") .EQS. ""
+$	      THEN
+$	        OPEN/ERROR=ERR/WRITE NXPE'PID''DEP' 'P3' !SET ERROR
+$	      ELSE
+$	        OPEN/ERROR=ERR/APPEND NXPE'PID''DEP' 'P3' !SET ERROR
+$	      ENDIF
+$	      WRITE NXPE'PID''DEP' "Cannot find include file ''L1'"
+$	      CLOSE/ERROR=ERR NXPE'PID''DEP'
+$	      GOTO EXEX
+$	    ENDIF
+$	    WRITE 'P2' "!!"
+$	    WRITE 'P2' "!! Include ''L1'"
+$	    WRITE 'P2' "!!"
+$	    @WNG:NXPIN 'L1' 'P2' 'P3'
+$	    WRITE 'P2' "!!"
+$	    WRITE 'P2' "!! End include ''L1'"
+$	    WRITE 'P2' "!!"
+$	  ELSE
+$	    WRITE 'P2' L0				!COPY
+$	  ENDIF
+$	  GOTO LP1					!MORE LINE
+$	ELSE						!AWK PRESENT
+$         IF F$SEARCH("NAWK''PID'''DEP'.TMP") .NES. "" THEN -
+                        DELETE NAWK'PID''DEP'.TMP;*
+$         OPEN/ERROR=ERR/WRITE NXPI'PID''DEP' NAWK'PID''DEP'.TMP !CREATE AWK FILE
+$         WRITE NXPI'PID''DEP' -
+	"function tinc() {"
+$         WRITE NXPI'PID''DEP' -
+		"if ($0 ~ /^[ 	]*[Ii][Nn][Cc][Ll][Uu][Dd][Ee][ 	]*=/) {"
+$         WRITE NXPI'PID''DEP' -
+		"split($2,nam,"" ""); cnt += 1; ofl[cnt] = cfl; cfl = nam[1];"
+$         WRITE NXPI'PID''DEP' -
+		"print ""!!""; print ""!! Include "",cfl; print ""!!"";"
+$         WRITE NXPI'PID''DEP' -
+		"err = getline <cfl; if (err != 1) {"
+$         WRITE NXPI'PID''DEP' -
+			"print ""Cannot open "",cfl >>""''P3'""; exit}"
+$         WRITE NXPI'PID''DEP' -
+		"do {tinc()} while (getline <cfl == 1) ;"
+$         WRITE NXPI'PID''DEP' -
+		"print ""!!""; print ""!! End include "",cfl; print ""!!"";"
+$         WRITE NXPI'PID''DEP' -
+		"close(cfl); cfl = ofl[cnt]; cnt -= 1} else {"
+$         WRITE NXPI'PID''DEP' -
+			"if ($0 != ""endend"") {print}}}"
+$         WRITE NXPI'PID''DEP' -
+	"BEGIN {FS = ""[=!]""; cnt = 0; cfl = FILENAME;"
+$         WRITE NXPI'PID''DEP' -
+		"print ""''S1'""; print ""''S2'"";}"
+$         WRITE NXPI'PID''DEP' -
+	"{tinc()}"
+$	  CLOSE NXPI'PID''DEP'
+$         NAWK/INPUT=NAWK'PID''DEP'.TMP/OUTPUT='P2' 'P1' !DO INCLUSION
+$	ENDIF
+$ !
+$ LP2:	CLOSE/ERROR=EXEX NXPI'PID''DEP'			!CLOSE INPUT
+$	GOTO EXEX
+#else
+	if (! $?nawk) then				# normal
+LP1:
+	  set l0="$<"					# read line
+	  if ("$l0" == "endend") goto exex		# ready
+	  if ("$l0" =~ $tval1) then			# could be include
+	    set l2=`echo "$l0" | tr -d " 	"`
+	    if ("$l2" =~ $tval) then			# include
+	      set l1=`echo "$l0" | awk -F= '{print $2}' | awk -F! '{print $1}'`
+	      if (-e $l1) then
+	        set txtb="$txtb1$l1$txtb2"
+	        set txte="$txte1$l1$txte2"
+	        awk "$txtb"' {print $0} '"$txte" $l1 \
+			| csh -f $WNG/nxpin.sun $1
+	      else
+	        echo "Cannot open include file $l1" >>! $1
+	        goto exex
+	      endif
+	      goto LP1					# continue
+	    endif
+	  endif
+	  echo "$l0"					# copy line
+	  goto LP1					# more lines
+	else						# do nawk
+	  cat >! nawk${lfile}${pid}.tmp << EOF		# create nawk file
+function tinc() {
+	if (\$0 ~ /^[ 	]*[Ii][Nn][Cc][Ll][Uu][Dd][Ee][ 	]*=/) {
+		split(\$2,nam," "); cnt += 1; ofl[cnt] = cfl; cfl = nam[1];
+		print "!!"; print "!! Include ",cfl; print "!!";
+		err = getline <cfl; if (err != 1) {
+			print "Cannot open ",cfl >>"$1"; exit}
+		do {tinc()} while (getline <cfl == 1) ;
+		print "!!"; print "!! End include ",cfl; print "!!";
+		close(cfl); cfl = ofl[cnt]; cnt -= 1} else {
+			if (\$0 != "endend") {print}}}
+BEGIN {FS = "[=!]"; cnt = 0; cfl = FILENAME;
+		print "$s1"; print "$s2";}
+{tinc()}
+EOF
+	  nawk -f nawk${lfile}${pid}.tmp		# do inclusion
+	endif
+	goto exex					# ready
+#endif
+#
+#  EXIT
+#
+#ifdef wn_vax__
+$ ERR:
+$	IF F$SEARCH("''P3'") .EQS. ""
+$	THEN
+$	  OPEN/ERROR=ERR/WRITE NXPE'PID''DEP' 'P3'	!SET ERROR
+$	ELSE
+$	  OPEN/ERROR=ERR/APPEND NXPE'PID''DEP' 'P3'	!SET ERROR
+$	ENDIF
+$	WRITE NXPE'PID''DEP' "Unexpected I/O error"
+$	GOTO EXEX
+$ EXEX:
+$	CLOSE/ERROR=EX1 NXPI'PID''DEP'			!MAKE SURE
+$ EX1:	CLOSE/ERROR=EX2 NXPE'PID''DEP'
+$ EX2:
+$       IF F$SEARCH("NAWK''PID'''DEP'.TMP") .NES. "" THEN -
+                DELETE NAWK'PID''DEP'.TMP;*
+$	EXIT
+#else
+exex:
+	if (-e nawk${lfile}${pid}.tmp) then
+          'rm' nawk${lfile}${pid}.tmp >& /dev/null
+	endif
+	exit
+#endif

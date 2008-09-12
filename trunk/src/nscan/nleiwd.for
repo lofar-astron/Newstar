@@ -1,0 +1,280 @@
+C+ NLEIWD.FOR
+C  HjV 950116
+C
+C  Revisions:
+C
+	LOGICAL FUNCTION NLEIWD(FCAT,ONS,OHAB,NIFR,IFRT,POLS,BINT,STHM,
+	1			MJDHA0,CJOB,BAND,FWGT,TMPBUF)
+C
+C  Unload TMP file into SCN files
+C
+C  Result:
+C
+C	NLEIWD_J = NLEIWD( FCAT_J:I,
+C			ONS_J(6):I, OHAB_E:I,
+C			NIFR_J:I, IFRT_J(9,0:*):I, POLS_J(0:3):I,
+C			BINT_J:I, STHM_B(0:*):I, MJDHA0_D:I, CJOB_J:I, 
+C			BAND_J:I, FWGT_E:I, TMPBUF_I(3,0:*):I)
+C				Read LEIDEN data from TMP file to FCAOUT.
+C				FCAT is the TMP file.
+C				ONS gives the integration data, OHAB the
+C				start HA of the output.
+C				ONS:	1 # of 10 sec per output point
+C					2 # of subsets
+C					3 time between radials in 10 sec units
+C					4 # of points per subset
+C					5 total output points per ifr
+C					6 length of TMP file
+C				IFRT:	1 West telescope
+C					2 East telescope
+C					3 TMP line # XX
+C					4            XY
+C					5            YX
+C					6            YY
+C					7 baseline in m
+C				NIFR is the number of interferometers found,
+C				IFRT describes the interferometers.
+C				POLS indicates (if >0) polarisation to do.
+C				BINT is the basic time increment in s.
+C				STHM is a template set header.
+C				MJDHA0 is the MJD for HA=0
+C				CJOB current job
+C				BAND the current band
+C				FWGT factor to limit weight < 256
+C				TMPBUF is an input buffer
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NSC_DEF'
+	INCLUDE 'GFH_O_DEF'			!GENERAL FILE HEADER
+	INCLUDE 'SCH_O_DEF'			!SCAN HEADER
+	INCLUDE 'STH_O_DEF'			!SET HEADER
+	INCLUDE 'SGH_O_DEF'			!SUB-GROUP HEADER
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER FCAT				!TMP FILE DESCRIPTOR
+	INTEGER ONS(6)				!INTEGRATION DATA
+	REAL OHAB				!START HA
+	INTEGER NIFR				!# OF IFRS FOUND
+	INTEGER IFRT(9,0:*)			!IFR DESCRIPTION
+	INTEGER POLS(0:3)			!POLARISATION TABLE
+	INTEGER BINT				!BASIC TIME INCREMENT
+	BYTE STHM(0:*)				!TEMPLATE SET HEADER
+	DOUBLE PRECISION MJDHA0			!MJD AT HA0
+	INTEGER CJOB				!CURRENT JOB
+	INTEGER BAND				!CURRENT BAND NUMBER
+	REAL FWGT				!FACTOR TO LIMIT WGTS TO < 256
+	INTEGER*2 TMPBUF(0:2,0:MXDATX-1)	!SORT BUFFER
+C
+C  Function references:
+C
+	REAL WNGENF				!NORMALISE ANGLE
+	LOGICAL WNFRD				!READ DATA
+	LOGICAL WNFWR				!WRITE DATA
+	INTEGER WNFEOF				!CURRENT EOF POINTER
+	LOGICAL WNDLNK				!LINK A SET
+	LOGICAL WNDLNG,WNDLNF			!LINK A SUB-GROUP
+C
+C  Data declarations:
+C
+	INTEGER TMPF,TMPL			!1ST AND LAST POINT/LINE IN TMP
+	INTEGER TMPS				!# OF POINTS/LINE IN TMP BUF
+	INTEGER*2 ODBUF(0:2,0:4*MXNIFR-1)	!OUTPUT DATA BUF
+	INTEGER IFRTS(9,0:MXNIFR-1)		!SORTED IFR DATA
+	BYTE IFRTP(0:MXNIFR-1)			!POL. IFR PRESENCE
+	REAL MX					!FOR MAX. CALCULATION
+	INTEGER IFRP				!POINTER TO IFR TABLE
+	INTEGER*2 IFRS(0:MXNIFR-1)		!COMPRESSED IFR TABLE
+C
+	BYTE STH(0:STHHDL-1)			!SET HEADER
+	  INTEGER*2 STHI(0:STHHDL/2-1)
+	  INTEGER STHJ(0:STHHDL/4-1)
+	  REAL STHE(0:STHHDL/4-1)
+	  REAL*8 STHD(0:STHHDL/8-1)
+	  EQUIVALENCE (STH,STHI,STHJ,STHE,STHD)
+C
+	BYTE SCH(0:SCHHDL-1)			!SCAN HEADER
+	  INTEGER*2 SCHI(0:SCHHDL/2-1)
+	  INTEGER SCHJ(0:SCHHDL/4-1)
+	  REAL SCHE(0:SCHHDL/4-1)
+	  REAL*8 SCHD(0:SCHHDL/8-1)
+	  EQUIVALENCE (SCH,SCHI,SCHJ,SCHE,SCHD)
+	INTEGER NL1
+C-
+C
+C INIT
+C
+	NLEIWD=.TRUE.					!ASSUME OK
+	DO I=0,NIFR-1					!COPY IFRT
+	  DO I1=1,9
+	    IFRTS(I1,I)=IFRT(I1,I)
+	  END DO
+	END DO
+	DO I=0,NIFR-2					!SORT IFR ON BASELINE
+	  DO I1=0,NIFR-2-I
+	    IF (IFRTS(7,I1).GT.IFRTS(7,I1+1)) THEN	!MOVE ENTRY
+	      DO I2=1,9
+	        J=IFRTS(I2,I1)
+	        IFRTS(I2,I1)=IFRTS(I2,I1+1)
+	        IFRTS(I2,I1+1)=J
+	      END DO
+	    END IF
+	  END DO
+	END DO
+	DO I=0,NIFR-1					!MAKE IFR OUTPUT TABLE
+	  IFRS(I)=IFRTS(1,I)+256*IFRTS(2,I)
+	END DO
+	IFRP=WNFEOF(FCAOUT)				!POINTER TO IFR TABLE
+	IF (.NOT.WNFWR(FCAOUT,NIFR*LB_I,IFRS(0),IFRP)) GOTO 10 !WRITE IT
+	DO I=0,3					!MAKE POL. PRESENCE
+	  DO I1=0,NIFR-1
+	    IF (POLS(I).GT.0 .AND. IFRTS(3+I,I1).NE.-1) THEN !PRESENT
+	      IFRTP(I1)=1
+	    ELSE					!NOT PRESENT
+	      IFRTP(I1)=0
+	    END IF
+	  END DO
+	  IF (.NOT.WNFWR(FCAOUT,NIFR,IFRTP(0),IFRP+NIFR*(I+LB_I)))
+	1		GOTO 10				!WRITE TABLE
+	END DO
+C
+C Fill final fields in Sector header, link subgroup
+C
+	NL1=ONS(6)/ONS(5)/6				!# OF LINES IN TMP
+	TMPL=0						!LAST+1 POINT IN TMP
+	DO I=0,ONS(2)-1					!ALL SUBSETS
+	  CALL WNGMV(STHHDL,STHM(0),STH(0))		!MAKE SET HEADER
+	  STHI(STH_CHAN_I)=BAND				!SET BAND
+	  IF (.NOT.WNDLNF(SGPH(2)+SGH_LINKG_1,BAND,SGH_GROUPN_1,FCAOUT,
+	1		SGPH(3),SGNR(3))) GOTO 31	!LINK SUB-GROUP CHANNEL
+	  CALL WNCTXT(F_TP,'!7C\Ch. !3$UJ: !UJ\.!UJ\.!UJ\.!UJ'//
+	1		'!32C\F= !10$D15.5 B= !10$E15.5',
+	1		BAND,SGNR(0),SGNR(1),SGNR(2),SGNR(3),
+	1		STHD(STH_FRQE_D),STHE(STH_BAND_E))	!SHOW BAND
+	  STHE(STH_HAV_E)=STHE(STH_HAI_E)		!AVER. HA
+	  R0=WNGENF(STHE(STH_HAB_E))			!START HA
+	  STHD(STH_MJD_D)=MJDHA0+R0/STHD(STH_UTST_D)	!START MJD
+	  STHJ(STH_SCN_J)=ONS(4)			!# OF SCANS/SUBSET
+	  STHJ(STH_NIFR_J)=NIFR				!# OF IFRS
+	  STHJ(STH_IFRP_J)=IFRP				!POINTER TO IFR TABLE
+	  STHJ(STH_SCNL_J)=SCHHDL+6*NIFR*STHI(STH_PLN_I) !LENGTH SCAN
+	  CALL NSCCLP(FCAOUT,STH(0),STHE(STH_PHI_E))	!GET PREC. ROT. ANGLE
+	  STHE(STH_PHI_E)=STHE(STH_PHI_E)/PI2		!MAKE CIRCLES
+	  J=WNFEOF(FCAOUT)				!POINTER TO SET HEADER
+	  IF (.NOT.WNFWR(FCAOUT,STHHDL,STH(0),J))
+	1			GOTO 10			!WRITE SET HEADER
+	  IF (.NOT.WNDLNK(GFH_LINK_1,J,
+	1		STH_SETN_1,FCAOUT)) GOTO 10	!LINK THE SET
+	  IF (.NOT.WNDLNG(SGPH(3)+SGH_LINKG_1,J,
+	1		SGH_GROUPN_1,FCAOUT,SGPH(4),
+	1		SGNR(4))) THEN			!LINK SUB-GROUP
+ 31	    CONTINUE
+	    CALL WNCTXT(F_TP,'!/Cannot link sub-group')
+	    GOTO 900					!STOP
+	  END IF
+	  IF (.NOT.WNFRD(FCAOUT,STHHDL,STH(0),J))
+	1			GOTO 10			!REREAD SET HEADER
+	  STHJ(STH_SCNP_J)=WNFEOF(FCAOUT)		!POINTER TO DATA
+	  IF (.NOT.WNFWR(FCAOUT,STHHDL,STH(0),J))
+	1			GOTO 10			!REWRITE SET HEADER
+C
+C Read scans from temp. file and sort them
+C
+C The temp. file contains a line for each interferometer.
+C
+C Each line has a series of output integrations: 
+C   J  loops over NS(2) subsets of NS(4) integrations
+C   I5 loops over NS(4) integrations within the subset.
+C
+C The total number of integrations is NS(5)=NS(2)*NS(4)
+C
+C Buffer TMPBUF holds for each interferometer (I2) a number of TMPS
+C integrations, which is at most the full file (NS(6) bytes) or the
+C remaining data not yet read (NS(4)*NS(2)-TMPF integrations). 
+C The number of the first integration is TMPF, the number of the next
+C integration to read is TMPL.
+C
+C
+	  J5=0						!SCAN COUNT IN SUBSET
+	  J=I*ONS(4)					!OFFSET SUBSET IN LINE
+	  DO I5=0,ONS(4)-1				!OUTPUT SCANS
+C
+C  Refresh buffer if needed
+C
+	    IF (J+I5.GE.TMPL) THEN			!SCAN NOT IN TMP BUF
+	      TMPF=J+I5					!FIRST POINT IN TMP BUF
+	      TMPS=MIN(MIN(MXDATX,ONS(6)/6)/NL1,
+	1		ONS(2)*ONS(4)-TMPF)		!POINTS PER LINE
+	      TMPL=TMPS+TMPF				!FIRST POINT NOT IN TMP
+	      DO I2=0,NL1-1				!READ ALL LINES
+	        IF (.NOT.WNFRD(FCAT,6*TMPS,TMPBUF(0,I2*TMPS),
+	1		6*(TMPF+I2*ONS(5)) )) THEN
+	          CALL WNCTXT(F_TP,'!/Error reading TMP file')
+		  GOTO 900				!STOP
+	        END IF
+	      END DO
+	    END IF
+C
+C  Fill in interferometers for this output scan
+C
+	    J3=0					!OUTPUT POINTER
+	    MX=-1E30					!FIND MAX.
+	    CALL WNGMVZ(SCHHDL,SCH(0))			!EMPTY SCAN HEADER
+	    DO I2=0,NIFR-1				!OUTPUT A SCAN
+	      DO I3=0,3					!ALL POLARISATIONS
+	        IF (POLS(I3).GT.0) THEN			!THIS POLARIZATION
+	          IF (IFRTS(3+I3,I2).NE.-1) THEN	!DATA SEEN
+	            J4=IFRTS(3+I3,I2)*TMPS+J+I5-TMPF	!INPUT DATA POINTER
+	            DO I4=0,2
+	              ODBUF(I4,J3)=TMPBUF(I4,J4)
+	            END DO
+	            IF (ODBUF(0,J3).NE.0) THEN		!DATA PRESENT
+		      ODBUF(0,J3)=NINT(ODBUF(0,J3)*FWGT) !MAKE < 256
+		      IF (ODBUF(0,J3).LE.0) ODBUF(0,J3)=1 !VERY SMALL WEIGHT
+	              MX=MAX(MX,ABS(FLOAT(ODBUF(1,J3))))
+	              MX=MAX(MX,ABS(FLOAT(ODBUF(2,J3))))
+	            END IF
+	          ELSE					!NO DATA
+	            DO I4=0,2
+	              ODBUF(I4,J3)=0
+	            END DO
+	          END IF
+	          J3=J3+1				!CNT OUTPUT POINT
+	        END IF
+	      END DO
+	    END DO
+	    SCHE(SCH_MAX_E)=MX				!SAVE MAX.
+	    SCHE(SCH_HA_E)=STHE(STH_HAB_E)+J5*STHE(STH_HAI_E) !SET HA
+C
+C Write to disk
+C
+	    J4=WNFEOF(FCAOUT)				!DISK OUTPUT PTR
+	    IF (.NOT.WNFWR(FCAOUT,SCHHDL,SCH(0),J4)) GOTO 10 !OUTPUT SCAN HD.
+	    IF (.NOT.WNFWR(FCAOUT,6*J3,ODBUF(0,0),J4+SCHHDL)) THEN !WRITE SCAN
+ 10	      CONTINUE
+	      CALL WNCTXT(F_TP,'!/Error writing output SCN file')
+	      GOTO 900					!STOP
+	    END IF
+	    J5=J5+1					!COUNT SCAN
+	  END DO					!END SCANS
+ 30	  CONTINUE
+	END DO						!END SUBSET
+C
+C READY
+C
+	RETURN						!READY
+C
+C ERROR FINISH
+C
+ 900	CONTINUE
+	NLEIWD=.FALSE.
+C
+	RETURN
+C
+C
+	END

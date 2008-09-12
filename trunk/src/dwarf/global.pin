@@ -1,0 +1,88 @@
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!.Ident:	PIN_GLOBAL
+!.Keywords:	DWARF control parameters, Definition
+!.Author:	Ger van Diepen (NFRA, Dwingeloo)
+!.Language:	DWARF-PIN
+!.Environment:	VAX
+!.Comments:
+!.Version:	830204 GVD - creation
+!.Version:	840224 RH  - adapted to new DWCL system
+!.Version:	840615 GVD - removed DeAnza keywords ITTNR,SEGMENTNR and
+!			SEGMENTSIZE; set DEFAULT=0 /NOASK for IPUNIT and LUTNR
+!.Version:	840807 GVD - maximum DeAnza channel nr = 2
+!.Version:	851108 KK  - remove MAX_NSETS in keyword DATABASE
+!.Version:	900919 FMO - new comment format
+!-------------------------------------------------------------------------
+!
+!				DATABASE-KEYWORDS
+!				-----------------
+!
+KEYWORD=DATABASE
+	DATA_TYPE=C
+	IO=I
+	LENGTH=80
+!-----	MAX_NSETS=1
+	PROMPT=<DATA BASE NAME>
+!-----	CHECKS=ANUMERIC
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP=
+"Defines the name of the delault database, which all programs will use unless
+	prompting is forced through the /ASK qualifier"
+!
+!				TAPE-KEYWORDS
+!				-------------
+!
+KEYWORD=TAPEUNIT
+	DATA_TYPE=C
+	IO=I
+	LENGTH=4
+	CHECKS=OPTIONS
+	OPTIONS=MTA0,MTB0
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP=
+"Defines the tapeunit that have to be used
+	MTA0 is the fast selfloading tapeunit
+	MTB0 is the slower tapeunit (the left one)"
+!
+!				DEANZA-KEYWORDS
+!				---------------
+!
+KEYWORD=IPUNIT
+	DATA_TYPE=I
+	IO=I
+	MAX_NSETS=1
+	CHECKS=MINIMUM,MAXIMUM
+	MINIMUM=0
+	MAXIMUM=0
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	DEFAULT=0 /NOASK
+	PROMPT="<DeAnza-Unitnr>"
+	HELP=
+"Defines the unitnr of the DeAnza image-processor
+	0 is the DeAnza in the image-room"
+!
+KEYWORD=CHANNEL
+	DATA_TYPE=I
+	IO=I
+	CHECKS=MINIMUM,MAXIMUM
+	MINIMUM=0
+	MAXIMUM=2
+	PROMPT="<DeAnza Imagechannel Nr>"
+	HELP=
+"Defines the image-channel on the DeAnza image-processor
+	Channel 0 is used as overlay-channel and should (unless necessary)
+	not be used"
+!
+KEYWORD=LUTNR
+	DATA_TYPE=I
+	IO=I
+	CHECKS=MINIMUM,MAXIMUM
+	MINIMUM=0
+	MAXIMUM=3
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	DEFAULT=0 /NOASK
+	PROMPT="<Colour Lookup-Table Nr>"
+	HELP=
+"Defines the nr of the colour lookup-table, which drives the colours
+on the screen.
+	0 should normally be used"

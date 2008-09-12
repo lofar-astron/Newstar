@@ -1,0 +1,11 @@
+set notify ignoreeof savehist=100 time=30
+set prompt="> "
+set path = ( . ~/bin /usr/bin /usr/ucb /bin /usr/local /usr/alliant /etc)
+set mail=(0 /usr/spool/mail/$USER)
+alias ts 'set noglob;eval `tset -s -Q vt100`;set term=$TERM;unset noglob'
+alias tsn 'set noglob;eval `tset -s -Q ?vt100`;set term=$TERM;unset noglob'
+ts
+#
+source $WNG/wnglogin.sun
+uptime
+if ($term == vt100) echo -n "=[?1h"

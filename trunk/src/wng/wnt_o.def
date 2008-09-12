@@ -1,0 +1,371 @@
+C+ Created from wnt.dsc on 970828 at 17:01:49 at daw18
+C  WNT_O.DEF
+C  WNB 970828
+C
+C  Revisions:
+C
+C       WNB 931216      New edit default for D/E unformatted items
+C       WNB 930902      Make 32 array indices, 64 field length
+C       WNB 930801      Original version
+C                                                                             
+C
+C  Given statements:
+C                                                                             
+C
+C  Result:
+C
+C  WNT.DSC describes the include files (WNT_O.DEF[.inc],
+C  	WNT.DEF [.inc]) for the WNTINC program.
+C  	Most WNTI* routines need:
+C  	INCLUDE 'WNT_O_DEF' and
+C  	INCLUDE 'WNT_DEF'
+C                                                                             
+C
+C  Parameters:
+C                                                                             
+	INTEGER MXDINC                          ! Max. include depth
+	  PARAMETER (MXDINC=8)
+	INTEGER MXSLIN                          ! Single line length
+	  PARAMETER (MXSLIN=132)
+	INTEGER MXTLIN                          ! Composite max. line length
+	  PARAMETER (MXTLIN=4096)
+	INTEGER MXLPAR                          ! Length % parameter values
+	  PARAMETER (MXLPAR=8)
+	INTEGER MXLNAM                          ! Max. length name/value fields
+	  PARAMETER (MXLNAM=64)
+	INTEGER MXNARR                          ! Max. # of array indices
+	  PARAMETER (MXNARR=32)
+	INTEGER COMPOS                          ! Comment position
+	  PARAMETER (COMPOS=42)
+	INTEGER AT_DEF                          ! Data area types
+	  PARAMETER (AT_DEF=1)
+	INTEGER AT_BEG
+	  PARAMETER (AT_BEG=2)
+	INTEGER AT__N
+	  PARAMETER (AT__N=3)
+	INTEGER AT__L
+	  PARAMETER (AT__L=1)
+	INTEGER AT__H
+	  PARAMETER (AT__H=2)
+	INTEGER AT__I
+	  PARAMETER (AT__I=1)
+	INTEGER BT_PAR                          ! Data block types
+	  PARAMETER (BT_PAR=1)
+	INTEGER BT_DAT
+	  PARAMETER (BT_DAT=2)
+	INTEGER BT_SDA
+	  PARAMETER (BT_SDA=3)
+	INTEGER BT_COM
+	  PARAMETER (BT_COM=4)
+	INTEGER BT_BEG
+	  PARAMETER (BT_BEG=5)
+	INTEGER BT_EBG
+	  PARAMETER (BT_EBG=6)
+	INTEGER BT_DEF
+	  PARAMETER (BT_DEF=7)
+	INTEGER BT_EDF
+	  PARAMETER (BT_EDF=8)
+	INTEGER BT_MAP
+	  PARAMETER (BT_MAP=9)
+	INTEGER BT_EMP
+	  PARAMETER (BT_EMP=10)
+	INTEGER BT_DCM
+	  PARAMETER (BT_DCM=11)
+	INTEGER BT__N
+	  PARAMETER (BT__N=12)
+	INTEGER BT__L
+	  PARAMETER (BT__L=1)
+	INTEGER BT__H
+	  PARAMETER (BT__H=11)
+	INTEGER BT__I
+	  PARAMETER (BT__I=1)
+	INTEGER FT_CON                          ! Format block types
+	  PARAMETER (FT_CON=-1)
+	INTEGER FT_NUL
+	  PARAMETER (FT_NUL=0)
+	INTEGER FT_DAT
+	  PARAMETER (FT_DAT=1)
+	INTEGER FT_BEG
+	  PARAMETER (FT_BEG=2)
+	INTEGER FT_DEF
+	  PARAMETER (FT_DEF=3)
+	INTEGER FT_END
+	  PARAMETER (FT_END=4)
+	INTEGER FT_MAP
+	  PARAMETER (FT_MAP=5)
+	INTEGER FT_DCM
+	  PARAMETER (FT_DCM=6)
+	INTEGER FT__N
+	  PARAMETER (FT__N=9)
+	INTEGER FT__L
+	  PARAMETER (FT__L=-1)
+	INTEGER FT__H
+	  PARAMETER (FT__H=6)
+	INTEGER FT__I
+	  PARAMETER (FT__I=1)
+	INTEGER OP_LB                           ! Operators:
+	                                        ! LBracket  PLus
+	                                        ! MInus	   MUltiply
+	                                        ! DIvide    SinglePlus
+	                                        ! SingleMinus
+	  PARAMETER (OP_LB=1)
+	INTEGER OP_PL
+	  PARAMETER (OP_PL=2)
+	INTEGER OP_MI
+	  PARAMETER (OP_MI=3)
+	INTEGER OP_MU
+	  PARAMETER (OP_MU=4)
+	INTEGER OP_DV
+	  PARAMETER (OP_DV=5)
+	INTEGER OP_SP
+	  PARAMETER (OP_SP=6)
+	INTEGER OP_SM
+	  PARAMETER (OP_SM=7)
+	INTEGER OP__N
+	  PARAMETER (OP__N=8)
+	INTEGER OP__L
+	  PARAMETER (OP__L=1)
+	INTEGER OP__H
+	  PARAMETER (OP__H=7)
+	INTEGER OP__I
+	  PARAMETER (OP__I=1)
+	INTEGER INCCNT                          ! Start # of entities to allocate
+	  PARAMETER (INCCNT=16)
+	INTEGER P_NAM                           ! Known (%) parameters
+	  PARAMETER (P_NAM=1)
+	INTEGER P_DAT
+	  PARAMETER (P_DAT=2)
+	INTEGER P_USE
+	  PARAMETER (P_USE=3)
+	INTEGER P_VER
+	  PARAMETER (P_VER=4)
+	INTEGER P_SYS
+	  PARAMETER (P_SYS=5)
+	INTEGER P_LIS
+	  PARAMETER (P_LIS=6)
+	INTEGER P_NOL
+	  PARAMETER (P_NOL=7)
+	INTEGER P_INS
+	  PARAMETER (P_INS=8)
+	INTEGER P_LOC
+	  PARAMETER (P_LOC=9)
+	INTEGER P_GLO
+	  PARAMETER (P_GLO=10)
+	INTEGER P_INC
+	  PARAMETER (P_INC=11)
+	INTEGER P_REV
+	  PARAMETER (P_REV=12)
+	INTEGER P_COM
+	  PARAMETER (P_COM=13)
+	INTEGER P_FOR
+	  PARAMETER (P_FOR=14)
+	INTEGER P_CC
+	  PARAMETER (P_CC=15)
+	INTEGER P_PRI
+	  PARAMETER (P_PRI=16)
+	INTEGER P_NOP
+	  PARAMETER (P_NOP=17)
+	INTEGER P_ALI
+	  PARAMETER (P_ALI=18)
+	INTEGER P_NOA
+	  PARAMETER (P_NOA=19)
+	INTEGER P__N
+	  PARAMETER (P__N=20)
+	INTEGER P__L
+	  PARAMETER (P__L=1)
+	INTEGER P__H
+	  PARAMETER (P__H=19)
+	INTEGER P__I
+	  PARAMETER (P__I=1)
+	INTEGER PN_DEF                          ! Known (.) names
+	  PARAMETER (PN_DEF=1)
+	INTEGER PN_BEG
+	  PARAMETER (PN_BEG=2)
+	INTEGER PN_END
+	  PARAMETER (PN_END=3)
+	INTEGER PN_PAR
+	  PARAMETER (PN_PAR=4)
+	INTEGER PN_DAT
+	  PARAMETER (PN_DAT=5)
+	INTEGER PN_COM
+	  PARAMETER (PN_COM=6)
+	INTEGER PN_OFF
+	  PARAMETER (PN_OFF=7)
+	INTEGER PN_STR
+	  PARAMETER (PN_STR=8)
+	INTEGER PN_ALI
+	  PARAMETER (PN_ALI=9)
+	INTEGER PN_MAP
+	  PARAMETER (PN_MAP=10)
+	INTEGER PN_UNI
+	  PARAMETER (PN_UNI=11)
+	INTEGER PN__N
+	  PARAMETER (PN__N=12)
+	INTEGER PN__L
+	  PARAMETER (PN__L=1)
+	INTEGER PN__H
+	  PARAMETER (PN__H=11)
+	INTEGER PN__I
+	  PARAMETER (PN__I=1)
+C
+C  WNTB structure definitions:
+C                                                                             
+	INTEGER WNTBHDL,WNTBHDV,WNTBHDS
+	  PARAMETER (  WNTBHDL=24,              ! Length
+	1              WNTBHDV=1,               ! Version
+	1              WNTBHDS=1)               ! System
+	INTEGER WNTB__L,WNTB__V,WNTB__S
+	  PARAMETER (  WNTB__L=24,              ! Length
+	1              WNTB__V=1,               ! Version
+	1              WNTB__S=1)               ! System
+C
+C  WNTB Offsets:
+C                                                                             
+	                                        ! General buffer administration
+	INTEGER WNTB_CCNT_1,WNTB_CCNT_J         ! Current # allocated
+	  PARAMETER (WNTB_CCNT_1=0,WNTB_CCNT_J=0)
+	INTEGER WNTB_CNT_1,WNTB_CNT_J           ! Current # filled
+	  PARAMETER (WNTB_CNT_1=4,WNTB_CNT_J=1)
+	INTEGER WNTB_ELEN_1,WNTB_ELEN_J         ! Length data element (bytes)
+	  PARAMETER (WNTB_ELEN_1=8,WNTB_ELEN_J=2)
+	INTEGER WNTB_BPTR_1,WNTB_BPTR_J         ! Pointer to start data (A_B)
+	  PARAMETER (WNTB_BPTR_1=12,WNTB_BPTR_J=3)
+	INTEGER WNTB_JPTR_1,WNTB_JPTR_J         ! Pointer to start data (A_J)
+	  PARAMETER (WNTB_JPTR_1=16,WNTB_JPTR_J=4)
+C
+C  WNTI structure definitions:
+C                                                                             
+	INTEGER WNTIHDL,WNTIHDV,WNTIHDS
+	  PARAMETER (  WNTIHDL=16,              ! Length
+	1              WNTIHDV=1,               ! Version
+	1              WNTIHDS=1)               ! System
+	INTEGER WNTI__L,WNTI__V,WNTI__S
+	  PARAMETER (  WNTI__L=16,              ! Length
+	1              WNTI__V=1,               ! Version
+	1              WNTI__S=1)               ! System
+C
+C  WNTI Offsets:
+C                                                                             
+	                                        ! Input line definition
+	INTEGER WNTI_FTYP_1,WNTI_FTYP_J         ! Format type
+	  PARAMETER (WNTI_FTYP_1=0,WNTI_FTYP_J=0)
+	INTEGER WNTI_LCOM_1,WNTI_LCOM_J         ! Length comment (or 0)
+	  PARAMETER (WNTI_LCOM_1=4,WNTI_LCOM_J=1)
+	INTEGER WNTI_PCOM_1,WNTI_PCOM_J         ! Pointer to comment block
+	  PARAMETER (WNTI_PCOM_1=8,WNTI_PCOM_J=2)
+	INTEGER WNTI_PFOR_1,WNTI_PFOR_J         ! Pointer to format block
+	  PARAMETER (WNTI_PFOR_1=12,WNTI_PFOR_J=3)
+C
+C  WNTV structure definitions:
+C                                                                             
+	INTEGER WNTVHDL,WNTVHDV,WNTVHDS
+	  PARAMETER (  WNTVHDL=88,              ! Length
+	1              WNTVHDV=1,               ! Version
+	1              WNTVHDS=1)               ! System
+	INTEGER WNTV__L,WNTV__V,WNTV__S
+	  PARAMETER (  WNTV__L=88,              ! Length
+	1              WNTV__V=1,               ! Version
+	1              WNTV__S=1)               ! System
+C
+C  WNTV Offsets:
+C                                                                             
+	                                        ! Local/global value
+	INTEGER WNTV_NAM_1,WNTV_NAM_C,WNTV_NAM_N ! Variable name
+	  PARAMETER (WNTV_NAM_1=0,WNTV_NAM_C=0,WNTV_NAM_N=16)
+	INTEGER WNTV_TYP_1,WNTV_TYP_J           ! Type:
+	  PARAMETER (WNTV_TYP_1=16,WNTV_TYP_J=4) ! +: local	-: global
+	                                        ! 1: integer	2: string
+	INTEGER WNTV_VAL_1,WNTV_VAL_J           ! Value
+	  PARAMETER (WNTV_VAL_1=20,WNTV_VAL_J=5)
+	INTEGER WNTV_STR_1,WNTV_STR_C,WNTV_STR_N ! Value as string
+	  PARAMETER (WNTV_STR_1=24,WNTV_STR_C=24,WNTV_STR_N=64)
+C
+C  WNTF structure definitions:
+C                                                                             
+	INTEGER WNTFHDL,WNTFHDV,WNTFHDS
+	  PARAMETER (  WNTFHDL=376,             ! Length
+	1              WNTFHDV=1,               ! Version
+	1              WNTFHDS=1)               ! System
+	INTEGER WNTF__L,WNTF__V,WNTF__S
+	  PARAMETER (  WNTF__L=376,             ! Length
+	1              WNTF__V=1,               ! Version
+	1              WNTF__S=1)               ! System
+C
+C  WNTF Offsets:
+C                                                                             
+	                                        ! Format data block
+	INTEGER WNTF_BTYP_1,WNTF_BTYP_J         ! Block type (BT_)
+	  PARAMETER (WNTF_BTYP_1=0,WNTF_BTYP_J=0)
+	INTEGER WNTF_ALEN_1,WNTF_ALEN_J         ! Align length
+	  PARAMETER (WNTF_ALEN_1=4,WNTF_ALEN_J=1)
+	INTEGER WNTF_DTP_1,WNTF_DTP_J           ! Data type (T_)
+	  PARAMETER (WNTF_DTP_1=8,WNTF_DTP_J=2)
+	INTEGER WNTF_ULEN_1,WNTF_ULEN_J         ! Length one unit (bytes)
+	  PARAMETER (WNTF_ULEN_1=12,WNTF_ULEN_J=3)
+	INTEGER WNTF_SLEN_1,WNTF_SLEN_J         ! String length
+	  PARAMETER (WNTF_SLEN_1=16,WNTF_SLEN_J=4)
+	INTEGER WNTF_DIM_1,WNTF_DIM_J           ! # of dimensions
+	  PARAMETER (WNTF_DIM_1=20,WNTF_DIM_J=5)
+	INTEGER WNTF_REFP_1,WNTF_REFP_J         ! Pointer to reference line
+	  PARAMETER (WNTF_REFP_1=24,WNTF_REFP_J=6)
+	INTEGER WNTF_NINI_1,WNTF_NINI_J         ! # of initialisation values
+	  PARAMETER (WNTF_NINI_1=28,WNTF_NINI_J=7)
+	INTEGER WNTF_INIP_1,WNTF_INIP_J         ! Pointer to first init. value
+	  PARAMETER (WNTF_INIP_1=32,WNTF_INIP_J=8)
+	INTEGER WNTF_EDIP_1,WNTF_EDIP_J         ! Edit information pointer
+	  PARAMETER (WNTF_EDIP_1=36,WNTF_EDIP_J=9)
+	INTEGER WNTF_TLEN_1,WNTF_TLEN_J         ! Total length (entities) entry
+	  PARAMETER (WNTF_TLEN_1=40,WNTF_TLEN_J=10)
+	INTEGER WNTF_OFF_1,WNTF_OFF_J           ! Offset of this entry
+	  PARAMETER (WNTF_OFF_1=44,WNTF_OFF_J=11)
+	INTEGER WNTF_ENT_1,WNTF_ENT_J           ! Pointer to input line entry
+	  PARAMETER (WNTF_ENT_1=48,WNTF_ENT_J=12)
+	INTEGER WNTF_SREF_1,WNTF_SREF_J         ! Pointer to structure definition
+	  PARAMETER (WNTF_SREF_1=52,WNTF_SREF_J=13)
+	INTEGER WNTF_IND_1,WNTF_IND_J           ! Low bound, length array index
+	  PARAMETER (WNTF_IND_1=56,WNTF_IND_J=14)
+	INTEGER WNTF_NAM_1,WNTF_NAM_C,WNTF_NAM_N ! Name of variable
+	  PARAMETER (WNTF_NAM_1=312,WNTF_NAM_C=312,WNTF_NAM_N=64)
+C
+C  WNTD structure definitions:
+C                                                                             
+	INTEGER WNTDHDL,WNTDHDV,WNTDHDS
+	  PARAMETER (  WNTDHDL=40,              ! Length
+	1              WNTDHDV=1,               ! Version
+	1              WNTDHDS=1)               ! System
+	INTEGER WNTD__L,WNTD__V,WNTD__S
+	  PARAMETER (  WNTD__L=40,              ! Length
+	1              WNTD__V=1,               ! Version
+	1              WNTD__S=1)               ! System
+C
+C  WNTD Offsets:
+C                                                                             
+	                                        ! Data initialisation information
+	INTEGER WNTD_REP_1,WNTD_REP_J           ! Repetition factor
+	  PARAMETER (WNTD_REP_1=0,WNTD_REP_J=0)
+	INTEGER WNTD_STR_1,WNTD_STR_C,WNTD_STR_N ! Initialisation information
+	  PARAMETER (WNTD_STR_1=4,WNTD_STR_C=4,WNTD_STR_N=36)
+C
+C  WNTE structure definitions:
+C                                                                             
+	INTEGER WNTEHDL,WNTEHDV,WNTEHDS
+	  PARAMETER (  WNTEHDL=40,              ! Length
+	1              WNTEHDV=1,               ! Version
+	1              WNTEHDS=1)               ! System
+	INTEGER WNTE__L,WNTE__V,WNTE__S
+	  PARAMETER (  WNTE__L=40,              ! Length
+	1              WNTE__V=1,               ! Version
+	1              WNTE__S=1)               ! System
+C
+C  WNTE Offsets:
+C                                                                             
+	                                        ! Edit data
+	INTEGER WNTE_EDIT_1,WNTE_EDIT_J         ! Edit allowed (0)
+	  PARAMETER (WNTE_EDIT_1=0,WNTE_EDIT_J=0)
+	INTEGER WNTE_PAT_1,WNTE_PAT_C,WNTE_PAT_N ! I/O format pattern
+	  PARAMETER (WNTE_PAT_1=4,WNTE_PAT_C=4,WNTE_PAT_N=12)
+	INTEGER WNTE_UNIT_1,WNTE_UNIT_C,WNTE_UNIT_N ! Units
+	  PARAMETER (WNTE_UNIT_1=16,WNTE_UNIT_C=16,WNTE_UNIT_N=12)
+	INTEGER WNTE_SPEC_1,WNTE_SPEC_C,WNTE_SPEC_N ! Special information
+	  PARAMETER (WNTE_SPEC_1=28,WNTE_SPEC_C=28,WNTE_SPEC_N=12)
+C-                                                                            

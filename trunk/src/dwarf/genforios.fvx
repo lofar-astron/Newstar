@@ -1,0 +1,79 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_FORIOS
+C.Keywords:	Fortran I/O errors
+C.Author:	Ger van Diepen (NFRA, Dwingeloo)
+C.Language:	VAX-Fortran
+C.Environment:	VAX
+C.Comments:	Calls routine ERRSNS
+C.Version:	821111 GVD - Creation
+C.Version:	840308 GVD - Also generate message for RMSSTV
+C.Version:	860719 HHJ - Improved error report: RMS_status not always > 1
+C			when FORTRAN_status indicates an error.
+C.Version:	870428 HHJ - Don't return VMS error code (can be odd), but
+C			generate message and return GEN_FORIOERR
+C.Version:	880421 FMO - Slight editing
+C.Version:	920224 GvD - no optional arguments in MSG anymore
+C.Version:	920804 GvD - added routine GEN_FORIOS_VMSERR
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION GEN_FORIOS (FILE)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	FILE		! (i) file name
+C
+C.Purpose:	Get Fortran I/O status and store message in case of error
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS
+C	error	GEN_FORIOERR
+C.Notes:	An appropriate error message is left in the message buffer
+C-------------------------------------------------------------------------
+C
+C
+	INTEGER*4	GEN_FORIOS_VMSERR
+C
+	INTEGER*4	IS
+C
+C
+	GEN_FORIOS = GEN_FORIOS_VMSERR (FILE,IS)
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION GEN_FORIOS_VMSERR (FILE,VMSERR)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	FILE		! (i) file name
+	INTEGER*4	VMSERR		! (o) VMS error code
+C
+C.Purpose:	Get Fortran I/O status and store message in case of error
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS
+C	error	GEN_FORIOERR
+C.Notes:	An appropriate error message is left in the message buffer
+C-------------------------------------------------------------------------
+C
+C
+	INTEGER*4	MSG_SET  
+C
+	INTEGER*4	STATUS, RMSSTV, UNIT, FNUM
+C
+C
+	VMSERR = 1				! No error yet
+	CALL ERRSNS (FNUM,STATUS,RMSSTV,UNIT)	! get Fortran I/O status
+C
+	IF (FNUM.GT.0) THEN
+		IF (RMSSTV.GT.1) VMSERR = MSG_SET (RMSSTV,0)	! STV error
+		IF (STATUS.GT.1) VMSERR = MSG_SET (STATUS,0)	! RMS error
+		GOTO 999
+	ENDIF
+C
+	GEN_FORIOS_VMSERR = GEN_SUCCESS
+	RETURN
+C
+ 999	GEN_FORIOS_VMSERR = MSG_SET (GEN_FORIOERR,1)
+	CALL WNCTXT(DWLOG,DWMSG,FNUM,UNIT,FILE)
+	RETURN
+	END

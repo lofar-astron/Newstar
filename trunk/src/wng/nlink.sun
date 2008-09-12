@@ -1,0 +1,116 @@
+#  nlink.ssc
+# 	WNB 920127
+# 
+#  Revisions:
+#	WNB 921002	Overhaul
+#	WNB 921006	New date calculation
+#	JPH 921009	Pre-delete .map end .exe
+#	JPH 921015	Correct date calculation, include time
+#			directory check, short rm sequence
+#	WNB 921016	Typo in date, wrong nxup called, wrong wngfex called
+#	HjV 921016	Combine changes 921015 and 921016
+#	HjV 921019	Remove directory check
+#	WNB 921113	Put WNTAB.EXE in correct place
+#	WNB 921130	Change tr for HP
+#	HjV 921203	Use IGETARG iso. GETARG for HP 
+#	WNB 921208	Get date from nxec; check update possible; log data
+#	WNB 921209	-a1 switch
+#	WNB 921216	Correct wntab directory if -u
+#	WNB 921222	Add test undefined
+#	WNB 921230	Make SSC
+#	WNB 930106	Add unresolved test
+#       HjV 930226      For VAX: remove shared stuff
+#                       put lnk_def also before lnk_use
+#			UNIX: remove reference to old dwarflib
+#	WNB 930517	Use possible objects
+#	WNB 930802	Change into WNTINC use
+#	WNB 931130	Add WNG library to Dwarf
+#	HJV 940202	Add extra call to DWARF LIB for VAX
+#       AXC 040127      Removed IGETARG exception for hp again
+# 
+#	Link programs in nxec system. Use as:
+#
+#		source $WNG/nlink.sun		(Unix)
+#		@WNG:NLINK <file>		(VAX)
+#
+#	The command file uses many local nxec variables, and
+#	environment variables: WNG, LIBDWARF, WNG_OLB, WNG_EXE
+#	command files: nxec, nxup, wngfex
+#
+# Link file
+#
+	set msgt="" ; set b1="Done: "			# message text/ok
+	if ($lobe == "" || $lobe == exe) set lobe=exe	# correct extension
+	if ($lobe != exe ) goto RETURN			# wrong extension
+	set lobc=`echo $lobh | tr $Lowc $Upc`		# program name UC
+	set loo="'"$c_date/$c_time"'"			# vers. yymmdd/hhmmss
+	set looa="'"$lobc"'"
+	if ("$cd_a" != "1") then			# type of logging
+	  set lood=IN
+	else
+	  set lood=IN1
+	endif
+	cat << EOF >$pid${dep}.f			# create program
+	PROGRAM ${lobc}_EXE
+	CHARACTER*80 CLSTR	!COMMAND LINE ARGUMENT
+	IF (IARGC().GT.0) THEN
+	  CALL GETARG(1,CLSTR)
+	ELSE
+	  CLSTR=' '
+	END IF
+	CALL WNG${lood}($looa,$loo,$dattp) !CALL INIT
+	CALL $lobc(CLSTR)	!CALL PROGRAM
+	CALL WNGEX		!FINISH OFF
+	END
+EOF
+	'rm' $WNG_EXE/${lobh}.exe $WNG_EXE/${lobh}.map >& /dev/null
+	set loo=`ls $WNG_OLB/*.o |& grep "\.o"`		# get local objects
+	if ("$cd_s" == "-") then			# no dwarf
+	  $fortran $lfort $pid${dep}.f -o $WNG_EXE/${lobh}.exe \
+		$loo \
+		$WNG_OLB/${l_d}.olb $lnk_def $lnk_use $lnk_def \
+		>&! $WNG_EXE/${lobh}.map
+	else						# dwarf
+	  if (-e $LIBDWARF/wnlib.olb) then
+	    set llib=wnlib
+	  else
+	    goto NLERR
+	  endif
+	  $fortran $lfort $pid${dep}.f -o $WNG_EXE/${lobh}.exe \
+		$loo \
+		$WNG_OLB/${l_d}.olb $lnk_def $lnk_use $lnk_def \
+		$LIBDWARF/${llib}.olb $WNG_OLBEXE/wng/wnlib.olb \
+		-ltermcap >&! $WNG_EXE/${lobh}.map
+	endif
+	set statx=$status
+	'rm' $pid$dep.f $pid$dep.o >& /dev/null
+	if ($statx) goto NLERR				# no success
+	if (! -e $WNG_EXE/${lobh}.exe) goto NLERR
+	if (! -e $WNG_EXE/${lobh}.map) goto NLERR
+	set loo=`grep ndefine $WNG_EXE/${lobh}.map`
+	if ("$loo" != "") goto NLERR
+	set loo=`grep nresolv $WNG_EXE/${lobh}.map`
+	if ("$loo" != "") goto NLERR
+	set msgt="$msgt linked"
+	if ("$lobh" == "wntinc") then			# put in correct WNG
+	  'mv' $WNG_EXE/${lobh}.exe $WNG_OLBEXE/wng >& /dev/null
+	else if ("$cd_u" != "-" && $?EXEDWARF_UNIX) then # update
+	  csh -f $WNG/nxup.sun 4 "$u_d" "$WNG_EXE/${lobh}.$lobe" "$lobh:t"
+	  set msgt="$msgt updated($u_d)"
+	endif
+	if ("$cd_p" != "-") then			# print
+	  $WNG/wngfex.sun sp $WNG_EXE/${lobh}.map ${lobh}.$lobe
+	  set msgt="$msgt printed"
+	endif
+	goto NLEX					#ready
+#
+# Ready
+#
+NLERR:
+	set b1="Not:  "
+NLEX:
+	echo "$b1 ${lobh}.$lobe $msgt" | tee -a $c_upd
+RETURN:
+#
+# Local subroutine
+#

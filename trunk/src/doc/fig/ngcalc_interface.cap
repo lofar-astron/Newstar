@@ -1,0 +1,36 @@
+%ngcalc_interface.cap
+
+\begin{figure}[htbp]
+\fig{ngcalc_interface}
+
+\caption{\it 
+\label{.ngcalc.interface}
+Overview of NGCALC's parameter interface.
+\\
+\\ See also:
+\\ \indent \figref{.ngcalc.extract} for details of the {\em EXTRACT} operation
+\\ \indent \figref{.ngcalc.display} for details of the display operations
+}
+\end{figure}
+
+\begin{figure}[htbp]
+\fig{ngcalc_extract}
+
+\caption{\it 
+\label{.ngcalc.extract}
+NGCALC's cut-extract interface.
+\\
+\\ See \figref{.ngcalc.interface} for the overall interface.
+}
+\end{figure}
+
+\begin{figure}[htbp]
+\fig{ngcalc_display}
+
+\caption{\it 
+\label{.ngcalc.display}
+NGCALC's header/data display interface.
+\\
+\\ See \figref{.ngcalc.interface} for the overall interface.
+}
+\end{figure}

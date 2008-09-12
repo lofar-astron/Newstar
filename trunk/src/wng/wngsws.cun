@@ -1,0 +1,95 @@
+/*+ wngsws.cun
+.   WNB 931029
+.
+.   Revisions:
+.	HjV  931029	Change -> to .  (Problems on HP)
+...									*/
+#include <sys/time.h>
+/*
+.   History
+...									*/
+	  static struct itimerval tvalue, ovalue; /* time info		*/
+/*
+...									*/
+			int wngsws_(sec)
+/*
+.   Wait a while
+.
+.   Result:
+.
+.	wngsws ( SEC_E:I)	wait SEC seconds
+.	wngswm ( MSEC_J:I)	wait MSEC milliseconds
+...									*/
+/*
+.   Arguments:
+...									*/
+		float *sec;			/* time to wait		*/
+{
+/*
+.   Include files:
+...									*/
+/*
+.   Parameters:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+/*
+.   Data declarations:
+...									*/
+/*
+. Init time
+...									*/
+	  tvalue.it_value.tv_sec = *sec;
+	  tvalue.it_value.tv_usec =
+		(int)((*sec - tvalue.it_value.tv_sec) * 1000000) % 1000000;
+	  tvalue.it_interval.tv_sec = 0;
+	  tvalue.it_interval.tv_usec = 0;
+/*
+.  Wait
+...									*/
+	  setitimer(0, &tvalue, &ovalue);
+	  pause();
+          return;
+}
+/*
+.  wngswm
+...									*/
+			int wngswm_(msec)
+/*
+.   Arguments:
+...									*/
+		long *msec;			/* time to wait		*/
+{
+/*
+.   Include files:
+...									*/
+/*
+.   Parameters:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+/*
+.   Data declarations:
+...									*/
+/*
+. Init time
+...									*/
+	  tvalue.it_value.tv_sec = *msec / 1000;
+	  tvalue.it_value.tv_usec = 
+		(*msec - 1000 * tvalue.it_value.tv_sec) % 1000000;
+	  tvalue.it_interval.tv_sec = 0;
+	  tvalue.it_interval.tv_usec = 0;
+/*
+.  Wait
+...									*/
+	  setitimer(0, &tvalue, &ovalue);
+	  pause();
+          return;
+}
+/*
+.
+...									*/

@@ -1,0 +1,56 @@
+C+ NFLAG.FOR
+C  WNB 930618
+C
+C  Revisions:
+C	CMV 960122	Warning if /NORUN ignored
+C
+	SUBROUTINE NFLAG
+C
+C  Main routine to interactively  handle Scan files
+C
+C  Result:
+C
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NFL_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+C
+C  Function references:
+C
+	LOGICAL WNDRUN		!TEST RUN
+C
+C  Data declarations:
+C
+C-
+C
+C PRELIMINARIES
+C
+	CALL NFLINI				!INIT PROGRAM
+	IF (.NOT.WNDRUN()) 
+	1	CALL WNCTXT(F_TP,'Ignored option /NORUN')
+C
+C DISTRIBUTE
+C
+ 10	CONTINUE
+	CALL NFLDAT				!GET USER DATA
+	IF (OPT.EQ.'QUI') THEN			!READY
+	  CALL WNGEX				!FINISH
+	ELSE IF (OPT.EQ.'SHO') THEN		!SHOW DATA
+	  CALL NFLPRT
+	  GOTO 10
+	ELSE IF (OPT.EQ.'FLA') THEN		!(UN-)FLAG DATA
+	  CALL NFLFLG
+	  GOTO 10
+	END IF
+C
+	CALL WNGEX				!READY
+C
+C
+	END

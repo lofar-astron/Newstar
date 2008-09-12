@@ -1,0 +1,61 @@
+C+ WNGSGH.FSC
+C  WNB 930413
+C
+C  Revisions:
+C	WNB 930526	Correct description
+C	Hjv 940303	Call WNGSEG when empty HOST (UNIX)
+C
+	SUBROUTINE WNGSGH(VAL)
+C
+C  Get current hostname
+C
+C  Result:
+C
+C	CALL WNGSGH( VAL_C*:O)
+C				Get the name of the current host in VAL.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+#ifdef wn_vx__
+	INTEGER SYI$_NODENAME		!NODENAME SYSTEM CODE
+	  PARAMETER (SYI$_NODENAME='10d9'X)
+#endif
+C
+C  Arguments:
+C
+	CHARACTER*(*) VAL		!VALUE OF HOST NAME
+C
+C  Function references:
+C
+#ifdef wn_vx__
+	LOGICAL LIB$GETSYI		!GET SYSTEM INFO
+#else
+	INTEGER WNCALN			!GET STRING LENGTH
+#endif
+C
+C  Data declarations:
+C
+#ifndef wn_vx__
+	CHARACTER*64 HOST		!HOST NAME
+#endif
+C-
+#ifdef wn_vx__
+	JS=LIB$GETSYI(SYI$_NODENAME,,VAL)		!GET NODE NAME
+	IF (.NOT.JS) VAL=' '				!NO VALUE
+#else
+	CALL GETHOST(HOST,LEN(HOST))
+	VAL=HOST(1:WNCALN(HOST))			!MAKE NON-ASCIZ
+	IF (VAL.EQ.' ') THEN				!NO HOST NAME
+	  CALL WNGSEG('HOST',VAL)
+	  IF (VAL.EQ.' ') VAL='UNKNOWN'			!STILL NO HOST NAME
+	END IF
+#endif
+C
+	RETURN
+C
+C
+	END

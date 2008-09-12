@@ -1,0 +1,82 @@
+C+ NGCPMH.FOR
+C  WNB 920820
+C
+C  Revisions:
+C
+	SUBROUTINE NGCPMH(T,NGF,MNAM,WMPNOD)
+C
+C  Print/type Plot-header
+C
+C  Result:
+C
+C	CALL NGCPMH (T_J:I, NGF_B(0:*):I, MNAM_J(0:7):I, WMPNOD_C*:I)
+C				Show on output T the plot header
+C				NGF with name MNAM in node WMPNOD.
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NGF_O_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER T			!PRINTING TYPE
+	BYTE NGF(0:*)			!PLOT HEADER
+	INTEGER MNAM(0:7)		!PLOT NAME
+	CHARACTER*(*) WMPNOD		!NODE NAME
+C
+C  Function references:
+C
+	CHARACTER*32 WNTTSG		!GET PLOT SET NAME
+	INTEGER WNGGJ			!GET J VALUE
+	REAL WNGGE			!GET E VALUE
+C
+C  Data declarations:
+C
+C-
+C
+C FILE INFO
+C
+	CALL WNCTXT(T,'!/!AS(#!UJ) in node !AS',
+	1		WNTTSG(MNAM,0),NGF(NGF_SETN_1),WMPNOD)
+C
+C GENERAL INFO
+C
+	CALL WNCTXT(T,'!/Field: !AL12!26CInterf.'//
+	1		'/Tel.: !AL4'//
+	1		'!51CPol: !AL4',
+	1		NGF(NGF_NAM_1),NGF(NGF_IFR_1),NGF(NGF_POL_1))
+C
+C DATA DESCRIPTION
+C
+	CALL WNCTXT(T,	'!/RA (date)!12C!9$EPF9.4 deg!26CFrequency'//
+	1		'!37C!9$E9.4 MHz!51CUT start!67C!EHF4'//
+	1		'!/DEC(date)!12C!9$EAF9.4 deg!26CBandwidth'//
+	1		'!37C!9$E9.4 MHz!51CUT end!67C!EHF4'//
+	1		'!/HA start!12C!9$EAF9.4 deg!26CBand!40C!6$UJ'//
+	1		'!51CHA step!63C!9$EPF9.4 deg'//
+	1		'!/HA end!12C!9$EAF9.4 deg!26CVolgnumber!10$UJ'//
+	1		'!51CObs.date!67C!2$UI.!3$ZI'//
+	1		'!/Maximum!11C!10$E10.2!26CMinimum!36C!10$E10.2'//
+	1		'!51CDeleted!66C!6$UJ'//
+	1		'!/Datapoints!15C!6$UJ!26CType!35C!AL40!/',
+	1		NGF(NGF_RA_1),NGF(NGF_FRQ_1),NGF(NGF_UTB_1),
+	1		NGF(NGF_DEC_1),NGF(NGF_BDW_1),NGF(NGF_UTE_1),
+	1		NGF(NGF_HAB_1),NGF(NGF_BDN_1),
+	1		NGF(NGF_HAI_1),WNGGE(NGF(NGF_HAB_1))+
+	1			(WNGGJ(NGF(NGF_SCN_1))-1)*
+	1			WNGGE(NGF(NGF_HAI_1)),
+	1		NGF(NGF_VNR_1),NGF(NGF_OYR_1),
+	1		NGF(NGF_ODY_1),
+	1		NGF(NGF_MAX_1),NGF(NGF_MIN_1),NGF(NGF_DEL_1),
+	1		NGF(NGF_SCN_1),NGF(NGF_TYP_1))
+C
+C FILE INFO
+C
+C
+	RETURN
+C
+C
+	END

@@ -1,0 +1,764 @@
+/*+ wnftrw.cun
+.   WNB 890724
+.
+.   Revisions:
+.	WNB 920122	Include type.h for DW
+.	WNB 930803	Change to _o_inc and to .cun
+.	CMV 940204	Remote tapeunits
+.	CMV 940216	Add Hello call to identify client
+.	CMV 941017	Add "method" like rmtd: or disk:
+.
+...									*/
+#include "mca_o_inc"
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/mtio.h>
+#include <sys/ioctl.h>
+
+#include <errno.h>
+extern int errno;
+
+/*
+.   Implemented methods:
+.     
+.     tape:    Ordinary mag-tape device
+.     rmtd:    Remote mag-tape, to be handled through rmtd
+.     disk:    Directory with files using Gipsy naming convention 
+.               (file??????.mt with ?????? the filenumber starting at 1)
+.              No tape.descriptor file is maintained.
+.
+.
+...									*/
+
+#define MTH_TAPE  0
+#define MTH_RMTD  1
+#define MTH_DISK  2
+
+#define DISK_READ  0
+#define DISK_TEST  1
+#define DISK_WRITE 2
+
+#define DEBUG(x) /* x; */
+
+static char tmpbuf[1024];		/* General character buffer 	*/
+
+/*
+...									*/
+			int wnftrw_(mcap)
+/*
+.   General tape handling
+.
+.   Result:
+.
+.	WNFTRW_J = WNFTRW( MCA_J:I)			Rewind tape
+.	WNFTTM_J = WNFTTM( MCA_J:I)			Write tape mark
+.	WNFTSB_J = WNFTSB( MCA_J:I, N_J:I)		Skip N tape blocks
+.	WNFTSF_J = WNFTSF( MCA_J:I, N_J:I)		Skip N tape files
+.
+.	WNFTOP_J = WNFTOP( MCA_J:I, UNIT_C:I, FLAG_J:I) Open tapeunit
+.	WNFTCL_J = WNFTCL( MCA_J:I)			Close tapeunit
+.
+.	WNFTWB_J = WNFTWB( MCA_J:I, BUF_C:I, SIZE)	Write buffer
+.	WNFTRB_J = WNFTRB( MCA_J:I, BUF_C:I, SIZE)	Read buffer
+.	WNFTRD_J = WNFTRD( MCA_J:I, ADDR_C80:O)		Read 80 character block
+.	WNFTWR_J = WNFTWR( MCA_J:I, ADDR_C80:O)		Write 80 character block
+.
+.
+.   PIN references:
+...									*/
+/*
+.   Arguments:
+...									*/
+		struct mca *mcap;		/* MCA ptr		*/
+{
+/*
+.   Include files:
+...									*/
+/*
+.   Parameters:
+...									*/
+/*
+.   Equivalences:
+...									*/
+/*
+.   Commons:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+/*
+.   Data declarations:
+...									*/
+	struct mtop mto;			/* mag tape operations	*/
+	int js;
+/* Rewind tape
+.									*/
+	DEBUG(printf("Rewind\n");)
+	if (mcap->undes[0]==MTH_RMTD) {
+	   js=send_command(mcap->chan,"rewind",1);
+
+	} else if (mcap->undes[0]==MTH_DISK) {
+	   if (mcap->chan>0) close(mcap->chan); /* Close current file   */
+	   mcap->chan = -1;
+	   mcap->iosb[1]=1;                     /* Next file is first   */
+	   js=1;                                /* Always success       */
+           
+	} else {
+	   mto.mt_count= 1;
+	   mto.mt_op= MTREW;			/* rewind		*/
+	   js=ioctl(mcap->chan,MTIOCTOP,&mto);	/* do			*/
+	}
+
+	if (js == -1)
+	  return(2*errno);
+	else
+	  return(1);
+}
+/*
+.  Skip tape blocks
+...									*/
+				int wnftsb_(mcap,n)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+	int n;
+{
+/* Data declarations:
+.									*/
+	struct mtop mto;			/* mt operations	*/
+	int js;
+/*
+.									*/
+	DEBUG(printf("Skip block\n");)
+	if (mcap->undes[0]==MTH_RMTD) {
+	   js=send_command(mcap->chan,"block",n);
+
+/******
+  We do not know the blocksize, however: this routine is only used to
+  skip the header block, which is 80 bytes
+ ******/
+	} else if (mcap->undes[0]==MTH_DISK) {
+
+	   js=disk_open(mcap,DISK_WRITE);         /* Open next file       */
+	   if (js>0) 
+	      js=lseek(mcap->chan,(off_t)80,1);	  /* Offset from current  */
+           
+	} else {
+	   mto.mt_count= abs(n);
+	   if (n <0)
+	     mto.mt_op= MTBSR;			/* backspace		*/
+	   else if (n >0)
+	     mto.mt_op= MTFSR;			/* forward space	*/
+	   else
+	     return(1);
+	   js=ioctl(mcap->chan,MTIOCTOP,&mto);	/* do			*/
+	}
+	if (js == -1)
+	  return(2*errno);
+	else
+	  return(1);
+}
+/*
+.  Skip tape files
+...									*/
+				int wnftsf_(mcap,n)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+	int n;
+{
+/* Data declarations:
+.									*/
+	struct mtop mto;			/* mt operations	*/
+	int js;
+/*
+.									*/
+	DEBUG(printf("Skip file %d\n",n);)
+	if (mcap->undes[0]==MTH_RMTD) {
+	   js=send_command(mcap->chan,"skip",n);
+
+	} else if (mcap->undes[0]==MTH_DISK) {
+	   if (mcap->chan>0) close(mcap->chan); /* Close current file   */
+	   mcap->chan = -1;
+           js=1;                                /* Assume success       */
+           if (n<0) {
+             if (mcap->iosb[1]<0) mcap->iosb[1] *= -1;
+	     mcap->iosb[1] +=n;                 /* Set next file        */
+             if (mcap->iosb[1]<0) mcap->iosb[1]=0;
+           } else if (n>0) {
+             if (mcap->iosb[1]==0) {            /* BOT, skip always     */
+ 	           mcap->iosb[1]++;             /* Set next file        */
+                   n--;                         /* Count this skip      */
+             }
+             while (js>0 && n>0) {
+               if (mcap->iosb[1]>0) {           /* Not beyond EOD       */
+                 js=disk_open (mcap,DISK_TEST); /* Try if current exists*/
+   	         if (js>0) {                    /* Was there            */
+ 	           mcap->iosb[1]++;             /* Set next file        */
+                   n--;                         /* Count this skip      */
+                 } else {                       /* End of Data          */
+                   mcap->iosb[1]++;             /* Simulate final mark  */
+                   mcap->iosb[1] *= -1;         /* Flag it              */
+                   n--;                         /* Count this skip      */
+                   js=1;
+                 }
+               } else {
+                 js= -1;
+               }
+             }
+	   }
+           
+	} else {
+	   mto.mt_count= abs(n);
+	   if (n <0)
+	     mto.mt_op= MTBSF;			/* backspace		*/
+	   else if (n >0)
+	     mto.mt_op= MTFSF;			/* forward space	*/
+	   else
+	     return(1);
+	   js=ioctl(mcap->chan,MTIOCTOP,&mto);	/* do			*/
+	}
+	if (js == -1)
+	  return(2*errno);
+	else
+	  return(1);
+}
+/*
+.  Write tape mark
+...									*/
+				int wnfttm_(mcap)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+{
+/* Data declarations:
+.									*/
+	struct mtop mto;			/* mt operations	*/
+	int js;
+/*
+.									*/
+	DEBUG(printf("Tapemark\n");)
+	if (mcap->undes[0]==MTH_RMTD) {
+	   js=send_command(mcap->chan,"mark",0);
+
+	} else if (mcap->undes[0]==MTH_DISK) {
+	   if (mcap->chan>0) close(mcap->chan); /* Close current file   */
+           mcap->chan = -1;
+	   mcap->iosb[1] +=1;                   /* Select next one      */
+           
+	} else {
+	   mto.mt_count= 1;
+	   mto.mt_op= MTWEOF;			/* write tm		*/
+	   js=ioctl(mcap->chan,MTIOCTOP,&mto);	/* do			*/
+	}
+	if (js == -1)
+	  return(2*errno);
+	else
+	  return(1);
+}
+/*
+.  Read header block
+...									*/
+				int wnftrd_(mcap,ad)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+	char *ad;
+{
+/* Data declarations:
+.									*/
+	int js;
+/*
+.									*/
+	DEBUG(printf("Read header\n");)
+	if (mcap->undes[0]==MTH_RMTD) {		/* Remote unit		*/
+	   js=send_command(mcap->chan,"read",80);
+	   if (js>0) js=get(mcap->chan,ad,js);
+	} else if (mcap->undes[0]==MTH_DISK) {
+	   js=disk_open(mcap,DISK_READ);
+	   if (js>0) js=read(mcap->chan,ad,80);
+	} else {
+	   js=read(mcap->chan,ad,80);
+	}
+	if (js != 80)
+	  bzero(ad,80);				/* clear header		*/
+	if (js == -1)
+	  return(2*errno);
+	else
+	  return(1);
+}
+/*
+.  Write header block
+...									*/
+				int wnftwr_(mcap,ad)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+	char *ad;
+{
+/* Data declarations:
+.									*/
+	int js;
+/*
+.									*/
+	DEBUG(printf("Write header\n");)
+	if (mcap->undes[0]==MTH_RMTD) {		/* Remote unit		*/
+	   js=send_command(mcap->chan,"write",80);
+	   if (js>0) js=put(mcap->chan,ad,80);
+	} else if (mcap->undes[0]==MTH_DISK) {
+	   js=disk_open(mcap,DISK_WRITE);
+	   if (js>0) js=write(mcap->chan,ad,80);
+	} else {
+	   js= write(mcap->chan,ad,80);
+	}
+	if (js != 80)
+	  bzero(ad,80);				/* clear header		*/
+	if (js == -1)
+	  return(2*errno);
+	else
+	  return(1);
+}
+/*
+.  Write buffer
+...									*/
+				int wnftwb_(mcap,buf,size)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+	char *buf;
+	int  size;
+{
+/* Data declarations:
+.									*/
+	int js;
+/*
+.									*/
+	DEBUG(printf("Write data %d\n",size);)
+	if (mcap->undes[0]==MTH_RMTD) {		/* Remote unit		*/
+	   js=send_command(mcap->chan,"write",size);
+	   if (js>0) js=put(mcap->chan,buf,js);
+	   if (js>0) js=send_command(mcap->chan,"status",0);
+	} else if (mcap->undes[0]==MTH_DISK) {
+	   js=disk_open(mcap,DISK_WRITE);
+	   if (js>0) js=write(mcap->chan,buf,size);
+	} else {
+	   js=write(mcap->chan,buf,size);
+	}
+	return(js);
+}
+/*
+.  Read buffer
+...									*/
+				int wnftrb_(mcap,buf,size)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+	char *buf;
+	int  size;
+{
+/* Data declarations:
+.									*/
+	int js;
+/*
+.									*/
+	DEBUG(printf("Read data %d\n",size);)
+	if (mcap->undes[0]==MTH_RMTD) {		/* Remote unit		*/
+	   js=send_command(mcap->chan,"read",size);
+	   if (js>0) js=get(mcap->chan,buf,js);
+	} else if (mcap->undes[0]==MTH_DISK) {
+           if (disk_open(mcap,DISK_READ)) {
+	     js=read(mcap->chan,buf,size);
+	     if (js==0) {                     /* Emulate skip tape-mark */
+	        close(mcap->chan);
+	        mcap->chan = -1;
+                mcap->iosb[1]++;
+             }
+           } else if (mcap->iosb[1]>=0) {   /* No file == no data     */
+             js=0;                       
+             mcap->chan = -1;
+             mcap->iosb[1]++;
+             mcap->iosb[1] *= -1;           /* Mark End of Data       */
+           } else {                         /* Already at EOD         */
+             js= -1;                        /* Error reading beyond   */
+           }
+	} else {
+	   js=read(mcap->chan,buf,size);
+	}
+	return(js);
+}
+/*
+.  Open tapeunit
+...									*/
+				int wnftop_(mcap,unit,do_write,flg)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+	char *unit;
+	int  do_write,flg;
+{
+/* Data declarations:
+.									*/
+	int js,ii,ld;
+	char *dev;
+/*
+.
+.  First decode the method. To become downward compatible, we assume:
+.	No method and starts with single slash:  tape:
+.	No method and starts with double slash:  rmtd:
+.									*/
+	for (ii=0; unit[ii]!=':' && unit[ii]!='/' && unit[ii]!='\0'; ii++);
+
+        if ( !strncmp(unit,"rmtd:",ii+1) ||
+             (unit[ii]!=':' && unit[0]=='/' && unit[1]=='/')) {
+           mcap->undes[0]=MTH_RMTD;
+        } else if (!strncmp(unit,"tape:",ii+1) ||
+             (unit[ii]!=':' && unit[0]=='/')) {
+           mcap->undes[0]=MTH_TAPE;
+	} else if ( !strncmp(unit,"disk:",ii+1) ) {
+           mcap->undes[0]=MTH_DISK;
+        } else {
+           return(-1);
+        }
+
+	if (unit[ii]==':') dev=unit+ii+1; else dev=unit;
+
+/*
+.  Now open the device according to the specified method
+.									*/
+
+	if (mcap->undes[0]==MTH_RMTD) {		/* Remote unit		*/
+	   
+	   ld=open_socket(dev);
+	   if (ld>0) {
+
+              ii=70;
+	      getlogin_(tmpbuf,&ii);		/* Get username and host */
+	      for (js=0; js<70 && tmpbuf[js]!='\0'; js++);
+              if (js<70) {
+                 tmpbuf[js++]='@';
+	         ii=70-js;
+	         gethost_(tmpbuf+js,&ii);
+	      }
+	      tmpbuf[70]='\0';
+	      js=send_command(ld,"Hello",strlen(tmpbuf));
+              if (js>0) js=put(ld,tmpbuf,strlen(tmpbuf));
+
+	      for (dev=dev+2; *dev!='\0' && *dev!='/'; dev++);
+              if (dev=='/') dev++;
+	      if (js>0) js=send_command(ld,"Open",strlen(dev));
+	      if (js>0) js=put(ld,dev,strlen(dev));
+	      if (js>0) js=send_command(ld,"status",0);
+	      if (js == -1) {
+	         close_socket(ld);
+	         ld= -1;
+	      }
+	      mcap->chan= ld;			/* save IO channel	*/
+	   }
+
+	} else if (mcap->undes[0]==MTH_DISK) {
+
+	   mcap->undes[1]=(int *)dev;          /* Save name of directory */
+	   mcap->iosb[0]=flg;
+	   mcap->iosb[1]=1;
+	   mcap->chan=  -1;		       /* No file open yet       */
+                                               /* Try to find volume     */
+           sprintf(tmpbuf,"%s/volume.mt",(char *)mcap->undes[1]);
+	   ld=open (tmpbuf,O_RDONLY);
+           if (ld<0) {
+             sprintf(tmpbuf,"%s/VOLUME.MT",(char *)mcap->undes[1]);
+  	     ld=open (tmpbuf,O_RDONLY);              
+             if (ld<0) {
+               sprintf(tmpbuf,"%s/VOLUME.MT;1",(char *)mcap->undes[1]);
+  	       ld=open (tmpbuf,O_RDONLY);              
+             }
+           }
+
+           if (ld>=0) {
+	      strncpy(mcap->vol,"VOL1",80);    /* Initialise             */
+              read(ld,mcap->vol+4,80);         /* Read label             */
+              close(ld);
+           }
+
+	   ld=1;                               /* Succes so far          */
+
+	} else {
+	   ld=open (dev,flg,0744);
+	   mcap->chan= ld;			/* save IO channel	*/
+
+	}
+	return(ld);
+}
+/*
+.  Close tapeunit
+...									*/
+				int wnftcl_(mcap)
+/* Arguments:
+.									*/
+	struct mca *mcap;
+{
+/* Data declarations:
+.									*/
+/*
+.									*/
+	if (mcap->undes[0]==MTH_RMTD) {		/* Remote unit		*/
+	   send_command(mcap->chan,"close",NULL,0);
+	   close_socket(mcap->chan);
+	} else if (mcap->undes[0]==MTH_DISK) {
+	   if (mcap->chan>0) close(mcap->chan);
+	   mcap->chan = -1;
+	} else {
+	   close(mcap->chan);
+	}
+	return(1);
+}
+/*
+.
+...									*/
+
+/************************************************************************
+  The following routine opens a (disk: type) file on disk
+ ************************************************************************/
+
+static int disk_open(mcap,open_mode)
+
+struct mca *mcap;
+int open_mode;
+
+{
+    int js,flg,ii,js2;
+
+    if (mcap->chan > 0) return(1);		/* Already open		*/
+
+    if (mcap->iosb[1] <= 0) return(0);          /* Beyond EOD, error    */
+
+    sprintf(tmpbuf,"%s/file%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+
+    if (open_mode == DISK_TEST) {
+       js=open(tmpbuf,O_RDONLY,0744);
+       if (js<0) {
+         sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+         js=open(tmpbuf,O_RDONLY,0744);
+         if (js<0) {
+           sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
+  	   js=open (tmpbuf,O_RDONLY);              
+           if (js<0) {
+             sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
+  	     js=open (tmpbuf,O_RDONLY);              
+           }
+         }
+       }
+       if (js>0) close(js);
+       
+    } else {
+       flg=mcap->iosb[0];
+       if (flg&O_RDWR && 
+           open_mode==DISK_WRITE) {		/* File should be created   */
+	  flg |= O_CREAT;			/* So set proper flag       */
+	  chmod(tmpbuf,0666);			/* And overwrite existing   */
+          
+       }
+
+       js=open (tmpbuf,flg,0444);
+       if (js<0) {
+         sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+         js=open(tmpbuf,flg,0744);
+         if (js<0) {
+           sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
+  	   js=open (tmpbuf,O_RDONLY);              
+           if (js<0) {
+             sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
+  	     js=open (tmpbuf,O_RDONLY);              
+           }
+         }
+       }
+       mcap->chan=js;
+                      
+       if (js>0 && flg&O_CREAT) {
+	  fchmod(js,0444);          		/* If created, make readonly */
+          ii=mcap->iosb[1]+1;	          	/* And delete higher labels  */
+	  for (js2=1; js2>0; ii++) {
+             sprintf(tmpbuf,"%s/file%6.6d.mt",(char *)mcap->undes[1],ii);
+             js2=open(tmpbuf,O_RDONLY,0744);
+             if (js2<0) {
+               sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+               js2=open(tmpbuf,flg,0744);
+               if (js2<0) {
+                 sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
+  	         js2=open (tmpbuf,O_RDONLY);              
+                 if (js2<0) {
+                   sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
+  	           js2=open (tmpbuf,O_RDONLY);              
+                 }
+               }
+             }
+             if (js2>0) {
+                fchmod(js2,0666);
+                close(js2);
+                unlink(tmpbuf);
+             }
+          }
+       }
+    }
+
+    return(js);
+}
+
+
+/************************************************************************
+  The following routines implement the client routines for rmtd transfer
+ ************************************************************************/
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+static int open_socket(unit)
+
+char *unit;
+
+{
+    struct hostent *gethostbyname();
+    char *malloc();
+
+    char *p,*buf;
+    int  port,sock,st;
+    struct hostent     *remote;
+    struct sockaddr_in srv;
+
+    sock=socket(AF_INET,SOCK_STREAM,0);
+    if (sock == -1) {
+       fprintf(stderr,"Cannot create socket\n");
+       return(sock);
+    } 
+
+    buf=malloc(strlen(unit));
+    if (buf==NULL) {
+       fprintf(stderr,"Cannot allocate buffer\n");
+       return(-1);
+    }
+    strcpy(buf,unit+2);
+
+    for (p=buf; *p!='\0' && *p!=':'; p++);
+    if (*p=='\0') {
+       fprintf(stderr,"No port number in unit string, default to 8083\n");
+       port=8083;
+    } else {
+       *p='\0';
+       port=atoi(p+1);
+    }
+
+    remote=gethostbyname(buf);
+    if (remote==NULL) {
+       fprintf(stderr,"Cannot get host by name\n");
+       st= -1;
+    } else {
+       srv.sin_family=AF_INET;
+       srv.sin_addr.s_addr=INADDR_ANY;
+       srv.sin_port=htons(port);
+       srv.sin_addr= *((struct in_addr *) remote->h_addr);
+/*
+       memmove( &srv.sin_addr, remote->h_addr, remote->h_length);
+*/
+       st=connect(sock,&srv,sizeof(srv));
+       if (st== -1) fprintf(stderr,"Cannot connect to server\n");
+       else         st=sock;
+    }
+
+    free(buf);
+    return(st);
+}
+
+static int close_socket()
+
+{
+    return(1);
+}
+
+static int send_command(socket,command,arg)
+
+int  socket,arg;
+char *command;
+
+{
+    char str[81];
+    int js;
+
+    errno=EINTR;  /* Default: error */
+/*
+   Check if valid socket
+*/
+    if (socket<3) {
+       fprintf(stderr,"Invalid socket\n");
+       return(-1);
+    }
+/*
+   Create the command string
+*/
+    if (strlen(command)>40) command[40]='\0';
+    sprintf(str,"%-40.40s %+7.7d %30c",command,arg,'>');
+/*
+   Send the string to the socket
+*/
+    js=put(socket,str,80);
+    if (js!=80) {
+       fprintf(stderr,"Cannot send command on socket\n");
+       return(js);
+    }
+/*
+   Wait for reply
+*/
+    *str='\0';
+    js=get(socket,str,8);
+    str[js]='\0';                /* terminate the string */
+    if (js<=0) {
+       fprintf(stderr,"Cannot read response from socket\n");
+       return(js);
+    } 
+/*
+   Return status
+*/
+    errno=0;
+    js=atoi(str);
+    if (js<0) js= -1;           /* Should set errno as well... */
+    return( js );
+}
+
+
+/*
+    The trick to catch the EINTR has been shamelessly taken from 
+    the Gipsy routine mtiodev.c (KGB, Kapteyn Lab, Univ. of Groningen)
+*/
+
+static int put(socket,buf,size)
+
+int  socket,size;
+char *buf;
+
+{
+   int left,done;
+
+   for (left=size; left; left-=done,buf+=done) {
+      while ( (done=write(socket,buf,left)) == -1 && errno == EINTR);
+      if (done== -1) return(done);
+   }
+   return(size);
+}
+
+static int get(socket,buf,size)
+
+int  socket,size;
+char *buf;
+
+{
+   int left,done;
+
+   for (left=size; left; left-=done,buf+=done) {
+      while ( (done=read(socket,buf,left)) == -1 && errno == EINTR);
+      if (done== -1) return(done);
+   }
+   return(size);
+}
+

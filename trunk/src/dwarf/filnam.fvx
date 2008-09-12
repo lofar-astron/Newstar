@@ -1,0 +1,66 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_FILNAM
+C.Keywords:	File Names
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	VAX-Fortran
+C.Environment:	VAX
+C.Comments:
+C.Version:	900403 FMO - creation
+C.Version:	920225 GvD - no optional arguments anymore
+C.Version:	930923 CMV - Revised definition of DEFSPEC
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION FILNAM_FULL (SPEC,XSPEC,LX,DEFSPEC)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	SPEC		! (i) file specification
+	CHARACTER*(*)	XSPEC		! (o) resulting spec
+	INTEGER*4	LX		! (o) its length
+	CHARACTER*(*)	DEFSPEC		! (i) default spec (optional)
+C
+C.Purpose:	Make full file specification
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	status code from GEN_MIXFNM
+C.Notes:
+C	DWARF file specifications follow VMS syntax; they are case-insensitive
+C	and consist of five fields:
+C	- device field (ends with ':')
+C	- directory field (starts with '[' and ends with ']')
+C	- name field (starts after ']' and ends before '.')
+C	- type field (starts with '.' and ends before ';')
+C	- version field (starts with ';')
+C
+C	- The fields may contain wildcards ('*' or '%'); such fields are
+C	  handled as normal fields (no expansion).
+C	- If the first (or only) field is a logical name, the name will be
+C	  replaced by the equivalent string (repeatedly if necessary) before
+C	  expansion takes place.
+C	- DEFSPEC can be either a default device/directory specification 
+C	  (may be a logical name) or a default type (extension).
+C	- Relative directory specifications (e.g., '[]', '[.X.Y]', '[-.X]')
+C	  will be expanded.
+C
+C	E.g.:	current default = 'USER5:[OLNON.WORK]'
+C	('NEW',XSPEC,LX,'OLD.FOR')	-> XSPEC = 'USER5:[OLNON.WORK]NEW.FOR;'
+C	('[DWARF]NEW',XSPEC,LX,'.FOR')	-> XSPEC = 'USER5:[DWARF]NEW.FOR;'
+C	('[-.TEST]*.*',XSPEC,LX)	-> XSPEC = 'USER5:[OLNON.TEST]*.*;'
+C-------------------------------------------------------------------------
+C
+	INTEGER*4	GEN_MIXFNM, STR_SIGLEN
+	INTEGER*4	LD
+C
+	IF (DEFSPEC.EQ.'HOME') THEN
+	   FILNAM_FULL = GEN_MIXFNM (DEFSPEC,SPEC,XSPEC,LX)
+	ELSE
+	   LD=STR_SIGLEN(DEFSPEC)
+	   IF (LD.GT.0.AND.DEFSPEC(1:1).NE.'.') THEN
+	      FILNAM_FULL = 
+	1	GEN_MIXFNM (DEFSPEC(1:LD)//':',SPEC,XSPEC,LX)
+	   ELSE
+	      FILNAM_FULL = GEN_MIXFNM (DEFSPEC,SPEC,XSPEC,LX)
+	   ENDIF
+	ENDIF
+	RETURN
+	END

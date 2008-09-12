@@ -1,0 +1,776 @@
+The Organisation of Newstar documentation
+-----------------------------------------
+
+
+@(#) newdoc.txt  v1.6 08/09/93 CMV
+     newdoc.txt  v1.5 03/09/93 CMV
+     newdoc.txt  v1.4 05/08/93 CMV
+
+
+1. Introduction
+---------------
+
+
+This document defines the format and organisation of the Newstar 
+documentation. The next sections describe the way documentation can be 
+accessed, the way in which the documentation as a whole is organised and
+the way in which documentation should be formatted. This corresponds to the
+the point of view of a user, a Newstar site manager and a documentation 
+editor respectively. Appendices give detailed instructions for naming 
+conventions and editing.
+
+End-users who are just interested in using the documentation only
+need to read section 2, site managers and contributors should read
+the remaining sections as well.
+
+
+2. Accessebility
+----------------
+
+The Newstar user documentation is accessible in three forms:
+
+  1e. As on-line help from program prompts, either as "dumb-terminal"
+      text or through NCSA's xmosaic browser decribed below.
+
+  2e. By browsing the documentation using xmosaic or any other 
+      hypertext reader (e.g. the "dumb-terminal" reader for the
+      World Wide Web, developed at CERN)
+
+  3e. By reading the printed form of the documentation (the Newstar
+      Cookbook) either on paper or using an appropriate Postscript or
+      dvi viewer.
+
+
+The documentation is organised as a hypertext network, which means that
+various smaller pieces of information are connected by "links". This
+not only gives flexible index and glossary functions, but also allows for 
+a menu-like presentation of the on-line documentation (options 1e and
+2e). The pieces of information can also be put together in a single 
+large document, the Newstar Cookbook, where "links" show up as the
+usual references like "see also section 1.3".
+
+To access the on-line documentation, the user enters one or more
+questionmarks (?) in response to a prompt. If a single ? is entered,
+the help text will be shown on the terminal screen. If more than 
+one ? is entered, a separate window will be opened in which xmosaic 
+presents the requested information. If no window could be started,
+the help text will be given on the terminal. When an xmosaic window
+is open, all help text will be presented there, regardless of the
+number of questionmarks typed. The window remains active when the
+program quits, so the same window can be used by several programs 
+(so far only if run on the same host).  Xmosaic has been developed at 
+the NCSA and has many interesting options which fall outside the 
+scope of this document. 
+
+If the information is shown through xmosaic, the user can access the 
+remainder of the documentation though that browser. Certain words in 
+the text will appear underlined. The user can move the mouse on one
+of these words and click the left mouse button. Xmosaic will now display
+the information that is associated with the underlined word. This can 
+be a brief explanation of that word (glossary function) or a related 
+piece of documentation.
+
+Any help text explaining a prompt will have at least the following links
+appended to it (words within underscores will appear underlined):
+
+    More information:
+         _List of keywords_ for NSCAN
+         _The Newstar Cookbook_
+         Description of _program NSCAN_
+         Description of _common keywords_
+         The _DWARF User Interface_
+
+The list of keywords for any program will have the following list appended
+to it:
+
+    More information:
+         _The Newstar Cookbook_
+         Description of _program NSCAN_
+         Description of _common keywords_
+         
+Prompts related to specific file types will also contain links to
+documents revealing the secrets of such files.
+
+The hypertext network can also be accessed from outside a Newstar program
+by typing "nhyper" at the command line. This will present you a page
+with general information containing links to the table of contents of 
+the Newstar Cookbook and to some general help files (in particular the
+Newstar News file).
+
+
+3. Organisation
+---------------
+
+There are four different sources of information for the Newstar 
+documentation:
+
+  - Cookbook sections, which are LaTeX documents (with some restrictions
+    on the commands to be used, see below). They may contain ordinary
+    text, terminal scripts (created with help of "nscript", see below)
+    and may include postscript figures. These LaTeX files are translated
+    into the HTML format for inclusion in the hypertext network.
+
+    The LaTeX source files are all found in directory $n_src/doc/cook
+    The HTML versions are found in directory $n_src/doc/html
+ 
+
+  - Descriptive text (help-text) for program keywords, stored in 
+    so called PIN files (extensions .pin, .psc or .pef). The PIN files
+    are translated into LaTeX (for inclusion in the printed version
+    of the cookbook) and into HTML for inclusion in the hypertext
+    network. 
+
+    The PIN files are located in $n_src/nscan etc.
+    The LaTeX versions are found in directory $n_src/doc/cook
+    The HTML  versions are found in directory $n_src/doc/html
+
+
+  - Miscellaneous documents called Memo's, which are generally plain
+    ASCII files. For details on Newstar Memo's, refer to document
+    newmemo.txt
+
+    The NEWSTAR Memo's are found in directory $n_src/doc/memo
+
+  - Program source files can contain specially marked documentation
+    which can be extracted. The extracted documentation can be included
+    in the hypertext network.
+
+    Documentation from file abc.def is stored in $n_src/doc/extractabc.def
+
+
+  - Bugreports, with their present status and history, are a separate 
+    issue and are described in document bug_reports.txt.
+
+    Bugreports are found in directory $n_src/doc/bug
+
+
+Apart from these files there are:
+ 
+  - Files with LaTeX commands used to generated printed versions of the
+    cookbook or parts thereof. These files are found in $n_src/doc/cook
+    and have names cb_*.tex
+
+  - Index files for the hypertext network, generated automatically in
+    directory $n_src/doc/html
+
+
+Files are maintained though utility $n_src/sys/document.csh which uses 
+the program docaid.c ($n_exe/docaid.exe).
+
+There is a groupfile $n_src/doc/doc.grp listing files in or below $n_src/doc
+that have been created "by hand". A groupfile $n_src/doc/auto.grp will be
+updated together with the hypertext indices.
+
+Note: the files in directories keys and html are derived from files in 
+the source tree ($n_src). These files are updated automatically when 
+other files (e.g. ppd-files) are being compiled.
+This validates the principle that the source tree contains only all
+files needed for installation. The alternative would be to create a 
+directory in either the library or the executable tree for
+documentation. However, I think it is important that a full set of 
+documentation is available before installation. In my opinion this 
+outweights the violation of the source tree policy. It also makes
+it possible that, at least for the time being, files in the keys 
+and html directory are explicitly updated at NFRA. 
+
+
+An update of the documentation proceeds as follows:
+
+ "ndoc keys all"  Convert all pin, psc and pef files to LaTeX and html files
+ "ndoc extr all"  Extract documentation from files in $n_src/sys
+ "ndoc html all"  Convert all cookbook sections to html files
+ "ndoc index"     Make indices for the files in the html directory
+
+A shorthand for these commands is:  "ndoc full"
+
+Updating the documentation takes a few minutes and needs to be done at
+a single host only for all machines that share a filesystem.
+
+Other options of ndoc are:
+
+ "ndoc script"    Start the script utility (see Appendix C)
+ "ndoc print"     Print part of the Newstar Cookbook 
+ "ndoc hyper"     Start the hypertext browser at the Newstar Home Page
+ "ndoc memo"      Insert an external file into the Newstar Memo system
+
+The print command will ask you for a cookbook file to print. 
+
+
+4. Formatting 
+-------------
+
+Since a large amount of documentation is available already in 
+LaTeX, we choose to use LaTeX as our principle documentation 
+format. Although it is probably easier to convert an html document 
+to a LaTeX source than vice versa, this approach allows us to make 
+a fast start. To facilate translation we put some constrains on the
+infinite flexibility of LaTeX. These are given in the "style guide"
+found as Appendix A.
+
+Appendix A lists the "allowed" LaTeX commands, these are the commands
+that will be recognised by the LaTeX to HTML converter. Any other
+command will, for the time being, show up as ordinary text in the 
+xmosaic browser.
+
+The most important rules for writing documentation are the following:
+
+    1e. The basic element of Cookbook documentation is the section.
+        Each section should appear in a separate file.
+        It is well possible (and in fact preferable) to break
+        up sections in smaller units. 
+
+    2e. Figures, tables and other blocks containing large amounts 
+        of LaTeX commands not listed in Appendix A should be put in the
+        Cookbook by means of an \input or \include command. The embedding
+        commands (like \begin{figure} and \end{figure}) should also be
+        in that separate file. 
+
+        Such figures and tables will be converted to dvi or postscript 
+        files in the html directory.
+
+    3e. Terminal sessions can be included within cookbook sections.
+        However, for extended examples it is better to put them in a
+        separate file which is included by an \input or \include command.
+        This makes the hypertext more readable and facilates regeneration
+        if the programs change.
+
+        For a list of the LaTeX commands that will appear in terminal 
+        sessions, refer to Appendix A.
+ 
+        Refer to Appendix C for instructions on how to make 
+        terminal sessions using the  nscript command
+
+    4e. Within a section, the target of a hypertext link is marked 
+        through the \label command. See the naming conventions in 
+        Appendix B (eg. \label{nscan.descr.general}) 
+
+    5e. Within a section, a hypertext link is made though the \ref, \refn, 
+        \input and \include commands. The \input and \include commands
+        will translate to a lines: "See also: _Name of the include file_" 
+        in the browser. The \ref command will translate as follows:
+
+         ... This is explained in \ref{nscan.descr} where we see ...    ->
+         ... This is explained in _here_ where we see ...
+
+         ... This is explained in \ref{nscan.descr}{Chapter 4} ...    ->
+         ... This is explained in _Chapter 4_ ...
+
+        The last for will give a somewhat confusing output in the 
+        printed version.
+ 
+    6e. Within PIN files, links can also be made through the \ref command. 
+        In the "dumb-terminal" on-line help, these \ref commands show up 
+        as text and may at best serve as an entry in the printed version 
+        of the Cookbook.
+
+    7e. Filenames and labels should obey a strict naming scheme to 
+        allow for the proper files to be constructed. This naming 
+        scheme is given in Appendix B.
+
+
+5. Contributing to the Newstar documentation
+--------------------------------------------
+
+Contributions to the Newstar documentation are very welcome, in particular
+new recipes are appreciated. To contribute a recipe, put your text in a 
+file either as plain ASCII (with some indication as to sections etc) or
+using the LaTeX commands from Appendix A. Preferably you should use the 
+naming conventions from Appendix B. Send the files to me and we will put
+them in their proper place.
+
+
+    
+Appendix A:  Style Guide for the Newstar Cookbook
+----------
+
+The following conventions should be obeyed when writing LaTeX documents
+that should be converted to html using the docaid program:
+
+ - Only commands in the recognised subset (see below) may be used.
+
+ - The \begin{...} and \end{...} commands should be on a line of 
+   their own.
+
+ - To change font temporarily, use something like {\bf ...}, without
+   any space between the brace and \bf. Curently recognised fonts 
+   are:     \rm \bf \it \tt \tiny
+
+ - For verbatim text use either 
+
+      \begin{verbatim}
+      ...
+      \end{verbatim}
+
+   or {\tt ...} (with special characters escaped).
+   The commands used by nscript (\sline etc) use the latter strategy.
+
+ - The tabbing environment can be used inside documents with the
+   following restrictions. There should be a single definition line 
+   (with \= commands), which should follow the \begin{tabbing} line
+   without intervening empty/comment lines. The definition line will
+   not be copied to the hypertext, so use the \kill command.
+
+   Since tabbing in HTML is extremely poor, do not expect to much of 
+   presentation in xmosaic.
+
+ 
+The following subset of LaTeX commands is currently recognised by docaid.
+
+/*
+
+   Translation table for LaTeX to html
+   
+   Format: 
+
+     Column 1: name of the command (minimal match) without leading \
+     Column 2: length of command (all zero's, set by program)
+     Column 3: action routine
+                 NULL  No special action (just print replacement string)
+                _PUSH  Print closing tag for the replacement string when
+                        closing } is found
+                _SKIP  Skip any arghuments to the command
+                other  Special action, refer to code for details
+     Column 4: replacement string (or NULL if none)
+     
+    
+   Any LaTeX commands that do not start with a \ are handled separately,
+   however they are included in this table inside comments.
+
+*/
+     
+/*
+     The following lines correspond to definitions in cb_symbols.tex
+     Please update this list when cb_symbols.tex is changed
+*/
+   "cbdir",     0, NULL, "$n_src/doc/cook",
+   "NEWSTAR",   0, NULL, "<EM>NEWSTAR</EM>",
+   "Nseries",   0, NULL, "<EM>NEWSTAR</EM>",
+
+   "cVis",      0, NULL, "<EM>V</EM>",   
+   "pvis",      0, NULL, "<EM>Phi</EM>",
+   "avis",      0, NULL, "<EM>|V|</EM>",
+   "lavis",     0, NULL, "<EM>rho</EM>",
+
+   "cGain",     0, NULL, "<EM>G</EM>",
+   "cNoise",    0, NULL, "<EM>N</EM>",
+   "cCadd",     0, NULL, "<EM>C</EM>",
+
+   "perr",      0, NULL, "<EM>p</EM>",
+   "gerr",      0, NULL, "<EM>g</EM>",
+   "lerr",      0, NULL, "<EM>q</EM>",
+   "dang",      0, NULL, "<EM>phi</EM>",
+   "derr",      0, NULL, "<EM>Delta</EM>",
+   "eerr",      0, NULL, "<EM>Theta</EM>",
+
+   "Apol",      0, NULL, "<EM>epsilon</EM>",
+   "Bpol",      0, NULL, "<EM>eta</EM>",
+
+   "wgt",       0, NULL, "<EM>W</EM>",
+   "pwgt",      0, NULL, "<EM>W**p</EM>",
+   "lwgt",      0, NULL, "<EM>W**g</EM>",
+
+   "pzd",       0, NULL, "<EM>psi</EM>",
+
+   "farang",    0, NULL, "<EM>chi</EM>",
+
+/*
+   Here are the commands defined in cb_preamble.tex
+   Please update this list when cb_preamble.tex is changed
+*/
+  
+   "cbfile{",    0, _PUSH, "<TT>",
+   
+   "skeyword{",  0, _PUSH, "<DD><STRONG>",
+   "sprompt{",   0, _PUSH, "<EM>",
+   "sdefault{",  0, _PUSH, NULL,
+   "suser{",     0, _PUSH, " <KBD>",
+   "sline{",     0, _PUSH, "<DD><SAMP>",
+   "slong{",     0, _PUSH, "<DD><SAMP>",
+   "sskip",      0, NULL,  "<P>",
+   "scmd{",      0, _PUSH, "<DD>&gt; <KBD>",
+
+   "sinline{",  0, _PUSH, " . . . <EM>",
+   "scomment{", 0, _PUSH, "<EM><P>",
+
+   "setc",      0, NULL,  "<P>:<P>:<P>",   
+   "scr",       0, NULL,  "&lt;CR&gt;",
+   "gloshead{", 0, _PUSH, "<H2>",
+
+
+/*
+   Now follow the supported built-in LaTeX special characters
+
+   A tilde (~, smallspace) is replaced by an normal space character
+
+   Please mind that all commands below are prefixed by a backslash!
+*/
+
+   " ",          0, NULL, " ",
+   "$",          0, NULL, "$",
+   "#",          0, NULL, "#",
+   "&",          0, NULL, "&amp;",
+   "{",          0, NULL, "{",
+   "}",          0, NULL, "}",
+   "%",          0, NULL, "%",
+   "_",          0, NULL, "_",
+   "-",          0, NULL, NULL,
+   "\"o",        0, NULL, "&ouml;",
+   "wedge",      0, NULL, "^",
+
+   "arctan",     0, NULL, "<STRONG>arctan</STRONG>",
+   "ast",        0, NULL, "*",
+   "bigotimes",  0, NULL, "<STRONG>*</STRONG>",
+   "cdots",      0, NULL, "...",
+   "circ",       0, NULL, "o",
+   "copyright",  0, NULL, "(c)",
+   "delta",      0, NULL, "<EM>delta</EM>",
+   "div",        0, NULL, "-/-",
+   "equiv",      0, NULL, "==",
+   "exp",        0, NULL, "<STRONG>exp</STRONG>",
+   "gg",         0, NULL, "&gt;&gt;",
+   "infty",      0, NULL, "<STRONG>inf</STRONG>",
+   "lambda",     0, NULL, "<EM>lambda</EM>",
+   "ldots",      0, NULL, "...",
+   "log",        0, NULL, "<STRONG>log</STRONG>",
+   "over",       0, NULL, "/",
+   "phi",        0, NULL, "<EM>phi</EM>",
+   "pm",         0, NULL, "+/-",
+   "rightarrow", 0, NULL, "--&gt;",
+   "sigma",      0, NULL, "<EM>sigma</EM>",
+   "sqrt",       0, NULL, "<STRONG>sqrt</STRONG>",
+   "sum",        0, NULL, "<STRONG>SUM</STRONG>",
+   "theta",      0, NULL, "<EM>theta</EM>",
+   "times",      0, NULL, ".",
+   "vdots",      0, NULL, ":",
+
+/*
+   Line separating commands
+   
+   An empty line will also translate to a <P> tag
+*/
+   
+  "\\",                    0, NULL,         "<DD>", /* Trick to get newline */
+  "par",                   0, NULL,         "<P>",
+  "newpage",               0, NULL,         "<P>",
+  "vspace",                0, _SKIP,        "<P>",
+
+/*
+   Math modes
+   
+   $>$ and $<$ translate to the &gt; and &lt; entities,
+   any other $ .... $ construct is identical to \( ... \)
+   
+   $$ ... $$ constructs are identical to \[ ... \]
+*/
+                                                       /* Inline math mode  */
+  "(",                     0, NULL,         "  <EM> ",
+  ")",                     0, NULL,         " </EM> ",
+  "begin{math}",           0, NULL,         "  <EM> ",
+  "end{math}",             0, NULL,         " </EM> ",
+                                                      /* Display math mode */
+  "[",                     0, NULL,         "<P><EM>",
+  "]",                     0, NULL,         "</EM><P>",  
+  "begin{displaymath}",    0, NULL,         "<P><EM>",  
+  "end{displaymath}",      0, NULL,         "</EM><P>",  
+  "begin{equation}",       0, NULL,         "<P><EM>",  
+  "end{equation}",         0, NULL,         "</EM><P>",  
+  "begin{eqnarray}",       0, NULL,         "<P><EM>",  
+  "end{eqnarray}",         0, NULL,         "</EM><P>",  
+
+/*
+  Headings and references
+*/
+  "title{",                0, _PUSH,        "<H1>",
+  "chapter{",              0, _PUSH,        "<H1>",
+  "section{",              0, _PUSH,        "<H1>",
+  "subsection{",           0, _PUSH,        "<H2>",
+  "subsubsection{",        0, _PUSH,        "<H3>",
+
+  "label{",                0, _LABEL,       NULL,
+  "ref{",                  0, _ANCHOR,      NULL,
+  "pageref{",              0, _ANCHOR,      NULL,
+  "input{",                0, _ANCINP,      NULL,
+  "include{",              0, _ANCINP,      NULL,
+
+  "eqno{",                 0, _PUSH,        "<EM>",
+ 
+/*
+  Many things are just ignored
+*/
+  "tableofcontents",       0, NULL,         NULL,
+  "listoffigures",         0, NULL,         NULL,
+  "listoftable",           0, NULL,         NULL,
+  "makeindex",             0, NULL,         NULL,
+  "documentstyle",         0, _SKIP,        NULL,
+  "hskip",                 0, _SKIP,        NULL,
+  "hspace",                0, _SKIP,        NULL,
+  "hline",                 0, NULL,         NULL,
+  "maketitle",             0, NULL,         NULL,
+  "nonumber",              0, NULL,         NULL,
+  "pagestyle",             0, _SKIP,        NULL,
+  "pagenumbering",         0, _SKIP,        NULL,
+  "parbox",                0, _SKIP,        NULL,
+
+/*
+  Special handling for some environments
+*/  
+  "begin{thebibliography}",0, NULL,         "<H1>Bibliography</H1>\n",
+  "end{thebibliography}",  0, NULL,         "<P>",
+  "bibitem",               0, _LABBIB,      NULL,
+  "cite",                  0, _ANCBIB,      NULL,
+
+  "begin{tabbing}",        0, _TABBING,     NULL,
+  "end{tabbing}",          0, _TABBING,     "<P>",
+  ">",                     0, NULL,         " ",
+
+  "begin{figure",          0, _FIGURE,      NULL,
+  "end{figure",            0, _FIGURE,      "<P>",
+  "begin{tab",             0, _TABLE,       NULL,
+  "end{tab",               0, _TABLE,       "<P>",
+  "caption{",              0, _PUSH,        "<EM>",
+  
+  "begin{enumerate}",      0, NULL,         "<OL>",
+  "end{enumerate}",        0, NULL,         "</OL>",
+
+  "begin{itemize}",        0, NULL,         "<UL>",
+  "end{itemize}",          0, NULL,         "</UL>",
+  "item{",                 0, _PUSH,        "<LI> <STRONG>",
+  "itemitem{",             0, _PUSH,        "<LI> <STRONG>",
+  "item",                  0, NULL,         "<LI>",
+  "itemitem",              0, NULL,         "<LI>",
+  
+  "begin{verbatim}",       0, _VERBON,      "<PRE>",
+  "begin{verbatim*}",      0, _VERBON,      "<PRE>",
+  "end{verbatim}",         0, _VERBOF,      "</PRE>",
+
+/*
+  All other environments are just skipped.
+  Note: the order in the table is important here!
+*/    
+  "begin{",                0, _SKIP,        "<P>",
+  "end{",                  0, _SKIP,        "<P>",
+  "author{",               0, _SKIP,        NULL,
+
+  "end",                   0, NULL,         NULL,
+
+/*
+  Font selections. These are special case things, since the required
+  syntax for a temporary font change is:
+  
+    {\bf ... }
+    
+  etc, so we test on the {\ rather than on the \
+
+  "rm",                    0, _PUSH,        "<STRONG>",
+  "bf",                    0, _PUSH,        "<STRONG>",
+  "em",                    0, _PUSH,        "<EM>",
+  "it",                    0, _PUSH,        "<EM>",
+  "tt",                    0, _PUSH,        "<TT>",
+
+  Any isolated occurence of a font change is just ignored.
+  So you should use   \chapter{{\it Something fresh}} 
+  and not             \chapter{\it Something fresh}
+  
+*/
+  "tiny",                  0, NULL,         NULL,
+  "bf",                    0, NULL,         NULL,
+  "it",                    0, NULL,         NULL,
+  "rm",                    0, NULL,         NULL,
+  "tt",                    0, NULL,         NULL,
+  
+/*
+  The end of the table should be marked by a NULL command!
+*/
+  NULL,                    0, NULL,         NULL
+
+
+
+Appendix B:  Naming convention for Newstar Documentation
+-----------  
+
+***** ALL LABELS AND FILENAMES SHOULD BE IN LOWER CASE *****
+
+
+1e. Labels
+
+The following conventions should be used for the naming of labels 
+and references (commands \ref{...}, \pageref{...} \label{...}):
+
+  - The name of the label should consist of two or more elements 
+    separated by dots. The first two elements uniquely identify the
+    file to which the reference is made. As a consequence all labels 
+    in a file start with the same two elements. The remaining
+    elements serve as a reference within the file.
+
+  - The label corresponding to a file  a_b    is  a.b
+    A label within this file might be  a.b.c  or  a.b.c.d 
+
+    The label corresponding to a file  a_b_x    is  a.b_x
+    A label within this file might be  a.b_x.c  or  a.b_x.c.d_y-z 
+
+  - References to keywords should be made as follows: 
+
+     \ref{<name of pin/psc/pef file>.<name of keyword>}
+
+ *   In general the name of the pin/psc/pef file will be the name of
+ *   the program. For common keywords (including things like SCN_SETS)
+ *   the name of the PEF file should be used!
+
+
+  - Figures, tables, formulea and other pieces of "difficult" LaTeX 
+    will be included as GIF images, and should therefore be in separate
+    files. These files should have names fig_*.tex, tab_*.tex and 
+    eqn_*.tex. Normal labeling conventions apply to such files.
+
+For bibliographic references (commands \bibitem and \cite) the normal
+LaTeX conventions apply.
+
+
+2e. Filenames
+
+The cookbook is built based on the following tree (all filenames have
+extension .tex):
+                                                    Label
+  cookbook  (tittle page, table of contents)        cookbook
+   |
+   |
+   +-- ch_biblio                                    ch.biblio
+   |
+   +-- ch_general                                   ch.general
+   |    |
+   |    +-- gen_intro                               gen.intro
+   |    :
+   |
+   +-- ch_recipes                                   ch.recipes
+   |    |
+   |    +-- rcp_line_21cm                           rcp.line_21cm
+   |    +-- rcp_linear_polarisation                 rcp.linear_polarisation
+   |    :
+   |
+   +-- ch_files                                     ch.files
+   |    |
+   |    +-- files_descr                             files.descr
+   |    +-- scn_descr                               scn.descr
+   |    +-- mdl_descr                               mdl.descr
+   |    :
+   |
+   +-- ch_programs                                  ch.programs
+   |    |
+   |    +-- common_descr                            common.descr
+   |    +-- common_keys                             common.keys
+   |    |    |
+   |    |    + ngen_comm                            ngen.comm
+   |    |    :
+   |    |
+   |    +-- nscan_descr                             nscan.descr
+   |    +-- nscan_keys                              nscan.keys
+   |    |    |
+   |    |    + ngen_short                           ngen.short
+   |    |    :
+   |    |
+   |    +-- ncalib_descr                            ncalib.descr
+   |    +-- ncalib_redun                            ncalib.redun
+   |    +-- ncalib_polar                            ncalib.polar
+   |    +-- ncalib_keys                             ncalib.keys
+   |    |
+   |    :
+   |
+   +-- ch_appendices                                ch.appendices
+        |
+        + apx_wsrtfactsheet                         apx.wsrtfactsheet
+        + apx_arquery                               apx.arquery
+        :
+
+
+Files with keyword descriptions are generated automatically from the
+pin/psc/pef files:
+
+  - Each pin, psc and pef file is translated into a single LaTeX file
+    <name>_keys.tex (for pin/psc) or <name>_comm.tex (for pef). These 
+    files contain the full description of each keyword define in the
+    pin/psc/pef file. For pef files, a keyword summary is generated 
+    in file <name>_short.tex. An INCLUDE=NAME_PEF keyword in a psc file 
+    will be translated in a \include{name_short} and a \ref{name.comm}
+  
+  - Each pin, psc and pef file is translated into a html file with
+    links to files with information on the individual keywords.
+    The index file has name <name>_keys.html (for pin/psc) or 
+    <name>_comm.html (for pef). The files with keyword information are
+    named <name>_<keyword>.html
+
+Files with names fig_*.tex, tab_*.tex and eqn_*.tex will be included
+as GIF figures.
+
+
+Appendix C:  Creating scripts of terminal sessions
+-----------
+
+To create a script of a terminal session, the command
+
+   $n_src/sys/document.csh script [file]    
+
+should be used, this is conveniently aliased to "nscript".
+If no filename is given, you will be prompted for one.
+
+This command will start the script command. The user has to initialise
+Newstar by typing "$go" (this is not necessary if initialisation is done
+in the user's .cshrc file). The initialisation procedure (in 
+$n_src/sys/newstar_init.csh) notices that the script utility is used 
+and will switch the DWARF bell "on". The prmpt will be set to "script> ".
+You can execute all commands you like and then enter either "exit" or ^D. 
+The terminal session will now be transformed to a LaTeX file, which you 
+can edit at wish.
+
+The nscript command will ask you wether the terminal script should be
+"Latex'ed" and printed or displayed (using xdvi, which should be in 
+your path). Often, you will want to edit the file first and then
+view it. This is possible by typing:
+
+    nscript -p [file]
+
+When answering to system prompts, you can add comments by prefixing 
+them with a semicolon followed by a hash mark, e.g.:
+
+ script> dwe nscan   ;# First we start reading data from tape
+ script> ls -l ;      # This gives a directory listing
+
+If the hash is the first non-blank character on the line, the comment 
+will be on a line of it's own.
+ 
+ script> # To start newstar, just type the following commands:
+
+
+When answering to DWARF prompts, you can add comments by prefixing
+them with an exclamation mark, e.g.:
+
+ LEVELS = -20 -10 : 20 ! For this test, we use a single level
+ OPTION (blabla) = QUIT : ! No further processing needed!
+
+In the latter example, the second exclamation mark will just show up
+as an exclamation mark (of course), the "empty" user respons will 
+translate to "<CR>" in the output.
+
+
+   NB: In order to facilate the script command, the DWARF "bell" is 
+       now rung at the start of the prompt (used to be at the end).
+       The exclamation-mark comments turned out to be an existing DWARF
+       feature that had somewhat faded in the mist of times.
+
+The following LaTeX commands are used in translated terminal sessions;
+they are defined for LaTeX in $n_src/doc/cook/cb_preamble.tex:
+
+   \skeyword{ name of keyword }
+   \sprompt{  text of prompt  }
+   \sdefault{ default value   }
+   \suser{    user response   }
+
+   \sline{    line with terminal output }
+   \slong{    long line with terminal output }
+
+   \scmd{      respons of user to operating system prompt }
+
+   \sinline{  inline comment }
+   \scomment{ comment that is on a line of it's own }
+   \setc      % Vertical dots replacing terminal output
+   \scr       % Carriage Return in fixed width font
+

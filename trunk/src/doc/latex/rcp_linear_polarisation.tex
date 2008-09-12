@@ -1,0 +1,231 @@
+%
+% @(#) rcp_linear_polarisation.tex  v1.2 04/08/93  RGS
+%
+\chapter{Processing recipe: Linear Polarisation}
+
+Author: R.G. Strom 
+%       JPH 951107      Break a paragraph that was too long for ndoc
+%       JPH 960326      Furtehr fix for this
+
+
+\tableofcontents
+
+%=============================================== Standard subsection ======
+\section{Scope of the recipe}
+\label{.scope}
+
+
+For obtaining polarization maps from standard continuum observations (all four
+dipole combinations must be present). See also the description of the program
+NCALIB, part 3.
+
+%---------------------------------------------------------------------------
+
+%  If possible, supply an idea for an "appetizer" picture, which gives an
+%  idea of what can be achieved with this recipe.
+
+
+%=============================================== Standard subsection ======
+\section{Introduction and background}
+\label{.intro}
+
+In a normal WSRT continuum observation, four dipole combinations (XX, XY, etc.)
+are measured for each fixed-movable (numbered-lettered telescope) baseline.
+Since mid-1983, the standard configuration is for the X-dipoles in all
+telescopes to be set parallel (hence the Y-dipoles are also). A polarization
+code is recorded for each observation, which gives the X-dipole position angle
+in the fixed and movable telescopes, in steps of $45^\circ$. The usual setting
+for the X-dipoles is $90^\circ$ (i.e., directed toward increasing RA), which
+gives a polarization code of 22. This results in the following definition of
+the Stokes parameters: $$I={1\over2}(XX+YY)$$ $$Q={1\over2}(YY-XX)$$
+$$U={1\over2}(YX-XY)$$ $$V=-{i\over2}(XY+YX)$$ (where $i=\sqrt{-1}$). In the
+remainder of this description it will be assumed that the observation being
+corrected has code 22, and of course that all four dipole combinations have
+good data.
+
+{\em Most continuum observations made before mid-1983 were done with the
+dipoles in the movable telescopes rotated by $45^\circ$ to the fixed ones,
+usually with polarization code 21 [or in any event with the digits differing by
+an odd number]. For analyzing such observations, the user should consult with
+the WSRT User Service in Dwingeloo. From time to time, calibration sources are
+still observed in code 21 [generally indicated by `$+\times$' appended to the
+source name]. In almost all line observations, only one or two of the dipole
+combinations (XX, YY) are measured; they are of course unsuitable for
+determining source polarization.}
+
+The determination of the (observed) Stokes $Q$ depends, as shown by the first
+two equations above, upon how well the gains of the XX and YY channels can be
+ascertained (since usually, $I>>Q$). For the $U$ and $V$ determinations, the
+critical parameters are the dipole setting or orthogonality, and the
+ellipticity. Moreover, since $V$ is usually small (i.e., $V<<U$) its
+determination will also depend upon the quality of the XY and YX gains. The
+other parameter required to correct the XY and YX combinations is the $X-Y$
+phase difference. The correction is usually small (since it should have been
+determined and applied online in Westerbork) and has to be determined from an
+observation of a polarized source, or a special `crossed' (code 21) calibration
+source measurement. Finally, it may be necessary to correct for Faraday
+rotation in the ionosphere (this is usually only necessary at 49 and 92 cm),
+and for variations in the instrumental polarization if there is significant
+emission beyond the central part of the primary beam.
+
+%=============================================== Standard subsection ======
+\section{Summary of the recipe}
+\label{.summary}
+
+The following is a step-by-step summary of the processing recipe. For some of
+these steps, more detail is provided below.
+
+\begin{enumerate}
+\item {\bf Load your data:} from tape or optical disk (NSCAN, option LOAD) See
+also Recipe ``Reading data in Dwingeloo''.
+\item {\bf Inspect the data file layout:} (NSCAN, option SHOW)
+\item {\bf Determine the instrumental gain and phase corrections for a strong
+calibrator with known polarisation:} (NCALIB, option REDUN.)
+\item {\bf Determine or set the instrumental polarization corrections for an
+unpolarised calibrator:} (NCALIB, option POLAR.)
+\item {\bf Map and inspect Stokes $Q, U, V$ for the calibrator (optional):}
+(NMAP, followed by NPLOT or NGIDS.)
+\item {\bf Copy (or set by hand) the instrumental polarization corrections for
+the observed field:} (NCALIB, option POLAR COPY.)
+\item {\bf Determine, and apply if necessary, the correction for ionospheric
+Faraday rotation (optional, usually only necessary at 49/92 cm):} (NCALIB,
+option SET FARADAY.)
+\item {\bf Map and inspect $I, Q, U, V$ images of field:} (NMAP, followed by
+NPLOT or NGIDS)
+\item {\bf Primary beam correction for each Stokes parameter (may only be
+necessary if source extends over large fraction of primary beam):} (NCALIB,
+options BEAM\_FACTORS (for Stokes $I$) and INPOL* (where * = $Q, U, or iV$ for
+the other three Stokes parameters).)
+\item {\bf Map the final corrected image in all Stokes parameters:} (NMAP)
+\end{enumerate}
+
+
+%=============================================== Standard subsection ======
+\section{More details for some of the steps}
+\label{.detail}
+
+%-------------------------------------------------------------------------
+\subsection{Load your data}
+
+        Remember that in addition to your own observation, you will probably
+want to load one or more calibration source measurements. Choose an unpolarized
+calibrator (3C 147 is probably the best) observed within a day of your
+observation {\it and with the same instrumental settings} (load several
+calibrators if you want to check on the repeatability of the solution), and a
+polarized source (like 3C 286, except at 92 cm) to determine the $X-Y$ phase
+difference. To locate calibration measurements, use ARCQUERY (see Appendix B).
+General information on the use of external calibrators can be found in Recipe
+13 (which refers to NCALIB option SET COPY), while loading data is described in
+Recipe 5 (which refers to NSCAN option LOAD).
+
+%-------------------------------------------------------------------------
+\subsection{Inspect the data file layout}
+
+        Make certain, in particular, that all four polarization combinations
+(XX, XY, etc.) are present in all observations to be used, and that the
+calibrators are consistent with the observation to be corrected (frequencies
+and bandwidths should be the same, although a change in spacing shouldn't make
+any difference). If the time between calibrator and observation is more than a
+day or two, it is also advisable to check that no frontends have been changed
+(consult the logbook or reduction group). Inspect data for interference (which
+may be polarized -- check the XY and YX combinations in particular) and other
+defects. For more information on inspecting data files, see NSCAN option SHOW.
+
+%-------------------------------------------------------------------------
+\subsection{Determine the instrumental polarization}
+
+Before determining the instrumental polarization using a calibrator, redundancy
+and selfcal solutions must be applied (use SELFCAL and ALIGN in the NCALIB
+option REDUN). This will also provide a useful check of the data quality. Note
+that at 92 cm (and in some cases 49 cm) there are background sources which may
+have to be included in the model used for ALIGN. Having run the ALIGN solution,
+NCALIB can be used to calculate the instrumental polarization (POLAR\_OPTION:
+CALC) and examine the result (POLAR\_OPTION: SHOW). Under normal conditions,
+the orthogonalities and positions of most dipoles should be under $1^\circ$,
+and the ellipticities generally under 1\%. Large values (more than a few
+degrees or percent) probably indicate an instrumental problem (bad data) and
+require further investigation. Run a solution on a different calibrator as a
+check. Deviant points can be changed by hand (POLAR\_OPTION: EDIT). Tables of
+instrumental polarization are also generated from time to time in Westerbork,
+and the values can be entered by hand (POLAR\_OPTION: SET), or used to
+cross-check the solution from NCALIB.
+
+As a check on the instrumental polarization thus generated, it may be useful to
+make a map of an unpolarized calibrator if one has been observed for a few
+hours or more during the same period (a shorter observation could also be used,
+but the map might prove difficult to interpret). Make sure that SELFCAL and
+ALIGN corrections have been successfully applied, and then look at the Q, U and
+V maps (made with NMAP). Ideally, they should be zero; the residual as a
+fraction of the flux density is an indication of the error which will be
+present in the polarization map of your observation. (If your source is very
+extended, however, the polarization error pattern generated by a point source
+may be misleading).
+
+Finally, we have to determine (or at least check) the $X-Y$ phase difference.
+This is best done using a linearly polarized calibrator (strictly speaking, a
+source with strong U signal). The method assumes that V is much smaller than U
+(since $YX=U+iV$, a nonnegligible V affects the $X-Y$ phase), which is usually
+the case. The correction can be calculated (VZERO\_OPTION: CALC, ASK, etc.) and
+applied to the data in several ways. Usually, the XY and YX phase zeroes have
+been determined and applied on-line to sufficient accuracy for most
+polarization maps, so the correction should be a few degrees or so. However,
+there have been instances where the difference was as much as $30^\circ$, so it
+is advisable to check. If various frequency channels are used, the phase
+difference should be calculated for each one separately, as the correction is
+usually frequency dependent.
+
+%-------------------------------------------------------------------------
+\subsection{Correct the observation for instrumental polarization}
+
+If you are happy with the instrumental parameters as applied to the
+calibrator(s), the values can be copied to your observation using NCALIB (under
+POLAR\_OPTION select COPY). The corrections will then be applied to the data
+when making a map with NMAP. If you have run selfcal (ALIGN) on your XX and YY
+polarizations using a source model based on Stokes I ($XX+YY$), remember that
+solving for gain (keyword SOLVE) could remove most of the Q signal.
+
+%-------------------------------------------------------------------------
+\subsection{Correct for ionospheric Faraday rotation}
+
+At 49 and 92 cm, Faraday rotation in the ionosphere can be considerable. The
+effect is to change the position angle (p.a.) of the plane of linear
+polarization (for the WSRT the p.a. will always {\it increase}, so the shift is
+systematic). Since the ionosphere changes throughout the day, the amount of
+rotation may vary during an observation. This has two consequences: the average
+position angle will be increased, and more seriously, if the differential
+rotation exceeds about one radian, there will be decorrelation of the polarized
+signal and distortion of the Q and U maps.
+
+To correct for ionospheric Faraday, the reduction group must be consulted to
+generate the predicted rotation using ionosonde data and information about the
+observation in question (the date, time and source position are needed, and the
+correction should be done for a frequency of 1 GHz). This will produce a table
+with hourly values of various parameters, including the source HA and the
+amount of rotation. The HA and rotation at 1 GHz (both in degrees) have to be
+entered in an ASCII file (see the description in NCALIB, option FARADAY under
+SET\_OPTION), and the correction is applied using FARADAY. Note that the HAs do
+not have to be hourly, or even regularly spaced: at night there may be little
+change in the Faraday rotation, and a single correction might suffice.
+
+%=============================================== Extra subsubsection ======
+\subsection{Correct for primary beam instrumental polarization}
+\label{.beam}
+
+The instrumental polarization determined from a calibrator is, strictly
+speaking, only correct for a source at the beam center, though at most
+frequencies the variation within the half-power primary beam is small. For
+polarization mapping over large fields, there is a separate correction for
+off-axis instrumental polarization (NCALIB: NMODEL - BEAM).
+
+%-------------------------------------------------------------------------
+\subsection{How do I know that my data are correct? -- additional hints.}
+\label{.hints}
+
+Errors; some error patterns; effect of source extent.
+
+Ionospheric effects and the I map.
+
+What can be done if a polarization combination is missing?
+
+Etc.
+

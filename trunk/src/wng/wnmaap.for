@@ -1,0 +1,115 @@
+C+ WNMAAP.FOR
+C  WNB 910325
+C
+C  Revisions:
+C
+	SUBROUTINE WNMAAP(N,INC,OUTC)
+C
+C  Convert amplitude/phase to real/imaginary and vice versa
+C
+C  Result:
+C
+C	CALL WNMAAP (N_J, INC_X(0:*), OUTC_X(0:*))	Cos/sin to ampl/phase
+C	CALL WNMARL (N_J, INC_X(0:*), OUTR_E(0:*))	Cos/sin to cos
+C	CALL WNMAIM (N_J, INC_X(0:*), OUTR_E(0:*))	Cos/sin to sin
+C	CALL WNMAAM (N_J, INC_X(0:*), OUTR_E(0:*))	Cos/sin to ampl
+C	CALL WNMAPH (N_J, INC_X(0:*), OUTR_E(0:*))	Cos/sin to phase
+C	CALL WNMACS (N_J, INC_X(0:*), OUTC_X(0:*))	Ampl/phase to cos/sin
+C
+C							Note: Phase in fractions
+C
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER N			!# OF POINTS
+	COMPLEX INC(0:*)		!INPUT ARRAY
+	COMPLEX OUTC(0:*)		!OUTPUT ARRAY
+	REAL OUTR(0:*)			!OUTPUT ARRAY
+C
+C  Function references:
+C
+C
+C  Data declarations:
+C
+C-
+C
+C COS/SIN TO AMPL/PHASE
+C
+	DO I=0,N-1
+	  R0=ABS(INC(I))				!AMPL
+	  IF (R0.EQ.0) THEN				!OUTPUT
+	    OUTC(I)=CMPLX(0.,0.)
+	  ELSE
+	    OUTC(I)=CMPLX(R0,ATAN2(AIMAG(INC(I)),REAL(INC(I)))/PI2)
+	  END IF
+	END DO
+C
+	RETURN
+C
+C COS/SIN TO COS
+C
+	ENTRY WNMARL(N,INC,OUTR)
+C
+	DO I=0,N-1
+	  OUTR(I)=REAL(INC(I))
+	END DO
+C
+	RETURN
+C
+C COS/SIN TO SIN
+C
+	ENTRY WNMAIM(N,INC,OUTR)
+C
+	DO I=0,N-1
+	  OUTR(I)=AIMAG(INC(I))
+	END DO
+C
+	RETURN
+C
+C COS/SIN TO AMPL
+C
+	ENTRY WNMAAM(N,INC,OUTR)
+C
+	DO I=0,N-1
+	  OUTR(I)=ABS(INC(I))
+	END DO
+C
+	RETURN
+C
+C COS/SIN TO PHASE
+C
+	ENTRY WNMAPH(N,INC,OUTR)
+C
+	DO I=0,N-1
+	  R0=AIMAG(INC(I))
+	  R1=REAL(INC(I))
+	  IF (R0.EQ.0 .AND. R1.EQ.0) THEN
+	    OUTR(I)=0
+	  ELSE
+	    OUTR(I)=ATAN2(R0,R1)/PI2
+	  END IF
+	END DO
+C
+	RETURN
+C
+C AMPL/PHASE TO COS/SIN
+C
+	ENTRY WNMACS(N,INC,OUTC)
+C
+	DO I=0,N-1
+	  R0=REAL(INC(I))
+	  R1=AIMAG(INC(I))*PI2
+	  OUTC(I)=CMPLX(R0*COS(R1),R0*SIN(R1))
+	END DO
+C
+	RETURN
+C
+C
+	END

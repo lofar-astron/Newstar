@@ -1,0 +1,50 @@
+C+ WNGSWS.FVX
+C  WNB 931029
+C
+C  Revisions:
+C
+	SUBROUTINE WNGSWS(SEC)
+C
+C  Wait a period
+C
+C  Result:
+C
+C	CALL WNGSWS ( SEC_E:I)		Wait SEC seconds
+C	CALL WNGSWM ( MSEC_J:I)		Wait MSEC milliseconds
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	REAL SEC		!SECONDS TO WAIT
+	INTEGER MSEC		!MSEC TO WAIT
+C
+C  Function references:
+C
+	INTEGER LIB$WAIT	!WAIT
+C
+C  Data declarations:
+C
+C-
+C
+C WNGSWS
+C
+	JS=LIB$WAIT(SEC)			!WAIT
+C
+	RETURN
+C
+C WNGSWM
+C
+	ENTRY WNGSWM(MSEC)
+C
+	JS=LIB$WAIT(MSEC/1000.)
+C
+	RETURN
+C
+C
+	END

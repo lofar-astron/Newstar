@@ -1,0 +1,37 @@
+!+ NCO.GRP
+!  JPH 931101!
+!  Revisions:
+!	HjV 940214	Remove NCOREV
+!
+!
+!  Group definition:
+!
+NCO.GRP
+!
+!  PIN files
+!
+NCOPY.PSC
+!
+!  Structure files
+!
+!
+!  Fortran definition files:
+!
+NCO.DSC			!		Program common/parameters
+! NCO.DEF		!		Fortran include
+! NCO.INC		!		C include
+!
+!  Programs:
+!
+NCOPY.FOR		!		Main routine
+NCOCPB.FOR		!		Make unique copy of block	!
+NCOCPY.FOR		!		Main copy routine 
+NCODAT.FOR		!		Get user parameters
+NCOINI.FOR		!		Program start
+NCOOVV.FOR		!		Overview of sectors in SCN file
+!
+!  Executables
+!
+NCOPY.EXE		!		SCN selective copy
+			!		SCN simulation
+!-

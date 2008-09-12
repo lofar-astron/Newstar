@@ -1,0 +1,57 @@
+% nmap_private_intfc.tex
+
+\chapter{ Private parameters for program NMAP}
+\tableofcontents
+
+
+\section{ Overview}
+\label{.overview}
+
+	This document contains an overview of the parameter interface of the
+program NMAP. The program also uses a number of public interfaces; references
+to these are also \textref{listed}{.public}.
+
+
+	Apart from a number of utility options, the main functions of NMAP are
+the making of maps from .SCN files (option MAKE) and manipulating these maps in
+various ways (option FIDDLE).
+
+	"Roadmap"-style overviews for the entire parameter interface are shown
+in \textref{below}{.diagrams}.
+
+	The remainder of the document describes the individual parameters in
+alphabetical order. This description centers on the Help texts, which have been
+designed to guide the user to the proper choice at each junction, even if his
+knowledge of the overall workings of the program is only superficial.
+
+
+
+\section{ Interface diagrams}
+\label{.diagrams}
+
+	The first diagram, an synopsis of NMAP's parameter interface, does not
+yet exist. Following that diagram several sub-diagrams are planned, of which
+those for the FIDDLE and utility options still have to be made.
+
+	\Figref{.nmap.make} shows the parameter interface for MAKE. Two detours
+in this interface, for parameters QMAPS and QDATAS, are normally bypassed; they
+are shown in \figref{.nmap.make.q}.
+
+	Included in these diagrams are NMAP's public parameters. These are
+interleaved with the private ones so they can not be diagrammed as a separate
+unit. In fact, the only reason that they are public is that the NCLEAN
+\textref{'data clean'}{nclean_descr.data.clean} operation uses them. This use
+is indicated on the right-hand side of \figref{.nmap.make} and
+\figref{.nmap.make.q}.
+
+\input{nmap_make.cap}
+\input{nmap_make_q.cap}
+\input{nmap_handle.cap}
+
+\section{ Descriptions of the individual parameters}
+\label{.descriptions}
+
+\subsection{ References to public interfaces}
+\label{.public}
+
+\input {nmap_private_keys.tef}

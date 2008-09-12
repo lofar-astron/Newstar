@@ -1,0 +1,320 @@
+/*+ wnfsci_x.cun
+.   CMV 941012
+.
+.   Revisions:
+.	CMV 941012	Created
+.	CMV 941031	Pass return string back
+.	CMV 941103	Test QEDDEBUG in wnfsci_x_
+.	HJV 970103	If no SCIPWD use HELLO=anonymous:<user> iso. HELLO=<user>
+.
+.   Provide an interface to the Scissor qed deamon
+.   Top level program should call this routine through WNFSCI
+.
+.   Environment used:
+.	QED1     The url to the daemon (like //www.astron.nl:8083)
+.	SCIPWD   The password of this user on the QED
+.	QEDDEBUG Print all server output?
+.
+.   Result:
+.     WNFSCI_J = WNFSCI_X(COMMAND_C(*):I,RETBUF_C(*):O)
+.
+.	Where command is either a command to be sent or OPEN or CLOSE.
+.
+...									*/
+
+#include <stdio.h>
+
+static int ld=0;			/* The socket connected to qed	*/
+
+/*
+  The following routines are static, since they should be used only
+  through the wnfsci_x routine. 
+*/
+static int open_socket();		/* Setup connection		*/
+static int close_socket();		/* Close down connection	*/
+static int send_command();		/* Send command over connection	*/
+
+
+int wnfsci_x_(command,retbuf,len,len2)
+
+char *command,*retbuf;
+int len,len2;
+
+{
+   char buf[2048];
+   int  qeddebug;
+
+   qeddebug=(getenv("QEDDEBUG")!=NULL);
+
+   if (!strncmp(command,"OPEN",4)) {
+
+      if (ld>0) close_socket(ld);
+      if (getenv("QED1")==NULL) return(301);  /* No device, connect failed */
+      ld=open_socket(getenv("QED1"));
+      if (ld<=0) return(301);                 /* No connection, failed     */
+
+      if (getenv("SCIPWD")==NULL) {
+        sprintf(buf,"HELLO=anonymous:%s",getenv("USER"));
+      } else {
+        sprintf(buf,"HELLO=%s:%s",getenv("USER"),getenv("SCIPWD"));
+      }    
+      return(send_command(ld,buf,retbuf,len2,qeddebug));
+    
+   } else if (!strncmp(command,"CLOSE",5)) {
+      if (ld>0) close_socket(ld);              /* Close and flag closed    */
+      ld=0; 
+      return(100);                             /* Always win               */
+
+   } else {
+      if (len>2047) len=2047;                  /* Limit to reasonable size */
+      while (command[len-1]==' ') len--;       /* Strip trailing spaces    */
+      strncpy(buf,command,len);                /* Copy into buffer         */
+      buf[len]='\0';                           /*   to allow termination   */
+                                               /* Send command		   */
+      return(send_command(ld,buf,retbuf,len2,qeddebug));
+
+   }
+}
+
+
+/**************  CLIENT SUBROUTINES ARE BELOW *************************/
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <signal.h>
+#include <errno.h>
+extern int errno;
+
+#define LF 10
+#define CR 13
+
+static unsigned int timeout=1200;   /* Default timeout value */
+
+static int put();
+static int get();
+static int getline();
+static void getline_timed_out();
+
+/*
+   Open_socket finds host and port from the url and establishes a connection
+*/
+
+static int open_socket(url)
+
+char *url;
+
+{
+    struct hostent *gethostbyname();
+    char *malloc();
+
+    char *p,*buf;
+    int  port,sock,st;
+    struct hostent     *remote;
+    struct sockaddr_in srv;
+
+    sock=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+    if (sock == -1) {
+       fprintf(stderr,"Cannot create socket\n");
+       return(sock);
+    } 
+
+    buf=malloc(strlen(url));
+    if (buf==NULL) {
+       fprintf(stderr,"Cannot allocate buffer\n");
+       return(-1);
+    }
+    strcpy(buf,url+2);
+
+    for (p=buf; *p!='\0' && *p!=':'; p++);
+    if (*p=='\0') {
+       fprintf(stderr,"No port number in url string, default to 8083\n");
+       port=8083;
+    } else {
+       *p='\0';
+       port=atoi(p+1);
+    }
+
+    remote=gethostbyname(buf);
+    if (remote==NULL) {
+       fprintf(stderr,"Cannot get host by name\n");
+       st= -1;
+    } else {
+       srv.sin_family=AF_INET;
+       srv.sin_addr.s_addr=htonl(INADDR_ANY);
+       srv.sin_port=htons(port);
+       srv.sin_addr= *((struct in_addr *) remote->h_addr);
+
+       st=connect(sock,&srv,sizeof(srv));
+       if (st== -1) fprintf(stderr,"Cannot connect to server\n");
+       else         st=sock;
+    }
+
+    free(buf);
+    return(st);
+}
+
+
+
+/*
+   Close_socket closes the connection
+*/
+
+static int close_socket(socket)
+
+int socket;
+
+{
+    if (socket>3) close(socket);
+    return(1);
+}
+
+
+/*
+   Send_command transfers the command string and waits for a respons
+   The respons is printed on stdout
+   The status code at the beginning of the response is returned
+   and retrieve an 8 characters return code.
+*/
+
+static int send_command(socket,command,retbuf,len,qeddebug)
+
+int  socket,len,qeddebug;
+char *command,*retbuf;
+
+{
+    char str[2048];
+    int js;
+
+    errno=EINTR;  /* Default: error */
+
+/*
+   Check if valid socket
+*/
+    if (socket<3) {
+       fprintf(stderr,"Invalid socket\n");
+       return(-1);
+    }
+
+/*
+   Send the string to the socket
+*/
+
+/*
+    js=write(socket,command,strlen(command));
+*/
+    strncpy(str,command,2040); str[2040]='\0'; 
+    if (str[strlen(str)-1]!='\n') strcat(str,"\n"); 
+    js=put(socket,str,strlen(str));
+
+    if (js!=strlen(str)) {
+       fprintf(stderr,"Cannot send command on socket\n");
+       return(js);
+    }
+/*
+   Wait for reply
+*/
+    while (js>=0) {
+      *str='\0';
+      js=getline(str,2000,socket);
+      if (js<0) {
+         fprintf(stderr,"Cannot read qed response from socket\n");
+         return(-1);
+      } else if (js>0) {
+        if (qeddebug) printf("%s\n",str);
+        if (str[3]!='-') js= -1;   /* No more lines expected      */
+      } else {
+        fprintf(stderr,"qed: null response (ignored)\n"); /* Just CR/LF, try again */
+      }
+    }
+
+/*
+   Return status and last line
+*/
+    strncpy(retbuf,str+4,len);
+    retbuf[len-1]='\0';
+
+    errno=0;
+    js=atoi(str);
+    if (js<0) js= -1;           /* Should set errno as well... */
+
+    return( js );
+}
+
+
+/*
+    The trick to catch the EINTR has been shamelessly taken from 
+    the Gipsy routine mtiodev.c (KGB, Kapteyn Lab, Univ. of Groningen)
+*/
+
+static int put(socket,buf,size)
+
+int  socket,size;
+char *buf;
+
+{
+   int left,done;
+
+   for (left=size; left; left-=done,buf+=done) {
+      while ( (done=write(socket,buf,left)) == -1 && errno == EINTR);
+      if (done== -1) return(done);
+   }
+   return(size);
+}
+
+static int get(socket,buf,size)
+
+int  socket,size;
+char *buf;
+
+{
+   int left,done;
+
+   for (left=size; left; left-=done,buf+=done) {
+      while ( (done=read(socket,buf,left)) == -1 && errno == EINTR);
+      if (done== -1) return(done);
+   }
+   return(size);
+}
+
+
+static int getline(str,n,ld)
+
+char *str;
+int n,ld;
+
+{
+    int i=0, ret;
+
+    signal(SIGALRM,getline_timed_out);
+    alarm(timeout);
+
+    while (1) {
+      if ( (ret = read(ld,&str[i],1)) <= 0) {
+            /* Mmmmm, Solaris.  */
+         if ( (ret == -1) && (errno == EINTR)) continue;
+         perror("qed getline");
+         str[i] = '\0';
+         return(i);
+      }
+
+   /*   if (str[i] == CR) read(ld,&str[i],1); */
+
+      if ( (str[i] == LF) || (i == (n-1))) {
+          alarm(0);
+          signal(SIGALRM,SIG_IGN);
+          str[i] = '\0';
+          if (i==(n-1)) fprintf(stderr,"qed getline: response too long\n");
+          return(i);
+       }
+       if (str[i] != CR) ++i;
+    }
+}
+
+static void getline_timed_out() 
+
+{
+    fprintf(stderr,"timed out waiting for response");
+    exit(1);
+}

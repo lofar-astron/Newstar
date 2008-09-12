@@ -1,0 +1,90 @@
+%       JPH 940916      Make compilable
+
+\chapter{ WSRT fact sheet} 
+
+
+\section{Array} 
+
+	The WSRT array is shown in the figure \figref{.wsrt.layout}.  The
+regular spacings of the 1-dimensional array are designed to minimise the
+side-lobe level in the un-CLEANed map (the WSRT array was designed in the early
+sixties, before the invention of the CLEAN method for deconvolution in 1972).
+The `waste' of uv-coverage is compensated somewhat by using the redundant
+spacings for model-independent calibration.  The very regular WSRT `beam'
+enhances the map-reliability: its residual structure can be readily traced back
+to the source of the problem, and it cannot easily be mistaken for real
+structure in the map. 
+
+	The 1-dimensional East-West orientation of the WSRT array is
+advantageous for wide-field mapping and deconvolution, because the instrumental
+`point-spread function' (or `beam') with which the image is convolved, is
+constant over the entire observed field.  Disadvantages are the poor
+North-South resolution for low-declination sources, and the impossibility of
+making 2D `snap-shot' images. 
+
+\input{../fig/wsrt_layout.cap} 
+
+
+	The redundant spacings in the regular WSRT array can be used for
+model-independent internal calibration.  The visibilities measured by two
+redundant interferometers (i.e.  with the same baseline length and orientation)
+must obviously be identical.  Thus, any differences between them must be caused
+by instrumental errors, including the effects of the Earth troposhere and
+ionosphere. 
+
+	Maximum redundancy occurs if 9A=72m in the standard configuration
+\figref{.wsrt.layout}: baselines 9A=AB=CD=72m, and 09=1B=AC=BD=1296m.  In this
+case, there is a `full redundancy solution' for both phase and gain, linking
+the errors of all 14 telescopes.  For other values of the distance 9A, there
+will still be a full solution for the telescope gain errors, but the phase
+solution will usually be split up into three independent groups: the fixed
+array (0-9), A/C and B/D. 
+
+
+
+\section{Telescopes} 
+
+
+\section{Sensitivity} 
+\label{.sensitivity} 
+
+The following tables gives WSRT interferometer system temperatures and
+sensitivities. The theoretical rms continuum sensitivity for 12 hrs observation
+is based on the given $T_{sys}$ and maximum bandwidth. 
+
+\begin{center} 
+\begin{tabular}{|c|r@{--}l|c|c|c|} 
+\hline 
+\multicolumn{1}{|c|}{$\lambda$} & 
+\multicolumn{2}{|c|}{Frequ} & 
+\multicolumn{1}{|c|}{$T_{sys}$} & 
+\multicolumn{1}{|c|}{Max BW} & 
+\multicolumn{1}{|c|}{Sensitivity} \\    % end of first header line
+\multicolumn{1}{|c|}{cm}  & 
+\multicolumn{2}{|c|}{MHz} & 
+\multicolumn{1}{|c|}{K}  & 
+\multicolumn{1}{|c|}{MHz} & 
+\multicolumn{1}{|c|}{mJy} \\            % end of second header line
+\hline 92 &  320 & 330  & 130 &  5   & 0.5 \\ 49 &  607 & 610  & 110 &  2.5 &
+0.6 \\ 21 & 1365 & 1425 &  60 & 60   & 0.06 \\ 18 & 1590 & 1730 &  60 & 80   &
+0.15 \\ 
+ 6 & 4770 & 5020 & 110 & 80 & 0.07 \\ \hline 
+\end{tabular} 
+\end{center} 
+
+
+
+
+\section{Backend} 
+
+	The WSRT digital backends contribute only very small `closure 
+errors' (interferometer-dependent errors), of the order of $0.01\%$.
+For comparison, the VLA has closure errors of up to a few percent in continuum
+mode, mainly due to the wideband quadrature networks).  The problem is much
+less in the VLA line mode. 
+
+	Closure errors violate the basic assumption of techniques like SELFCAL
+and Redundant Spacing Calibration, i.e.  that all errors are telescope-based.
+Closure errors can be calibrated if they are more or less constant over the
+length of the observation, but it is obviously better if they are small. 
+

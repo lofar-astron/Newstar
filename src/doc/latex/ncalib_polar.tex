@@ -1,0 +1,1272 @@
+%
+% ncalib_polar.tex  v1.2 04/08/93 JEN
+%       JPH 940407      Technical changes
+%       R. Sault 940606 Thorough revision
+%       JPH 940927      Some text improvements. Blank lines following labels.
+%       JPH 951107      Break a paragraph that was too long for ndoc
+
+
+\chapter{NCALIB POLAR: Polarisation corrections}
+\tableofcontents
+
+
+
+\section{ Preface }
+
+	This document describes the handling of polarisation calibration and
+correction by the NCALIB POLAR option.  This option is activated as follows:
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\scmd{exe\ ncalib}
+\svbegin \begin{verbatim}
+      NCALIB$1 (v4.62) is started at 30-May-94 13:52:04
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{OPTION}
+\sprompt{(REDUNDANCY, POLAR, SET, SHOW, QUIT)}
+\sdefault{= QUIT:}
+\suser{polar}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{show}
+\sinline{Select option}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+
+
+\section{WSRT polarisation calibration strategy}
+\label{.strategy}
+
+	In the following, it will be assumed that the dipoles of the WSRT
+telescopes are {\em parallel} (++).  The usual calibration strategy consists of
+the following steps:
+
+\begin{itemize}
+
+\item
+	In addition to observing calibrators along with normal observations,
+the WSRT at regular intervals observes calibrators to determine various
+instrumental parameters which are reasonably constant. These corrections are
+automatically applied to your data at the telescope.
+
+\item
+	The complex gain factors $\cGain_{ij}$ (i.e. dipole gain errors,
+$\lerr_i=\log(\gerr_i)$, and phase errors, $\perr_i$ are determined by
+observing a strong calibrator, for which an accurate model exists. The
+determination is done separately for the X-dipoles and the Y-dipoles, using
+\eqref{.equ.pol.008}.  {\em Note that any inaccuracy in the assumed value for Q
+will be interpreted as a gain error.  Also note that $\cGain_{xy}$ and
+$\cGain_{yx}$ will be inaccurate by the value of the ``phase-zero difference
+(PZD)'' between the X and Y dipoles.}
+
+\item
+	The dipole angle errors $\derr_i$ and ellipticities $\eerr_i$ are
+determined by observing a strong {\em unpolarised} calibrator. This is done by
+means of NCALIB option POLAR CALC in this section, using \eqref{.equ.pol.010}.
+The measured corrections are stored (as POLC) in the {\em sector header} of the
+SCN-file. (I.e. they are assumed to be constant for the duration of an entire
+sector rather than to change from scan to scan.).
+
+\item
+	The missing 'phase-zero difference (PZD)' between the X- and Y-dipoles
+is determined with the help of a calibrator with strong U. Again,
+\eqref{.equ.pol.010} is used.  It is assumed that $\Apol_{xy}$ and
+$\Apol_{yx}$, which determine the `leakage' of the large I-term into the
+result, are negligible in this stage, and that $V=0$.  If this assumption is
+incorrect, this will translate into a spurious V in later observations.
+
+\item
+	Ionospheric Faraday rotation may vary on much shorter timescales than
+the length of the observation.  This can be calibrated to a large extent by
+introducing external information, obtained by
+\textref{ionosonde measurements}{ncalib_descr.set.faraday}.
+
+\item
+	The WSRT instrumental polarisation is small, due to the placement of
+the feed on the axis of the antenna paraboloid.  The effect can be eliminated
+with the help of the multi-parameter \NEWSTAR source model (see NMODEL).
+
+\end{itemize}
+
+	For the best results, it may be necessary to iterate two or three
+times, because one pair of dipole errors (position angle/ellipticity) may
+affect the determination of the other pair (gain/phase).  However, the process
+will iterate to the correct result, because, {\em in the case of parallel
+dipoles}, all four types of dipole errors have distinct signatures.  This means
+that one type of dipole error cannot be interpreted as another type, and still
+give a consistent result.  Therefore, all four types can be determined
+independently.
+
+%=============================================================================
+\section{Polarisation equations}
+
+	Each of the 14 WSRT telescopes have two perpendicular linear dipoles, X
+and Y.  In the existing front-ends, the XY-dipole unit can be rotated over an
+arbitrary angle.  The dipole position angle ($\dang$) is defined from North
+($\dang=0^\circ$) through East ($\dang=90^\circ$).  The complex visibility
+$\cVis_{12}$ that is measured with an interferometer (consisting of two dipoles
+with position angles $\dang_1$ and $\dang_2$ can be written as (see Weiler,
+1973):
+
+\begin{eqnarray}
+\cVis_{12} =& \cGain_{12} &( I[\cos(\dang_1-\dang_2) -
+				  \Apol_{12}\sin(\dang_1-\dang_2)] \nonumber \\
+	    &  + &           Q[\cos(\dang_1+\dang_2) -
+				  \Bpol_{12}\sin(\dang_1+\dang_2)] \nonumber \\
+	    &  + &           U[\sin(\dang_1+\dang_2) +
+				  \Bpol_{12}\cos(\dang_1+\dang_2)] \nonumber \\
+	    &  - &          iV[\sin(\dang_1-\dang_2) +
+				  \Apol_{12}\cos(\dang_1-\dang_2)])
+\label{.equ.pol.002}
+\end{eqnarray}
+
+in which I, Q, U and V are the Fourier transforms of the corresponding Stokes
+parameters of the observed source, and the $\cGain$, $\Apol$ and $\Bpol$
+factors contain the four types of dipole errors: phase ($\perr$), gain
+($\lerr=\log(\gerr)$), dipole angle error ($\derr$) and ellipticity ($\eerr$).
+In the ideal case, they are all zero. For small values of $\derr$ and $\eerr$,
+second-order terms can be ignored, and we can write:
+%
+\begin{eqnarray}
+\Apol_{12} &=& (\derr_1 - \derr_2) - i(\eerr_1 + \eerr_2) \nonumber\\
+\Bpol_{12} &=& (\derr_1 + \derr_2) - i(\eerr_1 - \eerr_2)
+\label{.equ.pol.004}
+\end{eqnarray}
+%
+\begin{eqnarray}
+\cGain_{12} = \gerr_1\gerr_2\exp(-i(\perr_1-\perr_2))
+	    = \exp(\lerr_1+\lerr_2-i(\perr_1-\perr_2))
+\label{.equ.pol.006}
+\end{eqnarray}
+
+
+\subsection{Parallel dipoles (++)}
+
+In the `normal' position (+) of the dipole unit, $\dang_x=90^\circ$ (east), and
+$\dang_y=180^\circ$ (south). Usually the dipole units in all WSRT telescopes
+are set `parallel' (++) to each other. In this case, the equations reduce to a
+particularly simple form. Again ignoring second-order terms, we get %
+\begin{eqnarray}
+\cVis_{xx} &=& \cGain_{xx}(I-Q) \nonumber\\
+\cVis_{yy} &=& \cGain_{yy}(I+Q)
+\label{.equ.pol.008}
+\end{eqnarray}
+%
+\begin{eqnarray}
+\cVis_{xy} &=& \cGain_{xy}(-U - iV - \Apol_{xy} I) \nonumber\\
+\cVis_{yx} &=& \cGain_{yx}(-U + iV + \Apol_{yx} I)
+\label{.equ.pol.010}
+\end{eqnarray}
+%
+in which $\cVis_{xx}$ is the visibility measured between the X-dipoles of
+telescopes {\em i} and {\em j}, etc. After calibration, $\cGain=1$ and
+$\Apol=0$, and the complex Stokes values can be calculated from the observed
+visibilities:
+%
+\begin{eqnarray} I&=& +(\cVis_{xx} + \cVis_{yy})/2  \nonumber \\ Q&=&
+-(\cVis_{xx} - \cVis_{yy})/2  \nonumber \\ U&=& -(\cVis_{xy} + \cVis_{yx})/2
+\nonumber \\ iV&=& -(\cVis_{xy} -
+\cVis_{yx})/2
+\label{.equ.pol.014}
+\end{eqnarray}
+
+In the parallel mode (++), the two sets of dipole errors (phase/gain and
+angle/ellipticity) are separable, and so can be determined. Nowadays (after
+December 1983), the dipoles are almost always parallel, and in the new
+frontends (after 1997), the dipoles will not be rotatable.
+
+
+\subsection{X-Y Phase Zero Difference (PZD)}
+
+In the case of parallel dipoles (++), the complex gain errors of the X-dipoles
+and those of the Y-dipoles are calibrated separately; $\cVis_{xy}$ and
+$\cVis_{yx}$ will usually not have enough signal for calibration, because these
+dipoles are nominally perpendicular and the fraction of linear polarisation is
+usually small in calibrators. Since we only calibrate phase {\em differences},
+an arbitrary phase zero ($\perr_{x0}$ and $\perr_{y0}$) is assigned to the X-
+and Y-dipoles. These phase zeros will cancel out for $\cGain_{xx}$ and
+$\cGain_{yy}$, but not for $\cGain_{xy}$ and $\cGain_{yx}$. Thus, the latter
+will be multiplied by an unknown phase factor $\pzd$, the so-called {\em XY
+Phase Zero Difference (PZD)}.
+
+\begin{eqnarray}
+\cGain_{xx} &=& \gerr_x\gerr_x\exp(-i(\perr_x-\perr_x)) \nonumber \\
+\cGain_{yy} &=& \gerr_y\gerr_y\exp(-i(\perr_y-\perr_y))\\
+ \label{.equ.pol.016} %
+\cGain_{xy} &=& \gerr_x\gerr_y\exp(-i(\perr_x-\perr_y+\pzd)) \nonumber \\
+\cGain_{yx} &=& \gerr_y\gerr_z\exp(-i(\perr_y-\perr_x-\pzd))
+\label{.equ.pol.018}
+\end{eqnarray}
+
+\noindent in which $\pzd=\perr_{x0}-\perr_{y0} = {\rm PZD}$. Of course,
+$\cGain_{xy}$ is the complex gain of the interferometer made up of the X-dipole
+of telescope $i$ and Y-dipole of telescope $j$, etc.
+
+
+\subsection{Crossed dipoles ($+\times$)}
+
+	Before 1983, polarisation measurements with the WSRT were usually
+carried out with dipoles in the fixed telescopes (0-9) in the `normal'
+position, and the dipoles in the movable telescopes (A-D) rotated by $45^\circ$
+($\times$), with $\dang_x=45^\circ$ and $\dang_y=135^\circ$.  The 40 standard
+(fixed-movable) interferometers were said to have `crossed' ($+\times$)
+dipoles.  In this case, the visibility equations take the following form:
+%
+\begin{eqnarray}
+\cVis_{xx} &=& \ \ \cGain_{xx}(I(1-\Apol_{xx}) -
+	Q(1+\Bpol_{xx}) + U(1-\Bpol_{xx}) + iV(1-\Apol_{xx})) \nonumber \\
+\cVis_{yy} &=& \ \ \cGain_{yy}(I(1+\Apol_{yy}) +
+	Q(1+\Bpol_{yy}) - U(1-\Bpol_{yy}) + iV(1-\Apol_{yy})) \nonumber \\
+\cVis_{xy} &=& -\cGain_{xy}(I(1-\Apol_{xy}) +
+	Q(1-\Bpol_{xy}) + U(1+\Bpol_{xy} - iV(1+\Apol_{xy})) \nonumber \\
+\cVis_{yx} &=& \ \ \cGain_{yx}(I(1-\Apol_{yx}) -
+	Q(1-\Bpol_{yx}) - U(1+\Bpol_{yx}) - iV(1+\Apol_{yx}))
+\label{.equ.pol.022}
+\end{eqnarray}
+%
+	With crossed dipoles, the signal-to-noise ratio of the xy/yx terms are
+similar to that of the xx/yy terms.  This makes it possible to make a
+redundancy calibration solution for all 28 dipoles simultaneously, {\em but
+only if we may assume that $V=0$}.  In principle, this would open the way to
+continuous polarisation calibration on the object itself, provided it has
+enough flux.
+
+	However, crossed dipoles introduce a number of new problems that make
+them less attractive:
+%
+\begin{itemize}
+
+\item The two sets of dipole errors (phase/gain and angle/ellipticity) are no
+longer completely separable.  This means that the phase solution will influence
+the angle error solution, and the gain solution will influence the ellipticity
+solution.
+
+\item For part of the telescopes, the four-petal clover-leaf pattern of
+instrumental polarisation will be rotated by $45^\circ$ with respect to the sky
+and with respect to the four legs that support the focus box. This complicates
+any calibration schemes for instrumental polarisation.
+
+\end{itemize}
+
+	These problems, combined with the fact that the phase-zero problem is
+not really avoided (since redundancy solution is only possible if it has to be
+assumed that $V=0$) have led to the practice to use only parallel dipoles.
+
+	{\it (Annotation by JPH 940624: The reader is cautioned that the
+arguments advanced here against the use of crossed dipoles are a matter of
+continuing controversy.  It can easily be shown from first principles that the
+separability of phase/gain and dipole errors is irrelevant. Furthermore, the
+parallel-dipole configuration is inherently asymmetric with respect to Stokes
+{\em Q} and {\em U} and crossed dipoles are clearly superior in this respect;
+how important this is is not clear.)}
+
+
+\subsection{Faraday rotation}
+
+When radiation passes through a charged medium (like the ionosphere), the place
+of linear polarisation will be rotated by the angle $\farang$:
+%
+\begin{eqnarray} Q &=& Q_{obs}\cos(2\farang) + U_{obs}\sin(2\farang) \nonumber
+\\ U &=& U_{obs}\cos(2\farang) + Q_{obs}\sin(2\farang)
+\label{.equ.pol.024}
+\end{eqnarray}
+%
+Note that $I$, $V$ and $P=\sqrt{Q^2+U^2}$ are independent of $\farang$. The
+Faraday effect is strongly frequency-dependent: $\farang \propto \nu^{-2}$.
+
+
+\section{POLAR SHOW: Show corrections}
+\label{.show}
+
+The 56 correction factors (2 for each of the 28 dipoles) for angle errors and
+ellipticities that are stored in the {\em set header} (as POLC, see SCN-file
+description) can be viewed in a digestible form:
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{show}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{2.0.0.0.0}
+\sinline{For example} %
+\svbegin \begin{verbatim}
+ Sector: 2.0.0.0.0
+
+	Position          Ellipticity    Rotation Orthog.
+       X(%)     Y(%)     X(%)     Y(%)    (deg)    (deg)
+
+ 0    -1.13    -0.06    -0.37     0.54    -0.34     0.61
+ 1    -0.16     0.13     0.07     0.04    -0.01     0.17
+ 2     1.25     0.82     1.77    -2.56     0.59    -0.24
+ 3     0.49    -0.02     0.11     1.19     0.13    -0.29
+ 4    -0.72    -0.14    -0.03    -0.46    -0.25     0.33
+ 5    -0.09    -0.41     0.47     0.15    -0.14    -0.19
+ 6    -0.04    -0.21    -0.93     0.52    -0.07    -0.10
+ 7    -1.30    -1.42     0.45    -0.21    -0.78    -0.07
+ 8     2.51     1.77     0.86     0.99     1.23    -0.42
+ 9     0.80    -0.23    -0.69    -0.39     0.16    -0.59
+ A    -0.03    -0.73     1.61    -0.08    -0.22    -0.40
+ B    -0.13    -0.57    -0.57     0.30    -0.20    -0.26
+ C     0.00     0.00     0.00     0.00     0.00     0.00
+ D    -0.05    -0.31    -1.23     1.50    -0.10    -0.15
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+The first two columns (position) give the dipole angle error, expressed as the
+percentage of I that will corrupt Q, U and V. This is equivalent to expressing
+the dipole misalignment errors as percentages of one radian. In the last two
+columns, these same numbers are re-interpreted as a position error (rotation)
+of the entire XY-dipole assembly in degrees, and a deviation from the nominal
+orthogonality between the X and Y dipole. This is useful, since the entire
+XY-dipole assembly can be rotated as a whole for each WSRT telescope.
+
+The ellipticities are also given as percentages of the corrupting I, or as
+percentages of one radian.
+
+%=============================================================================
+
+\section{POLAR CALC: Calculate corrections}
+\label{.calc}
+
+The dipole angle {\em errors} $\derr_i$ and ellipticities $\eerr_i$ are
+calculated using \eqref{.equ.pol.010}. A strong calibrator is observed, which
+is known to be unpolarised  ($U=0$ and $V=0$). It is assumed that gain and
+phase have already been calibrated by other means (e.g. Selfcal): $\cGain_{xy}
+= \cGain_{yx} = 1$. Thus,
+\eqref{.equ.pol.010} reduces to:
+%
+\begin{equation}
+  \cVis_{12}/I = \Apol_{12} = (\derr_{1}-\derr_{2})-i(\eerr_{1}+\eerr_{2})
+\end{equation}
+%
+with $I=(\cVis_{11}+\cVis_{22})/2$.
+
+The system of linear equations (one for each $\cVis_{xy}$ and $\cVis_{yx}$) can
+be solved in a manner that is entirely analogous to the
+\textref{redundancy solution}{ncalib.redun} for gain and phase errors. The
+separate solutions for the real and imaginary parts now give the $\derr_i$ and
+$\eerr_i$ respectively.
+
+Since the S/N of the $\cVis_{xy}$ and $\cVis_{yx}$ will be small, the
+least-squares solution will be more accurate if more data (Sets and HA-range)
+are used. However, it must of course be assumed that the $\derr_i$ and
+$\eerr_i$ values are the same for all these data.  This is a fairly safe
+assumption, since the causes for these dipole errors are `mechanical', and vary
+only slowly in time. If the estimated values are to be useful for correction
+subsequent observations, they must at least be constant for the duration of the
+calibrator observation.
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{calc}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{2.0.0.0.0}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{HA\_RANGE}
+\sprompt{(DEG) (HA range)}
+\sdefault{= *:}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+ All cross interferometers pre-selected
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SELECT\_IFRS}
+\sprompt{(Select/de-select ifrs)}
+\sdefault{= "":}
+\suser{p} %
+\svbegin \begin{verbatim}
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SELECT\_IFRS}
+\sprompt{(Select/de-select ifrs)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{BASEL\_CHECK}
+\sprompt{(M) (Baseline deviation allowed)}
+\sdefault{= 0.5 M:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+The only difference with a `normal' (gain/phase) Redundancy solution is that
+these solutions are for all 28 dipoles simultaneously. Therefore, the necessary
+constraint equations have 28 coefficients. The words `gain' and `phase' refer
+to the separate Real and Imaginary solutions. The succession of dipoles is
+0X,0Y,1X,1Y,...etc.
+
+The constraint equations arbitrarily set the {\em average ellipticity} and the
+{\em average dipole angle errors} over the array to zero. Without further
+information, this may be the most reasonable value. But if it is wrong it could
+affect the observations that are calibrated with the results.
+
+The result of CALC looks very much like the output of SHOW (see above), except
+that the estimated accuracy (mean error) of the numbers is give in brackets.
+
+%\input ncalib_polar_calc2.scr
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\svbegin \begin{verbatim}
+ Sector: 2.0.0.0
+
+	 Position                     Ellipticity           Rotation Orthog.
+	 X(%)           Y(%)           X(%)           Y(%)        (deg)    (deg)
+
+ 0    -1.13(0.06)    -0.06(0.06)    -0.37(0.06)     0.54(0.06)    -0.34     0.61
+ 1    -0.16(0.06)     0.13(0.06)     0.07(0.06)     0.04(0.06)    -0.01     0.17
+ 2     1.25(0.06)     0.82(0.06)     1.77(0.06)    -2.56(0.06)     0.59    -0.24
+ 3     0.49(0.06)    -0.02(0.06)     0.11(0.06)     1.19(0.06)     0.13    -0.29
+ 4    -0.72(0.06)    -0.14(0.06)    -0.03(0.06)    -0.46(0.06)    -0.25     0.33
+ 5    -0.09(0.06)    -0.41(0.06)     0.47(0.06)     0.15(0.06)    -0.14    -0.19
+ 6    -0.04(0.06)    -0.21(0.06)    -0.93(0.06)     0.52(0.06)    -0.07    -0.10
+ 7    -1.30(0.06)    -1.42(0.06)     0.45(0.06)    -0.21(0.06)    -0.78    -0.07
+ 8     2.51(0.06)     1.77(0.06)     0.86(0.06)     0.99(0.06)     1.23    -0.42
+ 9     0.80(0.07)    -0.23(0.07)    -0.69(0.07)    -0.39(0.07)     0.16    -0.59
+ A    -0.03(0.04)    -0.73(0.04)     1.61(0.04)    -0.08(0.04)    -0.22    -0.40
+ B    -0.13(0.05)    -0.57(0.05)    -0.57(0.05)     0.30(0.05)    -0.20    -0.26
+ C     0.00(0.72)     0.00(0.72)     0.00(0.72)     0.00(0.72)     0.00     0.00
+ D    -0.05( 0.2)    -0.31( 0.2)    -1.23( 0.2)     1.50( 0.2)    -0.10    -0.15
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+The dipole corrections estimated by CALC will be {\em added} to the corrections
+that were applied to the data when they were read in.
+
+%=============================================================================
+\section{POLAR SET: Set corrections manually}
+\label{.set}
+
+The user may specify values for the dipole angle errors $\derr_i$ and
+ellipticity $\eerr_i$ manually. The numbers given by the user are converted to
+internal format, and stored (as POLC) in the headers of the given range of
+Sets. The default values are zero.
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{set}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{2.0.0.0.0}
+\sinline{For example}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_ROTAN}
+\sprompt{(dipole position)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_ORTHOG}
+\sprompt{(dipole orthogonality)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_X\_ELLIPS}
+\sprompt{(X ellipticity)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_Y\_ELLIPS}
+\sprompt{(Y ellipticity)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+ Sector: 2.0.0.0.0
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+%=============================================================================
+\section{POLAR EDIT: Edit corrections}
+\label{.edit}
+
+This is similar to POLAR SET above, except that the default values are the
+corrections (POLC) that are already stored in the Set headers. Thus, the
+existing POLC corrections in each Set header of the given range can be edited
+separately:
+
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{edit}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{2.0.0.0.0}
+\sinline{For example} %
+\svbegin \begin{verbatim}
+ Sector: 2.0.0.0.0
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_ROTAN}
+\sprompt{(dipole position)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_ORTHOG}
+\sprompt{(dipole orthogonality)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_X\_ELLIPS}
+\sprompt{(X ellipticity)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POL\_Y\_ELLIPS}
+\sprompt{(Y ellipticity)}
+\sdefault{= 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+
+%=============================================================================
+\section{POLAR ZERO: Zero corrections}
+\label{.zero}
+
+For the specified range of sets, the POLC corrections in the set header are set
+to zero:
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{zero}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{2.0.0.0.0} %
+\svbegin \begin{verbatim}
+ Sector: 2.0.0.0.0
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+
+%=============================================================================
+\section{POLAR COPY: Copy corrections from somewhere else}
+\label{.copy}
+
+The polarisation corrections $\derr_i$ and $\eerr_i$  are calculated with the
+help of a strong, unpolarised calibrator source, using the option POLAR CALC
+(see above). In order to use these corrections to correct a real observation,
+they must be transferred (copied) from the Set header of the calibrator to the
+Set header(s) of the observed object.
+
+There are two possibilities: The calibrator observation (and thus the desired
+corrections) may be stored in a separate SCN-file (node), or they may be stored
+in another `group' in the same SCN-file as the observed object. Below, an
+example is given for both situations:
+
+If the calibrator observation is stored in a separate SCN-file:
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{copy}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{0}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_NODE}
+\sprompt{(input node name)}
+\sdefault{= *:}
+\suser{?} %
+\svbegin \begin{verbatim}
+ Specify the node name from which the corrections should be calculated.
+ * indicates the same as the output node name.
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_NODE}
+\sprompt{(input node name)}
+\sdefault{= *:}
+\suser{3c48}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_SETS}
+\sprompt{(Set(s) of input uv-data Sectors:  g.o.f.c.s)}
+\sdefault{= "":}
+\suser{2.0.0.0.0} %
+\svbegin \begin{verbatim}
+ Sector: 0.0.0.0.0
+ Sector: 0.0.0.4.0
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+If the calibrator observation is stored in the same SCN-file (e.g. as group 1,
+while the observed object is stored as group 0), the process runs as follows:
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{copy}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{0}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_NODE}
+\sprompt{(input node name)}
+\sdefault{= *:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_SETS}
+\sprompt{(Set(s) of input uv-data Sectors:  g.o.f.c.s)}
+\sdefault{= "":}
+\suser{1.0.0.0.0} %
+\svbegin \begin{verbatim}
+ Sector: 0.0.0.0.0
+ Sector: 0.0.0.4.0
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+
+%=============================================================================
+\section{POLAR VZERO: X-Y Phase Zero Difference, assuming V=0}
+\label{.vzero}
+
+The VZERO option deals with the determination and manipulation of the {\em
+Phase Zero Difference (PZD)} between the X and Y dipoles. It is invoked in the
+following way:
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{POLAR\_OPTION}
+\sprompt{(CALC, SHOW, SET, COPY, EDIT...)}
+\sdefault{= QUIT:}
+\suser{vzero} %
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+
+%------------------------------------------------------------------------------
+\subsection{POLAR VZERO CALC: Calculate and show}
+\label{.vzero.calc}
+
+An Phase Zero Difference (PZD) between the X-dipoles an the Y-dipoles affects
+the phase of the complex gain factors $\cGain_{xy}$ and $\cGain_{yx}$ (but not
+$\cGain_{xx}$ and $\cGain_{yy}$). The PZD is determined with the help of a
+strong calibrator source, which must have a relatively large U-component of
+linear polarisation, and an accurately known amount of circular polarisation
+(Stokes V). The latter is important, since a wrong value for V will be
+incorrectly interpreted as a PZD. Since the V is difficult to measure
+accurately, it is safer to use a calibrator that `should not' have any circular
+polarisation: $V=0$.
+
+The algorithm uses \eqref{.equ.pol.010} and \eqref{.equ.pol.018}. It is assumed
+that the `leakage' of the strong I-term is eliminated by means
+\textref{POLAR CALC}{.calc}: $\Apol_{xy} = \Apol_{yx} = 0$.  It is also assumed
+that the gain and phase errors have also been well-calibrated: $\lerr_i =
+\perr_i = 0$. Thus, \eqref{.equ.pol.010} reduce to:
+\begin{eqnarray}
+  \cVis_{xy} & = & -U\exp (-i\pzd) \nonumber \\
+  \cVis_{yx} & = & -U\exp (+i\pzd)
+\end{eqnarray}
+
+The calculation of the PZD angle ($\pzd$) is now quite straightforward. Because
+of the low S/N of the `cross-terms' $\cVis_{xy}$, as many data (Sets, HA-range)
+should be used in the estimation as possible. However, the PZD may change with
+time.
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_OPTION}
+\sprompt{(CALC, APPLY, ASK, MANUAL, SCAN...)}
+\sdefault{= QUIT:}
+\suser{calc}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "PSR1937.JAN93":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{0}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{HA\_RANGE}
+\sprompt{(DEG) (HA range)}
+\sdefault{= *:}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+ All cross interferometers pre-selected
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SELECT\_IFRS}
+\sprompt{(Select/de-select ifrs)}
+\sdefault{= "":}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+The resulting PZD angle is given as follows:
+
+%\input ncalib_polar_vzero3.scr
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\svbegin \begin{verbatim}
+ A complex angle of 0.54+0.12I(0.01+0.01I) or 12.44 degrees
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+This message is somewhat confusing as the interesting information in the
+``complex angle'' has been truncated in the printing (the relative sizes of the
+real and imaginary parts). The angle given in degrees is somewhat more
+informative.
+
+
+
+%------------------------------------------------------------------------------
+\subsection{POLAR VZERO APPLY: Calculate, show and apply}
+\label{.vzero.apply}
+
+The PZD angle is `applied' by adjusting the phase in the `other corrections'
+(OTHC) in the Scan headers. This is done for the entire specified range (Sets
+and HA-range).
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_OPTION}
+\sprompt{(CALC, APPLY, ASK, MANUAL, SCAN...)}
+\sdefault{= QUIT:}
+\suser{apply}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "":}
+\suser{psr1937.jan93}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= "":}
+\suser{0}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{HA\_RANGE}
+\sprompt{(DEG) (HA range)}
+\sdefault{= *:}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+ All cross interferometers pre-selected
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SELECT\_IFRS}
+\sprompt{(Select/de-select ifrs)}
+\sdefault{= "":}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+ A complex angle of 0.55+0.01I(0.01+0.01I) or 1.00 degrees
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+%------------------------------------------------------------------------------
+\subsection{POLAR VZERO ASK: Calculate, check with user, and apply}
+\label{.vzero.ask}
+
+The user may influence the result by giving another PZD, which will be
+`applied' for the entire specified range (Sets and HA-range). The default is
+the calculated value.
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_OPTION}
+\sprompt{(CALC, APPLY, ASK, MANUAL, SCAN...)}
+\sdefault{= QUIT:}
+\suser{ask}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "PSR1937.JAN93":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{HA\_RANGE}
+\sprompt{(DEG) (HA range)}
+\sdefault{= *:}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SELECT\_IFRS}
+\sprompt{(Select/de-select ifrs)}
+\sdefault{= "":}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+ A complex angle of 0.55-0.00I(0.01+0.01I) or -0.19 degrees
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_PHASE}
+\sprompt{(X-Y difference)}
+\sdefault{= -0.1857903:}
+\suser{\scr}
+\sinline{Use the calculated value}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+%------------------------------------------------------------------------------
+\subsection{POLAR VZERO MANUAL: Ask for and apply}
+\label{.vzero.manual}
+
+The PZD angle given by the user is `applied' to the entire specified range
+(Sets and HA-range). The default value is $PZD =0^\circ$.
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_OPTION}
+\sprompt{(CALC, APPLY, ASK, MANUAL, SCAN...)}
+\sdefault{= QUIT:}
+\suser{manual}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "PSR1937.JAN93":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{HA\_RANGE}
+\sprompt{(DEG) (HA range)}
+\sdefault{= *:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_PHASE}
+\sprompt{(X-Y difference)}
+\sdefault{= 0:}
+\suser{-1}
+\sinline{User specifies a PZD = -1 degrees}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+%------------------------------------------------------------------------------
+\subsection{POLAR VZERO SCAN: Calculate and apply on a per-scan basis}
+\label{.vzero.scan}
+
+The change of the PZD angle as a function of time can be studied by estimating
+it for each Scan (HA) separately. The S/N of the estimation will necessarily be
+low.
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_OPTION}
+\sprompt{(CALC, APPLY, ASK, MANUAL, SCAN...)}
+\sdefault{= QUIT:}
+\suser{scan}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= "PSR1937.JAN93":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= 0:}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{HA\_RANGE}
+\sprompt{(DEG) (HA range)}
+\sdefault{= *:}
+\suser{\scr} %
+\svbegin \begin{verbatim}
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SELECT\_IFRS}
+\sprompt{(Select/de-select ifrs)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+%------------------------------------------------------------------------------
+\subsection{POLAR VZERO COPY: Calculate from input and apply to output}
+\label{.vzero.copy}
+
+The PZD angle is calculated with the help of a strong, unpolarised calibrator
+source. In order to use it to correct a real observation, it must be
+transferred (copied) from the Scan header(s) of the calibrator to the Scan
+header(s) of the observed object.
+
+There are two possibilities: The calibrator observation (and thus the desired
+corrections) may be stored in a separate SCN-file (node), or it may be stored
+in another group in the same SCN-file as the observed object. NB: In the latter
+case, it could even be the same observation!  In both cases, the PZD is
+calculated from a range of data (Sets and HA-range) in the INPUT\_NODE, and
+`applied' (i.e. stored as `other corrections' (OTHC)) to the Scan Headers in
+the SCAN\_NODE. In the following example, the calibrator is stored in the same
+SCN-file as group 1, while the observed object is stored as group 0):
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{VZERO\_OPTION}
+\sprompt{(CALC, APPLY, ASK, MANUAL, SCAN...)}
+\sdefault{= QUIT:}
+\suser{copy}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_NODE}
+\sprompt{(input/output 'node' name)}
+\sdefault{= ""}
+\suser{psr1937.jan93}
+\sinline{SCN-file}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_LOOPS}
+\sprompt{(niter, Setincr(g.o.f.c.s) ....)}
+\sdefault{= "":}
+\suser{\scr}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SCN\_SETS}
+\sprompt{(Set(s) to do:  g.o.f.c.s )}
+\sdefault{= 0:}
+\suser{0.*.*.*.*}
+\sinline{Apply the PZD to all sets of job 0}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_NODE}
+\sprompt{(input node name)}
+\sdefault{= *:}
+\suser{?} %
+\svbegin \begin{verbatim}
+ Specify the node name from which the corrections should be calculated.
+ * indicates the same as the output node name.
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_NODE}
+\sprompt{(input node name)}
+\sdefault{= *:}
+\suser{*}
+\sinline{Use the same SCN file}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{USE\_SCN\_SETS}
+\sprompt{(Set(s) of input uv-data Sectors:  g.o.f.c.s)}
+\sdefault{= "":}
+\suser{2.0.0.0.0}
+\sinline{Sets in job 2}
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{HA\_RANGE}
+\sprompt{(DEG) (HA range)}
+\sdefault{= *:}
+\suser{\scr}
+\sinline{Use all scans in these sets} %
+\svbegin \begin{verbatim}
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.
+\skeyword{SELECT\_IFRS}
+\sprompt{(Select/de-select ifrs)}
+\sdefault{= "":}
+\suser{\scr}
+\sinline{Use all interferometers} %
+\svbegin \begin{verbatim}
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+ A complex angle of 0.55-0.00I(0.01+0.01I) or -0.89 degrees
+\end{verbatim}\svend
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+Warning: Remember that the PZD may partly be an {\em artifact} of the separate
+phase/gain calibration of the X-dipoles and the Y-dipoles. This may lead to a
+different PZD angle for the calibrator and the subsequent observation. The
+difference may be several degrees, which is much greater than the accuracy that
+is required for the measurement of very small percentages of circular
+polarisation. However, the measured V may be more accurate if the observed
+object is extended, which will often be the case. But the truth of the matter
+is that, even though the WSRT may offer the best conditions for very accurate
+polarisation measurements, the PZD problem is essentially unsolved.
+

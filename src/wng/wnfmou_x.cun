@@ -1,0 +1,170 @@
+/*+ wnfmou_x.cun
+.   WNB 890724
+.
+.   Revisions:
+.	WNB 921021	Change device to environment
+.	WNB 921022	Change tape density check
+.	HjV 930521	Use first 4 characters of FNAM
+.	HjV 930527	Typo
+.	WNB 930803	Change to .cun and _o_inc
+.	CMV 940111	Changed ld, flag from long to int for alpha
+.	CMV 940204	Split off open() and read() for remote tapedrive
+.	CMV 940808	Add wnfmli_x to return name of unit
+.	CMV 940829	Correct argument for wnfmli_x
+.	CMV 941017	No readonly for writing tapes...
+.	CMV 941020	Save channel in wnftop_, do not overwrite volumelabel
+.       AXC 040326      Placed sys/file outside { to help Fedora builds
+...									*/
+#include "mca_o_inc"
+#include <sys/file.h>
+/*
+...									*/
+			wnfmou_x_(mcap,fnam)
+/*
+.   Mount tape for general stream/direct access I/O
+.
+.   Result:
+.
+.	wnfmou_x_j = wnfmou_x( MCA_J:I, FNAM_C4:I)
+.
+.	See WRFMOU.FOR for details
+.
+.   PIN references:
+...									*/
+/*
+.   Arguments:
+...									*/
+		struct mca *mcap;		/* MCA ptr		*/
+		char *fnam;			/* tape name		*/
+{
+/*
+.   Include files:
+...									*/
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <ctype.h>
+extern int errno ;
+/*
+.   Parameters:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+	char *getenv();				/* get MAG environment	*/
+	int  wnftop_();				/* Open tapeunit        */
+	int  wnftrb_();				/* Read data from tape  */
+/*
+.   Data declarations:
+...									*/
+	int ld;					/* open descriptor	*/
+	int do_write = 0;			/* open for output      */
+	int flg = 0;				/* open flags		*/
+	char *unit;				/* tape name		*/
+	int j;
+	int js;
+	char tmpname[5];			/* copy of FNAM		*/
+	char tmpvol[81];			/* buffer for reading   */
+/* Open tape
+.									*/
+	strncpy(tmpname,fnam,4);
+	tmpname[4]='\0';
+	unit=getenv(tmpname);			/* get tape name	*/
+	if (unit == 0)				/* unknown name		*/
+	  return(2*ENOENT);
+	do_write=(mcap->bits & MCA_M_OUT);	/* write		*/
+	bzero(mcap->vol, 80);			/* clear Volume label	*/
+	flg=0; /*O_RDONLY;*/
+	if (do_write)  flg |= O_RDWR;
+	else           flg |= O_RDONLY;
+	ld=wnftop_(mcap,unit,do_write,flg);	/* open			*/
+	if (ld <= 0)
+	{ js= 2*errno;				/* cannot open		*/
+	  return(js);
+	}
+	mcap->bits |= (MCA_M_ALL | MCA_M_ASS | MCA_M_MOU); /* set open	*/
+	js= wnftrw_(mcap);			/* rewind tape		*/
+la:	if (js == -1)				/* cannot do		*/
+	{ js= 2*errno;
+	  return(js);
+	}
+	if (!(mcap->bits & MCA_M_UNL))		/* look for label	*/
+	{	js= wnftrb_(mcap,tmpvol,80); /* read VOL	*/
+		if (!(js == 80 & strncmp("VOL1",tmpvol,4) == 0))
+		{	mcap->bits |= MCA_M_UNL; /* set no label	*/
+		} else {
+			memcpy(mcap->vol,tmpvol,80); /* Save label	*/
+		}
+	}
+	js= wnftrw_(mcap);			/* make sure at bot	*/
+	j=(fnam[3]-'0')%3;			/* get density		*/
+	if (j == 0)
+	  mcap->dens=1600;
+	else if (j == 1)
+	  mcap->dens=6250;
+	else
+	  mcap->dens=800;
+/* Ready
+.									*/
+	return(1);				/* ok			*/
+}
+/*
+.
+...									*/
+			wnfmli_x_(fnam,txt,ltxt)
+/*
+.   Translate name of tapeunit
+.
+.   Result:
+.
+.	wnfmli_x_j = wnfmli_x( FNAM_C4:I, TXT_C*(*):O, LTXT_J:O )
+.
+.
+...									*/
+/*
+.   Arguments:
+...									*/
+		char *fnam;			/* tape name		*/
+		char *txt;			/* translation		*/
+		int  *ltxt;			/* length of string	*/
+{
+/*
+.   Include files:
+...									*/
+/*
+.   Parameters:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+	char *getenv();				/* get MAG environment	*/
+/*
+.   Data declarations:
+...									*/
+	char *unit;				/* tape name		*/
+	char tmpname[5];			/* copy of FNAM		*/
+/* Open tape
+.									*/
+	strncpy(tmpname,fnam,4);
+	tmpname[4]='\0';
+	unit=getenv(tmpname);			/* get tape name	*/
+	if (unit == 0)				/* unknown name		*/
+	  return(2*ENOENT);
+	strncpy(txt,unit,*ltxt);		/* copy in output 	*/
+	txt[(*ltxt)-1]='\0';			/* proper termination	*/
+	return(1);				/* success		*/
+}
+
+
+
+
+
+
+
+
+
+
+
+

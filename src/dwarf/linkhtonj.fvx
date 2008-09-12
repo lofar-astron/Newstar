@@ -1,0 +1,69 @@
+C++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_LINKHTONJ
+C.Keywords:	Network Data-conversion
+C.Author:	Ger van Diepen (NFRA, Dwingeloo)
+C.Language:	Fortran
+C.Environment:	VAX
+C.Comments:	This version is typically VAX, because it always swaps bytes.
+C		The UNIX-version is written in C and uses HTONx and NTOHx.
+C.Version:	920113 GvD - creation
+C.Returns:	None
+C--------------------------------------------------------------------------
+C+PDOC+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	SUBROUTINE LINK_HTONJ (IN,OUT,NR)
+C	     ENTRY LINK_NTOHJ (IN,OUT,NR)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	BYTE		IN(4,*)		! (i) input data array
+	BYTE		OUT(4,*)	! (o) output data array
+	INTEGER*4	NR		! (i) #elements in data arrays
+C
+C.Purpose:	Convert integer*4 data from host to network byte order and back.
+C.Returns:	None
+C--------------------------------------------------------------------------
+C
+C
+C					LINK_HTONJ and _NTOHJ are the same
+	GOTO 100
+C
+	ENTRY LINK_NTOHJ (IN,OUT,NR)
+C
+100	DO I = 1,NR
+	    OUT(1,I) = IN(4,I)
+	    OUT(2,I) = IN(3,I)
+	    OUT(3,I) = IN(2,I)
+	    OUT(4,I) = IN(1,I)
+	ENDDO
+C
+	RETURN
+	END
+C+PDOC+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	SUBROUTINE LINK_HTONI (IN,OUT,NR)
+C	     ENTRY LINK_NTOHI (IN,OUT,NR)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	BYTE		IN(2,*)		! (i) input data array
+	BYTE		OUT(2,*)	! (o) output data array
+	INTEGER*4	NR		! (i) #elements in data arrays
+C
+C.Purpose:	Convert integer*2 data from host to network byte order and back.
+C.Returns:	None
+C--------------------------------------------------------------------------
+C
+C
+C					LINK_HTONI and _NTOHI are the same
+	GOTO 100
+C
+	ENTRY LINK_NTOHI (IN,OUT,NR)
+C
+100	DO I = 1,NR
+	    OUT(1,I) = IN(2,I)
+	    OUT(2,I) = IN(1,I)
+	ENDDO
+C
+	RETURN
+	END

@@ -1,0 +1,53 @@
+%
+%  @(#) cbSymbols.tex v1.1 13/07/93  JEN
+%
+%  Symbol definitions for the redundancy cookbook
+%  This file is included in all NEWSTAR Cookbook sections to ensure a 
+%  uniform naming convention. 
+%
+%  This file is also translated into a NEWSTAR "glossary" called
+%  FORMSYMBOLS.TEX by means of the program SYMBOLSLATEX.FOR.
+%
+%  This file should be included right after cb_preamble.tex
+%
+
+%\gloshead{General:}
+
+\def\cbdir{\$n_src/doc/cook}	% cookbook directory
+\def\NEWSTAR{{\sf NEWSTAR~}}	% name of software package
+\def\Nseries{\NEWSTAR}		% name of package (was N-series)
+
+%\gloshead{Visibility components:}
+
+\def\cVis{{\cal V}}		% (complex) visibility
+\def\pvis{{\Phi}} 		% visibility phase 
+\def\avis{{|{\cVis}|}}		% visibility amplitude
+\def\lavis{{\varrho}}		% visibility ln(ampl)
+
+\def\cGain{{G}}			% (complex) Gain (multiplicative)
+\def\cNoise{{N}}		% (complex) random noise (additive)
+\def\cCadd{{C}}			% (complex) offset (additive)
+
+%\gloshead{The four types of dipole errors and related quantities:}
+
+\def\perr{{p}}			% dipole phase error
+\def\gerr{{g}}			% dipole gain error 
+\def\lerr{{q}}			% dipole ln(gain) error 
+\def\dang{{\phi}}		% dipole position angle
+\def\derr{{\Delta}}		% dipole position angle error 
+\def\eerr{{\Theta}}		% dipole ellipticity
+
+%\gloshead{Miscellaneous:}
+
+\def\Apol{{\epsilon}}		% Polarisation A-factor
+\def\Bpol{{\eta}}		% Polarisation B-factor
+
+\def\wgt{{\cal W}}		% Weight factor
+\def\pwgt{{\wgt^p}}		% Weight for phase equation
+\def\lwgt{{\wgt^g}}		% Weight for ln(gain) equation
+
+\def\pzd{{\psi}}		% XY phase zero difference (PZD)
+
+\def\farang{{\chi}}		% Faraday rotation angle
+
+%*********************************** end of CBSYMBOLS.TEX ***************

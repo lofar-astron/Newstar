@@ -1,0 +1,48 @@
+C+ WNGSEU.FSC
+C  WNB 930331
+C
+C  Revisions:
+C
+	SUBROUTINE WNGSEU(NAME)
+C
+C  Unset environment variable
+C
+C  Result:
+C
+C	CALL WNGSEU( NAME_C*:I)
+C				Unset the environment/logical NAME.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	CHARACTER*(*) NAME		!NAME OF ENV. VARIABLE
+C
+C  Function references:
+C
+
+        i = INDEX(NAME," ")       ! search first space
+        NAME(i:i) = CHAR(0)       ! place char 0
+
+#ifdef wn_vx__
+	LOGICAL LIB$DELETE_LOGICAL	!DELETE LOGICAL NAME
+#endif
+C
+C  Data declarations:
+C
+C-
+#ifdef wn_vx__
+	JS=LIB$DELETE_LOGICAL(NAME)			!DELETE NAME
+#else
+	CALL UNSETENV(NAME)			!DELETE NAME
+#endif
+C
+	RETURN
+C
+C
+	END

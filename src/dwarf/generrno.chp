@@ -1,0 +1,43 @@
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/*.Ident:	GENHP_ERRNO
+/*.Keywords:	Fortran errors
+/*.Author:	Ger van Diepen (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	HP9000/700
+/*.Comments:	Substitute for standard SUN- and Alliant routines
+/*.Version:	920525 GvD - creation
+------------------------------------------------------------------------*/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#include <errno.h>
+
+long ierrno_ ()
+
+/*
+.Purpose:	Get errno
+.Returns:	errno
+.Notes:		Call from Fortran as:
+	ERRNO = IERRNO ()
+------------------------------------------------------------------------*/
+{
+	return errno;
+}
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+gerror_ (str,leng)
+
+	char	str[];			/* (o) string			*/
+	long	leng;			/* (i) length of string		*/
+/*
+.Purpose:	Get message of latest error
+.Returns:	None
+.Notes:		Call from Fortran as:
+	CALL GERROR (STR)
+------------------------------------------------------------------------*/
+{
+	int	l;
+	char	*mes;
+
+	mes = strerror (errno);
+	strncpy (str,mes,leng);
+	l   = strlen (str);
+	if (l<leng) memset (&str[l], ' ', leng-l);	/* fill with blanks */
+}

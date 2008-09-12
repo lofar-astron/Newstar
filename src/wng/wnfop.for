@@ -1,0 +1,343 @@
+C+ WNFOP.FOR
+C  WNB 890725
+C
+C  Revisions:
+C	WNB 920110	Error in formatting
+C	JPH 930414	FCA_M_WRT --> FCA_M_WRTAPE
+C	WNB 930811	Change L_ to LB_
+C	HjV 930902	Second argument in call to WNFCL_X is missing
+C	CMV 940114	Save pointers in FCA_FEP and FCA_BCP
+C	JPH 940922	If 'U' open fails, try 'R' with a warning
+C	JPH 940923	Emit message only if new file (notr tested, code left in
+C			 commented with '!!'
+C	JPH 941208	Undo 940922/23: Not the right solution
+C
+C
+	LOGICAL FUNCTION WNFOP(FCA,FNAM,FACC)
+C
+C  Open file for read/write/update access
+C
+C  Result:
+C	WNFOP_L = WNFOP( FCA_J:IO, FNAM_C*:I, FACC_C*:I)
+C			Open file FNAM for FACC access type, and return
+C			the address of a dynamic control area in FCA.
+C			Recognized access types are 'R' (read), 'W' (write),
+C			'U' (update) , 'S' (sequential) and 'T' (temporary).
+C			S can be specified with R, W and U for sequential
+C			read, write with automatic read-ahead, write-behind.
+C			If no R, W or U is specified, R is assumed.
+C			T can be specified with W to indicate a temporary file
+C			that will be automatically deleted at close time.
+C			For more specifications, or for tape, use WNFOPF.
+C	WNFOPF_L = WNFOPF( FCA_J:IO, FNAM_C*:I, FACC_C*:I,
+C				NBUF_J:I, LBUF_J:I, LREC_J:I, INAL_J:I)
+C			The additional parameters can be specified as empty
+C			(0 value), in which case defaults will apply.
+C			NBUF specifies the number of buffers,
+C			LBUF the buffer length,
+C			LREC the record length,
+C			INAL specifies the initial file allocation, or
+C				the tape label number.
+C			Also FACC can contain :<text> for tape output (no <>!),
+C			the text will be written in HDR. If the file name
+C			is empty for tape, the file name will be Llllll,
+C			where lllll is the label number.
+C			On tape output the bufferlength will be an integral
+C			multiple of the recordsize.
+C			Defaults:
+C			NBUF	3
+C			LBUF	4096(disk), 2480(tape out), 32760(tape in)
+C			LREC	128(disk), 80 or 128 or LBUF if not multiple.
+C			INAL	system default(disk), begin tape (tape in),
+C				end tape (tape out)
+C
+C
+C  PIN references:
+C
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'MCA_O_DEF'			!MCA
+	INCLUDE 'FCA_O_DEF'
+	INCLUDE 'FCQ_DEF'			!FCA
+	INCLUDE 'FBC_O_DEF'			!FBC
+	INCLUDE 'FEL_O_DEF'			!FEL
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER FCA				!RETURNED DYNAMIC FILE AREA
+	CHARACTER*(*) FNAM			!FILE NAME
+	CHARACTER*(*) FACC			!FILE ACCESS TYPE
+	INTEGER NBUF				!NUMBER OF BUFFERS TO ALLOCATE
+	INTEGER LBUF				!LENGTH OF EACH BUFFER (BYTES)
+	INTEGER LREC				!RECORD LENGTH
+	INTEGER INAL				!INITIAL FILE ALLOC. (BLOCKS)
+						!OR TAPE LABEL #
+C
+C  Entry points:
+C
+	LOGICAL WNFOPF				!FULL FLEDGED OPENING
+C
+C  Function references:
+C
+	INTEGER WNFOP_X				!ACTUAL OPENING
+	LOGICAL WNGGVM				!GET VIRTUAL MEMORY
+	INTEGER WNFTFC				!TEST FCA PRESENT
+	INTEGER WNCALN
+	INTEGER WNGARA				!LENGTH STRING
+C
+C  Data declarations:
+C
+	INTEGER LNBUF				!LOCAL ARGUMENTS
+	INTEGER LLBUF
+	INTEGER LLREC
+	INTEGER LINAL
+	CHARACTER*21 HDRDAT,HDRDA1		!HDR2 DATA
+	INTEGER NDAT(12)			!FOR DATE
+	  DATA NDAT/0,31,59,90,120,151,181,212,243,273,304,334/
+	CHARACTER*6 CDAT			!DATE
+	CHARACTER*81 FNAMF			!FIXED LENGTH FILE NAME
+	CHARACTER*80 FNMFCA			! buffer for filename from FCA
+	CHARACTER*10 STR
+	LOGICAL MSG				! 'give message' flag
+	INTEGER J6, J7
+C
+C  Equivalences:
+C
+C
+C  Commons:
+C
+C-
+C
+C SET ARGUMENTS
+C
+	LNBUF=0					!# OF BUFFERS
+	LLBUF=0					!BUFFER LENGTH
+	LLREC=0					!RECORD LENGTH
+	LINAL=0					!EXTENT/TAPE LABEL
+	GOTO 10
+C
+C WNFOPF
+C
+	ENTRY WNFOPF(FCA,FNAM,FACC,NBUF,LBUF,LREC,INAL)
+C
+	LNBUF=NBUF				!# OF BUFFERS
+	LLBUF=LBUF				!BUFFER LENGTH
+	LLREC=LREC				!RECORD LENGTH
+	LINAL=INAL				!EXTENT/TAPE LABEL
+ 10	CONTINUE
+C
+C TEST FCA
+C
+	WNFOP=.FALSE.					!ASSUME ERROR
+	CALL WNFINI					!START SYSTEM
+	I0=WNFTFC(FCA)					!TYPE OF BLOCK
+	IF (I0.NE.0) CALL WNFCL(FCA)			!STILL FILE OPEN
+	IF (.NOT.WNGGVM(FCAHDL,J)) RETURN		!GET FCA
+	CALL WNGMVZ(FCAHDL,A_B(J-A_OB))			!ZERO FCA
+	J1=(J-A_OB)/LB_J				!DUMMY ARRAY OFFSET
+	A_J(J1+FCA_SIZE_J)=FCAHDL			!SET SIZE
+	J2=FCA						!POSSIBLE MCA ADDRESS
+	J3=(J2-A_OB)/LB_J				!DUMMY ARRAY MCA
+	IF (I0.LT.0) THEN				!MCA
+	  A_J(J3+MCA_FCA_J)=J				!LINK FCA - MCA
+	  A_J(J1+FCA_MCA_J)=FCA
+	  A_J(J1+FCA_BITS_J)=IOR(A_J(J1+FCA_BITS_J),FCA_M_MAG) !SET MAGTAPE
+	  A_J(J1+FCA_CHAN_J)=A_J(J3+MCA_CHAN_J)		!SET CHANNEL
+	  A_J(J1+FCA_HIBLK_J)=-1			!UNLIMITED EXTEND
+	  A_J(J1+FCA_EOF_J)=-1				!READ EOF
+	END IF
+C
+C ACCESS TYPE
+C
+	A_J(J1+FCA_ERR_J)=1				!ASSUME NO ERROR
+	HDRDAT=' '					!NO HDR2 DATA
+	DO I=1,LEN(FACC)				!SET ACCESS
+	  IF (FACC(I:I).EQ.'W' .OR. FACC(I:I).EQ.'w') THEN !WRITE
+	    A_J(J1+FCA_BITS_J)=IOR(A_J(J1+FCA_BITS_J),FCA_M_WRITE)
+	    IF (I0.LT.0) THEN				!TAPE
+	      A_J(J1+FCA_BITS_J)=
+	1	IOR(A_J(J1+FCA_BITS_J),FCA_M_WRTAPE) !TAPE WRITE
+	      A_J(J1+FCA_EOF_J)=0			!TAPE OUT EOF
+	    END IF
+	  ELSE IF (FACC(I:I).EQ.'R' .OR. FACC(I:I).EQ.'r') THEN !READ
+	    A_J(J1+FCA_BITS_J)=IOR(A_J(J1+FCA_BITS_J),FCA_M_OLD)
+	  ELSE IF (FACC(I:I).EQ.'U' .OR. FACC(I:I).EQ.'u') THEN !UPDATE
+	    A_J(J1+FCA_BITS_J)=IOR(A_J(J1+FCA_BITS_J),
+	1		FCA_M_WRITE+FCA_M_OLD)
+	    IF (I0.LT.0) THEN				!TAPE
+	      A_J(J1+FCA_BITS_J)=
+	1	IOR(A_J(J1+FCA_BITS_J),FCA_M_WRTAPE) 	!TAPE WRITE
+	      A_J(J1+FCA_EOF_J)=0			!TAPE OUT EOF
+	    END IF
+	  ELSE IF (FACC(I:I).EQ.'T' .OR. FACC(I:I).EQ.'t') THEN !TEMP
+	    A_J(J1+FCA_BITS_J)=IOR(A_J(J1+FCA_BITS_J),FCA_M_TMP)
+	  ELSE IF (FACC(I:I).EQ.'S' .OR. FACC(I:I).EQ.'s') THEN !SEQUENTIAL
+	    A_J(J1+FCA_BITS_J)=IOR(A_J(J1+FCA_BITS_J),FCA_M_SEQ)
+	  ELSE IF (FACC(I:I).EQ.':') THEN		!HDR DATA
+	    HDRDAT=FACC(I+1:)
+	    GOTO 20
+	  END IF
+	END DO
+ 20	CONTINUE
+C
+C DEFAULTS
+C
+	LNBUF=MIN(20,MAX(3,LNBUF))			!# OF BUFFERS
+	IF (LLBUF.LE.0) THEN				!BUFFER LENGTH
+	  IF (I0.LT.0) THEN				!TAPE
+	    IF (IAND(A_J(J1+FCA_BITS_J),FCA_M_WRTAPE).NE.0) THEN !TAPE WRITE
+	      LLBUF=2840
+	    ELSE					!TAPE READ
+	      LLBUF=32760
+	    END IF
+	  ELSE						!DISK
+	    LLBUF=4096
+	  END IF
+	END IF
+	LLBUF=MIN(32760,MAX(512,LLBUF))
+	LLREC=MAX(0,LLREC)				!RECORD LENGTH
+	IF (LLREC.EQ.0) THEN
+	  IF (I0.LT.0) THEN				!TAPE
+	    IF (MOD(LLBUF,80).EQ.0) THEN
+	      LLREC=80
+	    ELSE IF (MOD(LLBUF,128).EQ.0) THEN
+	      LLREC=128
+	    ELSE
+	      LLREC=LLBUF
+	    END IF
+	  ELSE						!DISK
+	    LLREC=128
+	  END IF
+	END IF
+	LLREC=MAX(32,MIN(32760,LLREC))
+	LINAL=MAX(0,LINAL)				!EXTENT/TAPE LABEL
+C
+C QUEUES
+C
+	A_J(J1+FCA_FEA_J)=J+FCA_FEA_1			!ACTIVE ELEMENTS
+	A_J(J1+FCA_FEA_J+1)=J+FCA_FEA_1
+	A_J(J1+FCA_FEE_J)=J+FCA_FEE_1			!EMPTY ELEMENTS
+	A_J(J1+FCA_FEE_J+1)=J+FCA_FEE_1
+	A_J(J1+FCA_BQA_J)=J+FCA_BQA_1			!ADDRESS QUEUE
+	A_J(J1+FCA_BQA_J+1)=J+FCA_BQA_1
+	A_J(J1+FCA_BQT_J)=J+FCA_BQT_1			!TIME QUEUE
+	A_J(J1+FCA_BQT_J+1)=J+FCA_BQT_1
+	I=FEL__NFEL*FELHDL				!LENGTH ELEMENTS
+	IF (.NOT.WNGGVM(I,I1)) GOTO 30			!NO MEMORY
+	A_J(J1+FCA_FEP_J)=I1				!SAVE POINTER
+	CALL WNGMVZ(I,A_B(I1-A_OB))			!EMPTY ELEMENTS
+	DO I=1,FEL__NFEL				!ALL ELEMENTS EMPTY
+	  I2=(I1-A_OB)/LB_J				!ARRAY OFFSET
+	  A_J(I2)=A_J(J1+FCA_FEE_J)			!FORWARD LINK
+	  A_J(I2+1)=J+FCA_FEE_1				!BACKWARD LINK
+	  I3=A_J(J1+FCA_FEE_J)+LB_J
+	  I3=(I3-A_OB)/LB_J
+	  A_J(I3)=I1
+	  A_J(J1+FCA_FEE_J)=I1
+	  I1=I1+FELHDL					!NEXT ENTRY
+	END DO
+	I=LNBUF*FBCHDL					!LENGTH BUF CONTROL
+	IF (.NOT.WNGGVM(I,I1)) GOTO 30			!NO MEMORY
+	A_J(J1+FCA_BCP_J)=I1				!SAVE POINTER
+	CALL WNGMVZ(I,A_B(I1-A_OB))			!EMPTY ELEMENTS
+	DO I=1,LNBUF					!ALL BUFFERS
+	  I2=(I1-A_OB)/LB_J				!ARRAY OFFSET ADDRESS
+	  A_J(I2)=A_J(J1+FCA_BQA_J)			!FORWARD LINK
+	  A_J(I2+1)=J+FCA_BQA_1				!BACKWARD LINK
+	  I3=A_J(J1+FCA_BQA_J)+LB_J
+	  I3=(I3-A_OB)/LB_J
+	  A_J(I3)=I1
+	  A_J(J1+FCA_BQA_J)=I1
+	  I2=I2+2					!ARRAY OFFSET TIME
+	  I1=I1+2*LB_J					!ADDRESS
+	  A_J(I2)=A_J(J1+FCA_BQT_J)			!FORWARD LINK
+	  A_J(I2+1)=J+FCA_BQT_1				!BACKWARD LINK
+	  I3=A_J(J1+FCA_BQT_J)+LB_J
+	  I3=(I3-A_OB)/LB_J
+	  A_J(I3)=I1
+	  A_J(J1+FCA_BQT_J)=I1
+	  I2=I2-2
+	  IF (.NOT.WNGGVM(LLBUF,I3)) GOTO 30
+	  A_J(I2+FBC_ADDR_J)=I3				!SET BUF ADDRESS
+	  I1=I1+FBCHDL-2*LB_J				!NEXT ENTRY
+	END DO
+	A_J(J1+FCA_BLEN_J)=LLBUF			!BUFFER LENGTH
+	A_J(J1+FCA_FNAML_J)=FCA__FNL			!FILE NAME LENGTH
+	CALL WNGMFS(FCA__FNL,' ',A_B(J-A_OB+FCA_FNAM_1)) !EMPTY FILE NAME
+C
+C TAPE HEADERS
+C
+	IF (I0.LT.0) THEN
+	  CALL WNGMVZ(80,A_B(J2-A_OB+MCA_HD1_1))	!CLEAR TAPE HEADERS
+	  CALL WNGMVZ(80,A_B(J2-A_OB+MCA_HD2_1))
+	  IF (IAND(A_J(J1+FCA_BITS_J),FCA_M_WRTAPE).NE.0 .AND.
+	1	IAND(A_J(J3+MCA_BITS_J),MCA_M_UNL) .EQ. 0) THEN !WRITE HD1,2
+	    CALL WNGMFS(80,'HDR1'//			!HDR1(4)
+	1		'                 '//		!FILE NAME (17*(*))
+	2		'000000'//			!VOL. LABEL (6*)
+	3		'0001'//'0000'//		!SECTION (4), LABEL(4**)
+	4		'000100'//' 99366'//		!GENERATION(6), DATE(6*)
+	5		' 99365'//' '//			!EXP.DATE(6), ACCESS(1)
+	6		'000000'//			!BLOCK CNT(6)
+	7		'DWLWNB       '//		!SYSTEM CODE(13)
+	8		'       ',A_B(J2-A_OB+MCA_HD1_1)) !RESERVED(7)
+	    IF (FNAM.NE.' ') CALL WNGMFS(17,FNAM,	!FILE NAME
+	1		A_B(J2-A_OB+MCA_HD1_1+4))
+	    CALL WNGMV(6,A_B(J2-A_OB+MCA_VOL_1+4),	!VOL. LABEL
+	1		A_B(J2-A_OB+MCA_HD1_1+21))
+	    CALL IDATE(I2,I3,I1)			!DATE
+	    I3=I1*1000+NDAT(I2)+I3			!TAPE DATE
+	    IF (I2.GT.2 .AND. MOD(I1,4).EQ.0) I3=I3+1	!LEAP YEAR
+	    CALL WNCTXS(CDAT,'!6$UJ',I3)
+	    CALL WNGMFS(6,CDAT,A_B(J2-A_OB+MCA_HD1_1+41)) !SET DATE
+	    CALL WNGMFS(80,'HDR2'//			!HDR2(4)
+	1		'F'//'00000'//			!FORMAT(1), BLK SIZE(5*)
+	2		'00000'//			!REC. LENGTH(5*)
+	3		'                     '//	!SYSTEM INFO(21*)
+	4		' '//' B           '//		!FORM CTL(1), SYSTEM(13)
+	5		'00'//				!BUF OFFSET(2)
+	6		'                            ',	!RESERVED(28)
+	7		A_B(J2-A_OB+MCA_HD2_1))
+	    CALL WNCTXS(STR,'!5$UJ!5$UJ',LLBUF,LLREC)	!SIZES
+	    CALL WNGMFS(5,STR,A_B(J2-A_OB+MCA_HD2_1+5))	!BLOCK SIZE
+	    CALL WNGMFS(5,STR(6:),A_B(J2-A_OB+MCA_HD2_1+10)) !RECORD LENGTH
+	    IF (HDRDAT.EQ.' ') THEN			!USER DATA
+	      HDRDA1='30WESTERBORK-DWL-01'
+	    ELSE
+	      HDRDA1='30'//HDRDAT
+	    END IF
+	    CALL WNGMFS(21,HDRDA1,A_B(J2-A_OB+MCA_HD2_1+15)) !SET USER DATA
+	  END IF
+	END IF
+C
+C DO OPEN
+C
+	FNAMF=FNAM					!MAKE SURE 80 LONG
+	FNAMF(81:81)=' '				!FOR C
+	I=WNCALN(FNAMF)
+	FNAMF(I+1:I+1)=CHAR(0)
+C
+	E_C=WNFOP_X(A_B(J-A_OB),A_B(J2-A_OB),FNAMF(1:I),LLREC,LINAL) !DO OPEN
+	IF (IAND(E_C,1).EQ.1) THEN			!QUEUE MCA
+	  WNFOP=.TRUE.					!OK
+	  IF (I0.GE.0) THEN
+	    FCA=J					!RETURN FCA ADDRESS
+	    CALL WNFLFC(FCA)				!SET IN LINK LIST
+	  END IF
+	ELSE
+ 30	  CONTINUE
+	  CALL WNFCL_X(A_B(J-A_OB),A_B(J2-A_OB))	!CLOSE IF NECESSARY
+	  CALL WNGFVM(FCAHDL,J)				!FREE FCA
+	  IF (I0.GE.0) FCA=0				!MAKE SURE INDICATED
+	END IF
+C
+	RETURN
+C
+C
+	END
+

@@ -1,0 +1,653 @@
+/*+ wnfio_x.cun
+.   WNB 900107
+.
+.   Revisions:
+.	JPH 930414	FCA_M_WRT --> FCA_M_WRTAPE
+.	WNB 930803	Change to _o_inc and .cun
+.	CMV 931011	Changed declaration wnf_rwahead to int (was long)
+.	CMV 940202	Local implementation of rem/insque for HP
+.	CMV 940204	Split off write() and read() for remote tapedrive
+.	CMV 941904	Return hard EOF if no data on tapefile
+.	CMV 940926	Changed comments
+.	CMV 941028	Never do lseek on tapes
+...									*/
+#include <sys/types.h>
+
+#include "fca_o_inc"
+#include "mca_o_inc"
+#include "fel_o_inc"
+#include "fbc_o_inc"
+#define SS__ILLIOFUNC 0x000000f4
+#define SS__NORMAL 0x00000001
+#define SS__ENDOFFILE 0x00000870
+#define SS__IVADDR 0x00000134
+
+/*
+   On DEC-Alpha we need to address things via the A_B(P - A_OB) construct,
+   since 8 byte addresses have been clipped to 4 bytes. 
+
+   Also, we have to do the linked list handling ourselves.
+
+   Since this is interim anyhow, we just define LB_J here and work around
+   the address problem.
+*/
+
+#ifdef wn_da__
+
+#define ADR(p) ( (char *)&(p) + ( (p) - (int)&(p) ) )
+
+#define remque(p)   loc_remque(p)
+#define insque(p,q) loc_insque(p,q)
+
+static int loc_remque(p)
+
+int *p;
+
+{
+  *( (int *)ADR( *(p+1) ) ) = ( *p );         /* Previous points to next */
+  *( (int *)ADR( *p ) + 1 ) = ( *(p+1) );     /* Next points to previous */
+}
+
+static int loc_insque(p,q) 
+
+int *p,*q;
+
+{
+   *(p)                = (*q);         /* p points to (next from q)      */
+   *(p+1)              = (int)(q);     /* p points back to q             */
+   *(q)                = (int)(p);     /* q points forward to p          */
+   *((int *)ADR(*p)+1) = (int)(p);     /* (next from q) points back to p */
+}
+
+#else
+
+#define ADR(p) ( p )
+
+#ifdef wn_hp__
+#define remque(p)   loc_remque(p)
+#define insque(p,q) loc_insque(p,q)
+
+static int loc_remque(p)
+
+int *p;
+
+{
+  *( (int *)ADR( *(p+1) ) ) = ( *p );         /* Previous points to next */
+  *( (int *)ADR( *p ) + 1 ) = ( *(p+1) );     /* Next points to previous */
+}
+
+static int loc_insque(p,q) 
+
+int *p,*q;
+
+{
+   *(p)                = (*q);         /* p points to (next from q)      */
+   *(p+1)              = (int)(q);     /* p points back to q             */
+   *(q)                = (int)(p);     /* q points forward to p          */
+   *((int *)ADR(*p)+1) = (int)(p);     /* (next from q) points back to p */
+}
+#endif
+
+#endif
+
+/*
+...									*/
+			int wnfio_x_(fcap,felp)
+/*
+.   Do disk/tape I/O
+.
+.   Result:
+.
+.	wnfio_x_j = wnfio_x( FCA_J:I, FEL_J:I)
+.	wnfpur_x_j= wnfpur_x( FCA_J:I)
+.	wnf_rwahead_j= wnf_rwahead( FCA_J:I, FEL_J:I)
+.
+.	See WNFIO.FOR for details
+.
+.   PIN references:
+...									*/
+/*
+.   Arguments:
+...									*/
+		struct fca *fcap;		/* FCA ptr		*/
+		struct fel *felp;		/* FEL ptr		*/
+{
+/*
+.   Include files:
+...									*/
+#include <sys/file.h>
+#include <errno.h>
+#include <ctype.h>
+extern int errno ;
+/*
+.   Parameters:
+...									*/
+/*
+.   Equivalences:
+...									*/
+/*
+.   Commons:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+	int wnf_rwahead();			/* read/write ahead	*/
+				/* Was: long, changed CMV 931011 */
+/*
+.   Data declarations:
+...									*/
+	struct fbc *cfbcp;			/* buffer queue elem.	*/
+	struct fel cfel;			/* local element	*/
+	struct mca *cmcap;			/* mca pointer		*/
+	char *p1;				/* for calculation	*/
+	int j;
+	int j1;
+	int j2;
+	int js;
+/* Check read/write
+.									*/
+	if (fcap->bits & FCA_M_MAG)		/* tape			*/
+	{ if (((felp->bits & 1) && (fcap->bits & FCA_M_WRTAPE)) ||
+		(!(felp->bits & 1) && !(fcap->bits & FCA_M_WRTAPE)))
+	    return(SS__ILLIOFUNC);		/* no tape read/write	*/
+	}
+/* Check disk address
+.									*/
+	j= felp->dkad;				/* disk address		*/
+	if (j == -1)				/* contiguous		*/
+	{ if (felp->bits & 1)			/* read			*/
+	    j= fcap->rad;
+	  else					/* write		*/
+	    j= fcap->eof;
+	}
+/* Distribute type
+.									*/
+	if (felp->bufad == 0)			/* read/write ahead	*/
+	  return(wnf_rwahead(fcap,felp));
+	fcap->err = SS__NORMAL;			/* assume ok		*/
+	fcap->dad = j;				/* start disk address	*/
+	fcap->bad = felp->bufad;		/* buffer address	*/
+	fcap->aclen = 0;			/* nothing read/written	*/
+	fcap->len = felp->buflen;		/* length to do		*/
+/* Read
+.									*/
+lc:	if (felp->bits & 1)			/* read			*/
+	{ if ((fcap->eof > 0) &&
+		(fcap->dad + fcap->len > fcap->eof)) /* too much	*/
+	  { fcap->len = fcap->eof - fcap->dad;	/* correct length	*/
+	    fcap->aclen |= 0x80000000;		/* embedded EOF		*/
+	  }
+	  if (fcap->len <= 0) goto rfini;	/* ready		*/
+	  cfbcp= (struct fbc *)ADR(fcap->bqa[0]);   /* buffer head	*/
+	  while (cfbcp != &(fcap->bqa[0]))	/* search buffer list	*/
+	  { if (fcap->dad < cfbcp->disk) goto la; /* not in core	*/
+	    if (fcap->dad < cfbcp->disknd)	/* partly in core	*/
+	    { j1= cfbcp->disknd - fcap->dad;	/* to do		*/
+	      if (fcap->len < j1) j1= fcap->len;
+	      j2= fcap->dad - cfbcp->disk;	/* start in buffer	*/
+	      bcopy(ADR(cfbcp->addr)+j2, ADR(fcap->bad), j1); /* move data	*/
+	      if (!(fcap->bits & FCA_M_MAG))	/* leave order for tape	*/
+	      { remque(&(cfbcp->bqt[0]));	/* reorder time		*/
+	        insque(&(cfbcp->bqt[0]), &(fcap->bqt[0]));
+	      }
+	      fcap->dad += j1;			/* next disk address	*/
+	      fcap->rad = fcap->dad;		/* last read address	*/
+	      fcap->bad += j1;			/* next buffer address	*/
+	      fcap->aclen += j1;		/* actually read	*/
+	      fcap->len -= j1;			/* still to read	*/
+	      if (fcap->len <= 0) goto rfini;	/* no more		*/
+	      if (fcap->bits & FCA_M_MAG)	/* tape			*/
+	      { cmcap= (struct mca *)ADR(fcap->mca);
+	        if (cmcap->bits & MCA_M_BLK)
+	          goto rfini;			/* ready for block mode	*/
+	      }
+	    }
+	    cfbcp= (struct fbc *)ADR(cfbcp->bqa[0]);  /* try next element */
+	  }
+/* Read in data
+.									*/
+la:	  cfel.dkad= fcap->dad;			/* fill elemenent	*/
+	  cfel.bufad=0;
+	  cfel.buflen= fcap->len;
+	  if (fcap->bits & FCA_M_MAG)		/* tape			*/
+	  { cfel.buflen = 1;			/* one tape block limit	*/
+	  }
+	  else
+	  { j1= 2*fcap->blen;			/* limit infinite loop	*/
+	    if (j1 < cfel.buflen) cfel.buflen = j1;
+	  }
+	  cfel.bits=1;				/* read			*/
+	  wnf_rwahead(fcap,&cfel);		/* read ahead		*/
+	  if (fcap->err & 1) goto lc;		/* retry		*/
+/* Finish read
+.									*/
+rfini:	  j1= fcap->err;
+	  if (j1 & 1)				/* no error		*/
+	    if (fcap->aclen & 0x80000000)	/* embedded EOF		*/
+	      j1= SS__ENDOFFILE;
+	  fcap->aclen &= ~0x80000000;		/* clear embedded EOF	*/
+	  return(j1);				/* ready		*/
+	}
+/* Write
+.									*/
+	else
+	{ if (fcap->len <= 0) goto wfini;	/* ready		*/
+	  cfbcp= (struct fbc *)ADR(fcap->bqa[0]);	/* buffer head	*/
+	  while (cfbcp != &(fcap->bqa[0]))	/* search buffer list	*/
+	  { if (fcap->dad < cfbcp->disk) goto lb; /* not in core	*/
+	    if (fcap->dad < cfbcp->disknd)	/* partly in core	*/
+	    { j1= cfbcp->disknd - fcap->dad;	/* to do		*/
+	      if (fcap->len < j1) j1= fcap->len;
+	      j2= fcap->dad - cfbcp->disk;	/* start in buffer	*/
+	      bcopy(ADR(fcap->bad), ADR(cfbcp->addr) + j2, j1); /* move data	*/
+	      cfbcp->bits |= FBC_M_WRITE;	/* indicate rewrite	*/
+	      if (!(fcap->bits & FCA_M_MAG))	/* leave order for tape	*/
+	      { remque(&(cfbcp->bqt[0]));	/* reorder time		*/
+	        insque(&(cfbcp->bqt[0]), &(fcap->bqt[0]));
+	      }
+	      fcap->dad += j1;			/* next disk address	*/
+	      fcap->bad += j1;			/* next buffer address	*/
+	      fcap->aclen += j1;		/* actually written	*/
+	      fcap->len -= j1;			/* still to write	*/
+	      if (fcap->dad > fcap->eof)	/* new EOF		*/
+	        fcap->eof= fcap->dad;
+	      if (fcap->len <= 0) goto wfini;	/* no more		*/
+	    }
+	    cfbcp= (struct fbc *)ADR(cfbcp->bqa[0]);	/* try next element*/
+	  }
+/* Write out data
+.									*/
+lb:	  cfel.dkad= fcap->dad;			/* fill element		*/
+	  cfel.bufad=0;
+	  cfel.buflen= fcap->len;
+	  if (fcap->bits & FCA_M_MAG)		/* tape			*/
+	  { cfel.buflen = 1;			/* one tape block limit	*/
+	  }
+	  else
+	  { j1= 2*fcap->blen;			/* limit infinite loop	*/
+	    if (j1 < cfel.buflen) cfel.buflen = j1;
+	  }
+	  cfel.bits=0;				/* write		*/
+	  wnf_rwahead(fcap,&cfel);		/* write ahead		*/
+	  if (fcap->err & 1) goto lc;		/* retry		*/
+/* Finish write
+.									*/
+wfini:	  j1= fcap->err;
+	  return(j1);				/* ready		*/
+	}
+}
+/*
+.........................................................................
+. Read ahead
+........................................................................
+.									*/
+/*
+.									*/
+			int wnf_rwahead(fcap,felp)
+/*
+.   Do disk/tape I/O
+.
+.   Result:
+.
+.	See WNFIO.FOR for details
+.
+.   PIN references:
+...									*/
+/*
+.   Arguments:
+...									*/
+		struct fca *fcap;		/* FCA ptr		*/
+		struct fel *felp;		/* FEL ptr		*/
+{
+/*
+.   Include files:
+...									*/
+#include <sys/file.h>
+#include <errno.h>
+#include <ctype.h>
+extern int errno ;
+/*
+.   Parameters:
+...									*/
+/*
+.   Equivalences:
+...									*/
+/*
+.   Commons:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+	int wnftsf_();				/* skip tape marks	*/
+	int wnftrb_();				/* read data		*/
+	int wnftwb_();				/* write data		*/
+/*
+.   Data declarations:
+...									*/
+	struct fbc *cfbcp;			/* buffer queue elem.	*/
+	struct fbc *tfbcp;			/* buffer queue elem.	*/
+	struct fel cfel;			/* local element	*/
+	struct mca *cmcap;			/* mca pointer		*/
+	char *p1;				/* for calculation	*/
+	int j;
+	int j1;
+	int j2;
+	int js;
+	off_t pos;
+/* Make element
+.									*/
+	cfel.dkad= felp->dkad;			/* disk address		*/
+	cfel.bufad=0;				/* no read/write	*/
+	cfel.bits= felp->bits;			/* read/write		*/
+	cfel.buflen= felp->buflen;		/* length to do		*/
+	fcap->err = SS__NORMAL;			/* no error		*/
+/* Read
+.									*/
+	if (fcap->bits & FCA_M_MAG) 
+	    cmcap= (struct mca *)ADR(fcap->mca); /* Get MCA for tapes   */
+
+lk:	if (cfel.bits & 1)			/* read			*/
+	{ if ((fcap->eof > 0) &&
+		(cfel.dkad + cfel.buflen > fcap->eof)) /* too much	*/
+	  { cfel.buflen= fcap->eof - cfel.dkad;	/* correct length	*/
+	  }
+	  if (cfel.buflen <= 0) goto rfini;	/* ready		*/
+	  cfbcp= (struct fbc *)ADR(fcap->bqa[0]); /* buffer head	*/
+	  while (cfbcp != &(fcap->bqa[0]))	/* search buffer list	*/
+	  { if (cfel.dkad < cfbcp->disk) goto la; /* not in core	*/
+	    if (cfel.dkad < cfbcp->disknd)	/* partly in core	*/
+	    { j1= cfbcp->disknd - cfel.dkad;	/* to do		*/
+	      cfel.dkad += j1;			/* next disk address	*/
+	      cfel.buflen -= j1;		/* still to read	*/
+	      if (cfel.buflen <= 0) goto rfini;	/* no more		*/
+	      if (fcap->bits & FCA_M_MAG)	/* tape			*/
+	      { if (cmcap->bits & MCA_M_BLK)
+	          goto rfini;			/* ready for block mode	*/
+	      }
+	    }
+	    cfbcp= (struct fbc *)ADR(cfbcp->bqa[0]);	/* try next element*/
+	  }
+/* Read in data
+.									*/
+la:	  cfbcp= (struct fbc *)ADR(fcap->bqt[1]);	/* oldest entry	*/
+	  remque(cfbcp);			/* make newest		*/
+	  insque(cfbcp,&(fcap->bqt[0]));
+	  p1=cfbcp;				/* make correct address	*/
+	  p1=p1-8;		/****** GAAT DIT GOED ??? ******/
+	  cfbcp=p1;
+	  if (cfbcp->bits & FBC_M_WRITE)	/* rewrite		*/
+	  { cfbcp->bits &= ~FBC_M_WRITE;	/* reset rewrite	*/
+	    if (!(fcap->bits & FCA_M_MAG))	/* disk			*/
+	    { pos=lseek(fcap->chan,(off_t)cfbcp->disk,0);	/* position file	*/
+	      if (pos == -1)			/* error		*/
+	      { fcap->err= 2*errno;
+	        goto rfini;
+	      }
+	    };
+	    j1= fcap->blen;			/* length to write	*/
+	    if (cfbcp->disknd > fcap->eof)	/* not full buffer	*/
+	      j1= fcap->eof - cfbcp->disk;
+	    if (fcap->bits & FCA_M_MAG) 
+	         js= wnftwb_(cmcap,ADR(cfbcp->addr),j1);
+	    else js= write(fcap->chan,ADR(cfbcp->addr),j1); /* rewrite  */
+	    if (js == -1)			/* error		*/
+	    { fcap->err= 2*errno;
+	      goto rfini;
+	    }
+	  }
+	  if (!(fcap->bits & FCA_M_MAG))	/* disk			*/
+	  { cfbcp->disk= (cfel.dkad / fcap->blen) * fcap->blen; /* whole*/
+	  }
+	  else					/* tape			*/
+	  { if ( cfel.dkad >= fcap->map)	/* can read forward	*/
+	    { cfbcp->disk= fcap->map;		/* read contiguous	*/
+	    }
+	    else				/* no read back		*/
+	    { fcap->err= SS__IVADDR;
+	      goto rfini;
+	    }
+	  }
+	  cfbcp->disknd= cfbcp->disk + fcap->blen; /* disk end	*/
+	  remque(cfbcp);			/* remove from add. que.*/
+	  tfbcp= (struct fbc *)ADR(fcap->bqa[0]); /* buffer head	*/
+	  while (tfbcp != &(fcap->bqa[0]))	/* set correct pos.	*/
+	  { if (cfbcp->disk < tfbcp->disk)
+	      goto le;				/* here			*/
+	    tfbcp= (struct fbc *)ADR(tfbcp->bqa[0]);	/* next		*/
+	  }
+le:	  insque(cfbcp,(int *)ADR(tfbcp->bqa[1]));	/* insert correct place	*/
+	  if (!(fcap->bits & FCA_M_MAG))	/* disk			*/
+	  { pos=lseek(fcap->chan,(off_t)cfbcp->disk,0);	/* position file	*/
+	    if (pos == -1)			/* error		*/
+	    { fcap->err= 2*errno;
+	      goto rfini;
+	    }
+	  };
+	  if (fcap->bits & FCA_M_MAG) 
+	       js= wnftrb_(cmcap,ADR(cfbcp->addr),fcap->blen);
+	  else js= read(fcap->chan,ADR(cfbcp->addr),fcap->blen); /* read buf	*/
+	  if (js == -1)				/* error		*/
+	  { fcap->err= 2*errno;
+	    goto rfini;
+	  }
+	  if (fcap->bits & FCA_M_MAG)		/* tape			*/
+	  { fcap->map += js;			/* set current tape pos	*/
+	    fcap->mab += 1;
+	    cfbcp->disknd= cfbcp->disk + js;	/* buffer end		*/
+            if (js == 0 && fcap->map == 0)	/* no data on file	*/
+            { fcap->err = SS__ENDOFFILE;	/* hard end of file	*/
+	      goto rfini;
+            }
+	    if (js == 0)			/* EOF seen		*/
+	    { fcap->eof = fcap->map;		/* set EOF pos.		*/
+	      wnftsf_(cmcap,-1);		/* skip back		*/
+	      fcap->mab -= 1;
+	    }
+	  }
+	  goto lk;				/* more			*/
+/* Finish read
+.									*/
+rfini:	  j1= fcap->err;
+	  return(j1);				/* ready		*/
+	}
+/* Write
+.									*/
+	else
+	{ cfbcp= (struct fbc *)ADR(fcap->bqa[0]); /* buffer head	*/
+	  while (cfbcp != &(fcap->bqa[0]))	/* search buffer list	*/
+	  { if (cfel.dkad < cfbcp->disk)
+	    { if (fcap->bits & FCA_M_MAG)	/* tape cannot random	*/
+	      { fcap->err= SS__IVADDR;
+	        goto wfini;
+	      }
+	      goto lb;				/* not in core		*/
+	    }
+	    if (cfel.dkad < cfbcp->disknd)	/* partly in core	*/
+	    { j1= cfbcp->disknd - cfel.dkad;	/* to do		*/
+	      cfel.dkad += j1;			/* next disk address	*/
+	      cfel.buflen -= j1;		/* still to write	*/
+	      if (cfel.buflen <= 0) goto wfini;	/* no more		*/
+	    }
+	    cfbcp= (struct fbc *)ADR(cfbcp->bqa[0]);	/* try next element*/
+	  }
+/* Write out data
+.									*/
+lb:	  cfbcp= (struct fbc *)ADR(fcap->bqt[1]); /* oldest entry	*/
+	  remque(cfbcp);			/* make newest		*/
+	  insque(cfbcp,&(fcap->bqt[0]));
+	  p1=cfbcp;				/* make correct address	*/
+	  p1=p1-8;   /***** Gaat dit goed *****/
+	  cfbcp=p1;
+	  if (cfbcp->bits & FBC_M_WRITE)	/* rewrite		*/
+	  { cfbcp->bits &= ~FBC_M_WRITE;	/* reset rewrite	*/
+	    if (!(fcap->bits & FCA_M_MAG)) 	/* disk			*/
+	    { pos=lseek(fcap->chan,(off_t)cfbcp->disk,0);	/* goto disk address	*/
+	      if (pos == -1)			/* error		*/
+	      { fcap->err= 2*errno;
+	        goto wfini;
+	      }
+	    };
+	    j1= fcap->blen;			/* length to write	*/
+	    if (cfbcp->disknd > fcap->eof)	/* not full buffer	*/
+	      j1= fcap->eof - cfbcp->disk;
+	    if (fcap->bits & FCA_M_MAG) 
+	         js= wnftwb_(cmcap,ADR(cfbcp->addr),j1);
+	    else js= write(fcap->chan,ADR(cfbcp->addr),j1); /* rewrite  */
+	    if (js == -1)			/* error		*/
+	    { fcap->err= 2*errno;
+	      goto wfini;
+	    }
+	    if (fcap->bits & FCA_M_MAG)		/* tape position	*/
+	    { fcap->map += js;
+	      fcap->mab += 1;
+	    }
+	  }
+	  j1= cfel.dkad;
+	  if (fcap->bits & FCA_M_MAG)		/* tape			*/
+	  { j1= fcap->maw;			/* contiguous		*/
+	    fcap->maw += fcap->blen;
+	    cfbcp->bits |= FBC_M_WRITE;		/* always rewrite	*/
+	  }
+	  cfbcp->disk= (j1 / fcap->blen) * fcap->blen; /* whole bufs	*/
+	  cfbcp->disknd= cfbcp->disk + fcap->blen; /* disk end	*/
+	  remque(cfbcp);			/* remove from add. que.*/
+	  tfbcp= (struct fbc *)ADR(fcap->bqa[0]);	/* buffer head	*/
+	  while (tfbcp != &(fcap->bqa[0]))	/* set correct pos.	*/
+	  { if (cfbcp->disk < tfbcp->disk)
+	      goto lf;				/* here			*/
+	    tfbcp= (struct fbc *)ADR(tfbcp->bqa[0]);	/* next		*/
+	  }
+lf:	  insque(cfbcp,(int *)ADR(tfbcp->bqa[1]));		/* insert correct place	*/
+	  if ((cfbcp->disk >= fcap->eof) ||
+		(fcap->bits & FCA_M_MAG))	/* no read		*/
+	  { bzero(ADR(cfbcp->addr),fcap->blen);	/* zero buf		*/
+	    goto lk;				/* retry		*/
+	  }
+	  if ((cfel.dkad == cfbcp->disk) &&
+		(cfel.buflen >= fcap->blen))	/* full buffer		*/
+	  { bzero(ADR(cfbcp->addr),fcap->blen);	/* zero buf		*/
+	    goto lk;				/* retry		*/
+	  }
+	  if (!(fcap->bits & FCA_M_MAG))	/* disk			*/
+	  { pos=lseek(fcap->chan,(off_t)cfbcp->disk,0);	/* position file	*/
+	    if (pos == -1)			/* error		*/
+	    { fcap->err= 2*errno;
+	      goto wfini;
+	    }
+	  };
+	  if (fcap->bits & FCA_M_MAG) 
+	       js= wnftrb_(cmcap,ADR(cfbcp->addr),fcap->blen);
+	  else js= read(fcap->chan,ADR(cfbcp->addr),fcap->blen); /* read buf	*/
+	  if (js == -1)				/* error		*/
+	  { fcap->err= 2*errno;
+	    goto wfini;
+	  }
+	  if (cfel.dkad > fcap->eof)		/* new EOF		*/
+	    fcap->eof = cfel.dkad;
+	  goto lk;				/* more			*/
+/* Finish write
+.									*/
+wfini:	  j1= fcap->err;
+	  return(j1);				/* ready		*/
+	}
+}
+/*
+.........................................................................
+. Purge buffers
+.........................................................................
+.									*/
+/*
+...									*/
+			int wnfpur_x_(fcap)
+/*
+.   Purge buffers
+.
+.   Result:
+.
+.	See WNFIO.FOR for details
+.
+.   PIN references:
+...									*/
+/*
+.   Arguments:
+...									*/
+		struct fca *fcap;		/* FCA ptr		*/
+{
+/*
+.   Include files:
+...									*/
+#include <sys/file.h>
+#include <errno.h>
+#include <ctype.h>
+extern int errno ;
+/*
+.   Parameters:
+...									*/
+/*
+.   Equivalences:
+...									*/
+/*
+.   Commons:
+...									*/
+/*-									*/
+/*
+.   Function references:
+...									*/
+	int wnftwb_();				/* write data		*/
+/*
+.   Data declarations:
+...									*/
+	struct fbc *cfbcp;			/* buffer queue elem.	*/
+	struct mca *cmcap;			/* mca pointer		*/
+	char *p1;				/* for calculation	*/
+	int j;
+	int j1;
+	int j2;
+	int js;
+	off_t pos;
+/* Purge
+.									*/
+	fcap->err= SS__NORMAL;			/* no error		*/
+	cfbcp= (struct fbc *)ADR(fcap->bqa[0]);	/* buffer head		*/
+	while (cfbcp != &(fcap->bqa[0]))	/* search buffer list	*/
+	{ if (cfbcp->bits & FBC_M_WRITE)	/* rewrite		*/
+	  { if (!(fcap->bits & FCA_M_MAG)) 	/* disk			*/
+	    { pos=lseek(fcap->chan,(off_t)cfbcp->disk,0);	/* goto disk address	*/
+	      if (pos == -1)			/* error		*/
+	      { fcap->err= 2*errno;
+	        goto la;
+	      }
+	    };
+	    j1= fcap->blen;			/* length to write	*/
+	    if (cfbcp->disknd > fcap->eof)	/* not full buffer	*/
+	      j1= fcap->eof - cfbcp->disk;
+	    if (fcap->bits & FCA_M_MAG) {
+	       cmcap= (struct mca *)ADR(fcap->mca);
+	       js= wnftwb_(cmcap,ADR(cfbcp->addr),j1);
+	    } else {
+	       js= write(fcap->chan,ADR(cfbcp->addr),j1); /* rewrite  */
+	    }
+	    if (js == -1)			/* error		*/
+	    { fcap->err= 2*errno;
+	      goto la;
+	    }
+	    if (fcap->bits & FCA_M_MAG)		/* tape position	*/
+	    { fcap->map += js;
+	      fcap->mab += 1;
+	    }
+	  }
+la:	  cfbcp->disk = 0;			/* set empty		*/
+	  cfbcp->disknd= 0;
+	  cfbcp->bits = 0;
+	  cfbcp= (struct fbc *)ADR(cfbcp->bqa[0]); /* try next element	*/
+	}
+/* Ready
+.									*/
+	j1= fcap->err;
+	return(j1);				/* ready		*/
+}
+/*
+.
+...									*/

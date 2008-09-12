@@ -1,0 +1,60 @@
+C+ WNGSES.FSC
+C  WNB 930331
+C
+C  Revisions:
+C
+	SUBROUTINE WNGSES(NAME,VAL)
+C
+C  Set environment variable
+C
+C  Result:
+C
+C	CALL WNGSES( NAME_C*:I, VAL_C*:O)
+C				Set the value of the environment/logical
+C				NAME to VAL.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	CHARACTER*(*) NAME		!NAME OF ENV. VARIABLE
+	CHARACTER*(*) VAL		!VALUE OF ENV. VARIABLE
+C
+C  Function references:
+C
+#ifdef wn_vx__
+	LOGICAL LIB$SET_LOGICAL		!SET LOGICAL NAME VALUE
+#endif
+C
+C  Data declarations:
+C
+C-
+
+        i = INDEX(NAME," ")       ! search first space
+        j = INDEX(VAL," ")        ! search first space
+        NAME(i:i) = CHAR(0)       ! place char 0
+        VAL(j:j) = CHAR(0)        ! place char 0
+	
+#ifdef wn_vx__
+	JS=LIB$SET_LOGICAL(NAME,VAL)			!SET VALUE
+#else
+	CALL SETENV(NAME,VAL)		!SET VALUE
+#endif
+C
+	RETURN
+C
+C
+	END
+
+
+
+
+
+
+
+

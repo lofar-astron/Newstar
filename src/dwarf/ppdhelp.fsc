@@ -1,0 +1,636 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	PPD_HELP
+C.Keywords:	PPD File, Help Info
+C.Author:	Kasper Kombrink (NFRA, Dwingeloo)
+C.Language:	DWARF-Fortran
+C.Environment:	VAX or Alliant
+C.Comments:
+C.Version:	900415 FMO - recreation
+C.Version:	920224 GvD - no optional arguments in MSG anymore
+C.Version:	930513 HjV - Change size WORK to 2500 i.s.o. 1600
+C.Version:	930613 HjV - Change size WORK to 5000 i.s.o. 2500
+C.Version:	930712 CMV - Made "more" function for help output
+C.Version:	930902 CMV - Add hypertext functionality
+C.Version:	940119 CMV - Use WNCALC i.s.o. STR_LOWCASE
+C.Version:	940818 JPH - Remove leading blank from help output.
+C			     Suppress printing of info that is already on the
+C			      screen or irrelevant
+C.Version:	940829 HjV - Change size WORK from 5000 to 10000
+C		940912 JPH - Comment
+C			     In HYPER mode still show dynamic help on terminal
+C			     Suppress more info (cf 940818)
+C		941110 JPH - Replace GENMOSAIC by WNGSSP('xmosaic_restart.csh')
+C		941206 JPH - Paginate help[ text only if output is to a
+C			      terminal
+C		950118 JPH - Make PPD_HELP_MORE a function that returns .FALSE.
+C			      to signal 'stop printing help'
+C		950124 JPH - Recognise '|' as line-feed character
+C			     Suppress trailing lines of parameter attributes
+C		951007 JPH - Fix deletion of leading tabs (PPD_HELP_PRINT)
+C			     Clear HYPER at exit, so a single-'?' help request 
+C			      will always produce terminal help.
+C			     Fix spurious terminal output in ?? situation  
+C		010709 AXC - linux port - tmpchar in calls, char*1,
+C			     int/logical change, READONLY change...
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION PPD_HELP
+	1			(PARMSPEC,SWPNAM,SWINP,SWPROT,LEVEL,LUN)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PARMSPEC	! (i) parameter specification
+	LOGICAL*4	SWPNAM		! (i) program's parameter name ?
+	LOGICAL*4	SWINP		! (i) only input parameters ?
+	LOGICAL*4	SWPROT		! (i) also prototype parameters ?
+	INTEGER*4	LEVEL		! (i) level of help info (1, 2 or 3)
+	INTEGER*4	LUN		! (i) LUN of the print file
+C
+C.Purpose:	Write help info to a print file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C	error	PPD_NOCURENTR	no current parameter selected
+C	false status returned by referenced routines
+C.Notes:
+C	The parameter spec has the format: [program[$stream]_][keyword].
+C	Keyword and switch arguments determine which help info will be printed:
+C	- no keyword	current parameter;
+C			SWPNAM and SWPROT are not used;
+C	- a name	named parameter;
+C			SWPNAM tells which name, SWPROT is not used;
+C	- '*'		all parameters;
+C			SWPNAM tells in which order;
+C			SWPROT is only used for SWPNAM = .FALSE.
+C
+C	930712 CMV: All output is handled through ppd_help_out, the number
+C	of lines is counted and if it exceeds the number of terminal lines-3,
+C	a prompt ("press <Return> to continue") is given. 
+C	The number of lines is determined in gen_size() (GENSIZE.CEE)
+C	
+C	930902 CMV: If called to give info on the current keyword, we
+C	either call the normal terminal help (LEVEL==1) or try the
+C	hypertext browser (LEVEL>1 || HYPER=.TRUE.). 
+C-------------------------------------------------------------------------
+C
+C
+	CHARACTER*(*)	TXTSEP
+		PARAMETER (TXTSEP  = '****************************************')
+C
+	INTEGER*4	PPD_STAT_INQ	,PPD_IOCD_GET	,PPD_HELP_PRINT
+	INTEGER*4	PPD_READ_P	,PPD_READ_U	,PPD_READ_PNXT
+	INTEGER*4	PPD_READ_UNXT	,MSG_SET  
+	INTEGER		DWC_PROG_GET, PPD_UNAM_GET
+	INTEGER		GEN_MOSAIC, WNCAL0
+	LOGICAL		WNDDIS
+C
+	CHARACTER	PROGSTRM*80, KEYWORD*16, IOCD*6, DISP*50
+	CHARACTER	TMP*80
+	INTEGER*4	LSPEC, LPS, LDS, LK, LI
+	INTEGER*4	IS, MAPB, ADDR, HLPB
+	LOGICAL         LTMP
+C
+C	HYPER flags wether the Hypertext browser should be called
+C
+	LOGICAL		HYPER
+	DATA		HYPER/.FALSE./
+	SAVE		HYPER
+C
+C
+C					Set up
+C					- split parameter specification
+C					  into program$stream and keyword
+C
+	LSPEC = WNCAL0(PARMSPEC)
+	LPS = INDEX (PARMSPEC(:LSPEC),'_')
+	IF (LPS.GT.0) PROGSTRM = PARMSPEC(:LPS)
+	LK = LSPEC-LPS
+	IF (LK.GT.0) KEYWORD = PARMSPEC(LPS+1:LSPEC)
+C
+C					Current parameter
+C
+	IF (LK.EQ.0) THEN
+		IS = PPD_STAT_INQ (MAPB,ADDR,HLPB)
+		IF (ADDR.EQ.0) THEN
+			IS = MSG_SET (PPD_NOCURENTR,0)
+			GOTO 999
+		ENDIF
+		IS = PPD_IOCD_GET (IOCD,LI)
+		IF (.NOT.SWINP .OR. INDEX('IM',IOCD(1:1)).NE.0) THEN
+C
+C	Let's try the hyper
+C
+		   IF (LEVEL.GT.1.OR.HYPER) THEN
+#ifdef _wn_un__
+			IS=DWC_PROG_GET(PROGSTRM,LPS)
+			IS=PPD_UNAM_GET(KEYWORD,LK,LSPEC,LTMP)
+C
+C	First get the value of the display variable, as known by Newstar
+C
+C	CMV930902 This is recursive, removed for the while
+C			LTMP = WNDDIS(.FALSE.,DISP)
+C			LDS =  WNCAL0(DISP)
+C
+C	Start browser or move to new page
+C	NOTE: WNGSSP does not return status from xmosaic_restart.csh so we
+C	do not know if xmosaic activation succeeded
+C
+!!			CALL WNCALC(PROGSTRM(:LPS))
+!!			CALL WNCALC(KEYWORD(:LK))
+			CALL WNGSSP('$n_src/sys/xmosaic_restart.csh',
+	1			PROGSTRM(:LPS), KEYWORD(:LK), ' ' )
+!!			IS = GEN_MOSAIC(PROGSTRM(:LPS),LPS,
+!!	1			KEYWORD(:LK),LK,DISP,0)
+!!			HYPER=(IS.GT.0)
+			HYPER=.TRUE.
+			PROGSTRM=' '
+#else
+			HYPER=.FALSE.			!NOT UNIX: NO HYPER
+#endif
+		   ENDIF
+C
+C	If we didn't want the hypertext, or couldn't start: ordinary help
+C
+		   IS = PPD_HELP_PRINT (PROGSTRM(:LPS),3,LUN,HYPER)
+		   IF (IAND(IS,1).EQ.0) GOTO 999	! branch on error
+		ENDIF
+C
+C					Specified parameter
+C
+	ELSE IF (KEYWORD(:LK).NE.'*') THEN
+		IF (SWPNAM) THEN
+			IS = PPD_READ_P (KEYWORD(:LK))
+		ELSE
+			IS = PPD_READ_U (KEYWORD(:LK))
+		ENDIF
+		IF (IAND(IS,1).EQ.0) GOTO 999
+		IS = PPD_IOCD_GET (IOCD,LI)
+		IF (.NOT.SWINP .OR. INDEX('IM',IOCD(1:1)).NE.0) THEN
+			IS = PPD_HELP_PRINT (PROGSTRM(:LPS),LEVEL,LUN)
+			IF (IAND(IS,1).EQ.0) GOTO 999
+		ENDIF
+C
+C					All parameters in program's name order
+C					- run through the index
+C
+	ELSE IF (SWPNAM) THEN
+		IS = PPD_READ_P (' ')
+		DO WHILE (IAND(IS,1).NE.0 .AND. IS.NE.PPD_ENDOFFILE)
+			IS = PPD_IOCD_GET (IOCD,LI)
+			IF (.NOT.SWINP .OR. INDEX('IM',IOCD(1:1)).NE.0) THEN
+				IS = PPD_HELP_PRINT (PROGSTRM(:LPS),LEVEL,LUN)
+				IF (IAND(IS,1).NE.0) WRITE (LUN,'(1X,2A)')
+	1				TXTSEP,TXTSEP
+			ENDIF
+			IF (IAND(IS,1).NE.0) IS = PPD_READ_PNXT ()
+		ENDDO
+		IF (IAND(IS,1).EQ.0) GOTO 999
+C
+C					All parameters in PIN order
+C					- run through parameter descriptions
+C
+	ELSE
+		TMP=' '
+		IS = PPD_READ_U (TMP)
+		DO WHILE (IAND(IS,1).NE.0 .AND. IS.NE.PPD_ENDOFFILE)
+			IS = PPD_IOCD_GET (IOCD,LI)
+			IF (.NOT.SWINP .OR. INDEX('IM',IOCD(1:1)).NE.0) THEN
+				IS = PPD_HELP_PRINT (PROGSTRM(:LPS),LEVEL,LUN)
+				IF (IAND(IS,1).NE.0) WRITE (LUN,'(1X,2A)') 
+	1							TXTSEP,TXTSEP
+			ENDIF
+			IF (IAND(IS,1).NE.0) IS = PPD_READ_UNXT ()
+		ENDDO
+		IF (IAND(IS,1).EQ.0) GOTO 999
+C
+C					- run through prototype descriptions
+C
+		IF (SWPROT) THEN
+		    IS = PPD_READ_U ('$')
+		    DO WHILE (IAND(IS,1).NE.0 .AND. IS.NE.PPD_ENDOFFILE)
+			IS = PPD_IOCD_GET (IOCD,LI)
+			IF (.NOT.SWINP .OR. INDEX('IM',IOCD(1:1)).NE.0) THEN
+				IS = PPD_HELP_PRINT (PROGSTRM(:LPS),LEVEL,LUN)
+				IF (IAND(IS,1).NE.0) WRITE (LUN,'(1X,2A)') 
+	1							TXTSEP,TXTSEP
+			ENDIF
+			IF (IAND(IS,1).NE.0) IS = PPD_READ_UNXT ()
+		    ENDDO
+		    IF (IAND(IS,1).EQ.0) GOTO 999
+		ENDIF
+	ENDIF
+C
+C
+	PPD_HELP = PPD_SUCCESS
+	HYPER=.FALSE.
+	RETURN
+C
+ 999	PPD_HELP = IS
+	HYPER=.FALSE.
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION PPD_HELP_PRINT (PROGSTRM,LEVEL,LUN,HYPER)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PROGSTRM	! (i) [program[$stream]_]
+	INTEGER*4	LEVEL		! (i) level of the info
+	INTEGER*4	LUN		! (i) LUN for print file
+	LOGICAL		HYPER		! flag for hypertext mode
+C
+C.Purpose:	Write the help info to the print file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C	false status returned by referenced routines
+C.Notes:
+C-------------------------------------------------------------------------
+C
+C
+	INTEGER*4	SIZE
+	CHARACTER	BLANK*1, COMMA*1, LF*2
+		PARAMETER (SIZE  = 256 )
+		PARAMETER (BLANK = ' ')
+		PARAMETER (COMMA = ',')
+C
+	INTEGER*4	PPD_HELP_OUT
+	INTEGER*4	PPD_UNAM_GET	,PPD_PNAM_GET	,PPD_AMAS_GET
+	INTEGER*4	PPD_CMAS_GET	,PPD_DTYPE_GET	,PPD_IOCD_GET
+	INTEGER*4	PPD_NVAL_GET	,PPD_NSETS_GET	,PPD_USTR_GET
+	INTEGER*4	PPD_OPSTR_GET	,PPD_PRSTR_GET	,PPD_SSTR_GET
+	INTEGER*4	PPD_DVSTR_GET	,PPD_HSTR_XGET	,PPD_MIN_GET
+	INTEGER*4	PPD_MAX_GET	,PPD_FAO
+	LOGICAL		PPD_HELP_MORE,PPD_HELP_MORE1
+	INTEGER*4	STR_COPY_U
+	INTEGER		WNCALN
+C
+	BYTE		MINMAX(SIZE)
+	INTEGER*4	LMM
+	CHARACTER	WORK*10000, WORK2*80, LINE*80
+	INTEGER*4	LW, LW2, LL
+	CHARACTER	UNAM*16, PNAM*16, DTYPE*1, IOCD*6
+	INTEGER*4	LMIN, PLEN, NVAL, MNVAL, MXVAL, NSETS
+	INTEGER*4	IS, PTR
+	LOGICAL*4	PROTOTYPE, DYNONLY, END
+C
+	LF    = CHAR(10)//'|'
+C
+C	Get size of terminal
+C
+	L1=PPD_HELP_MORE1(LUN)
+C
+C					level 0: write user's parameter name
+C
+	IS = PPD_UNAM_GET (UNAM,LW,LMIN,PROTOTYPE)
+	IF (IAND(IS,1).EQ.0) GOTO 999
+	CALL WNCTXS(LINE,' !AS!AS',PROGSTRM,UNAM(:LW))
+	LL=WNCALN(LINE)
+C
+C					level 1: add units and options
+C
+!!	IF (LEVEL.GT.0) THEN
+!!		IS = PPD_USTR_GET (WORK,LW)
+!!		IF (IAND(IS,1).EQ.0) GOTO 999
+!!		IF (LW.GT.0) THEN
+!!			WORK  = ' ('//WORK(:LW)//')'
+!!			LW = LW+3
+!!jph 940817		IS = PPD_HELP_OUT (LUN,WORK,LW,LINE,LL)
+!!		ENDIF
+C
+!!		IS = PPD_OPSTR_GET (WORK,LW)
+!!		IF (IAND(IS,1).EQ.0) GOTO 999
+!!		IF (LW.GT.0) THEN
+!!			WORK  = ' ('//WORK(:LW)//')'
+!!			LW = LW+3
+!!jph 940817		IS = PPD_HELP_OUT (LUN,WORK,LW,LINE,LL)
+!!		ENDIF
+C
+C					level 2: add prompt string
+C
+!!		IF (LEVEL.GT.1) THEN
+!!			IS = PPD_PRSTR_GET (WORK,LW)
+!!			IF (IAND(IS,1).EQ.0) GOTO 999
+!!			IF (LW.GT.0) THEN
+!!				WORK  = ' '//WORK(:LW)
+!!				LW = LW+1
+!!jph 940817			IS = PPD_HELP_OUT (LUN,WORK,LW,LINE,LL)
+!!			ENDIF
+!!		ENDIF
+!!	ENDIF
+C
+C					Write the line to the print file
+C
+!!	IF (LL.GT.1) THEN
+!!	  IF (.NOT.PPD_HELP_MORE(LUN,LINE,LL) GOTO 900
+!!	ENDIF
+C
+C					level 3: write help string and the rest
+C					'*-' signals end of dynamic text
+C
+	IF (LEVEL.LT.3) GOTO 900
+	IS = PPD_HSTR_XGET (WORK,LW)
+	IF (IAND(IS,1).EQ.0) GOTO 999
+	IF (LW.GT.0) THEN
+		END=.FALSE.
+		DYNONLY=.FALSE.
+		IF (.NOT.PPD_HELP_MORE(LUN,' ',1)) GOTO 900
+		PTR = 1
+		DO WHILE (PTR.LE.LW .AND. .NOT.END)		
+			LL = 0
+			IS = STR_COPY_U (LF,WORK(:LW),PTR,LINE,LL) ! copy 1 line
+			IF (PTR.LE.LW) LL = LL-1
+!!			DYNONLY= LINE(1:2).EQ.'#-'
+			DYNONLY= WORK(1:2).EQ.'#-'
+			END= LINE(1:2).EQ.'*-'		! end of dynamic
+			IF (DYNONLY .OR. END) LINE(1:2)='  '
+			END= (END .AND. HYPER) .OR. DYNONLY
+			IF (LL.GT.0 .AND. .NOT.END) THEN
+			  IF (.NOT.PPD_HELP_MORE(LUN,LINE,LL)) GOTO 900
+			ENDIF
+			PTR = PTR+1			 	! skip line
+!!			IF (WORK(PTR:PTR).LT.' ') PTR=PTR+1 	! terminator(s)
+		ENDDO
+		IF (.NOT.PPD_HELP_MORE(LUN,' ',1)) GOTO 900
+	ENDIF
+	IF (.NOT.END) THEN
+C
+!	  IS = PPD_DTYPE_GET (DTYPE,PLEN)
+!	  IF (IAND(IS,1).EQ.0) GOTO 999
+!	  IF (DTYPE.EQ.'C' .OR. DTYPE.EQ.'L') THEN
+!		CALL WNCTXS(LINE,'  data-type                    : !AS!SJ',
+!	1						DTYPE,PLEN)
+!	  ELSE
+!		CALL WNCTXS(LINE,'  data-type                    : !AS',
+!	1						DTYPE)
+!	  ENDIF
+!	  IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+C
+!	  IS = PPD_NVAL_GET (NVAL,MNVAL,MXVAL)
+!	  IF (IAND(IS,1).EQ.0) GOTO 999
+!	  CALL WNCTXS(LINE,'  number of values             : !SJ',NVAL)
+!	  IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+!	  IF (NVAL.NE.1) THEN
+!		CALL WNCTXS(LINE,'  minimum number of values     : !SJ',
+!	1						MNVAL)
+!		IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+!		CALL WNCTXS(LINE,'  maximum number of values     : !SJ',
+!	1						MXVAL)
+!		IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+!	  ENDIF
+C
+!	  IS = PPD_NSETS_GET (NSETS)
+!	  IF (IAND(IS,1).EQ.0) GOTO 999
+!	  IF (NSETS.LT.LARGEST_I) THEN
+!		CALL WNCTXS(LINE,'  maximum number of value-sets : !SJ',
+!	1						NSETS)
+!		IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+!	  ENDIF
+C
+!!	  IS = PPD_IOCD_GET (IOCD,LW)
+!!	  IF (IAND(IS,1).EQ.0) GOTO 999
+!!	  CALL WNCTXS(LINE,'  code io                      : !AS',IOCD(:LW))
+!!jph 940817	IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+C
+!!	  IS = PPD_PNAM_GET (PNAM,LW)
+!!	  IF (IAND(IS,1).EQ.0) GOTO 999
+!!jph 940817	CALL WNCTXS(LINE,'  program parameter name       : !AS',PNAM(:LW))
+!!	  IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+C
+!!	  IS = PPD_SSTR_GET (WORK,LW,WORK2,LW2)
+!!	  IF (IAND(IS,1).EQ.0) GOTO 999
+!!	  IF (LW2.GT.0) THEN
+!!		CALL WNCTXS(LINE,'  ppd name for global search   : !AS',
+!!	1						WORK2(:LW2))
+!!		IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+!!	  ENDIF
+!!	  IF (LW.GT.0) THEN
+!!jph 940912		CALL WNCTXS(LINE,'  search sequence defaults     : !AS',
+!!	1						WORK(:LW))
+!!		IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+!!	  ENDIF
+C
+!!	  IS = PPD_DVSTR_GET (WORK,LW)
+!!	  IF (IAND(IS,1).EQ.0) GOTO 999
+!!	  IF (LW.GT.0) THEN
+!!		CALL WNCTXS(LINE,'  default value(s)             : !AS',
+!!	1					WORK(:LW))
+!!		IF (.NOT.PPD_HELP_MORE(LUN,LINE,0)) GOTO 900
+!!	  ENDIF
+C
+!	  IF (IAND(PPD_AMAS_GET('VECTOR'),1) .NE. 0) THEN
+!       	    IF (.NOT.PPD_HELP_MORE(LUN,
+!     2	          '  this parameter represents a vector',0)) GOTO 900
+!	  ENDIF
+!	  IF (IAND(PPD_AMAS_GET('WILD_CARDS'),1) .NE. 0) THEN
+!       	    IF (.NOT.PPD_HELP_MORE(LUN,
+!     2	          '  wild card values (*) are permitted',0)) GOTO 900
+!	  ENDIF
+!	  IF (IAND(PPD_AMAS_GET('UNDEFINED_VALUES'),1) .NE. 0) THEN
+!     	    IF (.NOT.PPD_HELP_MORE(LUN,
+!     2	          '  undefined values are permitted',0)) GOTO 900
+!	  ENDIF
+!	  IF (IAND(PPD_AMAS_GET('NULL_VALUES'),1) .NE. 0) THEN
+!     	    IF (.NOT.PPD_HELP_MORE(LUN,
+!     2	          '  null values are permitted',0)) GOTO 900
+!	  ENDIF
+C
+!	  IF (.NOT.PPD_HELP_MORE(LUN,
+!	1	   '  the specified values will be checked as follows :',0))
+!	2	   GOTO 900
+C
+!	  IF (IAND(PPD_CMAS_GET('MINIMUM'),1) .NE. 0) THEN
+!		IS = PPD_MIN_GET (MINMAX,SIZE,LMM)
+!		IF (IAND(IS,1).EQ.0) GOTO 999
+!		IS = PPD_FAO (MINMAX,LMM,DTYPE,PLEN,WORK,LW)
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    minimum : '//WORK(:LW),0))
+!	1		 GOTO 900
+!	  ENDIF
+!C
+!	  IF (IAND(PPD_CMAS_GET('MAXIMUM'),1) .NE. 0) THEN
+!		IS = PPD_MAX_GET (MINMAX,SIZE,LMM)
+!		IF (IAND(IS,1).EQ.0) GOTO 999
+!		IS = PPD_FAO (MINMAX,LMM,DTYPE,PLEN,WORK,LW)
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    maximum : '//WORK(:LW),0))
+!	1		 GOTO 900
+!	  ENDIF
+!C
+!	  IF (IAND(PPD_CMAS_GET('ASCENDING'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    ascending order',0)) GOTO 900
+!	  ELSE IF (IAND(PPD_CMAS_GET('NON_ASCENDING'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    non-ascending order',0))
+!	1		 GOTO 900
+!	  ELSE IF (IAND(PPD_CMAS_GET('DESCENDING'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    descending order',0)) GOTO 900
+!	  ELSE IF (IAND(PPD_CMAS_GET('NON_DESCENDING'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    non-descending order',0))
+!	1		 GOTO 900
+!	  ENDIF
+!C
+!	  IF (IAND(PPD_CMAS_GET('ALPHABETIC'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    alphabetic',0)) GOTO 900
+!	  ELSE IF (IAND(PPD_CMAS_GET('NUMERIC'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    numeric',0)) GOTO 900
+!	  ELSE IF (IAND(PPD_CMAS_GET('ANUMERIC'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    alpha-numeric',0)) GOTO 900
+!	  ENDIF
+!C
+!	  IF (IAND(PPD_CMAS_GET('OPTIONS'),1) .NE. 0) THEN
+!	    IF (.NOT.PPD_HELP_MORE(LUN,'    valid options',0)) GOTO 900
+!	  ELSE IF (IAND(PPD_CMAS_GET('ABBREV_OPTIONS'),1) .NE. 0) THEN
+!	    IF (.NOT.PPD_HELP_MORE(LUN,'    valid abbreviated options',0))
+!	1		 GOTO 900
+!	  ENDIF
+!C
+!	  IF (IAND(PPD_CMAS_GET('NODE'),1) .NE. 0) THEN
+!		IF (.NOT.PPD_HELP_MORE(LUN,'    valid node name',0)) GOTO 900
+!	  ENDIF
+C
+	  IF (.NOT.PPD_HELP_MORE(LUN,' ',1)) GOTO 900
+	ENDIF
+C
+C
+ 900	PPD_HELP_PRINT = PPD_SUCCESS
+	RETURN
+C
+ 999	PPD_HELP_PRINT = IS
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION PPD_HELP_OUT (LUN,WORK,LW,LINE,LL)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	INTEGER*4	LUN		! (i) LUN for print file
+	CHARACTER*(*)	WORK		! (i) string to be added
+	INTEGER*4	LW		! (i) its length
+	CHARACTER*(*)	LINE		! (m) output line
+	INTEGER*4	LL		! (m) its length
+	LOGICAL		PPD_HELP_MORE	
+C
+C.Purpose:	Append a string to the line, and write to the print file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C.Notes:
+C	Whenever the string does not fit into the output line, the line is
+C	written to the file and a new line is started.
+C-------------------------------------------------------------------------
+C
+C
+	IF (LL+LW.LE.LEN(LINE)) THEN
+		LINE(LL+1:) = WORK(:LW)
+		LL = LL+LW
+	ELSE
+		IF (.NOT.PPD_HELP_MORE(LUN,LINE,LL)) GOTO 900
+	        IF (.NOT.PPD_HELP_MORE(LUN,WORK,LW)) GOTO 900
+		LL = 1
+	ENDIF
+C
+900	PPD_HELP_OUT = PPD_SUCCESS
+	RETURN
+	END
+
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	LOGICAL FUNCTION PPD_HELP_MORE (LUN,LINE,LL)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	INTEGER*4	LUN		! (i) LUN for print file
+	CHARACTER*(*)	LINE		! (m) output line
+	INTEGER*4	LL		! (m) its length
+C
+C.Purpose:	Write a line to the terminal, stop at end of screen
+C.Notes:
+C	The string is wrapped according to the number of columns on the
+C	screen. When the number of lines on the screen is reached, a 
+C	prompt is issued. This is a very crude "more" function.
+C	If the user enters Ctrz_Z (Ctrl_D on Unix), all subsequent 
+C	output is suppressed (this saves me from adding some fifteen
+C	checks in PPD_HELP_PRINT).
+C-------------------------------------------------------------------------
+C
+C
+	LOGICAL	  GEN_ISATERM	! 
+	INTEGER   LINES,COLS,CUR_LINE,IS
+	DATA      LINES/0/,COLS/0/,CUR_LINE/0/,IS/DWC_SUCCESS/
+	CHARACTER LAST*80
+	DATA	  LAST/' '/
+	SAVE      LINES,COLS,CUR_LINE,IS
+	LOGICAL	  PPD_HELP_MORE1
+C
+	INTEGER*4	NLINE, NDONE, NPR, GEN_INPUT, WNCALN
+	CHARACTER	TMP*10
+C
+C	If LL == 0, set it to the defined length of the string
+C
+	IF (LL.EQ.0) THEN
+	   NLINE=WNCALN(LINE)
+	ELSE
+	   NLINE=LL
+	ENDIF
+C
+C	Make "empty lines" really empty
+C
+	IF (NLINE.EQ.1.AND.LINE(1:1).EQ.'.') LINE(1:1)=' '
+C
+C	Print the string in pieces of COLS-1
+C	
+	NDONE=0
+ 	DO WHILE (NDONE.LT.NLINE)
+C
+C	If screen (almost) full, wait for keypress
+C
+	   IF (GEN_ISATERM(6).AND.LINES.GT.3.AND.CUR_LINE.GE.LINES-3) THEN
+	      IS=GEN_INPUT(TMP,
+	1 '*** <Return> for next screen or <control-D> to quit help ***',0)
+	      IF (IAND(IS,1) .EQ.0) GOTO 900
+	      WRITE(LUN,'(1X)')
+	      CUR_LINE=0
+	      IF (LAST.NE.' ') THEN
+	         WRITE(LUN,'(A)') LAST(1:WNCALN(LAST))
+	         CUR_LINE=1
+	      ENDIF
+	   ENDIF
+C
+C	Now print a line on the screen
+C
+ 	   NPR=MIN(NLINE-NDONE,COLS-1)
+	   WRITE(LUN,'(A)') LINE(NDONE+1:NDONE+NPR)
+	   LAST=LINE(NDONE+1:NDONE+NPR)
+	   NDONE=NDONE+NPR
+	   CUR_LINE=CUR_LINE+1
+C
+	END DO
+C
+	PPD_HELP_MORE=.TRUE.
+	RETURN
+C
+C Quit request
+C
+900	PPD_HELP_MORE=.FALSE.
+	RETURN
+
+	ENTRY PPD_HELP_MORE1(LUN)
+C
+C	Initialise: get number of lines and columns
+C
+C	Only initialise for output to screen (of course).
+C
+	IF (LINES.EQ.0) THEN
+	   IF (LUN.EQ.6) CALL GEN_SIZE(LINES,COLS)
+	   IF (COLS.LE.0)  COLS=80
+	   IF (COLS.GT.80) COLS=80
+	ENDIF
+C
+C	Start line counter and allow for output
+C
+	CUR_LINE=0
+	IS=DWC_SUCCESS
+	LAST=' '
+	PPD_HELP_MORE1=.TRUE.
+C
+	RETURN
+	END
+

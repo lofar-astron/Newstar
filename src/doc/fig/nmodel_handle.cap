@@ -1,0 +1,17 @@
+%nmodel_handle.tex
+
+%       JPH 951013      Change \figref
+
+\begin{figure}
+\fig{nmodel_handle}
+\caption{\it
+\label{.nmodel.handle}
+Overview of the parameter interface for the model-manipulation branch of
+NMODEL. \\
+This diagram expands the HANDLE branch in the overview diagram
+(\figref{.nmodel.interface}) of NMODEL's parameter interface.
+\\
+The same model-handling facilities are also available from several other
+programs.
+ }
+\end{figure}

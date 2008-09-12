@@ -1,0 +1,12 @@
+#  dwarflogout.ssc
+#  GvD 911203
+#
+#  Revisions:
+#	WNB 930302	Make ssc
+#
+#	Save DWARF symbols
+#
+if ($?DWARF_SYMBOLS) then
+  echo "Symbols will be saved in ~/SYMBOL_DIR/SAVSYMBOLS"
+  "cp" $DWARF_SYMBOLS ~/SYMBOL_DIR/SAVSYMBOLS
+endif

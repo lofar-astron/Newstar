@@ -1,0 +1,25 @@
+%clean_vs_find.cap
+
+\begin{figure}[htbp]
+
+\fig{clean_vs_find}
+
+\caption{\it
+\label{.clean.vs.find}
+Comparison of {\em (a)} the iterative CLEAN and {\em (b)} NMODEL FIND/UPDATE
+procedures. \\
+Drawn lines show the process loops, dashed lines the auxiliary data involved. \\
+\\
+(a) In CLEAN, both the source finding and subtraction occur in the map and can
+therefore be combined in a single program, {\em NCLEAN}. \\
+\\
+(b) In FIND, sources are modeled in the map but their subtraction must take
+place in the visibility domain when a new map is made. \\
+In UPDATE, parameters of an existing source model are refined by comparing the
+corresponding visibilities against the observed ones. \\
+\\
+In both procedures, the final product is a source model plus a residual map
+containing, along with error artefacts, a fraction of the source that has not
+(yet) been modeled.
+}
+\end{figure}

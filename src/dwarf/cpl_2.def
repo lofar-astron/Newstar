@@ -1,0 +1,159 @@
+C	Include module CPL_2
+C	Created by BLDDEF from: USER5:[VANDIEPEN.WORK.NEW]CPL.DEF; on 17-MAR-92
+C
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	DEF_CPL
+C.Keywords:	Compiler Utility, Buffers and Constants, Definition
+C.Author:	Friso Olnon, Kasper Kombrink (NFRA, Dwingeloo)
+C.Language:	DWARF-DEF
+C.Environment:	VAX or Alliant
+C.Comments:
+C.Version:	850320 KK  - version 1
+C.Version:	890109 FMO - version 2; completely renewed
+C.Version:	920317 GvD - take care of alignment (use filler)
+C.Version:	930427 HjV - Change size of work buffer from 2000 to 2500
+C.			     and update some pointers
+C.Version:	930613 HjV - Change size of work buffer from 2500 to 5000
+C.Version:	940829 HjV - Change size of work buffer from 5000 to 10000
+C-------------------------------------------------------------------------
+C
+C
+C			Sizes of buffers
+C
+	INTEGER*4  CPL__SRCLMAX
+	PARAMETER (CPL__SRCLMAX         =255)               !max length of source lines (char's)
+	INTEGER*4  CPL__OBJLMAX
+	PARAMETER (CPL__OBJLMAX         =512)               !max length of object records (bytes)
+	INTEGER*4  CPL__NAMLMAX
+	PARAMETER (CPL__NAMLMAX         =64)                !max length of full file names (char's)
+	INTEGER*4  CPL__WRKLMAX
+	PARAMETER (CPL__WRKLMAX         =10000)             !size of the work buffer for values (bytes)
+	INTEGER*4  CPL__WRKNMAX
+	PARAMETER (CPL__WRKNMAX         =32)                !max nr of fields in the work buffer
+	INTEGER*4  CPL__ERRNMAX
+	PARAMETER (CPL__ERRNMAX         =100)               !max nr of in the error buffer
+C
+C
+	INTEGER*4  CPL_LENGTH
+	PARAMETER (CPL_LENGTH           =1)         !&1     !#J !generated: field to contain the block length
+	INTEGER*4  CPL_TYPE
+	PARAMETER (CPL_TYPE             =5)         !&1     !#J !generated: field to contain the block type
+C
+C			Source status block and buffer
+C
+	INTEGER*4  CPL_SRCLUN
+	PARAMETER (CPL_SRCLUN           =9)         !&1     !#J !LUN for the source file currently open
+	INTEGER*4  CPL_SRCNAME
+	PARAMETER (CPL_SRCNAME          =13)        !&64    !#C !full name of the source file last opened
+	INTEGER*4  CPL_SRCBUF
+	PARAMETER (CPL_SRCBUF           =77)        !&255   !#C !last source line read
+	INTEGER*4  CPL_FILLER1
+	PARAMETER (CPL_FILLER1          =332)       !&1     !#L !filler for alignment
+	INTEGER*4  CPL_SRCLBUF
+	PARAMETER (CPL_SRCLBUF          =333)       !&1     !#J !signif. length of the last line read
+	INTEGER*4  CPL_SRCLNR
+	PARAMETER (CPL_SRCLNR           =337)       !&1     !#J !nr of the last line read
+	INTEGER*4  CPL_SRCPTR
+	PARAMETER (CPL_SRCPTR           =341)       !&1     !#J !pointer in the last line read
+C
+C			Object status block
+C
+	INTEGER*4  CPL_OBJLUN
+	PARAMETER (CPL_OBJLUN           =345)       !&1     !#J !LUN for the object file currently open
+	INTEGER*4  CPL_OBJNAME
+	PARAMETER (CPL_OBJNAME          =349)       !&64    !#C !full name of the object file last opened
+	INTEGER*4  CPL_OBJLREC
+	PARAMETER (CPL_OBJLREC          =413)       !&1     !#J !record length (bytes)
+	INTEGER*4  CPL_OBJNREC
+	PARAMETER (CPL_OBJNREC          =417)       !&1     !#J !nr of records written
+C
+C
+C			Work buffer
+C
+	INTEGER*4  CPL_WRKBUF
+	PARAMETER (CPL_WRKBUF           =421)       !&10000 !#C !buffer with field values (as char string)
+	INTEGER*4  CPL_WRKLBUF
+	PARAMETER (CPL_WRKLBUF          =10421)      !&1    !#J !signif. length of the value buffer
+	INTEGER*4  CPL_WRKSTART
+	PARAMETER (CPL_WRKSTART         =10425)      !&32   !#J !start positions of the values in the buffer
+	INTEGER*4  CPL_WRKEND
+	PARAMETER (CPL_WRKEND           =10553)      !&32   !#J !end positions of the values in the buffer
+	INTEGER*4  CPL_WRKLNR
+	PARAMETER (CPL_WRKLNR           =10681)      !&33   !#J !source-line nrs for the corresponding fields
+                                                                !WRKLNR(0) is the nr of the last line read
+C
+C			Error buffer
+C
+	INTEGER*4  CPL_ERRBUF
+	PARAMETER (CPL_ERRBUF           =10813)      !&200  !#J !ERRBUF(n,1) = nr of the source line
+                                                                !ERRBUF(n,2) = status code for message
+	INTEGER*4  CPL_ERRNERR
+	PARAMETER (CPL_ERRNERR          =11613)      !&1    !#J !nr of error entries
+	INTEGER*4  CPL_ERRNWARN
+	PARAMETER (CPL_ERRNWARN         =11617)      !&1    !#J !nr of warning entries
+	INTEGER*4  CPL_ERRNTOT
+	PARAMETER (CPL_ERRNTOT          =11621)      !&1    !#J !total nr of entries
+C
+	INTEGER*4  CPL__LENGTH
+	PARAMETER (CPL__LENGTH          =2906)              !generated: block length (in longwords)
+	INTEGER*4  CPL__TYPE
+	PARAMETER (CPL__TYPE            =30)                !generated: block type
+	INTEGER*4	CPL__DEFTYP
+	PARAMETER	(CPL__DEFTYP=22)
+	INTEGER*4	CPL__DEFVSN
+	PARAMETER	(CPL__DEFVSN=2)
+C
+	EXTERNAL	CPL_BLOCK
+C
+C Common block specification
+C
+	INTEGER*4 CPL$LENGTH
+	EQUIVALENCE (CPL$LENGTH,CPL__(0))
+	INTEGER*4 CPL$TYPE
+	EQUIVALENCE (CPL$TYPE,CPL__(4))
+	INTEGER*4 CPL$SRCLUN
+	EQUIVALENCE (CPL$SRCLUN,CPL__(8))
+	CHARACTER*64 CPL$SRCNAME
+	EQUIVALENCE (CPL$SRCNAME,CPL__(12))
+	CHARACTER*255 CPL$SRCBUF
+	EQUIVALENCE (CPL$SRCBUF,CPL__(76))
+	LOGICAL*1 CPL$FILLER1
+	EQUIVALENCE (CPL$FILLER1,CPL__(331))
+	INTEGER*4 CPL$SRCLBUF
+	EQUIVALENCE (CPL$SRCLBUF,CPL__(332))
+	INTEGER*4 CPL$SRCLNR
+	EQUIVALENCE (CPL$SRCLNR,CPL__(336))
+	INTEGER*4 CPL$SRCPTR
+	EQUIVALENCE (CPL$SRCPTR,CPL__(340))
+	INTEGER*4 CPL$OBJLUN
+	EQUIVALENCE (CPL$OBJLUN,CPL__(344))
+	CHARACTER*64 CPL$OBJNAME
+	EQUIVALENCE (CPL$OBJNAME,CPL__(348))
+	INTEGER*4 CPL$OBJLREC
+	EQUIVALENCE (CPL$OBJLREC,CPL__(412))
+	INTEGER*4 CPL$OBJNREC
+	EQUIVALENCE (CPL$OBJNREC,CPL__(416))
+	CHARACTER*10000 CPL$WRKBUF
+	EQUIVALENCE (CPL$WRKBUF,CPL__(420))
+	INTEGER*4 CPL$WRKLBUF
+	EQUIVALENCE (CPL$WRKLBUF,CPL__(10420))
+	INTEGER*4 CPL$WRKSTART(32)
+	EQUIVALENCE (CPL$WRKSTART,CPL__(10424))
+	INTEGER*4 CPL$WRKEND(32)
+	EQUIVALENCE (CPL$WRKEND,CPL__(10552))
+	INTEGER*4 CPL$WRKLNR(0:32)
+	EQUIVALENCE (CPL$WRKLNR,CPL__(10680))
+	INTEGER*4 CPL$ERRBUF(100,2)
+	EQUIVALENCE (CPL$ERRBUF,CPL__(10812))
+	INTEGER*4 CPL$ERRNERR
+	EQUIVALENCE (CPL$ERRNERR,CPL__(11612))
+	INTEGER*4 CPL$ERRNWARN
+	EQUIVALENCE (CPL$ERRNWARN,CPL__(11616))
+	INTEGER*4 CPL$ERRNTOT
+	EQUIVALENCE (CPL$ERRNTOT,CPL__(11620))
+	BYTE CPL__(0:11623)
+	BYTE CPL_(11624)
+	EQUIVALENCE (CPL_,CPL__)
+C
+	COMMON /CPL/ CPL_
+C

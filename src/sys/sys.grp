@@ -1,0 +1,219 @@
+!+SYS.GRP
+! CMV 930922
+!
+! Revisions:
+!	CMV 930922	Created
+!	CMV 931201	Removed includepef.kwa (now in genaid)
+!	CMV 931201	Split off binaries to bin.grp
+!	HjV 940103	Add BUP.CSH, UCSB-, WENSS-, RUL-files
+!	HjV 940217	Add/change missing entry-points/functions
+!	HjV 940223	Add I_DA.CSH
+!	HjV 940314	Add I_SWARECB.CSH
+!	HjV 940317	Add I_HPRUL.CSH
+!	HjV 940415	Add *_UVA.CSH
+!	HjV 940516	Remove DWEXE.COM (now in WNG.GRP)
+!	WNB 940621	Add I_VX.CSH, CSH2P, C2AID, UPDATE, SHADOW,
+!			BUGREPORT, DOCUMENT.PLS
+!			NEWSTAR_INIT, _ATNF, _ENV.COM
+!	WNB 940624      Add N_LINKS.COM
+!	HjV 940624      Add *_BAO.CSH
+!	CMV 940711	Remove docaid.c, add init_wsrt.csh
+!	CMV 940717	Add JPH's stuff
+!	HjV 940901	Add DOC_PREPROCESS.CSH
+!	HjV 940914	Add *_UCB.CSH
+!	HjV 940922	Add FTPUPDATE.CSH
+!	CMV 940927	Add i_swucb.csh
+!	HjV 941019	Remove FTPUPDATE.CSH 
+!			(We will update ftp.astron.nl in another way)
+!	CMV 941102	Remove BUGAID.*, BUGREPORT.*
+!	CMV 941103	Add SCISSOR.CSH, SCISSOR.C
+!	JPH 941111	XMOSAIC_RESTART.CSH, SIGNAL_AND_SYNC.C
+!	HjV 941215	Add *ESTEC.CSH
+!	CMV 950105	Add *SRON.CSH
+!	CMV 950116	Add I_ATNF.CSH
+!	HjV 950314	Add *CALT.CSH
+!	CMV 950411	Add IONOS.* and TMSDOC.CSH
+!	HjV 950529	Make WENSS a separate site
+!	HjV 950703	Add I_SWRUL.CSH
+!	CMV 950728	Add filpo.kwa
+!	HjV 950828	Add *IRABO.csh
+!	JPH 951101	Remove doc_overview.csh
+!			Add doc_test.csh, batch_ask.c batch_sync.c
+!	JPH 951114	Add batch_log.c
+!	HjV 951214	Add *AIRUB.csh
+!	HjV 960102	Change IONOS.PIN in IONOST.PIN
+!			Change IONOS.XSW in IONOST.XSW and move to BIN.GRP
+!			Add NEWERFILE.C
+!	HjV 960201	Add I_HPWSRT.CSH
+!	HjV 960422	Add DWRECORD.CSH
+!	HjV 960618	Add *LICK.CSH; Add I_SO*.CSH
+!	HjV 961212	Add i_SORUG.CSH
+!	HjV 971024	Add OBSLOG.PLS
+!	HjV 971029	Add i_SORAIUB.CSH
+!	AXC 010628      added data_splitter.awk, and other linux port stuff
+!       AXC 040213      Added linux files for w'bork
+!
+! This groupfile
+!
+SYS.GRP
+!
+! Maintenance routines for sources and documentation
+!
+BATCH_ASK.C		! Input pipe to program
+BATCH_LOG.C		! Record program dialogue
+BATCH_SYNC.C		! Output pipe, synchronise batch_ask prompting
+BUP.CSH			! Background update
+COMPILE.CSH		! Main routine for compilation
+CSH2P.PLS		! C to PERL compiler (.csh to .pls)
+C2AID.PLS		! Run-time aids for .pls
+DATABASE.IDX		! Master database with all filenames
+DOCUMENT.CSH		! Main routine for documentation (ndoc command)
+DOCUMENT.PLS
+DOC_COOK.CSH		! Latex input to HTML
+DOC_KEYS.CSH		! Parameter document from .psc/.pef file
+DOC_PREPROCESS.CSH	! Common processing for doc_cook, doc_print
+DOC_PRINT.CSH		! Latex input to PostScript
+DOC_SCRIPT.CSH
+DOC_SCRIPT.C
+DOC_TEST.CSH		! Check system integrity	
+DWRECORD.CSH		! Record/replay program run
+INCLUDE.C		! Execute \input for Latex files
+GENAID.C		! Standalone progam, aid for compilation
+INITCOMPILE.CSH		! Common Initialisation for update/shadow.csh
+INIT_WSRT.CSH		! Set up off-line environment WSRT
+LOCK.IDX		! Locking database
+NEWERFILE.C		! Compare modification times of two files
+SHADOW.CSH		! Shadow system commands
+SHADOW.PLS
+SWITCHES.CSH		! Common switch handling for update/shadow.csh
+UPDATE.CSH		! Master system commands
+UPDATE.PLS
+VERSION.IDX		! Release and revision number
+!
+! Tools for medium administration and database
+!
+SCISSOR.CSH		! Shell for init, ship, ionos, ... commands
+TMSDOC.CSH		! Shell for management of TMS documents
+SCISSOR.C		! Standalone database client
+IONOS.C			! Standalone program to enter and read f0f2 values
+IONOST.PIN		! Userinterface for Spoelstra's ionosphere program
+FILPO.KWA		! Awk-script to parse WSRT filpo tables
+OBSLOG.PLS		! Scripts to read WSRT-logbook
+!
+! Compilation commands and switches for different architectures
+!
+I_LI.CSH		! Linux
+I_AL.CSH		! Alliant
+I_CV.CSH		! Convex
+I_DA.CSH		! DecAlpha
+I_DW.CSH		! DecStation
+I_HP.CSH		! HP Workstation
+I_SO.CSH		! Sun Solaris
+I_SW.CSH		! Sun Workstation
+I_VX.CSH		! VMS
+!
+! System commands are all in WNGFEX
+!
+WNGFEX.COM
+WNGFEX.CSH
+N_LINKS.COM
+!
+! Xmosaic (re)start from Newstart programs
+!
+XMOSAIC_RESTART.CSH
+SIGNAL_AND_SYNC.C	! Activate xmosaic with HTML-page request
+!
+! Site specific initialisation and system commands
+!
+NEWSTAR_INIT.CSH	! General initialisation
+NEWSTAR_INIT.COM
+NEWSTAR_ENV.CSH		! General environment (HOSTTYPE, ARCH etc)
+NEWSTAR_ENV.COM
+!
+NEWSTAR_NFRA.CSH
+WNGFEX_NFRA.COM
+WNGFEX_NFRA.CSH
+I_HPNFRA.CSH
+I_SONFRA.CSH
+I_LINFRA.CSH
+I_LIWSRT.CSH
+!
+NEWSTAR_ESTEC.CSH
+WNGFEX_ESTEC.CSH
+!
+NEWSTAR_RUG.CSH
+WNGFEX_RUG.CSH
+I_HPRUG.CSH
+I_SORUG.CSH
+I_SWRUG.CSH
+!
+NEWSTAR_RUL.CSH
+WNGFEX_RUL.CSH
+I_HPRUL.CSH
+I_SWRUL.CSH
+!
+NEWSTAR_RUU.CSH
+WNGFEX_RUU.CSH
+!
+NEWSTAR_SRON.CSH
+WNGFEX_SRON.CSH
+I_HPSRON.CSH
+!
+NEWSTAR_UVA.CSH
+WNGFEX_UVA.CSH
+!
+NEWSTAR_WENSS.CSH
+WNGFEX_WENSS.CSH
+I_HPWENSS.CSH
+!
+NEWSTAR_WSRT.CSH
+WNGFEX_WSRT.CSH
+I_HPWSRT.CSH
+!
+NEWSTAR_AIRUB.CSH
+WNGFEX_AIRUB.CSH
+!
+NEWSTAR_ARECB.CSH
+WNGFEX_ARECB.CSH
+I_SWARECB.CSH
+!
+NEWSTAR_ATNF.CSH
+NEWSTAR_ATNF.COM
+WNGFEX_ATNF.COM
+WNGFEX_ATNF.CSH
+I_ATNF.CSH
+I_SOATNF.CSH
+!
+NEWSTAR_BAO.CSH
+WNGFEX_BAO.CSH
+!
+NEWSTAR_CALT.CSH
+WNGFEX_CALT.CSH
+!
+NEWSTAR_IRABO.CSH
+WNGFEX_IRABO.CSH
+!
+NEWSTAR_KOSMA.CSH
+WNGFEX_KOSMA.COM
+WNGFEX_KOSMA.CSH
+I_HPKOSMA.CSH
+!
+NEWSTAR_LICK.CSH
+WNGFEX_LICK.CSH
+I_SWLICK.CSH
+!
+NEWSTAR_RAIUB.CSH
+WNGFEX_RAIUB.CSH
+I_SWRAIUB.CSH
+I_SORAIUB.CSH
+!
+NEWSTAR_UCB.CSH
+WNGFEX_UCB.CSH
+I_SWUCB.CSH
+!
+NEWSTAR_UCSB.CSH
+WNGFEX_UCSB.CSH
+I_SWUCSB.CSH
+!
+DATA_SPLITTER.KWA
+!-

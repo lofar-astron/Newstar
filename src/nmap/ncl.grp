@@ -1,0 +1,66 @@
+!+ NCL.GRP
+!  WNB 910809
+!
+!  Revisions:
+!	WNB 920117	Add CMP
+!	WNB 921202	Add CDT
+!	WNB 921211	Add PSC
+!
+!  Map cleaning
+!
+!  Group definition:
+!
+NCL.GRP
+!
+!  PIN files
+!
+NCLEAN.PSC
+!
+!  Structure files
+!
+!
+!  Fortran definition files:
+!
+NCL.DSC			!		Program common/parameters
+! NCL.DEF		!		Fortran include
+! NCL.INC		!		C include
+!
+!  Programs:
+!
+NCLEAN.FOR		!		Main routine
+NCLBCL.FOR		!NCLBCL		Clean for NCLBEA
+NCLBEA.FOR		!NCLBEA		Normal Hogbom clean
+NCLBRD.FOR		!NCLBRD		Read map and beam
+NCLBWR.FOR		!NCLBWR		Write residual map
+NCLCCL.FOR		!NCLCCL		Clean for NCLUV
+NCLCDT.FOR		!NCLCDT		Data type clean
+NCLCMP.FOR		!NCLCMP		Get component list
+NCLCRD.FOR		!NCLCRD		Read beam and map patch
+NCLCWR.FOR		!NCLCWR		Write initial residual map
+NCLDAT.FOR		!NCLDAT		Program parameters
+NCLFUN.FOR		!		Some general functions
+			!NCLFD2		Divide buffer by 2
+			!NCLFCJ		Take conjugate of buffer
+			!NCLFAM		Add 2 buffers with multiplication
+			!NCLFSM		Subtract 2 buffers with multiplication
+			!NCLFS2		Subtract 2 buffers with double mult.
+			!NCLFBM		Calculate transform of beam
+			!NCLF1D		Take 1/buffer
+NCLHIM.FOR		!NCLHM0		Determine map histogram
+			!NCLHM9		Clear map histogram
+			!NCLHB0		Determine beam histogram
+			!NCLHB9		Clear beam histogram
+NCLHIS.FOR		!NCLHIS		Determine map and beam histogram
+			!NCLHID		Determine histos and beam patch to use
+			!NCLHIE		Determine beam patch to use
+			!NCLHIX		Clear beam histogram
+NCLINI.FOR		!NCLINI		Initialise program
+NCLUCL.FOR		!NCLUCL		Clean major cycle
+NCLUC1.FOR		!NCLUC1		Clean a map line
+NCLUV.FOR		!NCLUV		UV cover clean
+NCLUVT.FOR		!NCLUVT		Transform beam to UV cover
+!
+!  Executables
+!
+NCLEAN.EXE		!		Clean/restore maps
+!-

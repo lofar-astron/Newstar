@@ -1,0 +1,144 @@
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;.Ident:	VGEN_MIXFNM
+;.Keywords:	File Specifications, Mix
+;.Author:	Ger van Diepen (NFRA, Dwingeloo)
+;.Language:	VAX/Macro
+;.Environment:	VAX/VMS
+;.Comments:
+;.Version:	830518 GVD - creation GENMIXFNM.MAR
+;.Version:	830626 GVD - new version
+;.Version:	841025 JPH - FAB and NAM blocks on stack; condense code
+;.Version:	841107 JPH - add optional NAM argument
+;.Version:	900328 FMO - edit comments
+;.Version:	920225 GvD - no optional arguments in MSG anymore
+;.Version:	930129 HjV - $CODE and $LOCAL expanded
+;-----------------------------------------------------------------------
+	.TITLE	GEN_MIXFNM MIX 2 FILENAMES
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;	INTEGER*4 FUNCTION GEN_MIXFNM (OLD,NEW,RESULT,[LENG],[NAM])
+;
+;	CHARACTER*(*)	OLD		! (i) old filename (default spec)
+;	CHARACTER*(*)	NEW		! (i) new filename (primary spec)
+;	CHARACTER*(*)	RESULT		! (o) resulting filename
+;				optional:
+;	INTEGER*4	LENG		! (o) significant length of result
+;	INTEGER*4	NAM(*)		! (o) RMS NAM block
+;
+;.Purpose:	Mix two file specifications
+;.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+;	success		1
+;	false status code returned by RMS routines
+;.Notes:
+;	- The filenames may contain wildcards or parts of the names may be
+;	  omitted.
+;	- The resulting filename consists of the new name. Missing parts
+;	  of the new name are filled with parts of the old name and the user
+;	  defaults (from the SET DEFAULT command). Logical names (if used) are
+;	  translated.
+; 
+;	E.g.:	user default = DRA1:[VANDIEPEN.GEN]
+; 
+;		old    = SOUTAP.FOR
+;		new    = COPCAR
+;		result = DRA1:[VANDIEPEN.GEN]COPCAR.FOR;
+; 
+;		old    = SYSDWARF:
+;		new    = COPCAR
+;		result = DRA1:[DWARF]COPCAR.;
+;
+;	- The function uses the RMS function SYS$PARSE.
+;	- The NAM argument is needed only if the caller wants access to
+;	  additional information (such as file ID) which is produced as an
+;	  automatic side effect of the RMS $PARSE operation.
+;	- The caller must insure that the block is large enough to hold a
+;	  complete RMS NAM block (NAM$C_BLN bytes).
+;	- If the NAM argument is not given, the parse operation will use a 
+;	  temporary NAM block (built on the stack).
+;-----------------------------------------------------------------------
+;
+	.MACRO	$LOCAL
+	.PSECT	$LOCAL,	PIC,CON,REL,LCL,NOSHR,NOEXE,RD,WRT,LONG
+	.IF NDF	$LOCAL
+$LOCAL:
+	.ENDC
+$RELOC=$LOCAL
+	.ENDM
+;
+MSGLST:	.LONG	2			; MSG_SHOLD arg list
+	.ADDRESS ERRNR
+	.ADDRESS ZERO			; default flags
+ERRNR:	.BLKL	1
+ZERO:	.LONG	0
+;
+	OFFOLD=4			; arg list offsets
+	OFFNEW=8
+	OFFRES=12
+	OFFLENG=16
+	OFFNAM=20
+;
+;
+	.MACRO	$CODE
+	.PSECT	$CODE,	PIC,CON,REL,LCL,SHR,EXE,RD,NOWRT,LONG
+	.IF NDF	$CODE
+$CODE:
+	.ENDC
+	.ENDM
+;
+.ENTRY	GEN_MIXFNM,^M<R2,R3,R4,R5,R6,R7>
+;
+;				Build FAB block on the stack
+;
+	SUBL2	#FAB$C_BLN,SP		; make room on stack
+	MOVL	SP,R6			; save address of block
+	MOVC5	#0,(SP),#0,#FAB$C_BLN,(SP) ; clear block
+;
+;				Get NAM block or build one on the stack
+;
+	CMPB	(AP),#OFFNAM/4		; argument NAM given ?
+	BLSS	10$			; if not: goto 10
+	MOVL	OFFNAM(AP),R7		; save address of block
+	BRB	20$			; goto 20
+10$:
+	SUBL2	#NAM$C_BLN,SP		; build temporary block on stack
+	MOVL	SP,R7			; save address of block
+20$:	MOVC5	#0,(SP),#0,#NAM$C_BLN,(R7) ; clear block
+;
+;				Fill the blocks
+;
+	MOVL	OFFOLD(AP),R2		; address of OLD filespec
+	MOVL	OFFNEW(AP),R3		; address of NEW filespec
+	$FAB_STORE	FAB=(R6),BID=#FAB$C_BID,BLN=#FAB$C_BLN, -
+		DNS=(R2),DNA=@4(R2), -	; OLD is the default spec
+		FNS=(R3),FNA=@4(R3), -	; NEW is the primary spec
+		NAM=(R7)		; NAM block
+	MOVL	OFFRES(AP),R3		; address of RESULT
+	$NAM_STORE	NAM=(R7),BID=#NAM$C_BID,BLN=#NAM$C_BLN, -
+		ESS=(R3),ESA=@4(R3)	; RESULT spec
+;
+;				Mix the file specs
+;
+	$PARSE	FAB=(R6)		; parse -> RESULT
+	BLBS	R0,APP			; if success: goto APP
+	MOVL	R0,ERRNR		; otherwise:
+	CALLG	MSGLST,G^MSG_SET	; hold the error message
+	BRB	END			; goto END
+;
+;				Fill up RESULT with blanks
+;
+APP:	MOVZBL	NAM$B_ESL(R7),R2	; length of resulting filespec
+	SUBW3	R2,(R3),R4		; length of substring to blank
+	BLEQ	FILL			; if zero: goto FILL
+	ADDL3	R2,4(R3),R5		; start of substring to blank
+	MOVC5	#0,(R5),#^A' ',R4,(R5)	; blank-fill
+	MOVL	#1,R0			; set success status
+;
+;				Fill LENGTH argument (if given)
+;
+FILL:	CMPL	(AP),#OFFLENG/4		; argument LENG given ?
+	BLSS	END			; no: goto END
+	MOVL	OFFLENG(AP),R2		; address of LENG
+	BEQL	END			; if zero: goto END 
+	MOVZBL	NAM$B_ESL(R7),(R2)	; fill argument
+;
+END:	RET
+	.END

@@ -1,0 +1,136 @@
+% ***.tex
+%
+% JPH  951113
+%
+%
+\newcommand{\bi}{ \begin{itemize} }
+\newcommand{\ei}{ \end{itemize} }
+\newcommand{\bn}{ \begin{enumerate} }
+\newcommand{\en}{ \end{enumerate} }
+\newcommand{\Em}[1]{ {\em #1}\/ } 
+\newcommand{\noi}{ \noindent }
+ 
+\chapter{ Capturing \NEWSTAR program runs for repeated execution }
+
+{\par \em Contributed by Johan Hamaker, November 1995 \centering \par}
+
+\tableofcontents
+
+\section{ Introduction }
+\label{.intro}
+
+	The \NEWSTAR mechanism for repetitive execution programs with a minimum of user interaction is through the definition of default parameter values in a process symbol table.   
+
+	While attractive in concept, this approach is rather difficult to handle in practice for several reasons:
+\bi
+\item	There is a variety of mechanims involved and invoking the right one in each particular situation requires a thorough understanding of the entire parameter system.
+
+\item	The symbol-table utilities \verb/dws[pecify]/ and \verb/dwv[iew]/ present the parameters in an arbitrary order, including (often a great number of) them that are irrelevant for the program run to be controlled. 
+
+\item	If a parameter is to be prompted for more than once during the program run, the successive values must be stored in the symbol table as successive value sets (separated by colons) for that parameter.
+\ei
+%
+\noi	These two effects combined make it difficult to keep track of the parameter set for a program run, in particular when a saved parameter set must be modified in detail to cover a slightly different situation. In practice, batch scripting has so far remained something of a black art mastered only by a few specialists.
+
+
+\section{ The batch recording method }
+\label{.batch}
+
+	The idea of the batch recording method is very simple: The parameter values from a manually executed program run are saved an ASCII file rather than the symbol table. They are recorded precisely in the order in which they are actually obtained and with the literal values as typed in by the user, as in the following simple example for NSCAN:
+
+\spbegin \svbegin \begin{verbatim}
+	OPTION = sh 
+	  INPUT_SCN_NODE = ** 
+	  INPUT_SCN_NODE = f 
+	    FILE_ACTION = #  
+	  INPUT_SCN_NODE = t 
+	    FILE_ACTION = layout 
+	    FILE_ACTION = ov 
+	      OVERVIEW = obs 
+	    FILE_ACTION = q 
+	  INPUT_SCN_NODE =  
+	OPTION =  
+\end{verbatim} \svend \spend
+
+	For an identical re-execution of the program run, one may use this file as input. One may also edit it, however, to correct errors or instruct the program to prompt for those parameters that the user wants to control. For example, the above file could be edited to become: 
+
+\spbegin \svbegin \begin{verbatim}
+	OPTION = SHOW  !    1  
+	  INPUT_SCN_NODE = **  !    2 
+	  INPUT_SCN_NODE = /ASK  !    3 
+	    FILE_ACTION = LAYOUT  !    4 
+	    FILE_ACTION = OVERVIEW  !    5 
+	      OVERVIEW = OBS  !    6
+	    FILE_ACTION = QUIT  !    7 
+	  INPUT_SCN_NODE = ""  !    8 
+	OPTION = QUIT  !    9
+\end{verbatim} \svend \spend
+
+	There are several important advantages over the use of the symbol table:
+\bi
+\item	The parameters appear in the batch file precisely in the order in which they will be used.
+
+\item	Indentation may be used as shown above to represent the 'parameter hierarchy' and the way the program branches back after completion of a request, making it easy to follow the program's execution while reading the batch file.
+
+\item	Comments may be appended to parameter values to facilitate the tracing of errors.
+\ei
+
+	The method is implemented in three new commands:
+\bi
+\item \verb/	dwrec <program>.<ext>/ to record a run of \verb/<prorgam>/ in a
+ 		file \verb/<program>.<ext>/;
+
+\item \verb/	dwrep <program>.<ext>/ to replay the file.
+ 
+\item \verb/	dwren <program>.<ext>/ to [re]number the lines by appending a
+		comment to each line in the file, as shown above, for debugging
+		purposes
+\ei
+
+
+\section{ Creating a batch file }
+\label{.create}
+
+	To create a batch file, use the command
+
+\verb/	dwrec <program>.<extension>/
+
+The program will be excuted in the normal way, the only difference being that a batch file is created containing lines of the form
+
+\verb/	<paremeter> = <value>  !  <line number>/
+
+	The user's replies are stored litterally; this is unlike in the \NEWSTAR log files, where the value shown is the one actually used after interpretation of the user's reply by the parameter system. 
+
+	Parameters to be prompted for in later replays of the batch file must be given the value \verb:/ASK:. This may be done by editing the file, but it is also possible to instruct the system to set thids special value at recording time, by appending the string \verb/!?/ to the reply. As an example, we show the complete run that would create the second example of the \textref{preceding section}{.batch}.
+
+\indent \Em{ put script here}
+
+
+\section{ Replaying a batch file }
+\label{.replay}
+
+	The command to replay a batch file is
+
+\verb/	dwrep <program>.<extension>/
+
+The program will run in nthe normal way, taking inputs from the batch file and prompting the user only where the value \verb:/ASK: is specified.
+
+
+\section{ Renumbering a batch file }
+\label{.renumber}
+
+	To renumber the lines, e.g. after manual addition of lines, use the command  
+
+\verb/	dwren <program>.<extension>/
+
+
+\section{ Limitations }
+
+	A fundamental limitation of the batch-recording method is that it fixes the order in which parameters must be read. Its typical use is for repeating the same operation with small variations, e.g. on different files, with different sector-set or map-set specifications etc. 
+
+	It is not suited for applications requiring more flexibility, such as running NMAP to make maps with a variable set of input 'jobs'. For such situations, a shell script could be used to dynamically generate a batch file from a prototype. Whether this will make a friendlier method than the present one (as used in WENSS adn WHISP) remains to be seen.   
+
+
+
+	 
+

@@ -1,0 +1,266 @@
+%models_descr.tex
+
+\newcommand{\NMODEL}{\textref{NMODEL}{nmodel\_descr} }
+\newcommand{\local}{ {\em local} }
+\newcommand{\apparent}{ {\em apparent} }
+\newcommand{\epoch}{ {\em epoch} }
+\newcommand{\header}{\textref{header}{.model.header} }
+\newcommand{\source}{\textref{source}{.source.components} }
+
+\chapter{ Models in Newstar}
+
+{\it (contributed by W.N. Brouw 931011, edited by J.P. Hamaker 940411) }
+
+\tableofcontents
+
+
+\section{General}
+\label{.general}
+
+	Source models in Newstar are in principle meant to belong to a certain
+observation, although models can be converted from/to belonging to other
+observations.
+
+\section{Model header}
+\label{.model.header}	
+
+	Each model has a header.  In this header the following
+information is stored:
+
+\begin{itemize}
+
+\item	{\em TYPE}
+	of coordinates used. This can be:
+%
+	\begin{itemize}
+		\item	
+		{\em local:}
+		no information is available about the observation to which the
+model pertains.  Whenever the model is used in connection with an
+observation, it will be assumed that the model header data are identical
+to the corresponding data in the observation. 
+%
+		\item
+	 	\apparent:
+		it is assumed that all coordinates are apparent.
+%
+		\item
+		\epoch:
+		it is assumed that all coordinates belong to B1950 or J2000
+	\end{itemize}
+
+\item	{\em EPOCH:} 1950 or 2000 (if {\em TYPE} = \epoch)
+
+\item	{\em RA, DEC:}	\label{.ref.coord} 
+	the reference right-ascension and declination (\apparent or
+\epoch) to which the \textref{\em l,m}{.lm} coordinates of the \source
+components refer.  It is assumed that this is also the centre of the
+primary beam of the individual telescopes. 
+
+\item	{\em FREQ:}
+	the frequency ...
+
+\item	{\em INST:}
+	the instrument used in the observation.
+\end{itemize}
+%
+
+\subsection{ Conversions between coordinate types}
+\label{.coord.conversions}
+
+	If the model list was made through the {\bf ADD} and {\bf EDIT}
+options of \NMODEL, the type will be \local.  If it is generated through
+\textref{NCLEAN}{nclean_descr} or the {\bf FIND} option of \NMODEL, the
+type and other data are taken from the corresponding map. 
+
+	A \local list can be converted to an \apparent or \epoch type
+though the {\bf CONVERT} or {\bf EDIT} options of \NMODEL.  In this case
+the reference data provided (either from a scan header or manually) will
+be copied into the model header. 
+
+	An \apparent or \epoch list can be converted to \local in the
+same way. 
+
+	An \apparent or \epoch list can be converted to another
+\apparent or \epoch list with the \NMODEL {\bf EDIT} or {\bf CONVERT}
+options.  For {\bf EDIT}, the new reference data from the user will
+replace the existing \header data, without changing the actual \source
+components.  {\bf CONVERT} will also convert the existing \source and
+\header data to the new coordinates, i.e.  the new source list will be
+for the new RA, DEC, FREQ, INST, using the model components' spectral
+index, rotation measure, primary beam and sky position. 
+
+	An \apparent or \epoch list can be converted to an \epoch or
+\apparent list by \NMODEL {\bf EDIT} or {\bf CONVERT}.  For {\bf EDIT},
+the new values will replace the old \header data, and only the change in
+direction to the North Pole ('phi') will be applied to the individual
+sources.  If {\bf CONVERT}, only a reference scan can be used, and the
+\source components will be shifted, rotated, beamed, spectrally indexed
+etc.  to the new coordinates. 
+
+
+\section{ Source components}
+\label{.source.components}
+
+	Each source in the source model has the following information:
+\begin{itemize}
+
+\item	{\em INTENSITY:}
+	intensity (STOKES $I$, in general in Westerbork Units) of the
+source.  This value is always posaitive. 
+
+\item	{\em L, M:}	\label{.lm}
+ 	
+	the {\em l} and {\em m} coordinate on the sky for an E-W
+interferometer pointed at the 
+\textref{reference coordinates}{.ref.coord} 
+in the model header; {\em l} and {\em m} are
+thus given as offsets to the header position. 
+
+\item	{\em Q,U,V:}
+	Stokes polarisation parameters as percentages of Stokes {\em I}
+
+\item	{\em SI:}
+	spectral index of the source
+
+\item	{\em RM:}
+	the rotation measure of the source
+
+\item	{\em extension:}
+	extension parameters of the source modeled as a two-dimensional
+Gaussian: length major axis, minor axis, position angle major axis.  For
+a point source, both axes have length 0. 
+
+
+\item	{\em source type:}	\label{.type}
+	a number to be used to select particular sources only for
+certain operations.  In general only type 0 will be used in the programs
+(e.g.  self-calibration, updates, subtractions), but sometimes type = 1
+are used (in a different way, e.g.  in
+\textref{UPDATE}{nmodel_descr.update} they will not be updated, but
+subtracted from the observations before updating starts).  Other types
+are not used at present.  The user can manually set them (NMODEL
+\textref{EDIT}{nmodel_descr.edit}) to e.g.  temporarily 'delete' them
+from his model. 
+
+\item	{\em ID:}
+	a simple sequence number for easily keeping track of sources
+across sorting and updates etc. 
+
+\item	{\em MODE:}
+	this is a bit mask with bits to indicate that the source is:
+%
+	\begin{itemize}
+	\item	{\em clean component:}
+	the source has been found by \textref{NCLEAN}{nclean_descr} and
+is constrained to lie on a map grid point and to be a point source. 
+
+	\item	{\em beamed:}	\label{.beamed}	 
+	the source intensity has been corrected for the primary beam of
+the instrument. 
+	\end{itemize}
+\end{itemize}
+
+	Whenever \textref{NMODEL}{nmodel_descr} {\bf CONVERT} is used,
+the above data will be adjusted to reflect the new \header data.  Note
+that a {\em beamed} source will remain unchanged if the frequency and/or
+instrument is changed but no spectral index is available. 
+
+	All of the above information can be changed by the \NMODEL
+HANDLE {\bf EDIT} and {\bf FEDIT} options. 
+
+	The {\em beam} mode can be changed (and the intensity changed)
+by the \NMODEL {\bf [DE]BEAM} options.  This operation will only be
+applied to sources for which it is appropriate. 
+
+
+\section{ Merging model lists}
+\label{.merge.lists}
+
+	Models can be combined with the \NMODEL {\bf xxx} option,
+provided either 
+
+\begin{itemize}
+
+\item one of the types is \local (in which case the other type will be
+assumed to be the correct one); or
+
+\item both type are either \apparent or \epoch.  \end{itemize}
+
+	The two models will be automatically converted and merged into a
+single model with one of the {\header}s being used. 
+
+
+\section{ Conversion of a model to visibilities}
+\label{.model.to.vis}
+
+	Conversion of a model to visibilities always occurs in the
+context of a particular scan in a \textref{SCN file}{scn_descr}.  In
+this process, the model is automatically converted from the
+model-\header coordinates to those in the \textref{scan header}{scn_descr}. 
+
+	In this process, \textref{\em beamed}{.beamed} \source
+components will be de-beamed before being used; {\em de-beamed}
+components will first be {\em beamed} for the header coordinates, then
+{\em de-beamed} for the scan coordinates).  In addition non-clean
+components will be {\em smeared} for the appropriate bandwidth and
+integration time. 
+
+	The user can suppress the smearing and the beaming operations
+(\NMODEL {\bf MODEL\_ACTION} keyword).  He has no control over the other
+conversions (spectral index, different position etc.). 
+
+
+\subsection{ Instrumental polarisation}
+\label{.instr.pol}
+
+	In addition to the corrections discussed so far, {\em
+position-dependent} instrumental polarisation (somewhat unfortunately
+often referred to as {\em cross polarisation}) should be corrected for
+in the calculation of model visibilities.  It is understood in principle
+how this must be done, but the implementation has been suspended until
+proper measured parameyters become available. 
+
+
+\section{ Primary beam model}
+\label{.primary.beam}
+
+	The primary beam for the {\em WSRT} is currently modeled as a
+circularly symmetric $\cos^{6}$ function.  Pointing measurements show
+that this is a good approximation out to the first null.  If positions
+further out were to be included, it would probably be better to model
+the beam as a J0 (Bessel) function or as an $\exp(\cos^{6})$. 
+
+	For the ATCA the beam is given as an inverse polynomial, which
+is correct to the first side-lobe (except for non-symmetry around the
+legs). 
+
+\section{ Updating a model}
+\label{.update}
+
+	The \NMODEL {\bf UPDATE}, {\bf XUPDATE} and {\bf SUPDATE}
+options try to match a givel source model the data as well as possible
+to an observation in a .SCN file.The update process extracts its
+information from residuals of the observed visibilities after all model
+components of \textref{types}{.type} 0 and 1 have been subtracted. 
+Updating is a process of fine-tuning the parameters of the model
+components and is therefore not applicable to clean components. 
+
+	To make the process not too slow, each \source component is
+fitted separately, special care being taken that components close
+together do not unduly influence each other's updates.  For the process
+to work it is necessary that observation(s) span as large an HA range as
+possible; otherwise the exact distance between to closely-spaced
+components is difficult to determine. 
+
+	The fitting process is linear, and uses both the real and
+imaginary parts of the visibilities.  Since the equations used are
+linearized, more than one iteration is in general needed for the process
+to converge.  In the equations no account is taken of secondary effects
+(e.g.  a shift in {\em l,m} will lead to different amplitudes due to
+primary beam and frequency dependencies).  It is assumed that these
+effects will also iterate out.  In those cases where this does not
+happen, it probably would not have happened if they were taken into
+account; due to dependencies between equations. 
+
+

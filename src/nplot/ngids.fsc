@@ -1,0 +1,70 @@
+C+ NGIDS.FSC
+C  GvD 920525
+C
+C  Revisions:
+C	HjV 920723	Replace DWARF-routines by Newstar-routines
+C	WNB 930329	Make FSC
+C	WNB 930330	Make Gipsy dependent
+C	WNB 930510	Major rewrite
+C	WNB 930621	Remove area option; add FLAG, SAVE, CLEAR, WRITE
+C	CMV 930830	Added option DATA and RAW, renamed LOAD to MAP
+C	CMV 940203	Uncommented "no Gipsy" error
+C	CMV 960122	Warning if /NORUN ignored
+C
+	SUBROUTINE NGIDS
+C
+C  Main routine load maps into Groningen Image Display System
+C
+C  Result:
+C
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NGI_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+C
+C  Function references:
+C
+	LOGICAL WNDRUN
+	LOGICAL NGILOD				!Load maps for GIDS
+C
+C  Data declarations:
+C
+	LOGICAL FIRST		!FIRST INDICATOR
+C-
+C
+C  Preliminaries
+C
+	CALL NGIINI				!INIT PROGRAM
+	IF (.NOT.WNDRUN()) 
+	1	CALL WNCTXT(F_TP,'Ignored option /NORUN')
+	SETS(0,0)=0				!NO SETS DEFINED
+	FIRST=.TRUE.				!FIRST RUN
+C
+C GET OPTIONS
+C
+#ifndef wn_gipsy__
+	CALL WNCTXT(F_TP,'!/NGIDS cannot be run on this machine!/')
+#else
+ 10	CONTINUE
+	CALL NGIDAT(FIRST)			!GET OPTIONS
+	IF (OPT.EQ.'MAP'.OR.OPT.EQ.'DAT'.OR.OPT.EQ.'RAW') THEN	!LOAD
+	  JS=NGILOD()				!LOAD MAPS
+	ELSE IF (OPT.EQ.'POI') THEN
+	  CALL NGIPNT(0)			!GET MAP INFO
+	ELSE IF (OPT.EQ.'FLA') THEN
+	  CALL NGIPNT(1)			!GET FLAG INFO
+	END IF
+	IF (OPT.NE.'QUI') GOTO 10		!MORE
+#endif
+C
+	RETURN					!READY
+C
+C
+	END

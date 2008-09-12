@@ -1,0 +1,47 @@
+C+ WNGSEG.FSC
+C  WNB 930331
+C
+C  Revisions:
+C
+	SUBROUTINE WNGSEG(NAME,VAL)
+C
+C  Get environment variable
+C
+C  Result:
+C
+C	CALL WNGSEG( NAME_C*:I, VAL_C*:O)
+C				Get the value of the environment/logical
+C				NAME in VAL. All blanks if non-existent
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	CHARACTER*(*) NAME		!NAME OF ENV. VARIABLE
+	CHARACTER*(*) VAL		!VALUE OF ENV. VARIABLE
+C
+C  Function references:
+C
+#ifdef wn_vx__
+	LOGICAL LIB$SYS_TRNLOG		!GET LOGICAL NAME VALUE
+#endif
+C
+C  Data declarations:
+C
+C-
+#ifdef wn_vx__
+	JS=LIB$SYS_TRNLOG(NAME,I,VAL)			!GET VALUE
+	IF (.NOT.JS .OR. I.LE.0) VAL=' '		!NO VALUE
+#else
+	CALL GETENV(NAME,VAL)				!GET VALUE
+#endif
+C
+	RETURN
+C
+C
+	END

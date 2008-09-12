@@ -1,0 +1,98 @@
+C+ NGCSTG.FOR
+C  WNB 920820
+C
+C  Revisions:
+C
+	LOGICAL FUNCTION NGCSTG(FCA,SETS,NGF,NGFP,SNAM)
+C
+C  Get next plot set
+C
+C  Result:
+C
+C	NGCSTG_L = NGCSTG( FCA_J:I, SETS_J(0:7,0:*):IO, NGF_B(0:*):O,
+C				NGFP_J:O, SNAM_J(0:7):O)
+C				Get next set in file FCA, using the
+C				specification in SETS (see WNDSTA).
+C				NGCSTG will be .false. if no more sets.
+C				NGF will be the header of the set, NGFP the
+C				diskpointer. SNAM is the full name of the
+C				group, coded. A check is made for the right
+C				version.
+C	NGCSTH_L = NGCSTH( FCA_J:I, SETS_J(0:7,0:*):IO, NGF_B(0:*):O,
+C				NGFP_J:O, SNAM_J(0:7):O)
+C				Same, but no check for version
+C	NGCSTL_L = NGCSTL( FCA_J:I, SETS_J(0:7,0:*):IO, NGF_B(0:*):O,
+C				NGFP_J:O, SNAM_J(0:7):O,
+C				OFFSET_J(0:7):I)
+C				As NGCSTG, but the check in the set list SETS
+C				is done with offsets OFFSET.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NGF_O_DEF'		!SET HEADER
+C
+C  Parameters:
+C
+C
+C  Entry points:
+C
+	LOGICAL NGCSTH			!NO VERSION CHECK
+	LOGICAL NGCSTL			!OFFSET FOR LOOPS
+C
+C  Arguments:
+C
+	INTEGER FCA			!FILE TO SEARCH
+	INTEGER SETS(0:7,0:*)		!SETS TO DO
+	BYTE NGF(0:*)			!SET HEADER
+	INTEGER NGFP			!POINTER TO SET HEADER
+	INTEGER SNAM(0:7)		!FULL SET NAME
+	INTEGER OFFSET(0:7)		!CHECK OFFSET FOR LOOPS
+C
+C  Function references:
+C
+	LOGICAL WNFRD			!READ DISK
+	LOGICAL WNDSTG			!FUNCTIONS THAT DO THE WORK
+	LOGICAL WNDSTH,WNDSTL
+C
+C  Data declarations:
+C
+C-
+	NGCSTG=WNDSTG(FCA,SETS,NGFHDV,NGFP,SNAM)	!GET SET
+	GOTO 10
+C
+C NGCSTH
+C
+	ENTRY NGCSTH(FCA,SETS,NGF,NGFP,SNAM)
+C
+	NGCSTH=WNDSTH(FCA,SETS,NGFHDV,NGFP,SNAM)	!GET SET
+	GOTO 10
+C
+C NGCSTL
+C
+	ENTRY NGCSTL(FCA,SETS,NGF,NGFP,SNAM,OFFSET)
+C
+	NGCSTL=WNDSTL(FCA,SETS,NGFHDV,NGFP,SNAM,OFFSET)	!GET SET
+	GOTO 10
+C
+C SET SET HEADER
+C
+ 10	CONTINUE
+	IF (NGCSTG) THEN				!ONE FOUND
+	  IF (.NOT.WNFRD(FCA,NGFHDL,NGF(0),NGFP)) GOTO 900 !READ SET HEADER
+	END IF
+C
+	RETURN
+C
+C ERROR
+C
+ 900	CONTINUE
+	DO I=1,7
+	  SETS(I,0)=0					!RESET SEARCH
+	END DO
+	NGCSTG=.FALSE.					!NO MORE
+C
+	RETURN
+C
+C
+	END

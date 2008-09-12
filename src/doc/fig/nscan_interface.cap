@@ -1,0 +1,11 @@
+%nscan_interface.tex
+\begin{figure}[hbtp]
+
+%\fig{nscan_interface}
+%
+\caption{\it 
+\label{.nscan.interface}
+Overview of the actions in NSCAN.
+}
+
+\end{figure}

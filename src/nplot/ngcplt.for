@@ -1,0 +1,519 @@
+C+ NGCPLT.FOR
+C  WNB 920821
+C
+C  Revisions:
+C	WNB 921104	Full HA range
+C	WNB 921221	Default plotter EPS
+C	HjV 930423	Change name of some keywords and some text
+C	WNB 930707	Text only
+C	WNB 930708	Add plot type to header
+C	WNB 930826	New HA range
+C       HjV 930924      Change HARA in HASRA in NSCHAS-call 
+C	CMV 931210	Add 'NGF_LOOPS' argument to WNDXLP
+C	CMV 931220	Pass FCA of input file to WNDXLP and WNDSTA/Q
+C       HjV 940428	Change position NGF_SETS (now after NGF_LOOPS)
+C	CMV 940811	Ask scales in baseline for TRTYP=2
+C	JPH 940824	'plot' --> 'cut'
+C			CONTINUE/GOTO --> DOWHILE/ENDDO
+C			Annotation: Abs. cut nrs --> ifr/tel + pol
+C			Plot dashed line over deleted points, dash connecting
+C			 lines to ref. level
+C			Emphasize isolated points
+C       HjV 950705	Add keyword PLOT_FORMAT
+C
+C
+	SUBROUTINE NGCPLT
+C
+C  Make plots
+C
+C  Result:
+C
+C	CALL NGCPLT			Make plots from RGP files.
+C
+C
+C  Pin references:
+C
+C	PLOTTER		Plotter to use
+C       PLOT_FORMAT	Format for EPS/PS-plots
+C	NGF_SETS	Plots to plot
+C	HA_RANGE	HA range to plot
+C	HA_SCALE	HA scale
+C	SCALE		Plot scale
+C	OFFSET		Plot offset
+C	PLOT_TYPE	Type of plot
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NGF_O_DEF'		!PLOT HEADER
+	INCLUDE 'NGC_DEF'
+C
+C  Parameters:
+C
+	INTEGER DRAWN, DASHED
+	PARAMETER (DRAWN=1, DASHED=2)
+C
+C  Arguments:
+C
+C
+C  Function references:
+C
+	LOGICAL WNDPAR		!GET USER DATA
+	LOGICAL WNDSTA		!ASK PLOTS
+	LOGICAL WNDXLP		!ASK LOOPS
+	LOGICAL WNDXLN		!NEXT LOOP
+	LOGICAL WNFRD		!READ DISK
+	LOGICAL WNGGVA		!GET MEMORY
+	LOGICAL WQ_MPAGE	!OPEN PLOT DEVICE
+	INTEGER WNMEJC		!CEIL
+	INTEGER WNMEJF		!FLOOR
+	CHARACTER*32 WNTTSG	!SET NAME
+	LOGICAL NGCSTL		!GET NEXT SET
+	LOGICAL NGCSTG		!GET NEXT SET
+	LOGICAL NSCHAS		!GET HA_RANGE
+        INTEGER WNCALN                  !STRING LENGTH
+C
+C  Data declarations:
+C
+	INTEGER LIX			! LINE-TYPE INDEX
+	INTEGER NCUT			!# OF PLOTS TO USE
+	INTEGER MXNHV(0:1)		!MAX. NR OF PAGES
+	INTEGER NHV(0:1)		!# OF PAGES
+	INTEGER NPTS			!LENGTH SINGLE PLOT
+	INTEGER NGFP			!PLOT HEADER POINTER
+	INTEGER SNAM(0:7)		!PLOT NAME
+	INTEGER CSET(0:7,0:1)		!CHECK SETS
+	LOGICAL LFIRST			!FIRST LOOP
+	INTEGER PLCNT			!PLOT COUNT
+	REAL HA				!START HA OUTPUT PLOT
+	REAL HAINC			!HA INCREMENT OUTPUT PLOT
+	REAL HAFAC			!CONVERSION TO DEGREES OR METERS
+	REAL CHA			!HA CURRENT POINT
+	REAL HARA(2),HASRA(2)		!HA RANGE
+	REAL HASC			!HA SCALE
+	REAL SCAL			!PLOT SCALE
+	REAL OFFS			!PLOT OFFSET
+	INTEGER BUFL			!LENGTH DATA BUFFER
+	INTEGER BUFAD			!ADDRESS DATA BUFFER
+	REAL NEW(0:MXNSET-1)		! Current plot values
+	REAL OLD(0:MXNSET-1)		! Previous plot values
+	REAL LASTV(0:MXNSET-1)		! Last valid plot values
+	REAL LASTH(0:MXNSET-1)		!  and its vertical coord.
+	LOGICAL*1 EMPH(0:MXNSET-1)	! 'contiguous valid points' flag
+	REAL UP(6)			!TEXT UP VECTOR
+		DATA UP/0.,1.,1.,0.,-1.,0./
+	INTEGER IFOFF(0:MXNSET-1)	!Plot offset
+	CHARACTER*132 TEXT		!Text lines
+	CHARACTER*(MXNSET) TXT(2)	!Annotation
+	CHARACTER*(MXNSET) TXT1,TXT2	!Top line
+	CHARACTER*1 TXT3		!Used for select char.
+        CHARACTER*32 DUSER              !USERNAME
+	BYTE NGF(0:NGFHDL-1,0:MXNSET)	!PLOT HEADERS
+	  INTEGER*2 NGFI(0:NGFHDL/2-1,0:MXNSET)
+	  INTEGER NGFJ(0:NGFHDL/4-1,0:MXNSET)
+	  REAL NGFE(0:NGFHDL/4-1,0:MXNSET)
+          CHARACTER*(NGFHDL) NGFC
+	  EQUIVALENCE(NGF,NGFC,NGFI,NGFJ,NGFE)
+C-
+C
+C INIT
+C
+	MXNHV(0)=1				!MAX. # OF PAGES
+	MXNHV(1)=MXNPAG
+	PLDEV='PL'
+	OPTION='COS'
+	PLCNT=0					!PLOT COUNT
+C
+C GET PLOT INFO
+C
+ 10	CONTINUE
+	IF (PLCNT.NE.0) PLDEV='""'		!PLOT END
+	IF (.NOT.WNDPAR('PLOTTER',PLDEV,LEN(PLDEV),J0,PLDEV)) THEN
+	  GOTO 900
+	ELSE IF (J0.LE.0) THEN
+	  GOTO 900
+	END IF
+C
+C GET PLOT-FORMAT
+C ONLY FOR (ENCAPSULATED) POSTSCRIPT
+C
+	IF (PLDEV(1:2).EQ.'EL' .OR. PLDEV(1:2).EQ.'EP' .OR.
+	1   PLDEV(1:2).EQ.'PL' .OR. PLDEV(1:2).EQ.'PP' ) THEN
+	  IF (.NOT.WNDPAR('PLOT_FORMAT',PLDEV(3:3),LEN(PLDEV(3:3)),
+	1	J0,PLDEV(3:3))) THEN
+	    GOTO 900
+	  ELSE IF (J0.LE.0) THEN
+	    GOTO 900
+	  END IF
+	END IF
+C
+ 11	CONTINUE
+	IF (.NOT.WNDXLP('NGF_LOOPS',FCAOUT)) GOTO 10	!LOOPS
+	IF (.NOT.WNDSTA('NGF_SETS',MXNSET,SETS,FCAOUT)) GOTO 10  !PLOTS TO USE
+	IF (SETS(0,0).EQ.0) GOTO 10
+	IF (.NOT.NGCSTG(FCAOUT,SETS,NGF(0,0),NGFP,SNAM)) GOTO 11 !ONE PRESENT
+	CALL WNDSTR(FCAOUT,SETS)		!RESET SEARCH
+	CALL WNDXLI(LPOFF)			!INIT LOOPS
+	LFIRST=.TRUE.
+	PLCNT=0					!COUNT PLOTS
+C
+	DO WHILE (WNDXLN(LPOFF))
+ 14	  CONTINUE
+	  IF (LFIRST) THEN
+	    IF (.NOT.WNDPAR('PLOT_TYPE',OPTION,LEN(OPTION),
+	1			J0,OPTION)) THEN !GET TYPE OF PLOT
+	      IF (E_C.EQ.DWC_ENDOFLOOP) GOTO 11	!RETRY SETS
+	      GOTO 14				!RETRY
+	    END IF
+	    IF (J0.LT.0) OPTION='COS'		!DEFAULT
+	    IF (J0.EQ.0) GOTO 11		!RETRY SETS
+ 12	    CONTINUE
+	    IF (NGFJ(NGF_TRTYP_J,0).EQ.2) THEN	! baseline sequence
+	      HAFAC=360.*10.			!"Circles" to Meters
+	      IF (.NOT.WNDPAR('BAS_RANGE',HASRA,
+	1		     2*LB_E,J0,'0,3000')) THEN
+	        IF (E_C.EQ.DWC_ENDOFLOOP) GOTO 14 !RETRY
+	        GOTO 12
+	      END IF
+	      IF (J0.EQ.0) GOTO 14
+	      IF (J0.LT.0) THEN
+	        HASRA(0)=0.
+	        HASRA(1)=3000.
+	      END IF
+ 15	      CONTINUE
+	      IF (.NOT.WNDPAR('BAS_SCALE',HASC,LB_E,J0,'150.')) THEN !HA_SCALE
+	        IF (E_C.EQ.DWC_ENDOFLOOP) GOTO 12	!RETRY
+	        GOTO 15
+	      END IF
+	      IF (J0.EQ.0) GOTO 12
+	      IF (J0.LT.0) HASC=150.		!DEFAULT
+	      HASC=HASC/10.			!MAKE PER MM
+	    ELSE				! HA sequence
+	      HAFAC=360.			!Circles to Deg
+	      IF (.NOT.NSCHAS(1,HASRA)) GOTO 11	!GET HA RANGE
+	      HASRA(1)=HASRA(1)*360.		!MAKE DEGREES
+	      HASRA(2)=HASRA(2)*360.
+ 13	      CONTINUE
+	      IF (.NOT.WNDPAR('HA_SCALE',HASC,LB_E,J0,'15.')) THEN !HA_SCALE
+	        IF (E_C.EQ.DWC_ENDOFLOOP) GOTO 12	!RETRY
+	        GOTO 13
+	      END IF
+	      IF (J0.EQ.0) GOTO 12
+	      IF (J0.LT.0) HASC=15.		!DEFAULT
+	      HASC=HASC/10.			!MAKE PER MM
+	    END IF
+	  END IF
+C
+C GET CUTS
+C
+ 20	  CONTINUE
+	  NCUT=0				!CNT CUTS
+	  CSET(0,0)=-1				!CHECK CUTS
+	  CSET(0,1)=-1
+	  DO WHILE(NGCSTL(FCAOUT,SETS,NGF,NGFP,SNAM,LPOFF)) !GET CUT
+	    IF (NCUT.LT.MXNSET) THEN
+	      NCUT=NCUT+1			!COUNT
+	      IF (.NOT.WNFRD(FCAOUT,NGFHDL,NGF(0,NCUT),NGFP)) THEN
+ 21	        CONTINUE
+	        CALL WNCTXT(F_TP,'!/Error reading cut file')
+	        GOTO 900
+	      END IF
+	      IF (CSET(0,0).EQ.-1) THEN		!SAVE FIRST SET
+	        DO I=0,7
+  		  CSET(I,0)=SNAM(I)
+	        END DO
+	      END IF
+	      DO I=0,7				!SAVE LAST SET
+	        CSET(I,1)=SNAM(I)
+	      END DO
+	    END IF
+	  END DO
+	  IF (NCUT.LE.0) GOTO 40		!NEXT LOOP
+C
+C SET LENGTHS CUTS
+C
+ 30	  CONTINUE
+	  NPTS=NGFJ(NGF_SCN_J,1)		!INIT VALUES
+	  HA=NGFE(NGF_HAB_E,1)*HAFAC
+	  HAINC=NGFE(NGF_HAI_E,1)*HAFAC
+	  R0=NGFE(NGF_MAX_E,1)
+	  R1=NGFE(NGF_MIN_E,1)
+	  DO I=2,NCUT
+	    NPTS=MAX(NPTS,NGFJ(NGF_SCN_J,I))
+	    HA=MIN(HA,NGFE(NGF_HAB_E,I)*HAFAC)
+	    HAINC=MIN(HAINC,NGFE(NGF_HAI_E,I)*HAFAC)
+	    R0=MAX(R0,NGFE(NGF_MAX_E,I))
+	    R1=MIN(R1,NGFE(NGF_MIN_E,I))
+	  END DO
+	  CALL WNCTXT(F_TP,'Range: !E5, !E5 units',R1,R0)
+ 31	  CONTINUE
+	  IF (LFIRST) THEN
+	    IF (.NOT.WNDPAR('SCALE',SCAL,LB_E,J0,A_B(-A_OB),
+	1		MAX(ABS(R0),ABS(R1))/10.,1)) THEN !GET SCALE
+	      IF (E_C.EQ.DWC_ENDOFLOOP) GOTO 11
+	      GOTO 31
+	    END IF
+	    IF (J0.EQ.0) GOTO 11
+	    IF (J0.LT.0) SCAL=MAX(ABS(R0),ABS(R1))/10.
+ 32	    CONTINUE
+	    IF (.NOT.WNDPAR('OFFSET',OFFS,LB_E,J0,'0.')) THEN !GET OFFSET
+	      IF (E_C.EQ.DWC_ENDOFLOOP) GOTO 31
+	      GOTO 32
+	    END IF
+	    IF (J0.EQ.0) GOTO 31
+	    IF (J0.LT.0) OFFS=0.
+	  END IF
+	  LFIRST=.FALSE.
+C
+C GET DATA BUFFER
+C
+	  BUFL=LB_X*(NCUT+1)*NPTS		!GET DATA BUFFER
+	  IF (.NOT.WNGGVA(BUFL,BUFAD)) THEN
+	    CALL WNCTXT(F_TP,'!/Cannot get cutdata buffer')
+	    GOTO 900
+	  END IF
+	  BUFAD=(BUFAD-A_OB)/LB_X
+C
+C READ CUT DATA
+C
+	  DO I=1,NCUT				!READ ALL DATA
+	    IF (.NOT.WNFRD(FCAOUT,NGFJ(NGF_SCN_J,I)*LB_X,
+	1		A_X(BUFAD+NPTS*I),NGFJ(NGF_DPT_J,I))) GOTO 21
+	  END DO
+C
+C  INIT PLOT
+C   Define page boundaries
+C
+ 60	  CONTINUE
+	  HARA(1)=MAX(HASRA(1),HA) !START HA
+	  HARA(2)=MAX(HARA(1),MIN(HASRA(2),HA+(NPTS-1)*HAINC)) !END HA
+	  PG(1,1)=0				!TOTAL AREA
+	  PG(1,2)=XWND-1
+	  PG(2,1)=YWND-1-(50.+(HARA(2)-HARA(1))/HASC)*YFAC
+	  PG(2,2)=YWND
+	  IF (.NOT.WQ_MPAGE(DQID,NHV,PLDEV,MXNHV,780.,PG(1,1))) THEN
+	    CALL WNCTXT(F_TP,'!Cannot find plotter')
+	    GOTO 80
+	  END IF
+C
+C   Make heading
+C
+	  CALL WNGSGU(DUSER)                    !GET USER
+	  CALL WQ_MPLR(DQID,NHV,1,1,1.,0)	!NORMAL UNITS
+	  CALL WQSTXH(TXTHGT)			!TEXT HEIGHT
+	  CALL WNCTXS(TEXT,
+	1	'    NGCALC (!AS-!AS) by !AS ',OPTION,
+	1    	NGFC(NGF_TYP_C+1:NGF_TYP_C+
+	1	NGF_TYP_N),DUSER) 		!SHOW CUT TYPE
+	  CALL WQ_MDATE(DQID,NHV,TEXT)		!DATE
+	  CALL WNCTXS(TEXT,'Node: !AS !60CFile: !AS',
+	1	NODOUT,FILOUT)
+	  TXTXY(1)=0.				!WRITE HEADING
+	  TXTXY(2)=YWND-9*YFAC
+	  CALL WQTEXT(TXTXY,TEXT)		!TEXT
+	  CALL WNCTXS(TEXT,'Sector range: !AS - !AS'//
+	1		'!60CField: !AL12',
+	1		WNTTSG(CSET(0,0),0),WNTTSG(CSET(0,1),0),
+	1		NGF(NGF_NAM_1,1))
+	  TXTXY(1)=0.				!WRITE HEADING
+	  TXTXY(2)=YWND-12*YFAC
+	  CALL WQTEXT(TXTXY,TEXT)		!TEXT
+	  CALL WNCTXS(TEXT,
+	1	'!60COffset: !E10.3 units',OFFS)!ZERO OFFSET
+	  TXTXY(1)=0.				!WRITE HEADING
+	  TXTXY(2)=YWND-15*YFAC
+	  CALL WQTEXT(TXTXY,TEXT)		!TEXT
+ 	  TXTXY(1)=210*XFAC			!CUT 1CM.LINE BEGIN (Y)
+	  TXTXY(2)=YWND-13*YFAC
+	  TXTXY(3)=210*XFAC
+	  TXTXY(4)=YWND-15*YFAC
+	  CALL WQPOLL(2,TXTXY)			!POLYLINE
+	  TXTXY(1)=210*XFAC			!CUT 1CM. LINE (X)
+	  TXTXY(2)=YWND-14*YFAC
+	  TXTXY(3)=220*XFAC
+	  TXTXY(4)=TXTXY(2)
+	  CALL WQPOLL(2,TXTXY)			!POLYLINE
+	  TXTXY(1)=220*XFAC			!CUT 1CM. LINE END (Y)
+	  TXTXY(2)=YWND-13*YFAC
+	  TXTXY(3)=220*XFAC
+	  TXTXY(4)=YWND-15*YFAC
+	  CALL WQPOLL(2,TXTXY)			!POLYLINE
+	  CALL WNCTXS(TXT2,'= !E10.3 units',SCAL*10.)
+	  TXTXY(1)=222.*XFAC			!CUT RULE
+	  TXTXY(2)=YWND-15*YFAC
+	  CALL WQTEXT(TXTXY,TXT2)		!TEXT
+C
+C  HA ANNOTATION
+C
+ 	  R0=10.*HASC	 			!DEGREE PER CM
+	  IF (R0.LE.2) THEN
+	    I=2
+	  ELSE IF (R0.LE.5) THEN
+	    I=5
+	  ELSE IF (R0.LE.10) THEN
+	    I=10
+	  ELSE IF (R0.LE.30) THEN
+	    I=30
+	  ELSE IF (R0.LE.45) THEN
+	    I=45
+	  ELSE
+	    I=90
+	  END IF
+	  DO R1=WNMEJC(HARA(1)/FLOAT(I))*FLOAT(I),
+	1	WNMEJF(HARA(2)/FLOAT(I))*FLOAT(I),
+	1	FLOAT(I) 			! DRAW HA MARKS
+	    CALL WNCTXS(TXT1,'!3$SJ',NINT(R1))
+	    POINXY(1,1)=0
+	    POINXY(2,1)=YWND-(35.+
+	1	(R1-HARA(1))/HASC)*YFAC-TXTHGT/(18./7.)
+	    CALL WQTEXT(POINXY,TXT1)
+	    TXTXY(1)=30.			! PLOT 1CM. LINE (X)
+	    TXTXY(2)=YWND-(35.+(R1-HARA(1))/HASC)*YFAC
+	    TXTXY(3)=40.
+	    TXTXY(4)=TXTXY(2)	
+	    CALL WQPOLL(2,TXTXY)		!
+	    TXTXY(1)=XWND-11.			! PLOT 0.25 CM. LINE (X)
+	    TXTXY(3)=XWND-1
+	    CALL WQPOLL(2,TXTXY)
+	  END DO
+C
+C Leading zero level plus annotation
+C
+	  R0=(XWND-80)/(NCUT+1)			! CUT SPACING IN MM
+	  CALL WQSTXU(UP(3))			! TEXT DIRECTION
+	  DO I=0,NCUT-1
+	    IFOFF(I)=NINT(40.+((I+1)*R0))	! horizontal OFFSETS of CUTS
+	    TXTXY(1)=IFOFF(I)
+	    TXTXY(2)=YWND-27.*YFAC
+	    TXTXY(3)=IFOFF(I)
+	    TXTXY(4)=YWND-YFAC*31.
+	    CALL WQPOLL(2,TXTXY)		! zero lines
+	    POINXY(1,1)=IFOFF(I)-TXTHGT/2.
+	    POINXY(2,1)=TXTXY(2)+4.*TXTHGT*8./9.
+	    CALL WNCTXS(TEXT(1:4),'!2$AL2!2$AL2',
+	1	NGF(NGF_IFR_1,I+1),
+	1	NGF(NGF_POL_1,I+1))		! annotation, e.g. 37XY or 3 X
+	    CALL WQTEXT(POINXY,TEXT(1:4))
+C
+C Start values for plot
+C
+	    NEW(I)=IFOFF(I)
+	    OLD(I)=NGCDLC			! force dashed connecting line
+	    LASTV(I)=NEW(I)
+	    LASTH(I)=TXTXY(4)			! vert. end posn. of zero line
+	  END DO
+	  CALL WQSTXU(UP(1))			!TEXT DIRECTION
+C
+C PLOT: For each HA value, plot connecting line between current and previous
+C  point for all plots.
+C
+  	  DO R1=HARA(1),HARA(2)+1.1*HAINC,HAINC	! all HA plus one to get
+						!  last point emphasised
+	    DO I=0,NCUT-1			! ALL cuts
+	      I2=NINT((R1/HAFAC-NGFE(NGF_HAB_E,I+1))/
+	1		NGFE(NGF_HAI_E,I+1)) 	!DATA OFFSET in cut vector
+C
+C  Get data value
+C
+	      NEW(I)=NGCDLC			! assume DELETE
+	      IF (R1.LE.HARA(2)+.1*HAINC) THEN	! regular value
+	        IF (I2.LT.0 .OR. I2.GE. NGFJ(NGF_SCN_J,I+1)) THEN
+	        ELSE
+	          IF (REAL(A_X(BUFAD+(I+1)*NPTS+I2))
+	1		.EQ.NGCDLC) THEN
+	            R0=NGCDLC			!DELETED DATA
+	          ELSE IF (OPT(1:1).EQ.'S') THEN	! sine
+	            R0=AIMAG(A_X(BUFAD+(I+1)*NPTS+I2))
+	          ELSE IF (OPT(1:1).EQ.'A') THEN	! amplitude
+	            R0=ABS(A_X(BUFAD+(I+1)*NPTS+I2))
+	          ELSE IF (OPT(1:1).EQ.'P') THEN	! phase
+		    IF (REAL(A_X(BUFAD+(I+1)*NPTS+I2)).EQ.0) THEN
+	              R0=SIGN(PI/2.,AIMAG(A_X(BUFAD+(I+1)*NPTS+I2)))
+	            ELSE
+	              R0=ATAN2(AIMAG(A_X(BUFAD+(I+1)*NPTS+I2)),
+	1		REAL(A_X(BUFAD+(I+1)*NPTS+I2)))
+	            END IF
+	          ELSE
+	            R0=REAL(A_X(BUFAD+(I+1)*NPTS+I2))! cosine
+	          END IF
+	          IF (R0.NE.NGCDLC) NEW(I)=(R0-OFFS)/SCAL*
+	1		XFAC+IFOFF(I)		! SCALE VALUE
+	        END IF
+	      ENDIF
+C
+C  Plot line from previous point
+C
+	      IF (NEW(I).NE.NGCDLC) THEN	! valid point
+		IF (OLD(I).NE.NGCDLC) THEN	! was previous point skipped?
+		  LIX=DRAWN			!  no, full line
+		ELSE
+		  LIX=DASHED			! next line dashed
+		ENDIF
+ 	        POINXY(1,1)=LASTV(I)		! retrieve last
+		POINXY(2,1)=LASTH(I)		!   valid point
+	        POINXY(1,2)=NEW(I)		! current hor. posn
+  	        POINXY(2,2)=YWND-YFAC*(35.+(R1-HARA(1))
+	1		/HASC)			! current vert. posn
+	        CALL WQPOLL_IX(2,POINXY,LIX) 	! line from last val. to current
+		LASTV(I)=NEW(I)			! new last valid
+		LASTH(I)=POINXY(2,2)
+		EMPH(I)=OLD(I).EQ.NGCDLC
+	      ELSEIF (EMPH(I)) THEN		! if prev. point was an
+		POINXY(1,1)=LASTV(I)		!  isolated one, emphasise it
+		POINXY(1,2)=LASTV(I)
+		POINXY(2,1)=LASTH(I)-.25*YFAC
+		POINXY(2,2)=LASTH(I)+.25*YFAC
+		CALL WQPOLL_IX(2,POINXY,DRAWN)
+		EMPH(I)=.FALSE.			! emphasise only once
+	      ENDIF
+	      OLD(I)=NEW(I)			! new last
+	    END DO
+	  END DO
+C
+C Trailing reference line
+C
+	  POINXY(2,2)=POINXY(2,2)-YFAC*4.	! 4 units for connecting line
+	  DO I=0,NCUT-1
+	    NEW(I)=IFOFF(I)
+	    POINXY(1,1)=LASTV(I)		! last valid point
+	    POINXY(2,1)=LASTH(I)
+	    POINXY(1,2)=NEW(I)
+	    CALL WQPOLL_IX(2,POINXY,DASHED)	! connecting line, dashed	
+	  END DO
+	  POINXY(2,1)=POINXY(2,2)
+	  POINXY(2,2)=POINXY(2,1)-YFAC*4.	! 4 units for zero line
+	  DO I=0,NCUT-1
+	    POINXY(1,1)=IFOFF(I)
+	    POINXY(1,2)=IFOFF(I)
+	    CALL WQPOLL_IX(2,POINXY,DRAWN)		! zero line, full
+	  END DO
+	  CALL WQSTXU(UP(5))			! TEXT DIRECTION
+	  POINXY(2,1)=POINXY(2,2)-4.*TXTHGT*8./9.
+	  DO I=0,NCUT-1
+	    POINXY(1,1)=IFOFF(I)+TXTHGT/2.
+	    CALL WNCTXS(TEXT(1:4),'!2$AL2!2$AL2',
+	1	NGF(NGF_IFR_1,I+1),
+	1	NGF(NGF_POL_1,I+1))		! annotation, e.g. 37XY or 3 X
+	    CALL WQTEXT(POINXY,TEXT(1:4))
+	  END DO
+	  CALL WQSTXU(UP(1))			! TEXT DIRECTION
+	  PLCNT=PLCNT+1				! PLOT COUNT
+	  CALL WNCTXT(F_TP,'Plot !UJ produced',PLCNT)
+C
+C FINISH
+C
+ 80	  CONTINUE
+	  CALL WNGFVA(BUFL,BUFAD*LB_X+A_OB)	!RELEASE BUFFER
+	  CALL WQ_MCLOSE(DQID,NHV)		!CLOSE DEVICE
+	  CALL WQCLOS				!CLOSE WQ SYSTEM
+40	  CONTINUE
+	ENDDO					! next plot
+	GOTO 11					!MORE LOOPS
+C
+C READY
+C
+ 900	CONTINUE
+	RETURN
+C
+C
+	END

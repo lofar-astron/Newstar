@@ -1,0 +1,11 @@
+%natnf_interface.tex
+\begin{figure}[hbtp]
+
+%\fig{natnf_interface}
+%
+\caption{\it 
+\label{.natnf.interface}
+Overview of the actions in NATNF.
+}
+
+\end{figure}

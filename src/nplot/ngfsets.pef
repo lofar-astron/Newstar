@@ -1,0 +1,308 @@
+!+ NGFSETS.PEF:  NGF-file Sets specification.
+!  JPH 940812
+!
+!  Revisions:
+!       WNB 930630      Add NGF sub-fields
+!       CMV 930712      Correct typo
+!       CMV 931210      Changed LOOPS to SCN/WMP/MDL/NGF_LOOPS
+!       CMV 931220      Add info about L and O answers to ???_LOOPS/SETS
+!       JPH 940812      Split from nsets.pef
+!                       3-character index names
+!                       improve HELP texts
+!       JPH 940920      Remove () from prompts
+!       JPH 941005      Fine-tuning
+!
+!
+!       Ref:    WNDSTA
+!
+KEYWORD=NGF_SETS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	NVALUES=64
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="Sectors to do:  grp.fld.chn.pol.iort.seq "
+	HELP="
+	A NEWSTAR .NGF file contains visibilities and associated data for one
+or more objects. The basic unit of data is the CUT, which is a one-dimensional
+vector of some type of data extracted from a .SCN file. The data may be either
+visibilities or associated data such as corrections; they may be associated
+with an interferometer or with a telescope. Cuts are addressed through a CUT
+INDEX which is a string of six integers separated by dots:
+.
+	grp.fld.chn.pol.iort.seq
+.
+	A GROUP is basically an administrative unit, allowing the user to
+subdivide his data, e.g. per object.
+	The FIELD and CHANNEL are the field and channel numbers in the .SCN
+file of the observation from which the cut was taken.
+	POL is a number indicating the polarisation. For interferometer data,
+pol=0,1,2,3 represents XX,XY,YX,YY. For telescope data pol=0,1 represents X,Y.
+	Depending on the type of data, IORT is the interferometer or telescope
+number. (The former is difficult to interpret; rather use the SELECT_IFRS
+parameter if you want to select interferometers.)
+	The cut SEQuence number distinguishes cuts for which all five of the
+preceding indices are identical. It is your responsibility to know what the
+different seq values represent.
+
+	Index values start at zero. (Remember that for the CHN index 0 is the
+continuum channel.)
+.
+	You may select SETS of cuts for processing through [ranges of] values
+for the ive indices, e.g.
+.
+		2.3-5:2.*.1-7.*.2
+.
+The WILDCARD value '*' means 'all'. Each index may also be specified as a
+RANGE: <first>-<last>[<:increment>]. Indices omitted are assumed to be '*',
+i.e.  ...1.0  means *.*.*.1.0. For wildcards at the end the dots may also be
+omitted, i.e. 1.0 means 1.0.*.*.*
+.
+	The notation 3-5:2 stands for 'from 3 through 5 in steps of 2'. The
+step must be positive. If it is omitted, it is taken to be 1 (as in '1-7'
+above).
+.
+	Multiple cut SETS may be specified, separated by comma's:
+<Set1>,<Set2>,... The associated NGF_LOOPS keyword allows even more looping
+over index values.
+.
+IF YOU WANT TO BE REMINDED OF WHAT CUTS ARE IN YOUR FILE:
+	Type O or L in response to this prompt to get an Overview or Layout
+	of your .NGF file.
+.
+IF YOU DO NOT YET FEEL COMFORTABLE WITH THESE CONCEPTS MORE HELP IS PROVIDED:
+	Type '@' or '>' to be prompted for each of the 6 indices separately,
+	with more specific explanation per index.
+.
+IF YOU GET BORED WITH 6-NUMBER INDICES:
+	Absolute Cut nrs '#<n>' can be used as an alternative.
+"
+!
+!  Get loop parameters
+!       Ref:    WNDSTA (via WNDXLP)
+!
+KEYWORD=NGF_LOOPS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	NVALUES=16
+	SWITCHES=NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	DEFAULT=""" /ASK"
+	PROMPT="Loop specifications: nr of cycles, index increment per cycle"
+	HELP="
+With the NGF_LOOPS keyword, you may specify repetitions of the operation you
+are currently defining, systematically incrementing the Group, Channel, Field
+etc. indices for each new cycle.
+.
+This is done by specifying pairs of values:
+.
+	niter1,index_incr1, niter2,index_incr2, ...
+.
+In each pair, the first value (n_iter) indicates the number of times the loop
+has to execute; the second value (index_incr) indicates how the Cut index is to
+be changed at the start of a new cycle.
+.
+Example:
+	The specification NGF_SETS = grp.fld.1-2.* would select the combination
+of all cuts of frequency channels 1 and 2 for the field grp.fld. If one wishes
+to process 32 sets of successive such pairs of frequency channels, you would
+have to type in the successive NGF_SETS specifications  by hand:
+.
+	grp.fld.1-2, grp.fld.3-4, ....., grp.fld.63-64
+.
+Instead, you may specify NGF_LOOPS=32, 0.0.2  This will cause the program to
+execute the present operation 32 times in a loop, starting with the NGF_SETS
+specification and then incrementing its indices by 0.0.2 for every iteration;
+this is equivalent to the above 32 separate runs of the program.
+.
+	n_iter must be > 0, and the increment can be any index string with
+simple positive or negative integers. An increment of 0 may be omitted, i.e.
+the increment specifications 0.0.3.0 and ..3 are all equivalent.
+.
+	Loops may be nested (to a limiting depth of 8 levels). A following loop
+specification is executed inside the preceding ones.
+.
+Example of nested loops:
+	To run your program on group 3 for 64 fields (fld index), for 10 odd
+channels (chn index) per field, starting at channel 7 and combining all
+polarisations (pol index) every time, specify:
+.
+		NGF_SETS=3.0.7.* (initial set of cuts)
+		NGF_LOOPS=64,.1, 10,..2
+.
+The second loop is executed as an inner loop inside the first one, that is, for
+each mosaic subfield the channels are processed in a contiguous sequence.
+.
+IF YOU WANT TO BE REMINDED OF WHAT CUTS ARE IN YOUR FILE:
+	Type O or L in response to this prompt to get an Overview or Layout
+	of the file for which you need to specify the sets.
+"
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=NGF_GROUPS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="  1st index: grp = groups"
+	HELP="
+Give the group index (range) GRP of a cut-Set specification
+						(GRP.fld.chn.pol.iort.seq)
+.
+Possible answers ([]=optional):
+.
+	0               take first (or only) group
+	n1              take group nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over groups n1 through n2 [step n3]
+	*               loop over all available groups (wildcard)
+	n1-[*][:n3]     loop over all available groups,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated NGF_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=NGF_FIELDS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="  2nd index: field(s)"
+	HELP=" Give the field index (range) FLD of a cut-Set specification
+						(grp.FLD.chn.pol.iort.seq)
+.
+Possible answers ([]=optional):
+.
+	0               take first (or only) field
+	n1              take field nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over fields n1 through n2 [step n3]
+	*               loop over all fields in the observation (wildcard)
+	n1-[*][:n3]     loop over all fields in the observation,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated NGF_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=NGF_CHANNELS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="3rd index: channel(s)"
+	HELP="
+Give the channel index (range) CHN of a cut-Set specification
+						(grp.fld.CHN.pol.iort.seq)
+.
+Remember that channel 0 is the 'continuum' channel.
+.
+Possible answers ([]=optional):
+.
+	0               take the continuum channel
+	n1              take channel nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over channels n1 through n2 [step n3]
+	*               loop over all channels for the field (wildcard)
+	n1-[*]          loop over all channels for the field,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated NGF_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=NGF_POLARS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="4th index: polarisation(s)"
+	HELP="
+Give the polarisation index (range) POL of a cut-Set specification
+						(grp.fld.chn.POL.iort.seq)
+.
+	POL is a number indicating the polarisation. For interferometer data,
+pol=0,1,2,3 represents XX,XY,YX,YY. For telescope data pol=0,1 represents X,Y.
+.
+This index is useful for defining loops (NGF_LOOPS parameter). Otherwise you
+may find the SELECT_XYX parameter more convenient.
+.
+If you prefer to use NGF_POLAR here, examples of reasonable answers are:
+	For interferometer data
+		* (=XX,XY,YX,YY)        0-3:3 (=XX,YY)  0 (=XX) 3 (=YY)
+	For telescope data
+		* (=X,Y)        0 (=X)          1 (=Y)
+.
+Note:
+ The associated NGF_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=NGF_IFRS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="5th index: iort = interferometers or telescopes"
+	HELP="
+Give the interferometer or telescope index (range) IORT of a cut-Set
+specification
+						(grp.fld.chn.pol.IORT.seq)
+.
+This index is most useful in loop specifications (parameter NGF_LOOPS).
+.
+For interferometer data, iort is an interferometer sequence number which can
+not be easily interpreted. Therefore, this index is useful only in loop
+specifications (parameter NGF_LOOPS). Specify a wildcard ('*') here and rely on
+the SELECT_IFRS parameter for selecting interferometers.
+.
+For telescope data, iort is the telescope number (A-D being represented by
+10-13). The selection possibilities are limited here and you may prefer to rely
+on the SELECT_TELS parameter.
+.
+Possible answers ([]=optional):
+.
+	0               take first (or only) ifr|tel
+	n1              take ifr|tel nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over ifr|tels n1 through n2 [step n3]
+	*               loop over all available ifrs|tels (wildcard)
+	n1-[*][:n3]     loop over all available ifrs|tels,
+			 starting with n1 [step n3]
+.
+Note:
+ The associated NGF_LOOPS keyword allows even more looping over index values."
+!
+!       Ref:    WNDSTA_X
+!
+KEYWORD=NGF_CUTS
+	DATA_TYP=C
+	IO=I
+	LENGTH=32
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT=" 6th index: cut(s)"
+	HELP=" Give the sequence-number index (range) SEQ of a cut-Set
+				specification (grp.fld.chn.pol.iort.SEQ).
+.
+Possible answers ([]=optional):
+.
+	0               take the first cut
+	n1              take cut nr n1 (n1=0,1,2,3,....)
+	n1-n2[:n3]      loop over cuts n1 through n2 [step n3]
+	*               loop over all
+			 (wildcard)
+	n1-[*]          loop over all cuts for the field and channel,
+			 starting with n1 [step n3]
+.
+Note:
+The associated NGF_LOOPS keyword allows even more looping over index values."
+

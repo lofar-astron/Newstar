@@ -1,0 +1,434 @@
+Newstar Bug reporting procedure
+-------------------------------
+
+     bug_reports.txt  14/06/93 v1.0 CMV
+     bug_reports.txt  06/09/93 v1.2 CMV
+     JPH 940621	Add list of contents. Include bug_report.2 (=sec. 6.1)
+
+
+INHOUD
+======
+1. Inleiding
+2. Procedure
+3. Revisions en Releases
+4. Functionality Requests
+5. Implementatie: nbug
+6. Prioriteitsstelling
+6.1 Update on priorities
+7. Slotopmerkingen
+
+
+1. Inleiding
+------------
+
+Zolang een programmapakket door een beperkte groep gebruikt wordt, is
+er weinig noodzaak voor al te veel formele procedures. Naarmate het 
+pakket door een grotere groep, met een grotere geografische verspreiding
+wordt gebruikt werkt een aantal informele overlegcircuits niet meer en 
+moet er een aantal afspraken over tijdschema's en rapportage gemaakt worden.
+
+Die afspraken moeten het volgende garanderen:
+
+  1e. Gebruikers weten welke versie van het pakket voor hen draait,
+      en wat de (voornaamste) eigenschappen van die versie zijn.
+
+  2e. Gebruikers die een "bug" rapporteren worden regelmatig op de 
+      hoogte gehouden van de afhandeling van die bug.
+
+  3e. Programmeurs weten aan welke programma's gewerkt wordt.
+
+  4e. Er is een duidelijke prioriteitstelling voor de verschillende
+      onderhouds- en ontwikkelingstaken, waardoor niet onevenredig
+      veel tijd wordt besteed aan minder belangrijke klussen.
+
+  5e. Er zijn duidelijke overleg momenten, waardoor er doorlopend 
+      een optimale werkverdeling is.
+
+  6e. Er is een rapportage procedure, waardoor ervaring bij debugging 
+      voor het nageslacht bewaard blijft.
+
+Voor wat betreft Newstar zijn de meeste van die punten nu (informeel) 
+geregeld. Dit rapport probeert het geheel te structureren, uitgaande 
+van de afhandeling van bugs. Aangezien in mijn optiek missende
+functionaliteit ook een bug is (het jeukt net zo erg...) geldt het 
+verhaal in hoofdlijnen ook voor functionality requests.
+
+
+
+2. Procedure
+------------
+
+Afhandeling van een bug doorloopt de volgende fasen (tussen haakjes de
+status die na deze fase aan de fout wordt toegekend, zie sectie 5):
+
+ 1e. Ontvangst                                      (Received)
+ 2e. Prioriteitsstelling, toewijzing                (Assigned)
+ 3e. Bevestiging naar gebruiker                     (Confirmed)
+
+Tussen 1e. en 3e. mag hooguit twee dagen verstijken. De bevestiging kan 
+ook inhouden: dit heeft lage prioriteit, we houden u op de hoogte. Een 
+bevestiging kan ook plaatsvinden voor prioriteitsstelling.
+
+ 4e. Reproductie van de fout
+
+Als 4e. problemen geeft, wordt teruggekoppeld naar de gebruiker:
+architectuur/site specifieke problemen, kan gebruiker reproduceren?
+Wanneer dit onderdeel meer dan een dag in beslag neemt, moet de 
+prioriteitstelling opnieuw worden bekeken.
+
+ 5e. Analyse van de fout                            (Analysed)
+
+Hier wordt de set van modules/bestanden waar de fout in kan zitten 
+afgebakend: tracen van de fout, controleren van asynchrone effecten etc.
+Wanneer dit onderdeel meer dan een dag in beslag neemt, moet de 
+prioriteitstelling opnieuw worden bekeken. Afhankelijk van de locatie
+van de fout kan de bug worden doorgeschoven naar een andere programmeur
+(bv omdat die de modules geschreven of recent gewijzigd heeft).
+
+  6e. Formuleren van een oplossing of omleiding
+
+Wanneer dit onderdeel meer dan een week in beslag neemt, moet de
+prioriteitstelling opnieuw bekeken worden. Ook moet de gebruiker 
+een bericht krijgen dat de zaak wel eens wat langer kon duren.
+
+  7e. Implementeren van de oplossing of omleiding   (Solved)
+
+Als het implementeren van de geformuleerde oplossing langer dan een week
+duurt, moeten we terug naar 6e.
+
+  8e. Validatie van de oplossing of omleiding       (Tested)
+
+Eventueel worden de wijzigingen gecontroleerd door de oorspronkelijke
+auteur van de modules.
+De gebruiker wordt verzocht op zijn site een test te draaien met de
+gewijzigde modules (evt ftp van executable naar user systeem op die site).
+
+  9e. Afwikkeling van de fout                       (Released)
+
+De wijzigingen worden in de NFRA Master geupdate, inclusief wijzigingen
+van de documentatie.
+De gebruiker die de bug gemeld had, wordt op de hoogte gesteld,
+de master op zijn site wordt bijgewerkt. 
+Andere sites ontvangen een melding van de wijzigingen, en worden 
+eventueel bijgewerkt.
+
+
+3. Revisions en releases
+------------------------
+
+Bij wijzigingen in Newstar kunnen we twee gevallen onderscheiden:
+  - de wijziging heeft een minimale invloed op het gebruik van de 
+    programma's (afgezien van het ontbreken van crashes etc.); 
+    kleine toevoegingen in functionaliteit vallen hier ook onder
+  - de wijziging heeft invloed op het gebruik van de programma's
+    (veranderde keywords, noodzaak om SCN files te converteren etc)
+ 
+In het eerste geval spreken we van een revision van Newstar. Bij een 
+revision is het niet nodig dat elke gebruiker een melding van
+dit heuglijke feit ontvangt. Ook is het niet nodig dat alle sites
+een revision onmiddelijke ontvangen. Het exporteren van een revision
+gebeurt door een beperkt aantal bestanden over te zenden (via een
+revision groupfile: update retrieve .....grp)
+
+In het tweede geval spreken we van een release van Newstar.
+Een release wordt expliciet aangekondigd aan alle gebruikers (evt via
+locale Newstar managers). Een release wordt ge\"exporteerd naar alle
+sites. Voor een release wordt het volledige Master systeem van de site
+gecontroleerd: update retrieve all)
+
+
+4. Functionality requests
+-------------------------
+
+Voor functionality requests geldt in principe hetzelfde als voor bug,
+met dien verstande dat het reproduceren van de fout vervalt, en dat de
+overige stappen een langere tijdschaal hebben. 
+
+
+5. Implementatie: nbug
+----------------------
+
+In de NFRA Master staat een subdirectory $n_src/doc/bug waarin voor 
+elke bug een bestand wordt bijgehouden. Deze bestanden (project files)
+kunnen met de Hypertext browser worden bekeken via een aantal indexen. 
+Onderlinge verbindingen zijn mogelijk.
+
+Onafhankelijk van de manier waaop de bug binnenkomt (eMail, formulier AGB,
+telefonisch, wandelgangen) wordt een project file gemaakt. Als de bug 
+elektronisch gerapporteerd werd, kan het betreffende bestand aan de
+project file gekoppeld worden, anders moet de essentiele informatie 
+worden ingevoerd. 
+
+Wanneer nieuwe informatie beschikbaar komt (na toewijzing, bevestiging,
+oplossing etc) wordt die toegevoegd aan de project file, eventueel met 
+een gekoppeld tekstbestand.
+
+De bug-reports worden bijgehouden middels de utility "nbug", die een 
+hele reeks opties heeft. De meeste opties corresponderen met de diverse
+stadia die een bug in zijn carriere kan doorlopen.
+
+  add          Invoeren nieuwe bug (kent nummer toe, vraagt details)
+  confirm      Ontvangstbevestiging
+  priority     Prioriteitstelling (vraagt priority en assignment)
+  suspend      Wordt tijdelijk niet aan gewerkt (behoudt prioriteit)
+
+  analysed     Fout is gevonden
+  solved       Fout is opgelost
+  tested       Oplossing is getest
+
+  released     Nieuwe software is vrijgegeven (priority wordt -1)
+
+  feedback     Bevestiging van contact met melder
+  status       Vraagt status op van bepaalde bug (kan beter via hypertext)
+ 
+
+Bovenstaande opties vragen allemaal om een associated file en een
+comment, en geven de optie om de project file te editen (emacs of $EDITOR).
+Ze voeren ook automatisch een index commando uit. Indices kunnen op
+ieder moment gemaakt worden met de index optie:
+
+  index        Maakt de standard indexen voor de hypertext
+                 - Alle bugs op volgorde van nummer
+                 - Alle bugs op volgorde van prioriteit
+                 - Alle actieve bugs op volgorde van prioriteit
+
+Naast indices voor on-line toegang zijn (geprinte) lijsten vooralsnog
+van groot belang. De volgende lijsten kunnen met de ndoc optie "list"
+worden gemaakt:
+
+  list        Maakt lijsten voor printout
+    full        Alle bugs op volgorde van nummer
+    priority    Alle bugs op volgorde van prioriteit
+    active      Alle actieve bugs op volgorde van prioriteit
+    late        Alle "vertraagde" bugs, dat is: 
+                  - ontvangen en niet binnen twee dagen bevestigd 
+                  - niet suspended en geen feedback binnen twee weken 
+                  - suspended of released en geen feedback binnen twee dagen
+
+    user        Alle bugs van een bepaalde user (Pietje Puk etc)
+    programmer  Alle bugs van een bepaalde programmeur (HjV, WNB, ...)
+
+
+In de lijsten (en indices) verschijnt de bug als volgt:
+
+ID   Pr.ty Origin              Worker Status   Action/Feedback  Description
+------------------------------------------------------------------------------
+
+0024    10 verheijen           None   Confirmed  930806/930823  Gridding in ..
+0023   200 verheijen           CMV    Confirmed  930806/930823  NGIDS locks ..
+:
+0020     0 verheijen           None   Confirmed  930806/930823  NGIDS much t..
+0019   300 verheijen, WHISP    CMV    Confirmed  930806/930823  NGIDS flaggi..
+:
+
+De volgende bestanden zijn van belang voor nbug:
+ 
+   $n_src/doc/bug/n????.prj           Project file
+   $n_src/doc/bug/detail/n????.*      Alle overige documenten
+
+   $n_src/doc/bug/nbug.txt           "Home Page" met links naar indices
+   $n_src/doc/bug/nbug.idx            Index op nummer
+   $n_src/doc/bug/npriority.idx       Index op priority   
+   $n_src/doc/bug/nactive.idx         Index op priority voor actieve bugs
+   
+Al deze bestanden zijn normale ASCII file die naar believe kunnen worden
+bijgewerkt voor veranderingen die niet door nbug worden ondersteund.
+
+
+6. Prioriteitsstelling
+----------------------
+
+De voorlopige strategie voor de prioriteiten is als volgt:
+ 
+  - Prioriteiten lopen van 0 tot 900
+  - De honderdtallen doen dienst als grove prioriteitsklassen
+    Bugs uit 900-999 worden in principe het eerst aangepakt
+  - De tientallen doen dienst als een globaal werkschema binnen de
+    prioriteitsklassen. Bugs uit 990-999 worden in principe eerder
+    aangepakt dan bugs uit 980-989
+  - De eenheden zijn een kunstmatig middel om een bug omhoog te kunnen
+    schuiven zonder alle overige project files te moeten wijzigen.
+    Als een bug met prioriteit 700 zeer urgent wordt, urgenter dan 
+    bestaande bugs met prioriteit 980, dan wordt de prioriteit gewijzigd
+    naar 981.
+
+  - Een tijdslimiet of schatting kan als commentaar bij de prioriteit-
+    stelling worden gegeven.
+
+Een definitief systeem zal worden vastgesteld op basis van ervaringen met
+het huidige voorstel.
+
+
+6.1 Update on the priority system:
+---------------------------------
+
+There are now five priority classes:
+
+ 100      -   Critical bugs, that make it impossible to use vital programs
+ 200      -   Urgent requests or bugs
+ 300      -   Desirable things
+ 400/500  -   Pro memori
+
+The priority scheme does not show any timeslicing, but is complemented 
+in this respect by the Project Plan.
+
+The header tag Class has been added to distinguish between Bugs
+and Requests, the tag Category shows the program (e.g. NSCAN, NPLOT) 
+with which the Bug/Request is mainly concerned.
+
+
+7. Slotopmerkingen
+------------------
+
+Het moge duidelijk zijn dat een dergelijk systeem niet beperkt is tot 
+gebruik binnen Newstar. Met een aantal triviale wijzigingen in nbug
+is het mogelijk voor een willekeurig software project een dergelijke 
+rapportage op te zetten.
+
+Ook is deze strategie in principe bruikbaar voor alle processen waarbij 
+een "checklist" van status veranderingen moet worden bijgehouden. 
+Desgewenst kan de volgorde van veranderingen worden vastgelegd. 
+
+We kunnen nbug vergelijken met andere bug-reporting systemen (zoals bv het 
+GNATS systeem van GNU). Deze systemen hebben een grotere nadruk op 
+automatische interactie/responsies via electronische mail. De on-line 
+toegankelijkheid is kleiner dan bij nbug, evenals de centrale rapportage 
+mogelijkheden. Desgewenst kan meer eMail interactie worden ingebouwd in
+nbug. Dit lijkt me in de huidige situatie (waar verreweg de meeste 
+klachten verbaal worden ingediend) nauwelijks de moeite.
+
+
+ 
+  
+
+Appendix A: Casus
+-----------------
+
+> _nbug add_
+Creating bug-report project file with id-number 0036
+Enter name of file with associated eMail: _~devoscm/tmp_
+Enter origin [Pietje Puk]: __
+Enter email address [Unknown]: _puk@rux.timboektoe.edu_
+Enter subject [Unknown]: _Cannot make poststam images anymore_
+Any comments: _Seems the same old problem again_
+
+Please confirm the bug within two days and set a priority as soon 
+as possible. Indices for the bug-database will be updated.
+
+Edit the project file (y,n)? [n] _n_
+0036     0 Pietje Puk   None   Received   930909/000000
+     Cannot make poststamp images anymore
+Updating indices...
+
+After I called him back, I type...
+
+> _nbug confirm 36_
+0036     0 Pietje Puk   None   Received   930909/000000
+     Cannot make poststamp images anymore
+Any comments: _Called back, Mr. Puk seems quite upset about this_
+Associated file (may be -bugid or detail/...): __
+Edit the project file (y,n)? [n] __
+0036     0 Pietje Puk   None   Confirmed  930909/930909
+     Cannot make poststamp images anymore
+Updating indices...
+
+Then JEN decides this is quite important...
+
+> _nbug priority_
+Enter bug-id: _36_
+0036     0 Pietje Puk   None   Confirmed  930909/930909
+     Cannot make poststamp images anymore
+Enter (new) priority: _900_
+Assign job to: _HjV_
+Any comments: _Must be solved with a week_
+Associated file (may be -bugid or detail/...): __
+Edit the project file (y,n)? [n] __
+0036  1000 Pietje Puk   HjV    Assigned   930909/930909
+     Cannot make poststamp images anymore
+Updating indices...
+
+So it is analysed immediately...
+
+> _nbug analy 36_
+0036  1000 Pietje Puk   HjV    Assigned   930909/930909
+     Cannot make poststamp images anymore
+Any comments: _Missing check on array bounds in NPLSTM_
+Associated file (may be -bugid or detail/...): _test.log_
+
+Edit the project file (y,n)? [n] __
+0036  1000 Pietje Puk   HjV    Analysed   930909/930909
+     Cannot make poststamp images anymore
+Updating indices...
+
+And when Dr. Puk calls me occasionally...
+
+> _nbug feedback 36_
+0036  1000 Pietje Puk   HjV    Analysed   930909/930909
+     Cannot make poststamp images anymore
+Any comments: _Pietje called again, told him Henk found it_
+Associated file (may be -bugid or detail/...): __
+Edit the project file (y,n)? [n] __
+0036  1000 Pietje Puk   HjV    Analysed   930909/930909
+     Cannot make poststamp images anymore
+Updating indices...
+
+Etc.
+
+Appendix B: Format of project file and indices
+----------------------------------------------
+
+n0036.prj:
+------------------------------------------------------------
+ <TITLE>Newstar Bug Report # 0036</TITLE>
+
+ <H1>Newstar Bug Report # 0036 </H1>
+
+ <DT><STRONG>Origin:</STRONG>           Pietje Puk
+ <DT><STRONG>Address:</STRONG>          puk@rux.timboektoe.edu
+ <DT><STRONG>Subject:</STRONG>          Cannot make poststamp images anymore
+ <DT><STRONG>Status:</STRONG>           Analysed
+ <DT><STRONG>Priority:</STRONG>         1000
+ <DT><STRONG>Worker:</STRONG>           <A HREF=../html/people.html#HjV>HjV</A>
+ <DT><STRONG>Last action:</STRONG>      930909
+ <DT><STRONG>Last feedback:</STRONG>    930909
+
+ <P>
+ <H2>Detailed description</H2>
+
+ <P>
+ <H2>History</H2>
+
+ <DT>930909 18:05 - <STRONG>Received</STRONG> by Marco de Vos
+ <DD>Seems the same old problem again 
+ (<A HREF=detail/n0036.1>detail</A>)
+ <DT>930909 18:07 - <STRONG>Confirmed</STRONG> by Marco de Vos
+ <DD>Called back, Mr. Puk seems quite upset about this
+ <DT>930909 18:07 - <STRONG>Assigned (HjV, priority 1000)</STRONG> by Jan Noordam
+ <DD>Must be solved with a week
+ <DT>930909 18:08 - <STRONG>Analysed</STRONG> by Henk Vosmeijer
+ <DD>Missing check on array bounds in NPLSTM
+ (<A HREF=detail/n0036.2>detail</A>)
+ <DT>930909 18:09 - <STRONG>Feedback</STRONG> by Marco de Vos
+ <DD>Pietje called again, told him Henk found it
+------------------------------------------------------------
+
+
+nbug.idx:
+------------------------------------------------------------
+ <TITLE>Newstar Bug Index: all keys</TITLE>
+ <H1>Index of all bugs sorted on ID number</H1>
+
+ <P>
+ <LI> For an index sorted on priority, click <A HREF=npriority.idx>here</A>
+ <LI> For an index of active items only, click <A HREF=nactive.idx>here</A>
+ <P>
+
+ <TT><DT>BugID Pr.ty - Subject
+ <DD><STRONG>Status...</STRONG> - Action/Feedback 
+ (<EM>Origin</EM> - Worked on)</TT><P>
+
+ <TT><DT><A HREF=n0001.prj>0001</A>: +0000 </TT> - Lines in NPLOT to ...
+ <TT><DT><A HREF=n0002.prj>0002</A>: +0000 </TT> - Programs stay sile...
+
+------------------------------------------------------------
+

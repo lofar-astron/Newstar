@@ -1,0 +1,17 @@
+%%	    \documentstyle[subeqn]{article}
+	    \documentstyle{article}
+	    \newcommand{\iinput}[1]{ \input{#1} }
+ 	    \input /newstar/master/src/doc/latex/hb_print_preamble.sty
+	    \input /newstar/master/src/doc/latex/hb_symbols.sty
+	    \input /newstar/master/latex2html/html.sty
+	    \iinput{epsf.sty}
+	    \newcommand{\fig}[1]{
+	      \centering 
+	      \leavevmode 
+	      \epsfbox{/newstar/master/hlp/fig/#1.ps}
+	    }
+ 	    \begin{document}
+	      {\it Printout of NEWSTAR document chapter - \today }
+	      \\ \\
+\input doc_guide_tmp.text
+\end{document}

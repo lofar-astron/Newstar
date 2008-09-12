@@ -1,0 +1,72 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_GET_PARM
+C.Keywords:	Program Parameters, Get Value
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	DWARF-Fortran
+C.Environment:	VAX or Alliant
+C.Comments:
+C.Version:	900322 FMO - creation
+C.Version:	911213 GvD - do not return UNDEF_J in NR, otherwise
+C			GP_ARG_CHECK treats NELEM next time as not given.
+C.Version:	920305 GvD - split in GETPARM.FOR and GENGETPAR.FOR
+C			system dependencies in GENGETPAR
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION GET_PARM ()
+C	                   GET_PARM (KEYWORD,ARRAY,NBYT,NR,DEFSTR,
+C	1					DEFARR,NRDEF,FLAGS,STROUT)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+C					Required arguments:
+C
+C	CHARACTER*(*)	KEYWORD		! (i) program's parameter name
+C	<datatype>	ARRAY(*)	! (o) data array
+C	INTEGER*4	NBYT		! (i) total length of array in bytes
+C
+C					Optional arguments:
+C
+C	INTEGER*4	NR		! (o) nr of filled elements in array
+C	CHARACTER*(*)	DEFSTR		! (i) default value (given as a string)
+C	<datatype>	DEFARR(*)	! (i) default value (given as an array)
+C	INTEGER*4	NRDEF		! (i) nr of elements in DEFARR
+C	INTEGER*4	FLAGS		! (i) control flags
+C	CHARACTER*(*)	STROUT		! (o) last value set
+C
+C.Purpose:	Get a value set for a program parameter
+C.Returns:	See GETPARM.FOR
+C.Notes:
+C	This function is only an interface to GET_PARM_N/GET_PARM_C to
+C	fill in optional arguments.
+C-------------------------------------------------------------------------
+C
+C
+	INTEGER*4	GEN_CALL
+	EXTERNAL	GET_PARM_N, GET_PARM_C
+C
+C
+C					Defaults for missing arguments
+C
+	INTEGER*4	D_NR		/UNDEF_J/
+	CHARACTER*1	D_DEFSTR	/' '/
+	BYTE		D_DEFARR(1)	/UNDEF_B/
+	CHARACTER*1	D_DEFARR_C(1)	/UNDEF_C/
+	INTEGER*4	D_NRDEF		/UNDEF_J/
+	INTEGER*4	D_FLAGS		/0/
+	CHARACTER*1	D_STROUT	/' '/
+C
+C					Assume numerical-type data array
+C					- pass argument list to GET_PARM_N
+C
+	GET_PARM = GEN_CALL (GET_PARM_N,,,,
+	1		D_NR,D_DEFSTR,D_DEFARR,D_NRDEF,D_FLAGS,D_STROUT)
+C
+C					Return status 0 means: character data
+C					- pass argument list to GET_PARM_C
+C
+	IF (GET_PARM.EQ.0) GET_PARM = GEN_CALL (GET_PARM_C,,,,
+	1		D_NR,D_DEFSTR,D_DEFARR_C,D_NRDEF,D_FLAGS,D_STROUT)
+C
+	RETURN
+	END

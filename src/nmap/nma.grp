@@ -1,0 +1,94 @@
+!+ NMA.GRP
+!  WNB 910219
+!
+!  Revisions:
+!	WNB 910822	Add NMAFID
+!	WNB 911031	Add NMAFMC
+!	WNB 921202	Add NMAMAC, NMADAC
+!	WNB 921211	Add PEF/PSC
+!	WNB 930929	Add SMP.DSC; NMAFLD.FOR
+!	CMV 940607	Add NMAJSL.FOR
+!	HjV 940714	Add NMARFT.FOR, NMARFH.FOR
+!	CMV 940821	Add WMPSETS.PEF
+!	CMV 940929	Add NMARFS
+!	JPH 941017	Add MDLNODE.PEF, WMPNODE.PEF, WMPSETS.PEF
+!	WNB 950809	Add NMAMKP
+!
+!  Map handling
+!
+!  Group definition:
+!
+NMA.GRP
+!
+!  PIN files
+!
+MDLNODE.PEF		!		MDL_NODE keywords
+WMPNODE.PEF		!		WMP_NODE keywords
+WMPSETS.PEF		!		WMP_SETS keywords
+NMAP.PEF		!		MAP-making keywords
+NMAP.PSC
+!
+!  Structure files
+!
+MPH.DSC			!		Map header block
+SMP.DSC			!		R-series map header block
+!
+!  Fortran definition files:
+!
+NMA.DSC			!		Program common/parameters
+!
+!  Programs:
+!
+NMAP.FOR		!		Main routine
+NMACVF.FOR		!NMACVF		Calculate convolution function
+NMACVL.FOR		!NMACVL		Convolve a sorted data set
+NMACVX.FOR		!NMACVX		Convolve a data point
+NMADAR.FOR		!NMADAR		Get map area(s)
+NMADAT.FOR		!NMADAT		Get program data
+			!NMADAC		... for data clean
+NMADFT.FOR		!NMADFT		Build DFT map
+			!NMADF1		Show DFT map
+NMAFID.FOR		!NMAFID		Combine maps
+NMAFLD.FOR		!NMAFLD		Load foreign format maps
+NMAFMC.FOR		!NMAFMC		Combine mosaic maps
+NMAINI.FOR		!NMAINI		Init program
+NMAJSL.FOR		!NMAJSL		Init job summary log
+			!NMAJSS		Add scan to log
+			!NMAJSM		Add map to log
+			!NMAJSP		Print log
+NMAMAK.FOR		!NMAMAK		Make maps
+			!NMAMAC		Make map for data clean
+NMAMKP.FOR		!NMAMKP		Convert U,V visibil. into P intensity
+NMANVS.FOR		!NMANVS		Update version
+NMAOFR.FOR		!NMAOFR		Convert from old format
+NMAOTO.FOR		!NMAOTO		Convert toi old format
+NMAPFL.FOR		!NMAPFL		Print file layout
+NMAPMH.FOR		!NMAPMH		Print map header
+NMAPRT.FOR		!NMAPRT		Show map data
+NMARFH.FOR		!NMARFH		Read FITS header
+NMARFS.FOR		!NMARFS		Decode FITS string header record
+NMARFT.FOR		!NMARFT		Read FITS data
+NMASCN.FOR		!NMASCN		Read a corrected scan
+NMASOI.FOR		!NMASOI		Init UV sort
+NMASON.FOR		!NMASON		End UV sort
+NMASOR.FOR		!NMASOR		Do UV sort
+NMASOT.FOR		!NMASOT		UV sort for one scan
+NMASST.FOR		!NMASST		Get input statistics all data
+			!NMASS1		Get input statistics one map
+NMASTG.FOR		!NMASTG		Get next set specified
+			!NMASTH		Get next set, no version check
+			!NMASTL		Get next set with loop info
+NMATRP.FOR		!NMATRP		Transpose and output
+NMAUNI.FOR		!NMAUNI		Do uniforming
+NMAUNU.FOR		!NMAUNU		Get uniform factor
+NMAUNX.FOR		!NMAUNX		Do uniform convolution
+NMAWFH.FOR		!NMAWFH		Write FITS header
+NMAWFT.FOR		!NMAWFT		Write FITS data
+NMAXCV.FOR		!NMAXCV		Convert data format between machines
+NMAXMH.FOR		!NMAXMH		Show map header in full detail
+			!NMAEMH		Edit map header
+!
+!  Executables
+!
+NMAP.EXE		!		Map handling
+!-

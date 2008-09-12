@@ -1,0 +1,321 @@
+Betreft:
+Batch processing in Newstar
+---------------------------
+
+Waarde heren,
+
+Ik heb wat details van DWARF opgespoord ten behoeve van automatische 
+processing. Hieronder volgt een voorlopig overzicht. Een aantal zaken 
+staat al in het Cookbook: Program Descriptions, Common.
+
+
+1e. DWARF Keywords, streams
+---------------------------
+
+Een gebruiker heeft invloed op de werking van een Newstar programma via
+de DWARF user-interface. Alle grootheden/parameters die een gebruiker
+in principe kan specificeren corresponderen met keywords, die een 
+waarde hebben. Die waarde kan op een aantal niveaus bepaald worden:
+
+   1e. Interne of program defaults:
+         De programmeur heeft een default waarde meegegeven bij de
+         definitie van het keyword (in de zgn. PIN-file). In een 
+         (beperkt) aantal gevallen staat er geen default in de PIN-file
+         maar geeft het programma zelf een default mee.
+
+   2e. Externe defaults:
+         De gebruiker heeft, buiten het programma om, een waarde 
+         gegeven aan het keyword door een DWARF symbool te definieren
+         (met dwspecify, met dwrestore, of door het programma eerder 
+         te gebruiken met de /SAVE switch)
+
+Voor een aantal algemene keywords wordt de externe default op twee 
+plaatsten gezocht: eerst in een tabel met defaults voor het programma
+(de "local" external default), als daar geen waarde staat in de algemene
+tabel (de external default van "NGEN").
+
+   3e. Het programma prompt de gebruiker voor het keyword en krijgt 
+       een waarde via toetsenbord of input-file. 
+
+Normaliter gaan de antwoorden die de user geeft op keyword prompts verloren
+wanneer het programma wordt verlaten. Er zijn twee manieren om een keyword
+te bewaren (alsof het met dwspecify was gegeven):
+
+   - Voor alle keywords de waarde bewaren: start programma met 
+         dwe <programma> /SAVE
+
+   - Voor individuele keywords de waarde bewaren: geef na de prompt
+         waarde /SAVE [/[NO]ASK]    (zie ook onder 3e)
+
+
+Op elk niveau kan een qualifier (switch) /ASK of /NOASK worden meegegeven.
+Deze bepaalt of de gebruiker voor het keyword geprompt wordt of niet
+(het opgeven van /[NO]ASK bij een prompt heeft alleen zin als ook de 
+/SAVE switch gegeven wordt).
+
+
+Met de /SAVE optie en dwspecify (= dws) kunnen vaste defaults voor een 
+programma worden gezet. Omdat het meestal wenselijk is verschillende 
+sets van defaults te gebruiken voor verschillende procedures kan een 
+programma in verschillende "streams" (wat was dat andere woord ook al 
+weer?) gestart worden. Elke "stream" heeft een eigen set defaults.
+
+Het commando om een programma te starten in een bepaalde "stream" is
+
+   dwe <programma>$<streamname>
+
+bv
+   dwe nscan$1
+   dwe nmap$standard
+   dwe nplot             default: stream 1
+
+Wanneer een keyword geen default heeft in de opgegeven stream wordt 
+een default in stream 0 gezocht, is daar ook niets dan blijft alleen
+de default van de PIN file over. Voor NGEN keywords wordt steeds zowel
+in de stream voor het programma als in de stream voor NGEN gezocht.
+
+ 
+
+2e. DWARF Symbols
+-----------------
+
+DWARF slaat externe defaults op als symbolen. Alle symbolen staan 
+fysiek in de file $DWARF_SYMBOLS (meestal ~/SYMBOL_DIR/SYMBOL.$$).
+
+Een DWARF keyword correspondeert met een symbool 
+
+     <Programma>$<Stream>_<Keyword>
+
+De waarde van het symbool is de character string die als default 
+gebruikt zal worden bij user-input, eventueel met de qualifier /ASK 
+of /NOASK er achter.
+
+Wanneer achter de waarde <space>/ASK staat, vervangt de waarde de default 
+van het programma, maar wordt de user toch geprompt voor het keyword.
+
+Wanneer achter de waarde <space>/NOASK staat, of wanneer er helemaal geen 
+qualifier staat, dan wordt de user niet meer voor het keyword geprompt.
+
+
+Naast deze keyword symbolen kunnen ook algemene symbolen gezet worden,
+die in antwoorden op prompts gebruikt kunnen worden, bv PI = 3.1415,
+NATUURLIJK = YES en zo voorts.
+
+
+De volgende utilities zijn beschikbaar om symbolen te manipuleren:
+
+
+ dwlet [symbol=value]  [/LOG[=long|short] [/NOLOG]   (= dwl)
+
+   Geef een waarde aan algemene symbolen. Kan niet gebruikt worden
+   om DWARF keywords te wijzigen.
+
+   Als er geen symbol=value wordt meegegeven wordt de standard input 
+   gelezen voor regels met "symbol=value", om te stoppen: lege regel 
+   of # of ^D.
+
+ dwspecify program[$stream] [/MENU] [/NOMENU]        (= dws)
+
+   Default stream is 1, default mode is /NOMENU.
+
+   Hiermee worden externe defautls voor DWARF keywords opgegeven.
+   Met /menu wordt voor elk keyword geprompt met de huidige 
+   (externe of interne) default, alleen wijzigingen worden in 
+   een symbool gezet. Met /nomenu worden van de standard input 
+   regels keyword=value gelezen.
+
+ dwclear [program[$stream]keyword,... [/CONFIRM] ...  (= dwc)
+
+   Verwijdert de definitie van de keywords, wildcards zijn toegestaan,
+   erg handig is bijvoorbeeld: dwclear nscan$*_*, om helemaal schoon
+   te beginnen.
+
+ dwsave  [program[$stream]keyword,... [/OUTPUT=file] [/CONFIRM] ... 
+
+   Default file is dwarfsave.sav, default extensie is sav
+
+   Schrijft de keywords en hun waarde in de genoemde (ASCII) file, 
+   wildcards zijn toegestaan. Default is *$*_*
+
+ dwrestore file [/CONFIRM] [/OVERWRITE]
+
+   Leest regels keyword=value van de genoemde file en definieert de
+   corresponderende symbolen.
+ 
+ dwview symbol,... [/EXTERN] [/GENERAL] [/INPUT=file] (=dwv)
+
+   Laat de waarde van symbolen zien:
+
+     Zonder /GENERAL en /INPUT:   
+       Symbols moeten de vorm [[program]$stream_]keyword hebben,
+       wildcards toegestaan. Laat zowel interne als externe defaults
+       zien, als /EXTERN alleen de externe (zowel "local" als "NGEN").
+
+     Met /INPUT:
+       Leest als dwrestore van de genoemde file, laat keywords zien      
+       die matchen met de genoemde symbols.
+
+     Met /GENERAL:   (optie gemaakt 28/07/93)
+       Symbols mag zowel DWARF keywords als algemene symbols bevatten,
+       wildcards toegestaan (bv: dwv /g *).
+       Voor keywords: alleen externde defaults worden getoond.
+       Als er precies een symbool is opgegeven is de uitvoer de 
+       waarde van dat symbool, anders regels symbol=value.
+
+
+Een typische manier om standard streams te gebruiken is dus:
+
+  dwe nscan$abc /save [/norun]       of   dws nscan$abc /menu
+  dwe nplot$abc /save [/norun]       
+
+  dwsave *$abc /output=abc
+
+Tenslotte commentaar invoegen in abc.sav, eventueel nog wat keywords 
+van de /ask switch voorzien.
+
+Dan bij gebruik:
+
+   dwrestore abc /override
+
+   dwe nscan$abc
+   dwe nplot$abc
+
+
+
+
+
+
+3e. Antwoorden op prompts
+-------------------------
+
+Het programma bepaalt (via de PIN file) wat voor antwoorden geldig zijn
+(character strings, numeric values). Binnen de grenzen van die geldigheid
+kunnen de volgende constructies worden opgegeven:
+
+   ?                     Geef online help
+
+   # of ^D               Exit (meestal: vraag vorige keyword)
+
+   ""                    Empty answer (meestal: by-pass option)
+ 
+   *                     Wildcard (meestal: take all)
+
+   ... ! Comment         Alles na een uitroepteken is commentaar
+
+   ...'Symbol'...        Het symbol wordt vertaald voor alle verdere 
+                           processing
+
+   (1=2)*4               Rekenkundige expressies worden uitgewerkt
+                           (alleen voor numerieke waarden, dus wel voor
+                            INPUT_LABELS, niet voor LOOPS)
+
+   99 TO 120 BY 2        Reeksen worden gegeven als begin TO eind BY stap
+                           (alleen voor numerieke waarden, dus wel voor
+                            INPUT_LABELS, niet voor LOOPS)
+
+   ... /SAVE [/[NO]ASK]  Bewaar deze waarde na afloop van het programma in
+                           een DWARF symbol. De qualifier /ASK of /NOASK
+                           wordt in het symbool bewaard (geen qualifier
+                           betekent in praktijk: /NOASK)
+
+   value1; value2; ...   Geef een reeks waardes op, de volgende keer dat
+                           het keyword wordt gevraagd neemt het programma
+                           de eerstvolgende waarde
+
+   value1,value2         Geef een vector op, alle waardes worden meteen
+                           naar het programma doorgegeven
+
+   /ASK=keyword          Wanneer het programma het opgegeven keyword 
+                           nodig heeft krijgt de gebruiker een prompt;
+ 			   als deze qualifier gegeven is wordt het 
+                           huidige keyword nog een keer gevraagd.
+
+
+
+Nota Bene: er is geen snelle manier om hidden keywords te zetten als
+           het programma al draait. Met dws is dat wel mogelijk.
+
+
+
+4e. Scripts en batch processing
+-----------------------------------------------
+
+Er zijn twee manieren om Newstar (of eigenlijk: DWARF) in batch mode
+te gebruiken. De simpelste manier lijkt me via shell scripts, waarin 
+keywords worden gelezen met dwrestore en vervolgens de nodige programma's
+worden gedraaid. 
+
+Er is (voor WENSS) een "Batch package" ontworpen om de interactie met
+de keyword files te vereenvoudigen. Voor zover ik kan zien is de enige
+functie het overnemen van de dwrestore en het zetten van /ASK achter
+een aantal keywords. Dit weegt denk ik niet op tegen de extra moeite om
+voor elk programma een "batch versie" te maken. Ik zal hier nog wat 
+beter naar kijken. Je hoort er nog van.
+ 
+
+5e. Voorstel voor wijzigingen en uitbreidingen
+----------------------------------------------
+
+De volgende wijzigingen in het huidige systeem lijken me wenselijk:
+
+  - Alternatieve specificatie voor streams omdat $ een Unix special 
+    character is. Ik stel voor om voor stream specificaties zowel
+    een $ als een . toe te staan (bv dwe nscan.test of dwe nscan$test).
+
+  - Van keywords die als symbol gedefinieerd zijn met /NOASK moet tijdens
+    de uitvoering van het programma het keyword en de waarde worden 
+    afgedrukt.
+
+
+Een "conditionele" batch processing kan vrij makkelijk worden gerealiseerd
+door de Newstar programma's bepaalde interne waarden in een (algemeen) 
+symbol te laten zetten. Die waarden kunnen dan in het shell script worden
+opgevraagd en getest. Bv: bij NSCAN kan het aantal Channels in symbol
+NCHAN worden gezet, in het shell script kan dan een test worden gedaan
+
+   if (`dwv /General nchan` == 128) then ...
+
+of de waarde kan in een shell variabele worden gezet
+
+   set channels=`dwv /g nchan`
+
+of de waarde kan worden toegekend aan een keyword voor een ander programma
+
+   dws nmap\$1 /NOMENU <_EOD_
+LOOPS='NCHAN',...1
+#
+_EOD_
+
+
+Wanneer jullie doorgeven op welke parameters je wilt testen is het een 
+kleine moeite die waarden in een symbol te zetten. Wanneer je een 
+programma met /SAVE draait zijn alle antwoorden van de user in elk
+geval beschikbaar in symbolen, dus daar kun je ook op testen.
+
+
+----------
+
+Tot zover maar weer even. Ik maak hier nog een fatsoenlijk (Engels) document
+van, maar hiermee kunnen jullie denk ik wel even vooruit.
+
+Hartelijk groeten,
+
+Marco.
+
+
+
+--
+
+
+ +--------------------------------------------------------------------------+
+ | NFRA/St. ASTRON      | eMail:  devoscm@astro.rug.nl         /  cccccccc  |
+ | P.O. Box 2           |  or:    devoscm@astron.nl            /   c m   m  c |
+ | NL-7900 AA Dwingeloo |                                  /    c m m m  c  |
+ |                      | ---------------------------------+  c  m   m  c   |
+ | Phone: +31 5219 7244  \  "If you reinvent the wheel,    |   v      v     |
+ | Fax:   +31 5219 7332   \  make sure yours will look     |    v   v       |
+ | Telex: 42043 rzm nl     | different..."                 |      v         |
+ +--------------------------------------------------------------------------+
+
+
+

@@ -1,0 +1,32 @@
+%ncalib_matrix.tex
+\begin{figure}[hbtp]
+
+\fig{ncalib_matrix}
+\label{.ncalib.matrix}
+
+\caption{\it
+Least-squares fit of telescope errors through matrix inversion.
+\\ \\
+The {\bf problem} is formulated by the matrix equation
+	$[wd]=W\times[e]$
+in which $[wd]$ is a vector of known values, and $[e]$ is a vector of unkown
+telescope errors. Each row (equation) in the matrix is multiplied by a weight
+factor, which determines its relative influence on the solution. The same
+matrix can contain a mixture of Selfcal equations and Redundancy equations,
+both of which have the same general form. If there are only Redundancy
+equations, extra
+constraint equations are needed to supply the missing information about
+the absolute gain (flux) and/or the absolute phase gradient over the
+array (position in the sky).
+\\ \\
+The matrix $W$ is rectangular because there are more equations than unknowns.
+A least-squares {\bf solution} is obtained by the pseudo-inversion of $W$:
+\\ \\
+$[e]=W^{-1}\times[wd]={(W^{T}W)}^{-1}W^{T}\times[wd]$
+\\ \\
+To save space and time, the \NEWSTAR implementation uses the much smaller matrix
+${(W^{T}W)}^{-1}$ and the vector $W^{T}[wd]$, which is of course mathematically
+equivalent.
+}
+
+\end{figure}

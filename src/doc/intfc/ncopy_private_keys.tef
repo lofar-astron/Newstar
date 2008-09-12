@@ -1,0 +1,125 @@
+
+%\section{ References to public interfaces}
+%\label{.public}
+
+% \input ncopy.tmp.ref.1
+{\em See also:}
+\begin{itemize}
+\item \textref{DWARF}{introduction.user.interface} user interface
+\item \textref{NGEN}{ngen_public_intfc} public keywords
+\item \textref{SCNNODE}{scnnode_public_intfc} public keywords
+\item \textref{SCNSETS}{scnsets_public_intfc} public keywords
+\item \textref{SELECT}{select_public_intfc} public keywords
+\end{itemize}
+
+
+
+\subsection{ Parameter COPY\_IFDATA}
+\label{.copy.ifdata}
+
+\spbegin
+{\em Prompt:} copy IF-data/Total Powers?\\ 
+{\em Expected input:} Yes/No:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+        Specify YES if you want to copy IF-data (Total Powers) together
+with the data
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter COPY\_MODEL}
+\label{.copy.model}
+
+\spbegin
+{\em Prompt:} copy model data?\\ 
+{\em Expected input:} Yes/No:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+        Specify YES if you want to copy the model together with the data
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter OPTION}
+\label{.option}
+
+\spbegin
+{\em Expected input:} Character *12:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Actions:
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+  COPY          Copy sectors from one SCN file to another.
+  SHORTCOPY     As copy, but only scans selected by scan number; this option
+                 allows you to cut out the invalid trailing scan from a mosaic
+                 sector
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+  OVERWIEW      Display and log an overview of all sectors in a SCN file
+  QUIT          Exit from NCOPY
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter POLARISATION}
+\label{.polarisation}
+
+\spbegin
+{\em Prompt:} Select polarisations\\ 
+{\em Expected input:} Character *4:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Select polarisations to be copied:
+        XYX:    XX, XY, YX, YY
+        XY:     XX, YY only
+        X:      XX only
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+        YX:     for special applications only:
+                 overwrite XX with XY, YY with YX, then output as if XY
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter SCANS}
+\label{.scans}
+
+\spbegin
+{\em Prompt:} First and last scan number from each sector\\ 
+{\em Expected input:} Integer:  1 to 2 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+From all sectors selected, only the scan numbers within the selected scan
+number and HA ranges wiull be copied. E.g., the specification
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+                SCANS= 0,4
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+will remove the last scan (number 5) from allo sectors of a mosaic observation
+that produces 6-scan sectors.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Remember that the first scan in a sector is numbered 0.
+\end{verbatim}\svend
+\spend 
+

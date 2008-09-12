@@ -1,0 +1,33 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*.Ident:	GEN_SIZE
+/*.Keywords:	Terminal
+/*.Author:	Marco de Vos (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	UNIX (needs termcap)
+/*.Comments:
+/*.Version:	930712 CMV - Created
+/*-----------------------------------------------------------------------*/
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+gen_size_ (lines, cols)
+
+int *lines,*cols;
+
+{
+
+/*.Purpose:	Find number of lines and columns on terminal screen
+/*.Returns:	Number of lines or -1 if cannot find
+/*.Notes:	Uses termcap, link with -ltermcap
+/*-----------------------------------------------------------------------*/
+
+   char bp[1024];
+
+   if (tgetent(bp,"")) {
+      *lines=tgetnum("li");
+      *cols =tgetnum("co");
+      return(*lines);
+   } else {
+      return(-1);
+   }
+      
+}

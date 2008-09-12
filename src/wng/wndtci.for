@@ -1,0 +1,92 @@
+C+ WNDTCI.FOR
+C  WNB 910916
+C
+C  Revisions:
+C
+	SUBROUTINE WNDTCI(TAB,TABLEN)
+C
+C  Disk table check
+C
+C  Result:
+C
+C	CALL WNDTCI( TAB_J(0:2,0:TABLEN):IO, TABLEN_J:I)
+C				Initiate the table TAB for searching
+C	CALL WNDTCK( TAB_J(0:2,0:TABLEN):IO, TABLEN_J:I,
+C			IFCA_J:I, OFCA_J:I, TPTR_J:IO, TLEN_J:IO)
+C				Check if the input disk table of length TLEN at
+C				TPTR exists already on the output. If not
+C				copy, and always replace the TPTR by the
+C				output pointer.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER TAB(0:2,0:*)		!CHECK TABLE
+	INTEGER TABLEN			!TABEL LENGTH
+	INTEGER IFCA			!INPUT FILE
+	INTEGER OFCA			!OUTPUT FILE
+	INTEGER TPTR			!INPUT POINTER
+	INTEGER TLEN			!INPUT LENGTH
+C
+C  Function references:
+C
+	LOGICAL WNGGVM			!GET MEMORY
+	INTEGER WNFEOF			!GET FILE POINTER
+	LOGICAL WNFRD			!READ FILE
+	LOGICAL WNFWR			!WRITE FILE
+C
+C  Data declarations:
+C
+C-
+	TAB(0,0)=0					!SET EMPTY TABLE
+C
+	RETURN
+C
+C WNDTCK
+C
+	ENTRY WNDTCK(TAB,TABLEN,IFCA,OFCA,TPTR,TLEN)
+C
+	IF (IFCA.NE.OFCA) THEN				!OUTPUT NOT INPUT
+	  DO I=1,TAB(0,0)				!CHECK PRESENCE
+	    IF (TAB(0,I).EQ.TPTR .AND. TAB(1,I).EQ.TLEN) THEN !FOUND
+	      TPTR=TAB(2,I)				!RETURN OUTPUT PTR
+	      GOTO 900					!READY
+	    END IF
+	  END DO
+C
+	  IF (TAB(0,0).GE.TABLEN) THEN			!CAN NOT FIT MORE
+	    DO I=1,TABLEN-1				!MOVE
+	      DO I1=0,3
+		TAB(I1,I)=TAB(I1,I+1)
+	      END DO
+	    END DO
+	    TAB(0,0)=TABLEN-1				!SET EMPTY
+	  END IF
+	  TAB(0,0)=TAB(0,0)+1				!COUNT
+	  TAB(0,TAB(0,0))=TPTR				!SAVE INPUT
+	  TAB(1,TAB(0,0))=TLEN
+	  TAB(2,TAB(0,0))=WNFEOF(OFCA)			!OUTPUT PTR
+	  TPTR=TAB(2,TAB(0,0))				!RETURN IT
+	  IF (.NOT.WNGGVM(TLEN,J)) GOTO 10		!GET BUFFER
+	  IF (.NOT.WNFRD(IFCA,TAB(1,TAB(0,0)),A_B(J-A_OB),
+	1		TAB(0,TAB(0,0)))) THEN		!READ
+ 10	    CONTINUE
+	    CALL WNCTXT(F_TP,'Error reading disktable')
+	    CALL WNGEX					!STOP
+	  END IF
+	  IF (.NOT.WNFWR(OFCA,TAB(1,TAB(0,0)),A_B(J-A_OB),
+	1		TAB(2,TAB(0,0)))) GOTO 10	!COPY
+	  CALL WNGFVM(TLEN,J)				!FREE BUFFER
+	END IF
+C
+ 900	CONTINUE
+	RETURN
+C
+C
+	END

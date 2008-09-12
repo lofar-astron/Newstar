@@ -1,0 +1,106 @@
+C+PRTUSE.FOR
+C HjV 940303
+C
+C   Revisions:
+C
+	SUBROUTINE PRTUSE (DPROG,DPVERS)
+C
+C  Print line at end file $n_import/newstar.use with:
+C       machine - user - program - version - date - time
+C  If the log file does not yet exist, it will be created.
+C  The file will be used by the Newstar master to see who are
+C  really working with Newstar
+C
+C  Result:
+C
+C       CALL PRTUSE (DPROG,DPVERS)
+C
+C  Include files:
+C
+        INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+        CHARACTER*(*) DPROG             !PROGRAM NAME
+        CHARACTER*(*) DPVERS            !PROGRAM VERSION
+C
+C  Arguments:
+C
+C
+C  Function references:
+C
+	INTEGER WNCALN                  !LENGTH STRING
+C
+C  Data declarations:
+C 
+	CHARACTER*32 DHOST              !HOST NAME
+	CHARACTER*32 DUSER              !USER NAME
+	CHARACTER*(*)	USERLOG, DEFSPEC
+		PARAMETER (USERLOG = 'NEWSTAR.USE')
+		PARAMETER (DEFSPEC = 'n_import')
+C
+	INTEGER*4	FILNAM_FULL
+C
+	CHARACTER*80	FILESPEC
+	CHARACTER*132   LINE
+	INTEGER*4	IS, LUN, LF
+	LOGICAL*4	OPENED, EXIST
+C
+C-
+C
+C				Open the permanent log file
+C				- if it is open right now,
+C				  wait till it is closed
+C
+	CALL WNGLUN (LUN)                        !GET LUN
+	IS = FILNAM_FULL (USERLOG,FILESPEC,LF,DEFSPEC)
+	IF (IAND(IS,1).NE.0) THEN
+	  INQUIRE (FILE=FILESPEC(:LF),EXIST=EXIST,IOSTAT=IS)
+	  IF (EXIST .AND. IS.EQ.0) THEN
+	    OPENED = .TRUE.
+	    DO WHILE (OPENED .AND. IS.EQ.0)
+	      INQUIRE (FILE=FILESPEC(:LF),OPENED=OPENED,IOSTAT=IS)
+	    ENDDO
+	    OPEN (UNIT=LUN,FILE=FILESPEC(:LF),ERR=910,
+#ifdef wn_li__
+	1	 FORM='FORMATTED', !CARRIAGECONTROL='LIST',DISPOSE='KEEP',
+#else
+	1	 FORM='FORMATTED', CARRIAGECONTROL='LIST',DISPOSE='KEEP',
+#endif
+	1	 STATUS='OLD',ACCESS='APPEND')
+	  ELSE
+	    OPEN (UNIT=LUN,FILE=FILESPEC(:LF),ERR=910,
+#ifdef wn_li__
+	1	  FORM='FORMATTED',!CARRIAGECONTROL='LIST',,DISPOSE='KEEP',
+#else
+	1
+	FORM='FORMATTED',CARRIAGECONTROL='LIST',,DISPOSE='KEEP',
+#endif
+	1	  STATUS='NEW')
+            CALL WNCTXS(LINE,
+	1	 'Machine !20CUser !40CProgram !60CVersion !80CDate')
+	    WRITE (LUN,'(A)',IOSTAT=IS) LINE
+	  ENDIF
+	ENDIF
+ 	IF (IAND(IS,1).NE.0) GOTO 900
+C
+C				Append new line to log file
+C
+	CALL WNGSGH (DHOST)
+	CALL WNGSGU (DUSER)
+	J1=WNCALN(DHOST)
+	J2=WNCALN(DUSER)
+	J3=WNCALN(DPROG)
+	J4=WNCALN(DPVERS)
+        CALL WNCTXS(LINE,'!AS !20C!AS !40C!AS !60C!AS !80C!%DN !%T ',
+	1    DHOST(:J1),DUSER(:J2),DPROG(:J3),DPVERS(:J4))
+        WRITE (LUN,'(A)',IOSTAT=IS) LINE
+C
+C				Close and keep the log file
+C
+ 900	CLOSE (UNIT=LUN,DISPOSE='SAVE',ERR=999)
+ 910	CALL WNGLUF (LUN)                       !FREE LUN
+C
+C
+ 999	RETURN
+	END

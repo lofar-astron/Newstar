@@ -1,0 +1,106 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	DWC_WAITPR
+C.Keywords:	Process Control, Wait
+C.Author:	Ger van Diepen (NFRA, Dwingeloo)
+C.Language:	VAX-Fortran
+C.Environment:	VAX
+C.Comments:
+C.Version:	830110 GVD - creation DWCWAITPR.FOR
+C.Version:	840727 GVD - removed old flags from GEN_PRTMSG
+C.Version:	840808 GVD - new names for subprocesses
+C.Version:	910821 FMO - new GEN_WAITTM call
+C.Version:	920214 GvD - no optional arguments in MSG anymore
+C.Version:	940119 CMV - made .fvx
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER FUNCTION DWC_WAITPR (PROGRAM,STREAM)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PROGRAM		!(i) program name (* = all)
+	CHARACTER*(*)	STREAM		!(i) stream name ($* = all)
+C
+C.Purpose:	Wait for the completion of prognam$stream's
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success		1	waited for at least 1 process
+C	info		3	no such processes active
+C	errors from SYS$GETJPI
+C.Notes:
+C	- This function waits for processes with the given programs and/or
+C	  streams by "polling" via the system-service SYS$GETJPI. Between each
+C	  "poll" the function will wait for 2 seconds.
+C	- When the function is waiting for a process it will print a message
+C	  on the terminal to tell the user that he is waiting. It will also
+C	  print a message when that process is ready.
+C-------------------------------------------------------------------------
+C
+C
+	INTEGER		DWC_NEXACT, STR_SIGLEN
+	INTEGER		SYS$ASCTIM, SYS$GETJPI, SYS$WAITFR
+C
+	REAL		WAITTIME
+	DOUBLE PRECISION TIME
+	CHARACTER	PROCESS*15, PROGNAM*9, TIMESTR*11
+	INTEGER		IS, LP, PTR, NEXT, UIC, PIDCUR, PIDOWN, PID
+	LOGICAL		WAIT_DONE
+		DATA WAIT_DONE /.FALSE./
+C
+C
+C				Get UIC of own process
+C
+	UIC = 0
+	NEXT = 0
+	IS = DWC_NEXACT (NEXT,PIDCUR,PROCESS,PROGNAM,UIC,TIME,PIDOWN)
+	IF (IAND(IS,1).EQ.0) GOTO 999
+C
+C				Get next active subprocess with same UIC
+C
+	NEXT = -1
+	IS = DWC_NEXACT (NEXT,PID,PROCESS,PROGNAM,UIC,TIME,PIDOWN)
+	DO WHILE (IAND(IS,1).NE.0)
+C
+C				Skip unless subprocesses of own process
+C				with matching program and stream names
+C
+	    IF (PIDOWN.EQ.PIDCUR) THEN			!own subprocess
+		LP = STR_SIGLEN (PROCESS)
+		PTR = INDEX (PROCESS,'$')
+		IF ((PROGRAM.EQ.'*' .OR. PROGRAM.EQ.PROGNAM) .AND.
+	1	    (STREAM.EQ.'$*' .OR. STREAM.EQ.PROCESS(PTR:LP))) THEN
+C
+C				Wait for subprocess
+C				- tell user
+C
+		    IS = SYS$ASCTIM (,TIMESTR,TIME,%VAL(1))
+		    CALL WNCTXT(DWLOG,
+	1		'Waiting for !AS!AS (started at !AS)',
+	1		PROGNAM,PROCESS(PTR:LP),TIMESTR(:8))
+		    DO WHILE (SYS$GETJPI(%VAL(0),,PROCESS(:PTR-1),0,,,).EQ.1)
+			IS = SYS$WAITFR (%VAL(0))
+			CALL LIB$WAIT (WAITTIME)
+		    ENDDO
+		    CALL WNCTXT(DWLOG,
+	1		'Stream !AS ready; processing continues',
+	1		PROCESS(PTR:LP))
+		    WAIT_DONE = .TRUE.
+		    NEXT = -1
+		END IF
+	    END IF
+	    IS = DWC_NEXACT (NEXT,PID,PROCESS,PROGNAM,UIC,TIME,PIDOWN)
+	END DO
+C
+	IF (IS.NE.2) GOTO 999				!error
+C
+C				Regular end
+C
+	IF (WAIT_DONE) THEN
+		DWC_WAITPR = 1
+	ELSE
+		DWC_WAITPR = 3
+	END IF
+	RETURN
+C
+ 999	DWC_WAITPR = IS
+	RETURN
+	END

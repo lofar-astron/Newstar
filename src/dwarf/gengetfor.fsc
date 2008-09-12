@@ -1,0 +1,102 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	GEN_GETFOR
+C.Keywords:	Foreign Command Line
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	Fortran
+C.Environment:	VAX/VMS & UNIX
+C.Comments:
+C	VAX-specific: LIB$GET_FOREIGN
+C	Alliant-specific: Fortran Library Routines IARGC, GETARG and LNBLNK
+C.Version:	881025 FMO - creation
+C.Version:	900407 FMO - convert to upper case
+C.Version:	910825 FMO - use PRINT i.s.o. TYPE
+C.Version:	920316 GvD - use GEN_OUTPUT iso. PRINT
+C.Version:	920525 GvD - use STR_SIGLEN iso. LNBLNK
+C.Version:	930201 HjV - Make FSC
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION GEN_GETFOR (PROMPT,COMMAND,LENCOM)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PROMPT		! (i) user prompt
+	CHARACTER*(*)	COMMAND		! (o) command line
+	INTEGER*4	LENCOM		! (o) signif length of command line
+C
+C.Purpose:	Get the foreign command line
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	GEN_SUCCESS
+C	error	2
+C.Notes:
+C	- If no command line is available and a non-blank prompt is given,
+C	  the user will be asked for the command line.
+C	- Trailing blanks and tabs in prompt and command are significant.
+C	- The line will be converted to upper case.
+C	- In case of an error, a blank command will be returned (LENCOM = 0).
+C------------------------------------------------------------------------
+C
+C
+	CHARACTER*(*)	BLANK
+		PARAMETER (BLANK = ' ')
+C
+#ifdef wn_vx__
+	INTEGER*4	LIB$GET_FOREIGN
+C
+	INTEGER*4	IS
+	INTEGER*2	LENG
+#else
+	INTEGER*4	IS, IARGC, STR_SIGLEN, STR_UPCASE
+C
+	CHARACTER*80	ARG
+	INTEGER*4	NRARG, LARG, MAXLEN
+#endif
+C
+C
+	COMMAND = BLANK
+	LENCOM = 0
+#ifdef wn_vx__
+	IF (PROMPT.NE.BLANK) THEN
+		IS = LIB$GET_FOREIGN (COMMAND,PROMPT,LENG)
+	ELSE
+		IS = LIB$GET_FOREIGN (COMMAND,,LENG)
+	ENDIF
+	IF (.NOT.IS) GOTO 999
+	LENCOM = LENG
+#else
+	MAXLEN = LEN(COMMAND)
+C
+	NRARG = IARGC ()
+	IF (NRARG.GT.0) THEN
+		DO I = 1,NRARG
+#  ifdef wn_hp__
+			CALL IGETARG (I,ARG,LEN(ARG))
+#  else
+			CALL GETARG (I,ARG)
+#  endif
+			LARG = STR_SIGLEN (ARG)
+			IF (LENCOM+LARG+1.GT.MAXLEN) GOTO 999
+			COMMAND (LENCOM+1:) = ARG(:LARG)
+			LENCOM = LENCOM+LARG+1			! leave a blank
+		ENDDO
+		LENCOM = LENCOM-1				! cut off blank
+	ELSE IF (PROMPT.NE.BLANK) THEN
+		CALL GEN_OUTPUT (PROMPT)
+		READ (*,'(Q,A)') LENCOM,COMMAND
+		IF (LENCOM.GT.MAXLEN) GOTO 999
+	ENDIF
+C
+	IS = STR_UPCASE (COMMAND)
+#endif
+	GEN_GETFOR = GEN_SUCCESS
+	RETURN
+C
+ 999	COMMAND = BLANK
+	LENCOM = 0
+#ifdef wn_vx__
+	GEN_GETFOR = IS
+#else
+	GEN_GETFOR = 2
+#endif
+	RETURN
+	END

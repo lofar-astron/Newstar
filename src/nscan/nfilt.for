@@ -1,0 +1,56 @@
+C+ NFILT.FOR
+C  WNB 940216
+C
+C  Revisions:
+C       WNB 940729  General update
+C
+	SUBROUTINE NFILT
+C
+C  Main routine to obtain data 'filtering'
+C
+C  Result:
+C
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NFI_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+C
+C  Function references:
+C
+	LOGICAL WNDRUN		!TEST RUN
+	LOGICAL WNDXLN          !LOOP
+C
+C  Data declarations:
+C
+C-
+C
+C PRELIMINARIES
+C
+	CALL NFIINI				!INIT PROGRAM
+C
+C DISTRIBUTE
+C
+ 10	CONTINUE
+	CALL NFIDAT				!GET USER DATA
+	IF (OPT.EQ.'QUI') THEN			!READY
+	  CALL WNGEX				!FINISH
+	ELSE IF (OPT.EQ.'CON') THEN		!DUMP
+	  IF (.NOT.WNDRUN()) CALL WNGEX		!NO RUN
+	  CALL WNDXLI(LPOFF)                    !INIT LOOPS
+	  DO WHILE (WNDXLN(LPOFF))
+	    CALL NFIUVL				!GET CONTINUUM
+	  END DO
+	  CALL WNFCL(FCAOUT)
+	END IF
+C
+	CALL WNGEX				!READY
+C
+C
+	END

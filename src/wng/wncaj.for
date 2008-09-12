@@ -1,0 +1,121 @@
+C+ WNCAJ.FOR
+C  WNB 890105
+C
+C  Revisions:
+C
+	INTEGER FUNCTION WNCAJ(TXT,LTXT,PTXT)
+C
+C  Get value from string
+C
+C  Result:
+C
+C	J = WNCAJ  ( TXT_C*:I, LTXT_J:I, PTXT_J:IO)
+C				Read an integer value from string TXT with
+C				length LTXT, starting at PTXT+1, and updating
+C				PTXT.
+C	J = WNCAJA ( TXT_C*:I, LTXT_J:I, PTXT_J:IO, ARGL_J(0:*):I,
+C			LARG_J:I, PARG_J:IO)
+C				As WNCAJ, but value taken from argument list
+C				given by ARGL with ARGL arguments, using
+C				PARG if TXT contains #(J from ARGL) or
+C				##(I from ARGL); updating PARG if so.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	CHARACTER*(*) TXT			!INPUT STRING
+	INTEGER LTXT				!LENGTH STRING TO USE
+	INTEGER PTXT				!STRING POINTER
+	INTEGER ARGL(0:*)			!ARGUMENT LIST
+	INTEGER LARG				!# OF ARGUMENTS IN LIST
+	INTEGER PARG				!ARGUMENT POINTER
+C
+C  Function references:
+C
+	INTEGER WNGARJ				!GET J FROM ARGUM. LIST
+	INTEGER*2 WNGARI			!GET I2 FROM ARGUM.LIST
+C
+C  Entry points:
+C
+	INTEGER WNCAJA				!GET VALUE USING ARGUMENT LIST
+C
+C  Data declarations:
+C
+	CHARACTER*10 CDIG			!DIGITS
+		DATA CDIG/'0123456789'/
+C
+C  Equivalences:
+C
+C
+C  Commons:
+C
+C-
+	GOTO 10
+C
+C WNCAJA
+C
+	ENTRY WNCAJA(TXT,LTXT,PTXT,ARGL,LARG,PARG)
+C
+	IF (PTXT+1.LE.LTXT) THEN		!TEST FOR #
+	  IF (TXT(PTXT+1:PTXT+1).EQ.'#') THEN
+	    PTXT=PTXT+1
+	    IF (PTXT+1.LE.LTXT) THEN		!TEST FOR ##
+	      IF (TXT(PTXT+1:PTXT+1).EQ.'#') THEN
+		PTXT=PTXT+1
+		PARG=PARG+1
+		WNCAJA=WNGARI(PARG,ARGL)	!GET VALUE
+C
+		RETURN
+	      END IF
+	    END IF
+	    PARG=PARG+1
+	    WNCAJA=WNGARJ(PARG,ARGL)		!GET VALUE
+C
+	    RETURN
+	  END IF
+	END IF
+C
+C WNCAJ
+C
+ 10	CONTINUE
+	J=0					!RESULT
+	J1=1					!SIGN
+	I=PTXT					!TEXT POINTER
+	DO WHILE (I+1.LE.LTXT)			!CHECK SIGN
+	  IF (TXT(I+1:I+1).EQ.'-') THEN
+	    J1=-J1
+	  ELSE IF (TXT(I+1:I+1).NE.'+') THEN
+	    GOTO 20
+	  END IF
+	  I=I+1					!SKIP SIGN
+	END DO
+ 20	CONTINUE
+	IF (I+1.LE.LTXT) THEN
+	  IF (INDEX(CDIG,TXT(I+1:I+1)).EQ.0) GOTO 30 !READY
+	ELSE
+	  GOTO 30				!READY
+	END IF
+	PTXT=I					!NEW STRING POINTER
+	DO WHILE (PTXT+1.LE.LTXT)		!DIGITS
+	  J2=INDEX(CDIG,TXT(PTXT+1:PTXT+1))	!DIGIT?
+	  IF (J2.EQ.0) THEN			!NO
+	    GOTO 30				!READY
+	  ELSE
+	    J=J*10+J2-1				!ADD DIGIT
+	    PTXT=PTXT+1				!NEXT DIGIT
+	  END IF
+	END DO
+C
+ 30	CONTINUE
+ 	WNCAJ=J*J1				!RESULT
+C
+	RETURN
+C
+C
+	END

@@ -1,0 +1,11 @@
+%ncalib_interface.tex
+\begin{figure}[hbtp]
+
+\fig{ncalib_interface}
+%
+\caption{\it 
+\label{.ncalib.interface}
+Overview of the actions in NCALIB.
+}
+
+\end{figure}

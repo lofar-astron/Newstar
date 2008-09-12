@@ -1,0 +1,56 @@
+C+ WNFDMO.FOR
+C  WNB 890724
+C
+C  Revisions:
+C	WNB 930520	Remove %VAL
+C
+	LOGICAL FUNCTION WNFDMO(MCA)
+C
+C  Dismount a tape volume
+C
+C  Result:
+C
+C	WNFDMO_L = WNFDMO( MCA_J:IO)
+C				Dismount a tape from MCA.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'MCA_O_DEF'			!MCA OFFSETS
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER MCA				!MCA ID
+C
+C  Function references:
+C
+	INTEGER WNFTFC				!TEST FCA/MCA PRESENCE
+	LOGICAL WNFDMO_X			!DISMOUNT TAPE
+C
+C  Data declarations:
+C
+C-
+	WNFDMO=.FALSE.					!ASSUME ERROR
+	IF (WNFTFC(MCA).NE.0) THEN			!STILL FILE OPEN/MOUNTED
+	  CALL WNFCL(MCA)				!CLOSE FILE
+	END IF
+	IF (WNFTFC(MCA).NE.-1) RETURN			!NOT MCA
+	J=MCA						!MCA POINTER
+	J1=(J-A_OB)/(L_J/L_B)				!DUMMY ARRAY OFFSET
+	JS=WNFDMO_X(A_B(J-A_OB))			!DO DISMOUNT
+        E_C = 0
+        IF (JS) THEN
+          E_C = 1
+          WNFDMO=.TRUE.                                 !OK
+        ENDIF
+	CALL WNFUFC(MCA)				!DELINK MCA
+	CALL WNGFVM(A_J(J1+MCA_SIZE_J),J)		!FREE MCA
+	MCA=0						!RETURN MCA FREE
+C
+	RETURN
+C
+C
+	END

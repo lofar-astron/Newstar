@@ -1,0 +1,44 @@
+% nmap_public_intfc.tex
+%
+% History:
+%  JPH          Original
+%  JPH 960425   Change footnote to text in parentheses" l2h does not handle
+%                footnotes well
+
+\chapter{ Public parameter group NMAP}
+\tableofcontents
+
+
+\section{ Overview}
+\label{.overview}
+
+        This document contains an overview of the public parameter group
+NMAP.This group is a subset of the map-making control parameters, viz.
+thoseparameters that are also used by NCLEAN in its
+\textref{"dataclean"}{nclean_descr.data.clean} operation.
+
+        The accompanying diagrams are to be found in the document
+describingNMAP's \textref{private parameters}{nmap_private_intfc}. This
+document contiansonly the descriptions of the individual parameters in
+alphabetical order. Thesecenter on the Help texts, which have been designed to
+guide the user to theproper choice at each junction, even if his knowledge of
+the overall workingsof the program is only superficial.
+
+        The prompt and help texts defined for these parameters are those
+for NMAP. In the data-clean application, these may be overridden by texts more
+appropriate there. Unfortunately, the present architecture of
+\NEWSTAR precludes the inclusion of such texts in the documentation system,
+so the only opportunity to read that information is during program execution
+(in your terminal window!).
+
+\input {nmap_make_q.cap}
+
+        \Figref{.nmap.make.q} gives a schematic overview of this part of
+NMAP'sparameter interface. (The companion diagram to which the figure refers is
+irrelevant in the present context, but you may find it in the description of
+NMAP's  \textref{private interface}{nmap_private_intfc.nmap.make}.)
+
+\input {nmap_public_keys.tef}
+
+
+\label{.nmap.make}      % dummy

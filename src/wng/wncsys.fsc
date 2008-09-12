@@ -1,0 +1,56 @@
+C+ WNCSYS.FSC
+C JPH 930602
+C
+C  Revisions:
+C	HjV 931206	Add test for HP (add char(0))
+C	CMV 940628	Use do_system i.s.o. system call
+C
+	SUBROUTINE WNCSYS(COM,ARG1,ARG2,ARG3)
+C
+C  Spawn a sub-process. Differs from WNGSSP in that it does not add anything
+C  to the command as submitted and can thus be universally used.
+C
+C  Result:
+C
+C	CALL WNCSYS ( COM_C*:I, ARG1_C*:I, ARG2_C*:I, ARG3_C*:I)
+C				Execute COM with ARG1..3 as arguments
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	CHARACTER*(*) COM			!COMMAND TO EXECUTE
+	CHARACTER*(*) ARG1,ARG2,ARG3		!ARGUMENTS TO COMMAND
+C
+C  Function references:
+C
+	INTEGER WNCALN				!STRING LENGTH
+C
+C  Data declarations:
+C
+#ifndef wn_vx__
+	CHARACTER*512 TXT
+#endif
+C-
+#ifdef wn_vx__
+	CALL LIB$SPAWN(COM(1:WNCALN(COM))//' '//
+	1		ARG1(1:WNCALN(ARG1))//' '//
+	2		ARG2(1:WNCALN(ARG2))//' '//
+	3		ARG3(1:WNCALN(ARG3)),,'NL:')	!SPAWN
+#else
+	TXT=COM(1:WNCALN(COM))//' '//
+	1		ARG1(1:WNCALN(ARG1))//' '//
+	2		ARG2(1:WNCALN(ARG2))//' '//
+	3		ARG3(1:WNCALN(ARG3))		!SPAWN TEXT
+        CALL DO_SYSTEM(TXT(1:WNCALN(TXT))//CHAR(0))     !SPAWN
+#endif
+C
+	RETURN
+C
+C
+	END

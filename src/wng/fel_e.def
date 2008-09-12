@@ -1,0 +1,51 @@
+C+ Created from fel.dsc on 000922 at 11:09:18 at duw01
+C  FEL_E.DEF
+C  WNB 000922
+C
+C  Revisions:
+C
+C       WNB 930803      Rearrange text
+C       WNB 890724      Original version
+C                                                                             
+C
+C  Result:
+C
+C  FEL.DSC defines the FEL (File ELement description)
+C                                                                             
+C
+C       Specification of edit tables:
+C
+C The character (_EC) table contains:
+C       fieldname, pattern, units, special code
+C The integer (_EJ) table contains:
+C       offset, #of values, edit (0=allowed), unit length
+C                                                                             
+C
+C  FEL edit definitions:
+C                                                                             
+	INTEGER FELEDL,FEL__EL
+	  PARAMETER (  FELEDL=5,                ! Length table
+	1              FEL__EL=5)
+	CHARACTER*12 FEL_EC(4,5)
+	INTEGER FEL_EJ(4,5)
+	  DATA FEL_EC(1,1),FEL_EC(2,1),FEL_EC(3,1),FEL_EC(4,1)
+	1      /'LINK','SJ',' ',' '/
+	  DATA FEL_EJ(1,1),FEL_EJ(2,1),FEL_EJ(3,1),FEL_EJ(4,1)
+	1      /0,2,0,4/
+	  DATA FEL_EC(1,2),FEL_EC(2,2),FEL_EC(3,2),FEL_EC(4,2)
+	1      /'BITS','SJ',' ',' '/
+	  DATA FEL_EJ(1,2),FEL_EJ(2,2),FEL_EJ(3,2),FEL_EJ(4,2)
+	1      /8,1,0,4/
+	  DATA FEL_EC(1,3),FEL_EC(2,3),FEL_EC(3,3),FEL_EC(4,3)
+	1      /'BUFAD','SJ',' ',' '/
+	  DATA FEL_EJ(1,3),FEL_EJ(2,3),FEL_EJ(3,3),FEL_EJ(4,3)
+	1      /12,1,0,4/
+	  DATA FEL_EC(1,4),FEL_EC(2,4),FEL_EC(3,4),FEL_EC(4,4)
+	1      /'BUFLEN','SJ',' ',' '/
+	  DATA FEL_EJ(1,4),FEL_EJ(2,4),FEL_EJ(3,4),FEL_EJ(4,4)
+	1      /16,1,0,4/
+	  DATA FEL_EC(1,5),FEL_EC(2,5),FEL_EC(3,5),FEL_EC(4,5)
+	1      /'DKAD','SJ',' ',' '/
+	  DATA FEL_EJ(1,5),FEL_EJ(2,5),FEL_EJ(3,5),FEL_EJ(4,5)
+	1      /20,1,0,4/
+C-                                                                            

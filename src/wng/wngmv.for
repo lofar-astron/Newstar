@@ -1,0 +1,163 @@
+C+ WNGMV.FOR
+C  WNB 880725
+C
+C  Revisions:
+C
+	SUBROUTINE WNGMV(LGT,FROM,TO)
+C
+C  Move data from field to field
+C
+C  Result:
+C
+C	CALL WNGMV( LGT_J:I, FROM_B(LGT):I, TO_B(LGT):O)
+C				Move LGT bytes from FROM to TO
+C	CALL WNGMVZ( LGT_J:I, TOZ_B(LGT):O)
+C				Move LGT zero bytes to TO
+C	CALL WNGMVB( LGT_J:I, TOZ_B(LGT):O)
+C				Move LGT spaces to TO
+C	CALL WNGMVF( LGT_J:I, FRST_C1:I, TO_B(LGT):O)
+C				Move LGT times FROM character to TO
+C	CALL WNGMVS( LGT_J:I, FROM_B(LGT):I, TO_B(LGT):O)
+C				Move LGT bytes from FROM to TO, swapping byte
+C				order. TO can be same as FROM.
+C	CALL WNGMFS( LGT_J:I, FRST_C*:I, TO_B(LGT):O)
+C				Move LGT characters from string FRST to TO.
+C				To will be filled with spaces if longer.
+C	CALL WNGMTS( LGT_J:I, FROM_B(LGT), TOST_C*:O)
+C				Move LGT bytes from FROM to string TOST.
+C				TOST will be filled with spaces if longer.
+C	CALL WNGMF0( LGT_J:I, FROM_B(LGT):I, TOST_C*:O)
+C				Move LGT characters from ASCIZ string
+C	CALL WNGMT0( LGT_J:I, FRST_C*:I, TO_B(LGT):O)
+C				Move LGT characters to ASCIZ string
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER LGT				!LENGTH LIST
+	BYTE FROM(*)				!INPUT LIST
+	BYTE TO(*)				!OUTPUT LIST
+	BYTE TOZ(*)
+	CHARACTER*(*) FRST			!INPUT STRING
+	CHARACTER*(*) TOST			!OUTPUT STRING
+C
+C  Function references:
+C
+C
+C  Data declarations:
+C
+C
+C  Equivalences:
+C
+C
+C  Commons:
+C
+C-
+C
+C WNGMV
+C
+	DO I=1,LGT
+	  TO(I)=FROM(I)
+	END DO
+C
+	RETURN
+C
+C WNGMVZ
+C
+	ENTRY WNGMVZ(LGT,TOZ)
+C
+	DO I=1,LGT
+	  TOZ(I)=0
+	END DO
+C
+	RETURN
+C
+C WNGMVB
+C
+	ENTRY WNGMVB(LGT,TOZ)
+C
+	DO I=1,LGT
+	  TOZ(I)=ICHAR(' ')
+	END DO
+C
+	RETURN
+C
+C WNGMVF
+C
+	ENTRY WNGMVF(LGT,FRST,TO)
+C
+	DO I=1,LGT
+	  TO(I)=ICHAR(FRST(1:1))
+	END DO
+C
+	RETURN
+C
+C WNGMVS
+C
+	ENTRY WNGMVS(LGT,FROM,TO)
+C
+	DO I=2,LGT,2
+	  I1=FROM(I)
+	  TO(I)=FROM(I-1)
+	  TO(I-1)=I1
+	END DO
+C
+	RETURN
+C
+C WNGMFS
+C
+	ENTRY WNGMFS(LGT,FRST,TO)
+C
+	DO I=1,MIN(LGT,LEN(FRST))
+	  TO(I)=ICHAR(FRST(I:I))
+	END DO
+	DO I=MIN(LGT,LEN(FRST))+1,LGT
+	  TO(I)=ICHAR(' ')
+	END DO
+C
+	RETURN
+C
+C WNGMTS
+C
+	ENTRY WNGMTS(LGT,FROM,TOST)
+C
+	TOST=' '
+	DO I=1,MIN(LGT,LEN(TOST))
+	  TOST(I:I)=CHAR(FROM(I))
+	END DO
+C
+	RETURN
+C
+C WNGMF0
+C
+	ENTRY WNGMF0(LGT,FROM,TOST)
+C
+	TOST=' '
+	I1=MIN(LGT,LEN(TOST))
+	I=1
+	DO WHILE (FROM(I) .NE.0 .AND. I .LE.I1)
+	  TOST(I:I)=CHAR(FROM(I))			!SET CHAR
+	  I=I+1
+	END DO
+C
+	RETURN
+C
+C WNGMT0
+C
+	ENTRY WNGMT0(LGT,FRST,TO)
+C
+	DO I=1,MIN(LGT,LEN(FRST))
+	  TO(I)=ICHAR(FRST(I:I))
+	END DO
+	IF (LGT.GT.0) TO(MIN(LGT,LEN(FRST)+1))=0	!SET END
+C
+	RETURN
+C
+C
+	END

@@ -1,0 +1,15 @@
+%nflag_inspect.cap
+
+\begin{figure}
+\fig{nflag_inspect}
+\caption{\it
+\label{.nflag.inspect}
+%
+Schematic of the INSPECT branch of NFLAG.
+\\
+By default NFLAG executes a COUNT operation at the end of each
+\whichref{flagging operation}{}. The COUNT option is provided mainly for
+convenience, but must be executed if you want to display flagging statistics
+before doing anything else.
+}
+\end{figure}

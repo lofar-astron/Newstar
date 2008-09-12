@@ -1,0 +1,182 @@
+C+ WNCCVS_X.FOR
+C  WNB 890111
+C
+C  Revisions:
+C	WNB 911115	DATA for CHARACTER problem
+C	WNB 920303	SUN rearrangement for segmentation fault compiler
+C	HjV 920529	Non-logical expression in IF/DO WHILE statement not
+C			allowed on HP
+C	WNB 930325	Cater for unaligned data
+C	CMV 930903	Change formats for Sun/RUG
+C
+	SUBROUTINE WNCCAS(COUT,CLEN,VALC,COD1)
+C
+C  Convert a value to a string
+C
+C  Result:
+C
+C	CALL WNCCDS ( COUT_C*:O, CLEN_J:O, VALD_D:I, COD1_J:I, COD2_J:I)
+C				Convert the  DOUBLE PRECISION value VALD to a
+C				string in COUT, setting CLEN to the significant
+C				length of COUT. The COD's indicate the
+C				conversion type:
+C				If COD2 < 0:	in G-type format, with:
+C						COD1 <=0: enough signif. digits
+C						COD1 >0:  COD1 signif. digits
+C				   COD2 >=0:	F-type format with COD2 digits
+C						behind dec. point, and COD1
+C						total width
+C	CALL WNCCES ( COUT_C*:O, CLEN_J:O, VALE_E:I, COD1_J:I, COD2_J:I)
+C				As CDS for REAL value
+C	CALL WNCCJS ( COUT_C*:O, CLEN_J:O, VALJ_J:I, COD1_J:I)
+C				Convert INTEGER value VALJ to a string
+C				in COUT, setting CLEN to the significant
+C				length of COUT. COD1 indicates the conversion
+C				type:
+C				COD1=	1	signed decimal
+C					2	unsigned decimal
+C					3	octal
+C					4	hexadecimal
+C					5	zero filled decimal
+C					6	logical (YES or NO)
+C	CALL WNCCIS ( COUT_C*:O, CLEN_J:O, VALI_I:I, COD1_J:I)
+C				As CJS for INTEGER*2 value
+C	CALL WNCCKS ( COUT_C*:O, CLEN_J:O, VALK_K:I, COD1_J:I)
+C				As CJS for INTEGER*2 value
+C	CALL WNCCBS ( COUT_C*:O, CLEN_J:O, VALB_B:I, COD1_J:I)
+C				As CJS for INTEGER*1 value
+C	CALL WNCCAS ( COUT_C*:O, CLEN_J:O, VALC_B(*):I, COD1_J:I)
+C				As CJS for character string in VALC, of length
+C				COD1.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	CHARACTER*(*) COUT			!OUTPUT STRING
+	INTEGER CLEN				!OUTPUT LENGTH
+	INTEGER VALJ
+	INTEGER VALK
+	INTEGER*2 VALI
+	BYTE VALB
+	BYTE VALC(*)
+	INTEGER COD1				!CONVERSION CODES
+C
+C  Function references:
+C
+	INTEGER WNCALN				!LENGTH STRING
+C
+C  Data declarations:
+C
+	CHARACTER*10 FX(3)			!HEXA FORMATS
+	CHARACTER*10 FO(3)			!OCTAL FORMATS
+	  DATA FX/'(Z2.2)','(Z4.4)','(Z8.8)'/
+	  DATA FO/'(O3.3)','(O6.6)','(O11.11)'/
+	INTEGER*2 II0
+C-
+	CALL WNGMTS(COD1,VALC,COUT)		!MOVE CHAR. STRING
+C
+C LENGTH
+C
+	IF (COUT.NE.' ') THEN
+	  DO WHILE (COUT(1:1).EQ.' ')
+		COUT(1:)=COUT(2:)
+	  END DO
+	END IF
+	CLEN=WNCALN(COUT)
+C
+	RETURN
+C
+C WNCCJS
+C
+	ENTRY WNCCJS(COUT,CLEN,VALJ,COD1)
+C
+	J1=3					!LENGTH TYPE
+	CALL WNGMV(LB_J,VALJ,J2)		!UNALIGNED POSSIBLE
+	J3=-1					!FOR UNSIGNED
+	GOTO 30
+C
+C WNCCIS
+C
+	ENTRY WNCCIS(COUT,CLEN,VALI,COD1)
+C
+	J1=2					!LENGTH TYPE
+	CALL WNGMV(LB_I,VALI,II0)		!UNALIGNED POSSIBLE
+	J2=II0					!VALUE
+	J3=(2**L_I)-1				!FOR UNSIGNED
+	GOTO 30
+C
+C WNCCBS
+C
+	ENTRY WNCCBS(COUT,CLEN,VALB,COD1)
+C
+	J1=1					!LENGTH TYPE
+	J2=VALB					!VALUE
+	J3=(2**L_B)-1				!FOR UNSIGNED
+	GOTO 30
+C
+C WNCCKS
+C
+	ENTRY WNCCKS(COUT,CLEN,VALK,COD1)
+C
+	J1=3					!LENGTH TYPE
+	CALL WNGMV(LB_K,VALK,J2)		!UNALIGNED POSSIBLE
+	J3=-1					!FOR UNSIGNED
+	GOTO 30
+C
+C DO
+C
+ 30	CONTINUE
+	COUT=' '				!FILL BLANK
+	IF (COD1.LE.1 .OR. COD1.GT.6) THEN	!SIGNED DECIMAL
+		WRITE (UNIT=COUT,FMT=1100,ERR=40) J2
+	ELSE IF (COD1.EQ.5) THEN		!ZERO FILLED DECIMAL
+		WRITE (UNIT=COUT,FMT=1110,ERR=40) J2
+	ELSE IF (COD1.EQ.2) THEN		!UNSIGNED DECIMAL
+		J2=IAND(J2,J3)			!GET RID OF SIGN
+		IF (J2.GE.0) THEN
+			WRITE(UNIT=COUT,FMT=1100,ERR=40) J2
+		ELSE
+			J=IAND('7fffffff'X,ISHFT(J2,-1))  !FIRST PART*5
+			J3 = 2*MOD(J2,5)+IAND(J2,'00000001'X) !LAST DIGIT
+			WRITE(UNIT=COUT,FMT=1120,ERR=40) J/5,J3
+		END IF
+	ELSE IF (COD1.EQ.4) THEN		!HEXA
+		J2=IAND(J2,J3)			!SELECT PART
+		WRITE(UNIT=COUT,FMT=FX(J1),ERR=40) J2
+	ELSE IF (COD1.EQ.3) THEN		!OCTAL
+		WRITE(UNIT=COUT,FMT=FO(J1),ERR=40) J2
+	ELSE IF (COD1.EQ.6) THEN		!LOGICAL
+		IF (IAND(J2,1).NE.0) THEN
+			COUT='YES'
+		ELSE
+			COUT='NO'
+		END IF
+	END IF
+C
+C LENGTH
+C
+ 40	CONTINUE
+	IF (COUT.NE.' ') THEN
+	  DO WHILE (COUT(1:1).EQ.' ')
+		COUT(1:)=COUT(2:)
+	  END DO
+	END IF
+	CLEN=WNCALN(COUT)
+C
+	RETURN
+C
+C  Formats
+C
+C
+ 1100	FORMAT(I16)				!CONVERT INTEGER
+ 1110	FORMAT(I16.10)				!CONVERT ZERO FILLED
+ 1120	FORMAT(I16,I1.1)			!SEPARATE FINAL HEXA DIGIT
+C
+C
+	END

@@ -1,0 +1,46 @@
+#  dwarfalias.ssc
+#  FMO 910913
+# 
+#  Revisions:
+#	GvD 911205	added abpi and use env.var. $SYSDWARF
+#	GvD 920302	added wenssinit
+#	GvD 920512	added calculate
+#	HjV 921130 	use dwarfnews.hlp iso. dwarfnews.txt
+#	WNB 930302	made ssc to include vax
+#	HjV 930419	Add lo*gout
+# 
+# 	Aliases for DWARF environment
+#	Call by sourcing in dwarfcshrc_xxxx 
+# 
+# alias abpi		"source $ABPDWARF/abp_init.sal"
+# alias wenssi		"source $ABPDWARF/wenss_init.sal"
+  alias dwcalc		"$SYSDWARF/calculate.exe \!*"
+  alias dwcalculate	"$SYSDWARF/calculate.exe \!*"
+  alias calc		"$SYSDWARF/calculate.exe \!*"
+  alias calculate	"$SYSDWARF/calculate.exe \!*"
+  alias dwc		"$SYSDWARF/clear.exe \!*"
+  alias dwclear		"$SYSDWARF/clear.exe \!*"
+  alias dwe		"$SYSDWARF/execute.exe \!*"
+  alias dwexe		"$SYSDWARF/execute.exe \!*"
+  alias exe		"$SYSDWARF/execute.exe \!*"
+  alias dwl		"$SYSDWARF/let.exe \!*"
+  alias dwlet		"$SYSDWARF/let.exe \!*"
+  alias dwn		"more $ROOTDWARF/dwarfnews.hlp"
+  alias dwnews		"more $ROOTDWARF/dwarfnews.hlp"
+  alias dwr		"$SYSDWARF/restore.exe \!*"
+  alias dwrestore	"$SYSDWARF/restore.exe \!*"
+  alias restore		"$SYSDWARF/restore.exe \!*"
+  alias dwsa		"$SYSDWARF/save.exe \!*"
+  alias dwsave		"$SYSDWARF/save.exe \!*"
+  alias dws		"$SYSDWARF/specify.exe \!*"
+  alias dwspecify	"$SYSDWARF/specify.exe \!*"
+  alias specify		"$SYSDWARF/specify.exe \!*"
+  alias dwv		"$SYSDWARF/view.exe \!*"
+  alias dwview		"$SYSDWARF/view.exe \!*"
+  alias bldppd		"$SYSDWARF/sys_bldppd.exe \!*"
+  alias prtppd		"$SYSDWARF/sys_prtppd.exe \!*"
+  alias prtunits	"$SYSDWARF/prtunits.exe"
+  alias indwarf		"source $ROOTDWARF/dwarflogin.sun"
+  alias ind		"source $ROOTDWARF/dwarflogin.sun"
+  alias outdwarf	"source $ROOTDWARF/dwarflogout.sun"
+  alias outd		"source $ROOTDWARF/dwarflogout.sun"

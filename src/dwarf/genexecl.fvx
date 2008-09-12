@@ -1,0 +1,42 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_EXECL
+C.Keywords:	Execute Command
+C.Author:	Ger van Diepen (NFRA, Dwingeloo)
+C.Language:	Fortran
+C.Environment:	VAX
+C.Comments:	
+C.Version:	920701 GvD - creation
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION GEN_EXECL (COMM,PROG)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	COMM		! (i) command to be executed
+	CHARACTER*(*)	PROG		! (i) program name (not used)
+C
+C.Purpose:	Execute command in this process
+C.Returns:	Status from LIB$DO_COMMAND
+C.Notes:
+C-------------------------------------------------------------------------
+C
+	INTEGER		LENG
+C
+	INTEGER		LIB$DO_COMMAND	
+C
+C
+C			Remove possible 0 indicating the end of the string.
+C			Execute the command.
+C			If successfull, the program is stopped.
+C
+	LENG = INDEX(COMM,CHAR(0))
+	IF (LENG.EQ.0) THEN
+	    LENG = LEN(COMM)
+	ELSE
+	    LENG = LENG-1
+	ENDIF
+C
+	GEN_EXECL = LIB$DO_COMMAND (COMM(:LENG))
+	RETURN
+	END

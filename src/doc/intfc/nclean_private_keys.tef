@@ -1,0 +1,545 @@
+
+%\section{ References to public interfaces}
+%\label{.public}
+
+% \input nclean.tmp.ref.1
+{\em See also:}
+\begin{itemize}
+\item \textref{DWARF}{introduction.user.interface} user interface
+\item \textref{MDLNODE}{mdlnode_public_intfc} public keywords
+\item \textref{NGEN}{ngen_public_intfc} public keywords
+\item \textref{NMAP}{nmap_public_intfc} public keywords
+\item \textref{NMODEL}{nmodel_public_intfc} public keywords
+\item \textref{SCNNODE}{scnnode_public_intfc} public keywords
+\item \textref{SCNSETS}{scnsets_public_intfc} public keywords
+\item \textref{SELECT}{select_public_intfc} public keywords
+\item \textref{WMPNODE}{wmpnode_public_intfc} public keywords
+\item \textref{WMPSETS}{wmpsets_public_intfc} public keywords
+\end{itemize}
+
+
+
+\subsection{ Parameter AP\_WMP\_SET}
+\label{.ap.wmp.set}
+
+\spbegin
+{\em Prompt:} ONE antenna pattern (grp.fld.chn.pol.1.seq)\\ 
+{\em Expected input:} Character *32:  1 to 1 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify ONE antenna pattern
+                (group.field.channel.polarisation.type(=1).sequence_number)
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter AREA}
+\label{.area}
+
+\spbegin
+{\em Prompt:} Window area l,m,dl,dm\\ 
+{\em Expected input:} Integer:  1 to 4 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+The CLEAN window is defined as the union of up to 32 rectangular areas (which
+may arbitrarily overlap). For BEAM clean this is also the window within which
+source responses will be subtracted.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+You are being prompted for these areas one by one until you give a null reply
+(<CR> only). An area is specified by four numbers: l,m, dl,dm, where
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   l,m     l and m in grid points for the area centre; (l,m)=(0,0) at the map
+            centre, increasing toward the upper right (i.e. with decreasing RA
+            and increasing DEC)
+   dl,dm   width and height of the area in grid points
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter CLEAN\_LIMIT}
+\label{.clean.limit}
+
+\spbegin
+{\em Prompt:} Limit in fraction of map maximum\\ 
+{\em Expected input:} Real:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the level to which to clean in fraction of the initial map maximum.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter CLIP\_AREA}
+\label{.clip.area}
+
+\spbegin
+{\em Prompt:} UV-radius range for clipping (m)\\ 
+{\em Expected input:} Real:  1 to 2 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the (circular) UV-plane radii (in metres) between which you want to
+clip the data. The default is to clip everywhere.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter CLIP\_LEVELS}
+\label{.clip.levels}
+
+\spbegin
+{\em Prompt:} Amplitude range to be discarded\\ 
+{\em Expected input:} Real:  1 to 2 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify amplitude range (in Westerbork Units) of visibility magnitudes that you
+want to discard.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+In the annulus defined by CLIP_AREA, values between the limits you specify will
+be discarded.
+\end{verbatim}\svend
+ {\em parameter \textref{CLIP\_AREA}{.clip.area} }
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+NOTE: It would be more natural to define a range within which visibilities are
+considered valid. As it is, only the lower limit is actually useful, allowing
+you to define a rejection threshold for interference. To do so, specify your
+threshold for the lower and 'infinity' for the upper limit, e.g.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+                <threshold>,100000
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter CMEMORY\_USE}
+\label{.cmemory.use}
+
+\spbegin
+{\em Prompt:} UV-clean memory size\\ 
+{\em Expected input:} Integer:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the work memory size in bytes for the UV Clean option, to be allowed in
+defining the beam patch and to be used in executing the Fourier transforms.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+The default shown is normally adequate; a larger value may speed up the
+execution of major cycles in UV Clean.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+NCLEAN will not accept a value in excess of 4000000 (4 MB).
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter COMPON\_LIMIT}
+\label{.compon.limit}
+
+\spbegin
+{\em Prompt:} Maximum number of components to find\\ 
+{\em Expected input:} Integer:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the maximum number of components to be cleaned.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter COMPON\_LOG}
+\label{.compon.log}
+
+\spbegin
+{\em Prompt:} Reporting interval for components found: | terminal, printer\\ 
+{\em Expected input:} Integer:  1 to 2 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+You may give two numbers <n> here, indicating that every <n>-th component must
+be reported. The first number applies to your terminal window, the second to
+the log file. A value of 0 means 'no reporting at all.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Example:
+        2,0 specifies that every other component will be typed, and none logged.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter CYCLE\_DEPTH}
+\label{.cycle.depth}
+
+\spbegin
+{\em Prompt:} Major cycle depth\\ 
+{\em Expected input:} Real:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the level relative to the initial map maximum in the CLEAN window to
+which you want to clean in one major cycle.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter DATA\_FACTOR}
+\label{.data.factor}
+
+\spbegin
+{\em Prompt:} Data multiplication factor\\ 
+{\em Expected input:} Real:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the factor by which to multiply the input map-data.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+This option is only relevant for DATA clean. The first input-map and all maps
+created by DATA clean will be multiplied by this factor.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter DECONVOLUTION}
+\label{.deconvolution}
+
+\spbegin
+{\em Prompt:} Correct antenna pattern for mapping taper: YES/NO\\ 
+{\em Expected input:} Yes/No:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+The gridding convolution in map-making is usually compensated for by
+multiplying the output map and antenna pattern with a taper function that rises
+toward the map edges.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+If this is the case, answering YES here will instruct the program to account
+for this effect; this will reduce the aliasing errors in the residual map,
+allowing you to clean a somewhat larger part of the map. YES will in general
+produce a result with less aliasing, NO the reverse.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter DMEMORY\_USE}
+\label{.dmemory.use}
+
+\spbegin
+{\em Prompt:} Work memory size\\ 
+{\em Expected input:} Integer:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+The memory workspace in bytes needed is 12 times the size of the rectangle
+enclosing all selected areas in the map plane. NCLEAN normally allocates up to
+300 KB for this purpose. To satisfy the present need, you must either accept
+the value suggested here or specify a smaller set of areas, or both.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+NCLEAN will not accept a value in excess of 4000000 (4 MB).
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter GRATING\_FACTOR}
+\label{.grating.factor}
+
+\spbegin
+{\em Prompt:} Grating factor\\ 
+{\em Expected input:} Real:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+In the minor cycles of UVCOVER, DATA and COMPON clean, the maximum error made
+in only subtracting part of the antenna pattern is estimated by <number of
+sources> times <ypical sidelobe level in antenna pattern> times GRATING_FACTOR.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+You may lower this latter factor if you are not worried about the effects of
+far-out sidelobes on the minor-cycle cleaning process. A lower value will allow
+more source components to be collected in minor cycles before a major cycle
+must be started.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter LOOP\_GAIN}
+\label{.loop.gain}
+
+\spbegin
+{\em Prompt:} Clean loop-gain factor\\ 
+{\em Expected input:} Real:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+For each component found, the antenna pattern shifted to its position is
+subtracted from the CLEAN window. To prevent overshoots, it is customary to
+subtract not the complete component but only a fraction of it. The magnitude of
+this fraction is defined here.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter MAP\_FACTOR}
+\label{.map.factor}
+
+\spbegin
+{\em Prompt:} Multiplication factor\\ 
+{\em Expected input:} Real:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the factor by which to multiply the residual map before restoring.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Normally one should use the default value of 1; a value of 0 serves to make a
+map of the CLEAN components only.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter OPTION}
+\label{.option}
+
+\spbegin
+{\em Prompt:} Operation wanted\\ 
+{\em Expected input:} Character *24:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+CLEANing:
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   BEAM         Hogbom clean: Use the map and the beam to clean. This
+                 method is inaccurate away from the map centre due to the
+                 aliasing associated with visibility gridding.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   UVCOVER      Standard Clark Clean: Find and provisionally subtract sources
+                 in some map areas first (minor cycles), then properly subtract
+                 the sources found (major cycle). The number of minor cycles
+                 between major cycles is determined by the program; the user can
+                 steer this through a few control parameters.
+                The method suffers from the same limitations as BEAM, but is
+                 faster for cleaning extended sources.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   DATA         Cotton-Schwab Clean: Find sources as in UVCOVER, but perform
+                 the major cycle on the original SCN-file visibilities, making a
+                 new map from the residuals as input for the next major cycle.
+                 This method rigorously avoids the aliasing limitations of BEAM
+                 and UVCOVER, at the price of being very much slower.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   UREST        Use a clean component list and a map to restore the clean
+                 components in the map.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+For exploring the data before committing more serious work:
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   HISTO        Produce only a histogram of selected areas in the map and/or
+                 antenna pattern
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   COMPON       Execute minor cycles as for UVCOVER, but omit the following
+                 major cycle. The result is a source model and a map in which
+                 these sources are provisionally subtracted in selected areas.
+                It is the fastest of the four CLEAN variants but produces an
+                 inaccurate residual map.
+                This option may be used to quickly get a feel for the
+                 minor-cycle control of UVCOVER and DATA Clean, or to make an
+                 initial data model for NCALIB SELFCAL or NMODEL UPDATE.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Other options:
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   QUIT          Terminate NCLEAN.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter PRUSSIAN\_HAT}
+\label{.prussian.hat}
+
+\spbegin
+{\em Prompt:} Prussian hat value\\ 
+{\em Expected input:} Real:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+For extended sources a prussian hat (i.e. a nominal additional peak value on
+the central value of the antenna pattern) may give better clean results. Values
+of .1 to .4 could be tried.
+\end{verbatim}\svend
+                       \whichref{Cornwell}
+\spend
+
+
+\subsection{ Parameter RESIDUAL}
+\label{.residual}
+
+\spbegin
+{\em Prompt:} residual map?\\ 
+{\em Expected input:} Yes/No:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify if the residual map must be written.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+For BEAM and UVCOVER cleaning, this map is an automatic by-product of the
+process and the choice is whether or not to write it to the .WMP file. The map
+will be given the same indices as the input map except for an incremented
+sequence number.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+For UVDAT cleaning, the residual map must be constructed by making a new map
+from the original visibilities, in which the CLEAN components just found are
+subtracted. The new map will OVERWRITE the input map.
+\end{verbatim}\svend
+               {\em See elsewhere for the\
+               \textref{rationale}{nclean\_descr.residual.map} }
+\spend
+
+
+\subsection{ Parameter RESTORE}
+\label{.restore}
+
+\spbegin
+{\em Prompt:} restored map (YES/NO)?\\ 
+{\em Expected input:} Yes/No:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify if a restored map must be written.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+A restored map consists of the CLEAN components convolved with a hypothetical
+beam that has no sidelobes, superimposed on the residuals. It is an
+approximation to  what you would have observed with complete contiguous UV
+coverage (hoth in hour angle and baseline) up to the longest baseline available.
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+You will be given the option to suppress the residuals (parameter MAP_FACTOR),
+in which case you get a map of the CLEAN components only.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter RESTORE\_BEAM}
+\label{.restore.beam}
+
+\spbegin
+{\em Prompt:} dl, dm arcsec, pa deg\\ 
+{\em Expected input:} Real:  1 to 3 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify the restore beam width:
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   dl      width of beam in arcsec (full-halfwidth)
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   dm      width of beam in arcsec (full-halfwidth)
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+   pa      position angle of skewed beam in degrees (anti-clockwise;
+            0 deg is horizontally to the right (+l direction)
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+The default beam is a two-dimensional Gaussian truncated at a level of .xx
+relative to the maxiumum. If an antenna pattern for your map is available, the
+l,m beam widths are derived from it; else a rule-of-thumb formula is used:
+\end{verbatim}\svend
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+        half-width = 12 arcsec * 1400/frequency(MHz)
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter WMP\_SETS0}
+\label{.wmp.sets0}
+
+\spbegin
+{\em Prompt:} ONE input map: grp.fld.chn.pol.0.seq\\ 
+{\em Expected input:} Character *32:  1 to 1 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Specify ONE input map (group.field.channel.polar.type(=0).sequence_number)
+\end{verbatim}\svend
+\spend 
+

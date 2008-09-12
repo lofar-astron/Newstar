@@ -1,0 +1,366 @@
+%
+% @(#) rcp_line_21cm.tex  v1.2 04/08/93  AGB
+%
+% History:
+%       JPH 940914      Comment out 'processing appetizer'
+%
+%
+\chapter{Processing recipe: 21cm line observations} 
+\tableofcontents 
+
+Author: A.G. de Bruyn 
+
+
+%=============================================== Standard subsection ======
+\section{Scope of the recipe} 
+\label{.scope} 
+
+This recipe deals with the reduction of a 21cm line dataset. It describes the
+calibration of the (complex) passbands using one or more calibrators, the
+flagging of bad data and the production of an image cube. It shows you how to
+display this image cube in a movie-like fashion using GIDS. The recipe also
+includes a description of how to visually identify groups of bad datapoints
+(e.g. bad interferometers or bad channels) and flag/clip those data. If the
+field is littered with bright continuum sources at the edge of the field, or
+when you are working with a relatively wide band, the subtraction of the
+continuum in the image plane will produce undesirable chromatic effects (the
+continuum emission itself will go away but not their frequency- scaled sidelobe
+and grating-lobe responses). A simple procedure to remove the continuum in such
+cases will be given. 
+
+%---------------------------------------------------------------------------
+%  If possible, supply an idea for an "appetizer" picture, which gives an
+%  idea of what can be achieved with this recipe.
+
+%\begin{figure}[htbp]
+%\vspace{10cm}
+%\caption[001 processing appetizer:...]         % appears in listoffigures
+%{\label{.appetizer}}
+%\begin{center}\parbox{0.9\textwidth}{\it       % actual caption if long
+%001 processing appetizer:...
+%\\This result was obtained in the following way:
+%\\Note the following features:
+%}\end{center}
+%\end{figure}
+
+
+%=============================================== Standard subsection ======
+\newpage 
+\section{Introduction and background} 
+\label{.intro} 
+
+This recipe describes the series of steps to go through when you want to
+calibrate a WSRT 21cm line observation. It assumes that the S/N in the data is
+rather low and that selfcalibration is not required. It also assumes that you
+do not have to clean the final images. 
+
+
+%=============================================== Standard subsection ======
+\section{Summary of the recipe} 
+\label{.summary} 
+
+The following is a step-by-step summary of the processing recipe. For some of
+these steps, more detail is provided below. 
+
+\begin{enumerate} 
+\item {\bf Load your data:} from tape or optical disk (NSCAN). See also Recipe
+005. 
+\item {\bf Inspect the data file layout:} (NSCAN) 
+\item {\bf Determine complex passbands:} from a calibrator (NCALIB) 
+\item {\bf Inspect the calibration quality:} (NPLOT) 
+\item {\bf Transfer the calibration corrections:} (NCALIB) 
+\item {\bf Make a preliminary cube of images:} (NMAP) 
+\item {\bf Inspect the image cube:} (NGIDS) 
+\item {\bf Subtract the continuum:} (NMAP) 
+\item {\bf Make a cube of (calibrated) visibilities:} (NMAP) 
+\item {\bf Inspect the UV-data cube:} (NGIDS) 
+\item {\bf Plot your images:} (NPLOT) 
+\item {\bf Transfer your images to GIPSY or AIPS:} for further analysis. 
+\item {\bf Dealing with remaining imperfections:} If there are bad groups of
+datapoints or if the continuum has not been removed satisfactorily the
+following additional steps may be required: 
+  \begin{itemize} 
+  \item {\bf Flag bad groups of data:} (NSCAN) 
+  \item {\bf Make a new image cube:} (NMAP) 
+  \item {\bf Find and Update source parameters:} 
+  of discrete continuum sources(NMODEL) 
+  \item {\bf Make a new image cube:} 
+  with discrete sources subtracted (NMAP) 
+  \end{itemize} Then proceed with step 7 and iterate if necessary. 
+\end{enumerate} 
+
+
+
+
+%=============================================== Standard subsection ======
+\section{More details for some of the steps} 
+\label{.detail} 
+
+
+%-------------------------------------------------------------------------
+\subsection{Load your data} 
+\label{.detail.load} 
+
+Log in on the computer on which you want to read in the data. At present this
+is either the microVAX (RZMVX4) or the Alliant. You load data with the program
+NSCAN, option LOAD. Before you load your data you must know with what time
+resolution you want to read in the data, and which channels you wish to
+process. If your object is confined to a small region (say less than 10 arcmin)
+it may be sufficient to use 120 seconds averaging. If you wish to synthesize
+bigger fields I recommend using 60 seconds averaging, in order to avoid too
+much tangential smearing. If the data were Hanning tapered in Westerbork
+reading in every other channel may speed up the processing by a factor of two.
+Hence for a 32 channel observation you could answer at the channel question: "2
+to 28 by 2". Reading in the continuum channel (channel 0) is generally not
+necessary; it contains continuum data with contaminating line emission. It is
+also advised to read in the calibrator data into the same scanfile. If you do
+this in the second jobstep the data will be assigned the next highest 'group
+index'. 
+
+%-------------------------------------------------------------------------
+\subsection{Inspect the file layout and flag/clip bad points} 
+\label{.detail.inspdata} 
+
+To find out how the data in the file is organized, and how you can access
+certain subsets of it, it is suggested to move 'up and down' within the program
+NSCAN. There are five levels of actions to choose, all of which work on
+different parts of the dataset. The layout of the file, or the function of the
+five-digit 'index' that points to the various observations, channels etc. is
+particularly important to memorize. To avoid that obviously bad points (e.g.
+correlator spikes) ruin the calibration solution you may wish to flag
+('delete') any points with a value higher than a certain limit.  Usually the
+occurrence of correlator spikes is noted on the information you receive from
+Westerbork/Dwingeloo. Flagging is done on a point-by-point basis using the
+amplitude of the visibility. Be careful when you use this option if you have no
+information on the amplitude range which is normal. Preliminary clipping of
+calibrator data is generally not necessary. During program execution it will
+inform you at which hourangles interferometers have been clipped.  The cutoff
+value for the object data can of course be much lower. When visibility samples
+have been clipped they will be ignored in all programs. You can also undo any
+clipping; you do this by first typing "undelete" at the question where the type
+of flagging criterion is selected (HA, AN, RN, IFR, CLIP ...). 
+
+%-------------------------------------------------------------------------
+\subsection{Determine the instrumental gains/phases across the passband} 
+\label{.detail.passband} 
+
+Run the (self-)calibration program NCALIB (option redundancy) for the
+calibrator source(s). In order to do this you need a 'model' for the calibrator
+field containing the fluxes and positions of the calibrator source and any
+(strong) surrounding sources (see Recipe 013: Using external calibrators).
+Depending on observing frequency and source there could be anywhere between one
+and many hundreds of sources in the model file. Upon execution the complex
+gains are determined, and stored, per telescope/polarisation for each time
+interval and channel. 
+
+%-------------------------------------------------------------------------
+\subsection{Plot the calibration results} 
+\label{.detail.plotcal} 
+
+In order to decide which calibrator(s) to use, or which part of the calibration
+observation, you must inspect the quality of the output from the calibartor
+NCALIB run. Both the printed LOG from the previous step and/or a plot of the
+telescope complex gains and the residuals from the (self-) calibration solution
+are helpful to make up your mind. The program NPLOT (options 'telescope' and
+'residuals') does the plotting. In general it suffices to plot one channel,
+somehwere in the middle of the band, to judge the quality of the gains (called
+amplitude) and phases for the various telescopes. Phase and gain slopes across
+the passband are usually the same, to first order, for all telescopes. Phase
+drifts at 21cm are typically a few degrees of phase over a 12 hour period; gain
+drifts 
+should generally be less than a few %. Gain/phase offsets however may
+occasionally be larger. Consult the printout which contains summary information
+for each channel. If there are no instrumental problems the gain and phase
+errors should be equal to the thermal noise values (see Appendix ....). 
+
+
+%-------------------------------------------------------------------------
+\subsection{Transfer the gains/phases from the calibrator(s)} 
+\label{.detail.transcal} 
+
+The corrections from the calibrator(s) are averaged over all available (non-
+flagged) hourangle scans and stored in each scan of the object scanfile. If
+your calibrator observations have equal length, and no scans have been flagged,
+the resulting value is just the mean of the individual calibrator averages.
+There is no provision to weight for the S/N ratio or the amplitude of the
+calibrator. This means that the transferred gains/phases are representative for
+a point in time halfway the time of the calibrator observations. This would be
+a good assumption for gain/phase drifts that go linear with time. For galactic
+21cm line observations you will have calibrators observed at frequencies lower
+and higher (usually by about 1 MHz) than the frequency of your object. Usually
+these are scheduled before and after the time of observation of your object but
+this is not essential. If the calibrator observations have equal length then
+the averaged gain/phase would be appropriate for a frequency halfway the
+calibrator frequencies as if there is a linear gain/phase drift with frequency.
+If your object frequency is not halfway in frequency between the frequencies of
+the calibrators and you want to store gains/phases in your object file that
+refer to the frequency of your object, on the assumption that the gains/phase
+vary linearly with frequency, than you may play around with the length of the
+respective calibrator observations. This can be done using the NSCAN program
+(option DELETE, suboption HA (delete). 
+
+%-------------------------------------------------------------------------
+\subsection{Make a cube of images} 
+\label{.detail.makecube} 
+
+Assuming that you do not want to selfcalibrate the object data (which for line
+observations is usually the case) you can now proceed to make an image cube.
+When making images you want to delete any obviously bad baselines. Because you
+do not yet know whether such bad baselines exist you might as well proceed with
+making your first series of images. It is possible to exclude visibilities that
+have an amplitude higher than a certain value. This clipping is not permanent,
+but only for the execution of NMAP. If the images look good, then all
+participating baselines are probably good. In an observations with 32 frequency
+channels, channel 1,29,30 and 31 are usually of poor quality so one would make
+maps of channels 2 through 28 only. Note that the 3d digit in the index of the
+.WMP cube will always start counting at 0 and continues through 26. That is,
+channel 2 is really designated 0.0.0 and channel 28 is 0.0.26. 
+
+
+%-------------------------------------------------------------------------
+\subsection{Visual inspection of images} 
+\label{.detail.visinsp} 
+
+Making final, good quality, images is generally an iterative procedure where
+you work in both the image plane and the UV-plane. This procedure is fastest if
+you can load the cubes directly into the memory of your display (e.g. X-
+terminal or workstation). GIDS, the Gipsy Image Display System, is a very
+useful program to do this. Currently it only runs on the Sun If you want to
+analyse the images in detail, using programs in GIPSY or AIPS) you will have to
+make FITS-images first. This can also be done using NMAP (option w16fits or
+w32fits) but is not shown here. Before you can run GIDS (via dwe NGIDS) you
+have to switch to an X-terminal (in Dwingeloo we have four HP X-terminals) or
+one of the two colour displays on the SUN (IPX's). 
+
+%-------------------------------------------------------------------------
+\subsection{Subtract the continuum form the line channels} 
+\label{.detail.subcont} 
+
+After inspecting the cube of line images you can decide which channels to use
+for the continuum. Use the option FIDDLE (suboption SUM) to create an averaged
+continuum image. Then use the option ADD to add the continuum channels with
+weight -1 to each line image to create continuum-free line channels. 
+
+%-------------------------------------------------------------------------
+\subsection{Make a cube of the corrected visibilities} 
+\label{.detail.cubecorr} 
+
+If the continuum-free line images look fine you are finished. However, there
+may be problems at some low level caused by interference, correlator errors or
+telescope/interferometer errors. Problems at certain position angles in the
+images correspond to certain hourangles and could be due to short-lived
+interference. An error pattern in the images, which is centered on the field
+centre (fringe-stopping centre) and not on strong continuum sources, shows that
+we are dealing with an additive, rather than multiplicative, error suggests
+that we are dealing with (DC-) offsets in the backend. To find out which
+baselines are causing the damage you can make a cube of the (calibrated)
+visibilities before they are gridded and transformed. You should use the option
+BASHA instead of UV in NMAP to generate such a cube. Answers to the questions
+on FFT and map size should be the defaults that are suggested. The best way to
+pick up low-level problems in the data (e.g. small offsets) is to create
+outputs for the real (COS) and imaginary (SIN) data. Working with the
+amplitudes and phases is generally only useful if you want to identify problems
+of a multiplicative nature and when the signal is well above the noise per
+visibility point. 
+
+
+%-------------------------------------------------------------------------
+\subsection{Visual inspection of (calibrated) visibilities} 
+\label{.detail.inspcalvis} 
+
+The cube of UV-data has a different size than that of the images. With samples
+of 240 sec there are about 180 points in the horizontal direction and 152
+points in the vertical direction (4 x 38). By choosing an 18m baseline
+increment when making the cube you will get the various baselines well
+separated and makes it easier to count on the screen which baselines are bad.
+The shortest baseline (9A=72m) is at the bottom of the 'image'. You can now
+proceed to make a new series of images where baseline 5B should be thrown out.
+Then you can define the 'continuum' channels and run NMAP to calculate an
+average continuum channel. This is not shown here because you may want to do
+this all in GIPSY or AIPS using FITS images. For the purpose of the
+demonstration this was done in Dwingeloo and the final 'continuum corrected'
+cube shows images of channels 7 though 23. These images were 512 x 512 in size
+and covered an area of 0.6 degrees. 
+
+
+%-------------------------------------------------------------------------
+\subsection{Make contour plots of images} 
+\label{.detail.contour} 
+
+Use the program NPLOT, option MAP to make contour plots of images. There is a
+variety of output devices. In Dwingeloo you could first send a plot to a
+(graphics-) terminal  (option REGIS) to check the contourvalues that you would
+like to plot. When you are satisfied you can, by using the 'loop' option, send
+a series of plots to the QMS plotter in either portrait (QMSP) or landscape
+(QMS) mode. The former gives you, for square plotareas, somewhat more space to
+plot in, if at least you want to restrict yourself to a single A4 sheet.
+Dealing with the size question will take some experience. The default size of
+1,1 will give you a plot of at most 5 inch. This is the case if the number of
+grid points is a power of two (32, 64, 128 etc). When using a size greater than
+1,1 on a power-of-two image area in landscape mode the plot will not fit on one
+sheet and you have to use scissors and tape. On the portrait mode you can
+actually increase the size to 1.4,1.4 before it needs more than a single A4
+sheet. 
+
+
+%-------------------------------------------------------------------------
+\subsection{Transfer images to AIPS or GIPSY} 
+\label{.detail.transcube} 
+
+You can use the FITS write option in NMAP to generate 2 byte or 4 byte integer
+images in FITS format for further analysis in AIPS or GIPSY. 
+
+
+
+
+
+%==========================================================================
+\section{Dealing with remaining imperfections} 
+\label{.remain} 
+
+If the inspection of the continuum subtracted image cube shows imperfections
+due to bad data or poor continuum subtraction you have to continue the
+reduction a bit further. 
+
+
+%-------------------------------------------------------------------------
+\subsection{Further flagging of bad data.} 
+\label{.remain.flag} 
+
+If the inspection of the visibility cube using NGIDS has indicated that there
+are errors in certain hour-angles or baselines you can flag these using the
+delete option in NSCAN. If there are only bad baselines you can also decide to
+exclude these baselines when preparing the specifications for a new NMAP. That
+is, you do not have to actively delete them. 
+
+%-------------------------------------------------------------------------
+\subsection{Make a new image cube.} 
+\label{.remain.newcube} 
+
+If the new image cube shows, after subtracting some averaged continuum image,
+residual (chromatic) grating rings due to strong sources at the edge of the
+field you need to subtract these sources in the original UV-data. 
+
+%-------------------------------------------------------------------------
+\subsection{Finding and updating discrete source parameters.} 
+\label{.remain.sourcepar} 
+
+In order to determine the flux densities and positions of these sources you
+search the continuum image using the FIND option in NMODEL. To improve the
+estimates of flux and coordinates you can use the UPDATE option in NMODEL. A
+single update, using only the UV-data with coninuum emission, usually suffices.
+ The update algorithm will only work for discrete (point) sources. If there are
+extended sources with residual grating lobes you need to use NCLEAN (option
+Beam) to decompose that source into a number of delta- functions. The final
+list of components (updated discrete sources and clean- components) can be
+merged into one model file. 
+
+%-------------------------------------------------------------------------
+\subsection{Make a new image cube with sources subtracted.} 
+\label{.remain.subtr} 
+
+Now you proceed with step 6, but subtract the list of sources found in the
+previous step. 
+
+%=======================================================================
+%=======================================================================

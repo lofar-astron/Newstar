@@ -1,0 +1,97 @@
+/*+ wnggvm.cun
+.   WNB 890724
+.
+.   Revisions:
+.	CMV 940111	Changed for Alpha
+.	CMV 940117	Changed name to cun
+.	WNB 940209	Changed for check use on dw,cv etc
+...									*/
+				int wnggvm_(len,addr)
+/*
+.   Get/release virtual memory
+.
+.   Result:
+.
+.	wnggvm_L = wnggvm_( LEN_J:I, ADDR_J:O)
+.					Get virtual memory of LEN bytes, and
+.					set address in ADDR.
+.					See WNGGVA for aligned area's.
+.	wngfvm_L = wngfvm_( LEN_J:I, ADDR_J:IO)
+.					Release virtual memory of length LEN at
+.					address ADDR.
+.	void wngpvm_( ADDR_J:O)		Print pointer value
+...									*/
+/*
+.   Arguments:
+...									*/
+#ifdef wn_da__
+		int *len;			/* length to get/free	*/
+		int *addr;
+#else
+		long *len;			/* length to get/free	*/
+		long *addr;
+#endif
+{
+/*
+.   Include files:
+...									*/
+/*
+.   Parameters:
+...									*/
+/*
+.   Function references:
+...									*/
+	char *malloc();
+/*
+.   Data declarations:
+...									*/
+/*-									*/
+/*  Get memory
+.									*/
+#ifdef wn_da__
+	*addr=(int )malloc(*len);		/* get word aligned 	*/
+#else
+	char* p=malloc(*len);			/* get word aligned	*/
+	*addr=p;
+/*	printf("malloc: %p %p\n",p,*addr); */
+#endif
+	if (*addr == 0)
+		return(0);
+	else
+		return(1);
+}
+/*  Free memory
+.									*/
+	long wngfvm_(len,addr)
+#ifdef wn_da__
+		int *len;			/* length to get/free	*/
+		int *addr;
+#else
+		long *len;			/* length to get/free	*/
+		char *(*addr);
+#endif
+
+{
+#ifdef wn_da__
+	void free();
+	free( (char *)addr + ( (*addr) - (int)addr ) );
+	return(1);
+#else
+#ifdef wn_sw__
+	int free();
+#else
+	void free();
+#endif
+	free(*addr);
+	return(1);
+#endif
+}
+/*
+.
+...									*/
+void wngpvm_(long* addr)
+{
+	printf("memory: %p\n",addr);
+}
+
+

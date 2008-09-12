@@ -1,0 +1,197 @@
+!+ WNP.GRP
+!  WNB 910623
+!
+!  Revisions:
+!	WNB 920130	Add WNPEX2
+!	WNB 921021	Add A3 plotter (WQ_EAL.DSC, WQ_EAP, WQ_PAL, WQ_PAP)
+!			WNQEPS.FOR entry points
+!	WNB 930108	Add XAW
+!	HjV 930309	Add X11 (WQ_XWI.DSC, WNQXWI.FOR)
+!	WNB 930402	Add PGPLOT routines; delete XAW
+!	HjV 930607	Change WNQXWI.FOR into WNQXWI.FSC
+!	HjV 950711	Change names of PS/EPS DSC-files
+!			Add DSC-files and entry-points for A0/A1/A2-plotter
+!       AXC 010628      linux port
+!  General plot routines
+!
+!  Group definition:
+!
+WNP.GRP
+!
+!  Structure files
+!
+WQD.DSC			!Plot device lay-out
+WQF.DSC			!Font lay-out
+WQI.DSC			!2-dimensional plot layout
+!
+!  Plot devices
+!
+WQ_EL0.DSC		!EPS A0 landscape
+WQ_EP0.DSC		!EPS A0 portrait
+WQ_EL1.DSC		!EPS A1 landscape
+WQ_EP1.DSC		!EPS A1 portrait
+WQ_EL2.DSC		!EPS A2 landscape
+WQ_EP2.DSC		!EPS A2 portrait
+WQ_EL3.DSC		!EPS A3 landscape
+WQ_EP3.DSC		!EPS A3 portrait
+WQ_EL4.DSC		!EPS A4 landscape
+WQ_EP4.DSC		!EPS A4 portrait
+WQ_PL0.DSC		!PS A0 landscape
+WQ_PP0.DSC		!PS A0 portrait
+WQ_PL1.DSC		!PS A1 landscape
+WQ_PP1.DSC		!PS A1 portrait
+WQ_PL2.DSC		!PS A2 landscape
+WQ_PP2.DSC		!PS A2 portrait
+WQ_PL3.DSC		!PS A3 landscape
+WQ_PP3.DSC		!PS A3 portrait
+WQ_PL4.DSC		!PS A4 landscape
+WQ_PP4.DSC		!PS A4 portrait
+WQ_QMP.DSC		!QMS portrait
+WQ_QMS.DSC		!QMS landscape
+WQ_REG.DSC		!Regis
+WQ_XWI.DSC		!X11 (with PGPLOT)
+!
+!  Fonts
+!
+WQ_FNA.DSC		!Font 1
+WQ_FNB.DSC		!Font 2
+WPG_XLOGO64.INC		!X11 logo
+!
+!  General command files
+!
+!
+!  Fortran definition files:
+!
+WQG.DSC			!General area for WNP (WQ) system
+!
+!  Programs:
+!
+TWNP.FOR		!		Test program
+WPG_GREXEC.FOR		!GREXEC		PGPLOT driver interface
+WPG_XWDRIV.CUN		!XWDRIV		PGPLOT X11 driver
+WNPCAL.FOR		!		Calcomp routines
+			!FACTOR	GRID	NEWPEN	NUMBER	PLOT
+			!PLOTS	SCALE	SYMBOL	TONE	WHERE
+WNPCAX.FOR		!		Calcomp routines
+			!AXIS	LINE
+WNPCID.FOR		!WNPCID		Check device id presence
+WNPCLR.FOR		!WQCLR		Clear screen
+WNPDAC.FOR		!WQDVAC		Activate device
+			!WQDVDA		De-activate device
+WNPDEX.FOR		!WNPDEX		Execute device routine
+WNPDOP.FOR		!WQDVOP		Open device
+			!WQDVCL		Close device
+WNPDXR.FOR		!WNPDXR		Execute actual device routine
+WNPEXH.FOR		!WNPEXH		Do exit handler
+WNPEX0.FOR		!		Extra routines
+			!WQ_DATE	Plot time stamped header message
+			!WQ_LINE	Single line piece
+			!WQ_LINE_IX	with index given
+			!WQ_MARK	Single mark
+			!WQ_MARK_IX	with index given
+			!WQ_MLINE	Marked polyline
+			!WQ_MLINE_IX	with indices given
+			!WQ_RECT	Draw rectangle
+			!WQ_RECT_IX	with index
+			!WQ_SNTR	Set window and viewport
+WNPEX1.FOR		!WQ_BOX		Area fill
+WNPEX2.FOR		!WQ_MPAGE	Multiple page open
+			!WQ_MCLOSE	Multiple page close
+			!WQ_MDATE	Multiple page message
+			!WQ_MPLR	Multiple page polyline representation
+WNPIND.FOR		!WNPIND		Initialise device to system
+WNPMSG.FOR		!WQMSG		Plot header message
+WNPOPC.FOR		!WQOPEN		Open WNP (WQ) system
+			!WQCLOS		Close WNP system
+WNPPLM.FOR		!WQPOLM		Polymark
+			!WQPOLM_IX	Polymark with index
+WNPPLN.FOR		!WQPOLL		Polyline
+			!WQPOLL_IX	Polyline with index
+			!WQPOLL_LIST	Special
+WNPRTN.FOR		!		General routines
+			!WNP_NTR1	Normalized transform
+			!WNP_NTRG
+			!WNP_DNTR1	Device transform
+			!WNP_DNTRG
+			!WNP_MAKL	Make list
+			!WNP_PLCLP	Clip lines
+			!WNP_PMCLP	Clip points
+			!WNP_SHCLP	Clip areas
+WNPRTN_X.FOR		!WNP_NTR0	Normalized transform
+			!WNP_DNTR0	Device transform
+WNPRTN_Y.FOR		!WNP_ALLOC	Allocate clip areas
+WNPSET.FOR		!WQSPLI		Set polyline index
+			!WQSPMI		Set polymark index
+			!WQSFAI		Set fill area index
+			!WQSTXI		Set text index
+			!WQSTXH		Set text height
+			!WQSTXU		Set text direction
+			!WQSTXX		Set text expansion
+			!WQSTXP		Set text path
+			!WQSTXS		Set text spacing
+			!WQSPID		Set pick id
+			!WQSCLP		Set clip indicator
+			!WQSPSZ		Set pattern size
+			!WQSPRP		Set pattern reference point
+			!WQSPLR		Set polyline representation
+			!WQSPLR_IC	... with colour
+			!WQSPMR		Set polymark representation
+			!WQSPMR_IC	... with colour
+			!WQSTXR		Set text representation
+			!WQSTXR_IC	... with colour
+WNPSEV.FOR		!		Set windows etc
+			!WQSLNT		Select norm. transform
+			!WQSWIN		Set window
+			!WQSVIE		Set view
+			!WQSDVW		Set device window
+			!WQSDVV		Set device viewport
+WNPTWO.FOR		!		2-dimensional plotting
+			!WQ_CONI	Init contouring
+			!WQ_CONJ	Init contouring
+			!WQ_CONT	Draw contours
+			!WQ_CONX	Finish contouring
+			!WQ_SHADI	Init shading
+			!WQ_SHADJ	Init shading
+			!WQ_SHADE	Shade
+			!WQ_SHADX	Finish shading
+			!WQ_POLI	Init pol. vectors
+			!WQ_POLT	Pol. vectors
+			!WQ_POLX	Finish pol. vectors
+			!WQ_RULI	Init ruled surface
+			!WQ_RULE	Ruled surface
+			!WQ_RULX	Finish ruled surface
+WNPTXT.FOR		!WQTEXT		Show text
+			!WQTEXT_IX	Show text with index and height
+			!WQTEXT_IY	Show text with all arguments
+!
+!  Device routines
+!
+WNQEL4.FSC		!WNQEL4		Encapsulated PS A4 landscape
+			!WNQEP4		Encapsulated PS A4 portrait
+			!WNQPL4		PostScript A4 landscape
+			!WNQPP4		PostScript A4 portrait
+			!WNQEL3		Encapsulated PS A3 landscape
+			!WNQEP3		Encapsulated PS A3 portrait
+			!WNQPL3		PostScript A3 landscape
+			!WNQPP3		PostScript A3 portrait
+			!WNQEL2		Encapsulated PS A2 landscape
+			!WNQEP2		Encapsulated PS A2 portrait
+			!WNQPL2		PostScript A2 landscape
+			!WNQPP2		PostScript A2 portrait
+			!WNQEL1		Encapsulated PS A1 landscape
+			!WNQEP1		Encapsulated PS A1 portrait
+			!WNQPL1		PostScript A1 landscape
+			!WNQPP1		PostScript A1 portrait
+			!WNQEL0		Encapsulated PS A0 landscape
+			!WNQEP0		Encapsulated PS A0 portrait
+			!WNQPL0		PostScript A0 landscape
+			!WNQPP0		PostScript A0 portrait
+WNQQMS.FOR		!WNQQMS		QMS landscape
+			!WNQQMP		QMS portrait
+WNQREG.FOR		!WNQREG		Regis
+WNQXWI.FSC		!WNQXWI		X11 (with PGPLOT-calls)
+!
+!  Executables
+!
+TWNP.EXE
+!-

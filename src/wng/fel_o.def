@@ -1,0 +1,50 @@
+C+ Created from fel.dsc on 000922 at 11:09:18 at duw01
+C  FEL_O.DEF
+C  WNB 000922
+C
+C  Revisions:
+C
+C       WNB 930803      Rearrange text
+C       WNB 890724      Original version
+C                                                                             
+C
+C  Given statements:
+C                                                                             
+C
+C  Result:
+C
+C  FEL.DSC defines the FEL (File ELement description)
+C                                                                             
+C
+C  Parameters:
+C                                                                             
+	INTEGER FEL__NFEL                       ! # OF ELEMENTS WANTED
+	  PARAMETER (FEL__NFEL=16)
+C
+C  FEL structure definitions:
+C                                                                             
+	INTEGER FELHDL,FELHDV,FELHDS
+	  PARAMETER (  FELHDL=24,               ! Length
+	1              FELHDV=1,                ! Version
+	1              FELHDS=1)                ! System
+	INTEGER FEL__L,FEL__V,FEL__S
+	  PARAMETER (  FEL__L=24,               ! Length
+	1              FEL__V=1,                ! Version
+	1              FEL__S=1)                ! System
+C
+C  FEL Offsets:
+C                                                                             
+	INTEGER FEL_LINK_1,FEL_LINK_J           ! LINK LIST, MUST BE AT 0
+	  PARAMETER (FEL_LINK_1=0,FEL_LINK_J=0)
+	INTEGER FEL_BITS_1,FEL_BITS_J           ! BITS (BIT0=1: READ, ELSE WRITE)
+	  PARAMETER (FEL_BITS_1=8,FEL_BITS_J=2)
+	INTEGER FEL_BUFAD_1,FEL_BUFAD_J         ! USER BUF ADDRESS
+	  PARAMETER (FEL_BUFAD_1=12,FEL_BUFAD_J=3)
+	INTEGER FEL_BUFLEN_1,FEL_BUFLEN_J       ! USER BUF LENGTH
+	  PARAMETER (FEL_BUFLEN_1=16,FEL_BUFLEN_J=4)
+	INTEGER FEL_DKAD_1,FEL_DKAD_J           ! DISK ADDRESS
+	  PARAMETER (FEL_DKAD_1=20,FEL_DKAD_J=5)
+C
+C  Given statements:
+C                                                                             
+C-                                                                            

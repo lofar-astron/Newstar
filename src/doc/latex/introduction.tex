@@ -1,0 +1,634 @@
+% introduction.tex
+%
+% JPH   941124
+% JPH   941221  Expand processing paradigm: First order calibration from
+%               calibrator, later refinement through Selfcal. Add UPDATE.
+%
+\newcommand{\bi}{ \begin{itemize} }
+\newcommand{\ei}{ \end{itemize} }
+\newcommand{\bn}{ \begin{enumerate} }
+\newcommand{\en}{ \end{enumerate} }
+\newcommand{\eg}{e.g.}
+
+\chapter{ Introduction to \NEWSTAR for new and prospective users } {\em
+Contributed by Johan Hamaker, november 1994 \centering \par}
+
+\tableofcontents
+
+
+\section{ Preface }
+\label{.preface}
+
+	\NEWSTAR is an acronym for the '{\bf N}etherlands {\bf E}ast-{\bf W}est
+{\bf S}ynthesis {\bf T}elescope {\bf A}nalysis and {\bf R}eduction'. It stands
+for a small collection of programs whose purpose is to process 'raw' visibility
+data from the WSRT into sky maps, source lists and the like that are ready for
+astronomical interpretation.
+
+	Its functionality allows one to fully exploit the strong points of
+East-West systhesis arrays in general and the WSRT in particular: Wide-field
+mapping, and high dynamic range both in 'total-power' and polarisation
+observations. To achieve this, \NEWSTAR contains a number of powerful and
+refined algorithms not known to exist in other systems. Their presence makes
+\NEWSTAR quite overwhelming for the uninitiated. This document is intended to
+provide a simple introduction of a tutorial type.
+
+	The documentation generally refers to the WSRT as the source of
+observations. \NEWSTAR also includes provisions for the processing of data from
+the Australian Telecope (ATNF) compact array (ATCA), but these are few and
+simple and we skip them here.
+
+
+\subsection{ Portability }
+\label{.portability}
+
+	\NEWSTAR's primary maintenance is carried out by NFRA on Sun and HP
+systems. It is actively supported elsewhere for a DECstation and a DEC Alpha;
+it has been supported in the past for a Convex and is therefore likely to be
+readily portable to there. VAX support has been discontinued.
+
+	For general operations, such as moving or deleting files, manipulating
+text files, {\em etc.} you must rely on your host system. Inasmuch as \NEWSTAR
+now only runs in Unix environments, a generic knowledge of that environment
+should be sufficient, but also necessary.
+
+
+\subsection{ Terminology}
+\label{.terminology}
+
+	A perceptive user may well notice that \NEWSTAR programs are rather
+careless in their use of terminology. This is a heritage that we are to some
+extent stuck with: Automatic 'batch' procedures in several on-going large WSRT
+projects ({\em WENSS} and {\em WHISP}) rely on the present structure and
+parameter names of the user interface. We try to clarify ambiguities in the
+documentation and on-line Help, but the user must be wary that names do not
+always mean what they seem to suggest.
+
+
+\section{ NEWSTAR's basic processing paradigm }
+\label{.basic}
+
+\input {basic_functions.cap}
+
+\subsection{ Source and instrumental-error modeling }
+\label{.source.error.modeling}
+
+	The most common aim of processing visibility data is to obtain a
+representation of the sources observed, with artefacts from the observing
+process adequately removed. Such artefacts arise both from the finite sampling
+of the data (primary and synthesised antenna beams) and from instrumental
+errors.
+
+	If errors were absent, the problem would be 'simply' to deconvolve the
+known antenna pattern (synthesised beam) from the observed data. This is an
+ambiguous process: There is an infinite number of possible solutions.
+Acceptable ones are favoured by the {\em a priori} knowledge incorporated in
+radio-astronomy algorithms; in addition, human judgment is needed to control
+the reduction process.
+
+	Instrumental errors complicate the problem. To first order they may be
+determined from {\em calibrator} sources observed before and/or after the
+source. This typically yields a {\em dynamic range} in the order of one in a
+few hundred.
+
+	Much higher dynamic ranges can only be obtained through {\em
+self-calibration}. This is a generic name for processes in which a source model
+and a model of the instrumental errors are constructed simultaneously.
+Self-calibration relies on the fact that the signature of true sources in an
+observation is quite different from that imposed by instrumental errors.
+Algorithms have been invented that discriminate between the two quite well. The
+separation is not perfect, however, and even more than for source modeling
+alone, human judgment must keep the process on course.
+
+
+\subsection{ Outline of the reduction process in \NEWSTAR }
+\label{.outline}
+
+	\Figref{.basic.functions} shows the fundamental functions and the
+primary data files with their most important contents. The connecting arrows
+show the data flow in the basic reduction process. We enumerate the steps here
+in order for a typical reduction process. In practice, the complexity of the
+observed field and/or the quality of the observation may give rise to a wide
+variety of situations; the same steps or only part of them may have to be
+combined in a different sequence. If you need really high dynamic range, take
+your time to become an expert...
+
+	The basic reduction steps shown combined in \figref{.basic.functions}
+are:
+\bn
+%1
+\item   Visibilities are read in from a data archive by NSCAN; calibrator
+observation(s) are included.
+%2
+\item   The calibrator data are processed in NCALIB to find the instrumental
+errors. A source model is used as a reference; such models are available in
+\NEWSTAR for all calibrators routinely used by the WSRT. The errors found are
+stored as {\em corrections} in the calibrator observation.
+%3
+\item   NCALIB is invoked to copy the corrections from the calibrator to the
+astronomical observation. This provides the 'first-order' error correction
+referred to \textref{above}{.source.error.modeling}.
+%4
+\item   A map is made from the astronomical observation, using the corrections.
+At this point, reduction may be complete. If the quality of the map is
+inadequate, one must continue.
+%5
+\item   NMODEL FIND and NCLEAN are used to construct a {\em source model} for
+the astronomical field; such a model is a list of components, each of which can
+be arbitrarily positioned and have a finite extent. ({\em I.e.}, they are much
+more general than conventional CLEAN components.)
+%6
+\item   The positions and other parameters defining the source components may
+be improved through an NMODEL UPDATE. This procedure is unique to \NEWSTAR. It
+refines the parameters estimated by NMODEL FIND for each source component by
+comparing its computed visibilities against the observed ones.
+%7
+\item   A 'self-calibration' {\em selfcal} can now be done with NCALIB in the
+same way as was done for the calibrator in step 2 above. This will refine the
+correction parameters stored in the .SCN file.
+%8
+\item   NFLAG may be used to flag as 'bad' those scans for which the Selfcal
+operation produced a poor result (either an error message or an excessive mean
+error in the solution).
+%9
+\item   Form this point on, steps 3-8 can be repeated {\em ad libitum}.
+\en
+
+	With a general picture of the reduction process in mind, we can take a
+look first at the data files and then at the programs involved.
+
+
+\section{ The \NEWSTAR data files }
+
+	We first discuss the three types of data files shown in
+\figref{.basic.functions}. After that, we consider the common {\em indexing}
+system that is common to most of these files.
+
+\subsection{ The scan (.SCN) file }
+\label{.scn.file}
+
+\input{ scn_summary.tef}
+
+
+\subsubsection{ Error categories and the Selfcal paradigm }
+\label{.selfcal}
+
+\input {error_model.cap}
+
+	Errors, - and consequently corrections for them -, can be broken down
+in four categories, as shown schematically in \figref{.error.model}:
+
+\bi
+\item   {\em Global:} Errors represented by a single parameter for the
+instrument as a whole: \eg a clock error or refraction.
+
+\item   {\em Telescope(-based):} Errors that occur {\em per telescope} and
+therefore affect all interferometers including that telescope in the same way:
+\eg tropospheric cloud effects and telescope position errors.
+
+\item   {\em IF-based:} Errors that occur {\em per dipole/polarisation channel}
+ and therefore affect all interferometers including that IF channel in the same
+way: \eg elctronic gain and phase errors.
+
+\item   {\em Interferometer(-based):} Errors that occur in the correlator and
+can therefore not be attributed to a telescope/polarisation channel: \eg
+correlator zero offsets. In a well-designed correlator these errors can be very
+small and for the WSRT one can almost always ignore them.
+\ei
+
+	In the somewhat inaccurate terminology of \NEWSTAR no dictinction is
+made between telescope- and IF-based errors; the two are jointly known as {\em
+telescope errors} as opposed to {\em interferometer errors}. The distinction
+between the two types of error is fundamental to the {\em Selfcal} methods
+which are used to separate instrumental errors from the true source
+visibilities. A basic understanding of the Selfcal paradigm is assumed
+throughout \NEWSTAR.
+
+	In addition to the Selfcal constraint, WSRT data are subject to the
+{\em Redundancy} constraint: Baselines of the same length (and the same
+orientation as they always have for the WSRT) must produce the same
+visibilities.
+
+
+\subsection{ The map (.WMP) file }
+\label{.wmp.file}
+
+	.WMP files are the containers for two-dimensional {\em images}: sky
+maps and antenna patterns. Each immage is an array of data points with
+horizontal and vertical positions {\em l, m} as coordinates. It represents a
+projection of the celestial sphere on a plane tangent in the field centre; the
+direction of the projection is {\em parallel to the polar axis}.
+
+	The organisation of the images in a .WMP file will be discussed
+\textref{shortly}{.indices}.
+
+
+\subsection{ The source-model (.MDL) file }
+\label{.mdl.file}
+
+	Unlike the .SCN and .WMP files that may contain a collection of sectors
+or images, the .MDL file harbours only a single {\em source model}. The concept
+of such a model is familiar from {\em CLEAN} as a list of point sources with a
+position and flux for each.
+
+	The \NEWSTAR source mode is more refined: It may also contain for each
+source an (elliptical-Gaussian) extent, its 4 Stokes parameters, its spectral
+index and its intrinsic rotation measure. Traditional CLEAN components are a
+degenerate case of this more general concept.
+
+
+\subsection{ Organisation of collections of data structures: Indices}
+\label{.indices}
+\label{.SCNSUM.indices}
+
+	We have seen that \NEWSTAR data files are collections of data units:
+Let us first consider the .SCN file, where these units are the
+\textref{sectors}{.scn.file}. Each such unit is self-describing, but we need
+additional information to understand its relation to other units, viz. what are
+its channel number and field number (for a mosaic observation). Moreover it is
+possible to store more than one observation in a scan file and we need a way of
+knowing which is which.
+
+	The organisation in \NEWSTAR data files is by means {\em hierarchical
+indexing}: Each unit is addressed through a {\em composite index}, consisting
+of a string of integers {\em 'indices'} separated by dots, e.g.
+
+\verb/  3.1.0.5/
+
+	For the .SCN file the indices are:
+
+\verb/  <group>.<observation>.<field>.<channel>.<sequence\ nr/
+where
+
+\bi
+\item   \verb/<group/ is a purely administrative index that allows one, \eg to
+collect observations that are intrinsically unrelated in a single file,
+\eg a scientific observation with the calibrator observations to be used with
+it.
+
+\item   \verb/<observation>/ is related to {\em labels} and {\em observations}
+in which WSRT data tapes are structured.
+
+\item   \verb/<field>/ is a subfield number in a mosaic observation.
+
+\item   \verb/<channel>/ is a frequency-channel number (also known as band
+number).
+
+\item   \verb/<sequence number>/ is an extra index that allows for the
+existence of multiple data structures having all preceding indices the same,
+\ei
+
+	For the .WMP file the indices are:
+
+\verb/  <group>.<field>.<channel>.<polarisation>.<image type>.<sequence nr>/
+%
+where \verb/<group>/, \verb/<field>/ and \verb/<channel>/ are the same as for
+the .SCN file; in addition we have
+
+\bi
+\item   \verb/<polarisation>/ represents either a WSRT dipole combination or a
+Stokes parameter.
+
+\item   \verb/<image type>/ indicates either a map or an antenna pattern.
+\ei
+	A number of mechanisms exist in the user interface that allow you to
+select set(s) of data units, \eg 'all sectors', 'all channels for fields 3
+through 7', etc.
+
+	In closing, we note that the indexing structure is purely
+administrative. The data units are entirely self-contained in terms of their
+data contents and associated headers. A sector, for example, can be copied from
+one .SCN file to another without any loss of the information necessary for its
+interpretation.
+
+
+\section{ The \NEWSTAR programs}
+\label{.programs}
+
+	\Figref{.basic.functions} includes only the most basic functions of the
+most important programs. Each of the programs includes a considerable number of
+other {\em functions}: \NEWSTAR is a small collection of large multifunctional
+programs rather than a large collection of small programs (like AIPS or GIPSY).
+
+	We will briefly mention the most interesting functions in each of the
+programs, but ignore the {\em utility functions} which are part of most
+programs. These will, \eg:
+
+\bi
+\item   list the contents of files;
+
+\item   show headers and data blocks in detail and optionally edit them;
+
+\item   convert files between number formats for different host systems;
+
+\item   track version changes;
+
+\item   write and/or read FITS tapes/files.
+
+\ei
+
+
+\subsection{ NSCAN}
+\label{.nscan}
+
+	NSCAN is the program that handles .SCN files. Apart from utilities, its
+only operation is:
+
+\bi
+\item   LOADing data from an external medium (classical magtape, DAT or Exabyte
+tape, optical disk) into a .SCN file.
+\ei
+
+It is capable to read WSRT data in all existing formats including the old
+'Leiden format'.
+
+
+\subsection{ NCALIB}
+\label{.ncalib}
+
+	NCALIB is the program that determines corrections from the visibilities
+in a .SCN file, optionally using a \textref{source model}{.mdl.file} as a
+reference. Its primary functions include:
+
+\bi
+\label{.redun}
+\item   REDUN: This is the Selfcal function of NEWSTAR. It includes several
+methods of estimating telescope errors from observed visibilities and
+(optionally) a source model, using the \textref{Selfcal and
+Redundancy}{.selfcal} constraints.
+
+\item   POLAR: Determining deviations from the nominal dipole responses to
+polarised radiation from calibrator observations.
+
+\item   SET: Function for reading corection parameters from external sources,
+such as
+
+  \bi
+  \item estimates of Faraday rotations calculated from ionosonde or
+chirp-sounder data;
+
+  \item clock corrections from the International Earth Rotation Service (IERS,
+formerly the Bureau Internationale de l'Heure).
+  \ei
+\ei
+
+
+\subsection{ NMAP}
+\label{.nmap}
+
+	NMAP is the program that handles .WMP files. Its primary functions
+include:
+
+\bi
+\item   MAKE: Its first and foremost function, {\em viz.} to Fourier-transform
+visibilities into sky maps with their assosiated antenna patterns.
+
+\item   FIDDLE: A family of functions to modify maps or combine them into new
+ones in several useful ways, \eg:
+
+  \bi
+  \item BEAM, DEBEAM: Apply/de-apply the primary-beam correction.
+
+  \item POL, ANGLE: Convert a pair of Stokes Q and U maps into a pair
+representing the polarisation direction and magnitude.
+
+  \item MOSCOM: Merge adjacent overlapping maps (\eg mosaic subfields or
+adjacent full mosaics) into a single large map.
+
+\ei\ei
+
+
+\subsection{ NFLAG}
+\label{.nflag}
+
+	NFLAG is the {\em only} program that changes flag settings. Its FLAG
+function is composed of a large number of subfunctions that set different flags
+on the basis of criteria that may be
+
+\bi
+\item   {\em deterministic,} i.e. comparing data's coordinate parameters
+against fixed limits (\eg elevation, shadowing, short baselines);
+
+\item   {\em data-derived,} i.e. comparing data values against a fixed limit
+(\eg an upper limit for data considered to be free of interference);
+
+\item   derived from {\em data statistics}, such as comparing the noise in a
+\textref{selfcal}{.redun} solution against a fixed limit.
+\ei
+
+	NFLAG is still evolving. It is hoped that both NFRA and the \NEWSTAR
+users will contribute new ideas and algorithms, to further the art of
+eliminating faulty data with a minimum of efforts as well as minimal accidental
+loss of healthy data.
+
+
+\subsection{ NMODEL}
+\label{.nmodel}
+
+	NMODEL is the program that handles source-model (.MDL) files. Its most
+vital function is FIND, {\em i.e.} finding source components of small extent
+and fitting elliptical Gaussians to them. This operation differs from CLEAN in
+two ways:
+
+\bi
+\item   Components are merely located; to subtract them, one must make a new
+map as in the major cycles of Cotton-Schwab CLEAN.
+
+\item   Sources may be at fractional grid positions and extended, which allows
+for a much more accurate representation of sources of small size.
+\ei
+
+	NMODEL also harbours the \textref{UPDATE function}{.outline}, which
+fine-tunes the components of a model by comparing the model visibilities with
+the observed ones.
+
+
+\subsection{ NCLEAN}
+\label{.nclean}
+
+	NCLEAN is \NEWSTAR's CLEAN program. It's purpose is to create source
+models for thos source components that cannot be adequately represented by
+elliptical Gaussian's. It implements only the H\"ogbom, Clark and Cotton-Schwab
+CLEAN algorithms.
+
+
+\subsection{ Other programs}
+\label{.other.programs}
+
+	\Figref{.basic.functions} shows only the most vital programs. There are
+several others:
+
+\bi
+\item   NATNF loads data from the Australian Telescope (ATNF) into a .SCN file.
+
+\item   NCOPY copies selected parts of a .SCN file into another .SCN file. (In
+this process one may change visibility values irreversibly through the
+application of selected corrections.)
+
+\item   NPLOT can display or print a variety of plots as well as images in
+various representations.
+
+\item   NGIDS is an adaptation of {\em GIPSY}'s display program GIDS. It
+primary function is to display images in various modes, but it can also be used
+to select faulty data in a display of visibilities (the {\em TVFLAG} function
+of AIPS).
+
+\item   NGCALC is a program to analyse one-dimensional {\em cuts}, either
+through the visibility \whichref{hypercube}{} or through the associated
+hypercube of correction values. It can be used, \eg, to analyse the 'light
+curve' of a variable source or to fit a polynomial to a cut of visibilities
+against baseline.
+\ei
+
+
+\section{ Salient features of the user interface }
+\label{.user.interface}
+
+
+\subsection{ Controlling program runs }
+
+	\NEWSTAR programs communicate with the user through a uniform parameter
+interface. (Historically this subsystem is referred to as {\em DWARF}, but this
+name now serves only to cause confusion.) We briefly mention the features one
+normally uses in an interactive session.
+
+\bi
+\item   A program is started from the shell through the commands
+  \bi
+  \item[]       dwe \verb/<program name>/ or dwexe \verb/<program name>/
+  \ei
+
+\item   Except for those parameters that are intrinsically of an interactive
+nature, a program collects all necessary parameter values before any real
+processing and/or writing to data files is done.
+
+\item   Programs can be aborted at any time through control-C. This is safe
+{\em except when modification of data files is in progress.} Where the latter
+is the case, one would risk corrupting those files.
+
+\item   Parameters to be specified by the user are known by their name (also
+known as the {\em keyword}.
+
+\item   When a program needs a parameter value, it will prompt on the terminal
+showing the keyword, a short text explaining what is being asked for, a list of
+options where applicable, and the default value if one is available.
+
+\item   The user's reply is immediately checked to the extent possible: For
+numeric values a range of validity may have been defined, options must match
+the list of valid names (unique abbreviations being allowed in most cases.
+
+\item   When you reply with an EOF character (control-D in Unix) or a hash sign
+(\#), the program will backtrack over one or several prompts, allowing you to
+recover from mistakes without having to abort and restart the program.
+\ei
+
+
+\subsection{ On-line Help }
+\label{.help}
+
+	On-line help in a running program is available in two modes:
+\bi
+\item   The {\em dumb-terminal mode}: When you type a '?' in reply to a prompt,
+the help text for the parameter will be shown on your terminal (window).
+
+\item   You switch to {\em hypertext mode} by typing '??' in reply to a prompt;
+this mode then remains in effect until the program terminates. Help texts are
+displayed in the xmosaic window; the advantage is that you now have access to
+associated documentation through hypertext links.
+\ei
+
+
+
+\subsection{ Log files }
+\label{.log.files}
+
+	Each program run produces a .LOG file in your current directory. These
+files are named
+
+	\verb/<prog><timestamp>A.LOG/,
+
+where \verb/<prog>/ is the first three characters of the program name and
+\verb/<timestamp>/ is a string of 12 digits (yymmddhhmmss). The newest log for
+a program is also known under the name
+
+	\verb/<program>.LOG/
+\\
+The log file contains a record of all the parameter values that were used in
+the program run, a copy of all messages and other output that appeared on the
+terminal and in some cases a lot more information.
+
+	In many cases the best way to digest a log file is not to print it.
+Instead, take a quick look at it on your terminal to decide what information is
+most relevant; then use the Unix utility {\em grep} to extract it.
+
+
+\section{ Disk-space management }
+
+	\NEWSTAR is rather lavish in its use of disk space, - partly because
+its functionality demands it, partly also because disk space is so cheap that
+programming for space economy is not cost-effective.
+
+	As an example, a .SCN file for a 12-hour observation with 87
+interferometers, 8 frequency channels, 4 polarisations and a sampling interval
+of 1 minute occupies 24 Mbytes; including a source model in all sectors almost
+doubles this space. Yet this type of observation is relatively modest in its
+demands; a mosaic observation easily runs into the hundreds of Mb.
+
+	It is therefore important to avail yourself of sufficient disk space,
+and you may also have to familiarise yourself with the methods for saving files
+on DAT tape on your host machine.
+
+	\NEWSTAR programs have been designed to crash gracefully when running
+out of disk space. That is, a data file they were writing to will be left in an
+incomplete but probably readable state. Yet it bis better not to rely on this,
+as recovering from a crash may still be a time-consuming affair.
+
+
+
+\section{ Interfacing with other astronomical reduction packages }
+\label{.interfacing}
+
+	The possibilities to exchange data between \NEWSTAR and 'the rest of
+the world' are limited to the following:
+
+\bi
+\item   The sectors from a .SCN file can be exported in the UVFITS format that
+AIPS can read. The inverse operation is {\em not} provided for.
+
+\item   Images can be written and read in 16- and 32-bit integer as well as
+32-bit floating-point FITS formats. Other packages are likely to interface to
+at least one of these.
+
+\item   Visibility data from ATNF/Miriad can be read.
+
+\item   Interfaces between \NEWSTAR and AIPS++ will probably be developed as a
+by-product of NFRA's active involvement in the latter project. The eventual
+conversion policy will be determined on the basis of the user's needs.
+\ei
+
+
+\section{ Acknowledgements }
+
+	\NEWSTAR's history dates back to the pioneering work on Redundancy by
+J.E. Noordam in the early 1980s. W.N. Brouw systematised and expanded his work
+in subsequent years, in a suite of programs known as the 'R-series'. In
+1990-1991, this series served as the prototype for an entirely new collection
+of programs that eventually became \NEWSTAR. During this entire development,
+A.G.de Bruyn played an indispensable role as an active and stimulating user.
+
+	Several users contributed to the documentation; they are acknowledged
+in the individual Document chapters.
+
+	Incorporated in \NEWSTAR are:
+
+\bi
+\item   The Dwingeloo-Westerbork Astronomical Reduction Facility ({\em DWARF})
+user-parameter interface from NFRA.
+
+\item   The Groningen Image Display Syetem ({\em GIDS}) display package from
+Groningen's GIPSY system.
+
+\item   The {\em PGPLOT} public-domain screen-graphics package.
+\ei
+
+

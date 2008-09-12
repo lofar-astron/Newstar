@@ -1,0 +1,802 @@
+
+\chapter{SHOWing and EDITing data-file contents in \NEWSTAR} 
+\\ \\
+{\it 
+\indent  Contributed by Wim Brouw, December 1993 \\ 
+\indent  Revised/adapted by Johan Hamaker, June 1994 } 
+
+\tableofcontents 
+
+
+\section{ Introduction} 
+
+
+	The programs NSCAN, NFLAG, NMAP and NGCALC have a SHOW option, with an
+EDIT sub-option.  This EDIT sub-option can be used to examine and change any
+field in the SCN, WMP and NGF files. 
+
+	The EDIT option can show and/or edit the contents of \NEWSTAR files.
+All values ('fields'), with the exception of values determining the structure
+of the file, may be edited individually (or in groups) by hand.  This is
+laborious, {\em but at least it is possible!} 
+
+	The different files contain a variety of blocks (e.g.  STH - sector
+header; MPH - map header).  In addition to manipulating these fields, \NEWSTAR
+programs know how to present their names and values in an intelligible form to
+the user, and conversely how to interpret the user's editing instructions. 
+
+	After starting EDIT, the message: 
+
+	\verb/**** Editing STH **** (or MPH or ....)/ 
+
+\noindent will appear, indicating the actual block available for editing at
+this instant. 
+
+\section{SHOW and EDIT} 
+
+	{\bf SHOW} gives a formatted display of the contents of the entire
+"current" block (i.e.  the block currently accessed through a navigating
+command such as {\bf CONTINUE} or {\bf NEXT}.  To display individual fields in
+the block one uses the {\bf EDIT} option.  Once in edit mode, one may both
+display and modify fileds. 
+
+	The {\it display} commands for an individual field consist of the field
+name, optionally followed by a colon and qualifying information.  The various
+types of qualifier will be discussed below.  A display command becomes an {\bf
+EDIT} command when followed by a comma plus one or more new values. 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ra:d} 
+%
+\svbegin \begin{verbatim} 
+ RA             0.06725881318561733
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+\noindent Note that \textref{pointer values}{.pointers} can not be shown this
+way. 
+
+\section{ Displaying data values and properties} 
+
+\subsection{ Displaying data values in different formats } 
+\label{.show.in.format} 
+
+	Appending a format specifier to the colon overrides the default format
+in which a value is displayed.  Some of the possible formats are: 
+
+\begin{tabular}{lll} 
+
+	&\verb/UB UI UJ/                        &unsigned byte, I, J \\ 
+	&\verb/SB SI SJ/                        &signed same \\ 
+	&\verb/XB XI XJ/                        &hexadecimal same \\ 
+	&\verb/OB OI OJ/                        &octal same \\ 
+	&\verb/AL<n>/                           &<n> characters \\ 
+	&\verb/E[<n>[.<m>]]/                    &real \\ 
+	&\verb/D[<n>[.<m>]]/                    &double precision \\ 
+	&\verb/EC or DC[<n>[.<m>]]/             &complex \\ 
+	&\verb/{ED}{AHD}{FRD}[<n>[.<m>]]/       &Angle, hh:mm:ss, dd.mm.ss
+for\\ 
+	&                                       &\ Fractions, radians,
+degrees\\ 
+\end{tabular} 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ra:dhf} 
+%
+\svbegin \begin{verbatim} 
+ RA                        01:36:51
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ra:dhf10} 
+%
+\svbegin \begin{verbatim} 
+ RA                   01:36:51.1615
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ra:xj} 
+%
+\svbegin \begin{verbatim} 
+ RA                        3fb137d4 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+
+	The full list of available formats, including fieldsize indicators,
+exists only in the form of a table in the program source file
+\verb/wnctxt_x.for/. 
+
+
+\subsection{ Displaying parts of arrays} 
+
+	Elements of array fields can be selected by appending the start index
+and the number of elements to the field name, as follows: 
+
+	\verb:- <name>[(<offset>)][,/<number>]: 
+
+\noindent will show the value of \verb/<name>/.  If an offset is given for a
+multi-valued \verb/<name>/, the display will start at this value; if
+\verb:/<number>: is given, only that many values will be shown. 
+Examples are given \textref{below}{.edit}.  Remember that {\bf indices start at
+0!}. 
+
+
+\subsection{ Displaying information about data fields} 
+\label{.show.meta} 
+
+\begin{tabular}{lll} 
+&\verb/*/       &will show the entire block formatted in the same way as \\ 
+&               &\ for a {\bf SHOW} command \\ 
+&\verb/:/       &will show the names and formats of all data fields in the
+block \\ 
+&\verb/<name>:/ &will show format information for \verb/<name>/ \\ 
+\end{tabular} 
+
+\noindent Examples: 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{:} 
+%
+\svbegin \begin{verbatim} 
+ Known names: 
+	      LINK,      XJ, , ;     0,     2,     1,     4
+	      LEN,       SI, , ;     8,     1,     1,     2
+	      VER,       SI, , ;    10,     1,     1,     2
+	      FIELD,     AL, , ;    28,     1,     0,    12
+			 .
+			 .
+
+	      RA,   DAF12.7, , ;    40,     1,     0,     8
+	      DEC,  DAF12.7, , ;    48,     1,     0,     8
+	      RTP,    E12.4, , ;   124,    14,     0,     4
+	      NIFR,      SJ, , ;   180,     1,     1,     4
+	      IFRP,      XJ, ,   P:IFRT;   184,     1,     1,     4
+	      NFD,       SJ, , ;   188,     1,     1,     4
+	      FDP,       XJ, ,    P:FDW;   192,     1,     1,     4
+	      NOH,       SJ, , ;   196,     1,     1,     4
+			.
+			.
+
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+\noindent The entries in this table are: 
+
+\begin{tabular}{lll} 
+&column 2:      &the default \textref{display/value format}{.show.in.format} \\ 
+&column 3:      &the byte offset of the field in the block \\ 
+&column 4:      &the number of elements in the field \\ 
+&column 5:      & *** ?? *** \\ 
+&column 6:      &the byte size of a single element (which is the string
+length\\ 
+&               &\ for a character value) 
+\end{tabular} 
+
+
+\section{ Modifying data values } 
+\label{.edit} 
+
+	Most values in a data file can be edited.  The field descriptors
+outlined above for {\bf SHOW} are also valid for {\bf EDIT}.  Edit commands are
+charaterised by the presence of a {\bf comma} following the field descriptor: 
+
+\indent \verb:<name>[<(offset)>][</number>], <value> [,<value>...]: 
+
+\noindent will change the value(s) at the given field. Examples: 
+
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim} 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{RTP,12 } 
+%
+\svbegin \begin{verbatim} 
+ RTP          12.0000     143.9919     287.9837     431.9756     575.9674
+	     719.9592     863.9511    1007.9429    1151.9348    1295.9266
+	    1367.9257    1439.9176    2663.8491    2735.8452
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{rtp(2)/2, 1, 2, 3, 4} 
+\sinline{ Note that names are not case-sensitive!} 
+%
+\svbegin \begin{verbatim} 
+ RTP           1.0000       2.0000
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{rtp, 0} 
+%
+\svbegin \begin{verbatim} 
+ RTP           0.0000     143.9919       1.0000       2.0000     575.9674
+	     719.9592     863.9511    1007.9429    1151.9348    1295.9266
+	    1367.9257    1439.9176    2663.8491    2735.8452
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{rtp(2), 287.9837, 431.9756} 
+%
+\svbegin \begin{verbatim} 
+ RTP         287.9837     431.9756     575.9674     719.9592     863.9511
+	    1007.9429    1151.9348    1295.9266    1367.9257    1439.9176
+	    2663.8491    2735.8452
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{link, 12} 
+%
+\svbegin \begin{verbatim} Edit of field LINK not allowed 
+ LINK        0007ec60     00000098 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+
+	The last example demonstrates that certain fields cannot be changed
+because the integrity of the file depends on them.  This restriction may be
+overridden by appending '{\bf ==}' to the field descriptor: 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{link(1)==, 1} 
+%
+\svbegin \begin{verbatim} 
+ LINK        00000001
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+	The value given is interpreted with the default format descriptor
+displayed by the \textref{name command}{.show.meta}).  A different format can
+be used by giving a 
+\textref{format specifier}{.show.in.format}. 
+
+	For integers, the radix specifiers {\tt \%X} (hexadecimal), {\tt
+\%D}(decimal) and {\tt \%O} (octal) can also be used.  Values given as
+
+	\verb/hh:[[mm][:[ss][.ttt]]/ or \\ 
+\indent \verb/dd.[mm].[ss][.ttt]]/ 
+
+\noindent will be translated to degrees and saved in the appropriate F, 
+R or D format; 
+
+
+
+\section{ Secondary blocks and substructures} 
+\label{.pointers} 
+
+	The header blocks directly accessible through {\bf SHOW/EDIT} contain
+pointers to other blocks.  When their value is listed, \verb/:P/ is appended,
+meaning that the value is the address of a block on disk in the corresponding
+format format. 
+
+	Certain fields in a block are arrays not of single values but of
+sub-blocks of some type; an example are the interferometer entries in the OHW
+block.  When such a field is listed, \verb/:S/ is appended, meaning that this
+is an array of subblocks. 
+
+	All secondary-block and substructure types known to the system 
+(i.e.  not only those associated with the current block) are displayed by the
+{\bf ::} command: 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{::} 
+%
+\svbegin \begin{verbatim} 
+ Known P: types: STH, FDW, OHW, SCW, SHW, FDX, GFH, IFRT, MDH, MDD, SGH, MDL,
+SCH 
+	IFRC, B, I, J, E, D, X, Y, S:SET, S:SRC, S:BCOR, S:MOZP, S:IFR, IFH
+\end{verbatim} 
+\sinline{ {\rm :} indicates a sub-structure. The use of the data types {\em B,
+I} etc. is explained \textref{elsewhere}{.data.arrays}. } 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+\subsection{ Navigating secondary blocks} 
+
+	Specifying the name of a pointer will steer the editing process to the
+block pointed at: 
+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim} 
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{mdd} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim} 
+\sinline{ So nothing happened: There is no MDD block attached to this STH
+block.} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ifrp:} 
+%
+\svbegin \begin{verbatim} 
+ Edit data: IFRP, XJ, , P:IFRT; 184, 1, 1, 4 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ifrp} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing IFRT *** 
+\end{verbatim} 
+\sinline{ This time we succeeded!} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{:} 
+%
+\svbegin \begin{verbatim} 
+ Known names: 
+	      IFR,       XI, , ;     0,    88,     0,     2
+\end{verbatim} 
+\sinline{The IFR block is just an array of hex integers} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{*} 
+%
+\svbegin \begin{verbatim} 
+ IFR             0a09         0b0a         0d0c         0b09         0100 
+		 0201         0302         0403         0504         0605
+		   .
+		   .
+
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{\scr} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim} 
+\sinline{ A null reply returns us to the parent block} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+
+
+\subsection{ Displaying/editing a substructure} 
+
+	An array of substructures can be shown in its entirety by: 
+
+	\verb/<name>/* 
+
+\noindent Example: 
+
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing SHW *** 
+\end{verbatim} 
+%
+ \skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ifr/*} 
+%
+\svbegin \begin{verbatim} 
+ INFNR          16667      WTEL               0      OTEL              13
+ RBAS            2736      NIH             2040
+
+ INFNR          16665      WTEL               0      OTEL              12
+ RBAS            2664      NIH             2047
+		 .
+		 .
+
+ *** Editing SHW *** 
+\end{verbatim}\svend 
+\sinline{ Note that the current block is still \verb/SHW/.} 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+\noindent A single sub-structure can be shown and edited by: 
+
+	\verb/<name>[(<index>)]/ 
+
+\noindent Example: 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing SHW *** 
+\end{verbatim} 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ifr} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing S:IFR *** 
+\end{verbatim}\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{*} 
+%
+\svbegin \begin{verbatim} 
+ INFNR          16667      WTEL               0      OTEL              13
+ RBAS            2736      NIH             9120
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{\scr} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing SHW *** 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{ifr(5)} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing S:IFR *** 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{*} 
+%
+\svbegin \begin{verbatim} 
+ INFNR          17689      WTEL               2      OTEL              12
+ RBAS            2376      NIH             9465
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{\scr} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing SHW *** 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+\section{ Advanced options} 
+
+	The options described here are available for system programmers. 
+They assume a proper understanding of the architecture of Newstar data files
+and of the mechanisms (.dsc and .def files) through which it is defined.  No
+attempt will be made here to help the reader on these points... 
+
+	The syntax of the advanced options is less intuitively clear than what
+has been described above and its expressive power is limited. 
+In using it, the user will have to feel his way around, but he can safely do so
+as long as he doesnot rashly attempt to change any values. 
+
+
+\subsection{ Linked lists} 
+
+	Link pointers in linked lists are similar to other pointers, except
+that the type of the target block is not known a priori.  It must therefore be
+specified: 
+
+	\verb+<name>[(<index>)]::<target block type>+ 
+
+\noindent For example: 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{link::gfh} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing GFH *** 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{*} 
+%
+\svbegin \begin{verbatim} 
+ ID              .SCN      LEN              512      VER                1
+ CDAT     21-Sep-1993      CTIM           17:23      RDAT     13-Jun-1994 
+ RTIM           16:16      RCNT              50      NAME           A271A
+ DATTP              7
+ LINK        00006550     00500e08 
+ ALHD        00006550     00500e08 
+ NLINK              4      ALLEN              4
+ LINKG       00000200     008069c8 :P 
+ LHD         00000200     008069c8 :P 
+ NLINKG             2      LLEN               2      IDMDL              0
+ ID1                0      ID2                0      USER               0
+
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{\scr} 
+\sinline{ Return to STH} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+\subsection{ Data arrays} 
+\label{.data.arrays} 
+
+	Some pointers point to "naked" arrays of data structures.  An example
+is MDD in the STH which points to the array of complex model visibilities: 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{mdd::z} 
+\sinline{ We try to display the array in complex format ...} 
+%
+\svbegin \begin{verbatim} 
+ MDD         006179c8     00000000 :P 
+\end{verbatim} 
+\sinline{ but the system does not understand us!} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{mdd} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing MDD *** 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{*} 
+%
+\svbegin \begin{verbatim} 
+ MDD                -540.55+72.69I                0.00+0.00I
+			0.00+0.00I                0.00+0.00I
+		    -540.50+72.76I                0.00+0.00I
+			0.00+0.00I                0.00+0.00I
+			.
+			.
+
+\end{verbatim} 
+\sinline{ This works, but it is not clear how we could select specific elements
+for display.} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+	There are also data arrays whose address is defined implicitly by the
+fact that they contiguously follow a header block.  An example is the
+scan-visibilities block headed by the SCN header.  To access such data in the
+absence of a pointer, one must use a 
+\textref{byte offset}{.abs.rel.address}. 
+For this we need the length of the header, which we can easily find.  The
+technique is demonstrated below is a somewhat different context, {\it viz.}
+that of finding an SCH which is not directly pointed at. 
+
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\svbegin \begin{verbatim} 
+ *** Editing STH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{scnl} 
+%
+\svbegin \begin{verbatim} 
+ SCNL            1552
+\end{verbatim} 
+\sinline{\\ This is the length of an SCH plus the data.} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{scnp} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing SCH *** 
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{*} 
+%
+\svbegin \begin{verbatim} 
+ HA       -90.1250124 deg  MAX         1294.000 W.U. SCAL        0.000000 
+ REDNS          0.000        0.000        0.000        0.000 W.U.
+		.
+		.
+
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+%
+\spbegin %.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{.1552::sch} 
+\sinline{ Move to the next SCH. We can use multiples of SCNL to get to any of
+the SCHs.} 
+%
+\svbegin \begin{verbatim} 
+ *** Editing SCH *** 
+\end{verbatim}\svend 
+%
+\skeyword{EDIT} 
+\sprompt{(Edit: name [(offset)][/length][:format] , val [, ...])} 
+\sdefault{= "":} 
+\suser{*} 
+%
+\svbegin \begin{verbatim} 
+ HA       -89.8743278 deg  MAX         1349.000 W.U. SCAL        0.000000 
+ REDNS          0.000        0.000        0.000        0.000 W.U.
+ ALGNS          0.000        0.000        0.000        0.000 W.U.
+		.
+		.
+
+\end{verbatim} 
+\svend 
+\spend %.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+
+\subsection{ Absolute and relative file addresses} 
+\label{.abs.rel.address} 
+
+	Absolute {\em file addresses} (i.e.  byte offsets in the file) can be
+used instead of field names. 
+
+	Relative addresses are byte offset relative to the start of the current
+block.  They are specified in the form 
+
+	\verb/.<offset>/ 

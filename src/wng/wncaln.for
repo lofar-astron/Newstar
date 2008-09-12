@@ -1,0 +1,131 @@
+C+ WNCALN.FOR
+C  WNB 880725
+C
+C  Revisions:
+C	WNB 911118	DW cannot handle CHAR(0) in INDEX
+C	WNB 930728	Overhaul to include TAB's etc
+C	CMV 930824	Include CR/LF in count (needed for wnqeps/wnqqms)
+C	WNB 930825	Add WNCALX,WNCALY (for wnqeps/wnqqms)
+C
+	INTEGER FUNCTION WNCALN(FRST)
+C
+C  Get length of string with information
+C
+C  Result:
+C
+C	WNCALN_J = WNCALN( FRST_C*:I)	Length of string FRST (>0) excluding
+C					all trailing non-white
+C	WNCAL0_J = WNCAL0( FRST_C*:I)	Length of string FRST (>=0)
+C	WNCALZ_J = WNCALZ( FROM_B(*):I) Length of ASCIZ field
+C	WNCALX_J = WNCALX( FRST_C*:I)	Length of string FRST including line
+C					formatting items (CR etc) (>0)
+C	WNCALY_J = WNCALY( FRST_C*:I)	Same, but >=0
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	BYTE FROM(*)		!INPUT FIELD
+	CHARACTER*(*) FRST	!INPUT STRING
+C
+C  Entry points:
+C
+	INTEGER WNCAL0,WNCALZ,WNCALX,WNCALY
+C
+C  Function references:
+C
+C
+C  Data declarations:
+C
+C-
+C
+C WNCALN
+C
+	I=LEN(FRST)				!TOTAL LENGTH
+	DO WHILE (I.GT.0)			!SEARCH END
+	  IF (ICHAR(FRST(I:I)).LE.ICHAR(' ')) THEN !REMOVE ALL NON-WHITE
+	    I=I-1				!LENGTH
+	  ELSE
+	    GOTO 10				!READY
+	  END IF
+	END DO
+ 10	CONTINUE
+	WNCALN=MAX(I,1)				!MAKE >= 1
+C
+	RETURN
+C
+C WNCAL0
+C
+	ENTRY WNCAL0(FRST)
+C
+	I=LEN(FRST)				!TOTAL LENGTH
+	DO WHILE (I.GT.0)			!SEARCH END
+	  IF (ICHAR(FRST(I:I)).LE.ICHAR(' ')) THEN
+	    I=I-1				!LENGTH
+	  ELSE
+	    GOTO 20				!READY
+	  END IF
+	END DO
+ 20	CONTINUE
+	WNCAL0=I				!RETURN LENGTH
+C
+	RETURN
+C
+C WNCALZ
+C
+	ENTRY WNCALZ(FROM)
+C
+	I=1
+	DO WHILE (FROM(I).NE.0)			!FIND END
+	  I=I+1
+	END DO
+	WNCALZ=I-1				!SET LENGTH
+C
+	RETURN
+C
+C WNCALX
+C
+	ENTRY WNCALX(FRST)
+C
+	I=LEN(FRST)				!TOTAL LENGTH
+	DO WHILE (I.GT.0)			!SEARCH END
+	  IF (ICHAR(FRST(I:I)).LT.9 .OR.
+	1	(ICHAR(FRST(I:I)).LE.ICHAR(' ') .AND.
+	1		ICHAR(FRST(I:I)).GT.13)) THEN !KEEP HT,LF,VT,FF,CR
+	    I=I-1				!LENGTH
+	  ELSE
+	    GOTO 30				!READY
+	  END IF
+	END DO
+ 30	CONTINUE
+	WNCALX=MAX(I,1)				!MAKE >= 1
+C
+	RETURN
+C
+C WNCALY
+C
+	ENTRY WNCALY(FRST)
+C
+	I=LEN(FRST)				!TOTAL LENGTH
+	DO WHILE (I.GT.0)			!SEARCH END
+	  IF (ICHAR(FRST(I:I)).LT.9 .OR.
+	1	(ICHAR(FRST(I:I)).LE.ICHAR(' ') .AND.
+	1		ICHAR(FRST(I:I)).GT.13)) THEN !KEEP HT,LF,VT,FF,CR
+	    I=I-1				!LENGTH
+	  ELSE
+	    GOTO 40				!READY
+	  END IF
+	END DO
+ 40	CONTINUE
+	WNCALY=I				!LENGTH (>=0)
+C
+	RETURN
+C
+C
+	END
+

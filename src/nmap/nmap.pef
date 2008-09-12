@@ -1,0 +1,217 @@
+!+ NMAP.PEF
+!  WNB 910219
+!
+!  Revisions:
+!       WNB 910815      Circular UV_AREA
+!       WNB 910820      Add extinction, refraction, Faraday
+!       WNB 910822      Add FIDDLE
+!       WNB 910828      Add RUN
+!       WNB 910909      Add DATAB and INFIX
+!       WNB 910911      Add NSUM
+!       WNB 910912      Add other sums
+!       WNB 910913      New (de-)apply, loops
+!       WNB 910918      Text magtapes
+!       WNB 911007      Add instrum. pol.
+!       WNB 911104      Add mosaic combine
+!       WNB 911105      Add EDIT keyword
+!       WNB 911230      NMODEL
+!       WNB 920626      Add DCLOW, change Rotation measure description
+!       WNB 920811      Add USE_NOISE
+!       WNB 920817      Add circular weight
+!       WNB 920818      Add FITS_SCALE
+!       WNB 921022      Text magtapes
+!       WNB 921104      Text select ifrs; J2000
+!       WNB 921119      Add WRLFITS, CUBIC
+!       WNB 921201      Larger map size; default memory
+!       WNB 921202      Reorganise for data clean
+!       WNB 921211      Make PEF
+!       JEN 930308      Remove keyword(s) SETS (now UVDAT_SETS in NSETS.PEF)
+!       JEN 930312      Remove keyword(s) SCAN_NODE
+!       JEN 930312      Remove keyword(s) SELECT_IFRS, HA_RANGE
+!       WNB 931216      Remove UNITS=M (problems dw, cv,..)
+!       WNB 931221      UNITS=M ok
+!       JPH 941005      Help texts
+!       JPH 941013      Remove invalid NULL_VALUES, WILDCARDS
+!                       USER_COMMENT, QDATAS, UV_ARREA, CLIP_AREA, CLIP_LEVELS
+!                        to NMAP.PSC
+!                       Remove UNITS, put units in prompts. (First tried
+!                        UNITS="m" but this failed.)
+!                       Many changes in texts
+!
+!
+! Work memory size
+!       Ref:    NMADAT
+!
+KEYWORD=MEMORY_USE
+	DATA_TYP=J
+	IO=I
+	CHECKS=MINIMUM,MAXIMUM
+	MINIMUM=20000
+	MAXIMUM=4000000
+	SEARCH=L,P
+	DEFAULT=200000 /NOASK
+	PROMPT="Work memory size"
+	HELP="
+Specify an approximate value for the work memory size to be used in the
+transform (bytes)."
+!
+!  Specify map details
+!       Ref:    NMADAT
+!
+KEYWORD=QMAPS
+	DATA_TYP=L
+	IO=I
+!!	SWITCH=NULL_VALUES
+	SEARCH=L,P
+	PROMPT="UV taper/convolution details?"
+	DEFAULTS=NO
+	HELP="
+The standard defaults used for the taper and convolution functions in the
+map-making process will produce maps of excellent quality for normal
+applications at an acceptable expense of computing resources.
+.
+There may be particular situations, however, where a non-standard taper and/or
+convolution function is more suitable. Answer YES if you want to make your own
+selection out of the possible options."
+!
+!  Uniform coverage
+!       Ref:    NMADAT
+!
+KEYWORD=UNIFORM
+	DATA_TYP=C
+	LENGTH=8
+	IO=I
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTIONS
+	OPTIONS=NATURAL,STANDARD,FULL
+	SEARCH=L,P
+	PROMPT="Measure function for UV coverage"
+	HELP="
+Specify the way the UV coverage should be determined:
+.
+	STANDARD: Weigh each observed point with the track length it covers in
+		   the UV plane, and average sets of redundant baselines. This
+		   method accounts properly for the fact that the density of
+		   measured points is inversely proportional to the baseline,
+		   for the multiplicity of redundant baselines and for
+		   variations in integration times.
+.
+	FULL:     Weigh each point according to the actual UV point density. In
+		   this case care is also taken of all local UV plane density
+		   enhancements, e.g. because there is overlap between
+		   observations.
+.
+	NATURAL:  Take each individual measured point separately, without
+		   weighing for the UV track covered by it. This option gives
+		   the maximum possible signal/noise ratio in your map, but it
+		   generally weighs the short baselines much too heavily which
+		   results in a very fat synthesized beam.
+.
+Of these options, FULL gives the cleanest synthesized beam, but it is slower
+because it necessitates an extra read pass over the .SCN-file data."
+!
+!  Get taper width
+!       Ref:    NMADAT
+!
+KEYWORD=TAPER_VALUE
+	DATA_TYP=R
+	IO=I
+	SWITCH=LOOP,NULL_VALUES
+	CHECKS=MINIMUM
+	MINIMUM=10.
+	SEARCH=L,P
+!!      UNITS="m"
+	PROMPT="Taper half-width (metres)"
+	HELP="
+Specify the baseline in metres of the taper function at which the taper
+function will fall to 1/e of its central value.
+.
+The default is defined such that the taper function you selected has a value of
+1/4 for a baseline length of 3000 m."
+!
+!  Circular weight type
+!       Ref:    NMADAT
+!
+KEYWORD=CWEIGHT_TYPE
+	DATA_TYP=C
+	IO=I
+	LENGTH=8
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTIONS
+	OPTIONS=GAUSS,LINEAR,NATURAL
+	SEARCH=L,P
+	PROMPT="Circular weight type"
+	HELP="
+ON TOP of the standard taper function which is circular in the equatorial UV
+plane, you nay specify a taper that is circular in the projected UV plane (i.e.
+the plane as seen from the field centre). You can select one out of the
+following functions:
+.
+	GAUSS   exp -(<projected baseline>/CWEIGHT_VALUE)**2
+.
+	LINEAR  max (0, 1-<projected baseline>/CWEIGHT_VALUE)
+.
+	NATURAL unity weight everywhere, i.e. no circular taper
+.
+NOTE that the circular weighing does not replace the standard tapering, but is
+applied as an EXTRA weight function. This is probably not what you want; you
+may eliminate the normal tapering by specifying TAPER=NATURAL and
+UNIFORM=STANDARD to take into account the radial density dependence of measured
+visibilities."
+!
+!  Get circular weight width
+!       Ref:    NMADAT
+!
+KEYWORD=CWEIGHT_VALUE
+	DATA_TYP=R
+	IO=I
+	SWITCH=LOOP
+	CHECKS=MINIMUM
+	MINIMUM=10.
+	SEARCH=L,P
+!!      UNITS="m"
+	DEFAULT=2548.
+	PROMPT="Circular-weight width (metres)"
+	HELP="
+Specify the width for your circular weight function.
+.
+If you have selected a gaussian for the circular_weight function
+(CWEIGHT_TYPE=GAUSS), the value you specify here will be the projected baseline
+radius for which the weight is 1/e times its value in the origin. The default
+value makes the weight equal to 1/4 at a projected baseline of 3000 m.
+.
+If you have selected a triangular weight function (CWEIGHT_TYPE=LINEAR), the
+value you specify here is the projected baseline at which the weight reaches
+zero."
+!
+!  Select UV area
+!       Ref:    NMADAT
+!
+KEYWORD=UV_AREA
+	DATA_TYP=R
+	IO=I
+	NVALUES=2
+	SWITCH=LOOP,VECTOR
+	CHECKS=MINIMUM
+	MINIMUM=0.,0.
+	DEFAULTS=0.,100000.
+	SEARCH=L,P
+!!      UNITS="m"
+	PROMPT="projected UV radius range (metres)"
+	HELP="
+Specify the range of PROJECTED baselines for which you want to include the data.
+.
+You may use this option, - at the expense of throwing away data -, for such
+purposes as
+.
+	- To make the projected synthesised aperture and hence the synthesised
+	   beam somewhat more circularly symmetric.
+.
+	- To exclude noise from long projected baselines where you know there is
+	   no signal of interest.
+.
+	- To eliminate data from the short baselines, e.g. to suppress
+	   interference.
+.
+The default is not to eliminate any baselines."
+!-

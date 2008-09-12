@@ -1,0 +1,59 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_SYSTEM
+C.Keywords:	Spawn subprocess
+C.Author:	Ger van Diepen (NFRA, Dwingeloo)
+C.Language:	Fortran
+C.Environment:	VAX
+C.Comments:	
+C.Version:	920701 GvD - creation
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION GEN_SYSTEM (COMM)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	COMM		! (i) command to be executed
+C
+C.Purpose:	Execute command in a subprocess
+C.Returns:	Status from LIB$SPAWN
+C.Notes:
+C-------------------------------------------------------------------------
+C
+	INTEGER		IS,ST,LENG
+	CHARACTER*128	STR
+C
+	INTEGER		STR_UPCASE
+	INTEGER		LIB$SPAWN
+C
+C
+C			Execute the command which may be in UNIX format.
+C			Remove possible 0 indicating the end of the string.
+C			If it starts with a $ it is in UNIX-format.
+C			Then we skip until the first / and remove the .exe
+C			part.
+C			First convert to uppercase to make it easy.
+C			Execute command in original case.
+C
+	LENG = INDEX(COMM,CHAR(0))
+	IF (LENG.EQ.0) THEN
+	    LENG = LEN(COMM)
+	ELSE
+	    LENG = LENG-1
+	ENDIF
+	STR  = COMM(:LENG)
+	IS   = STR_UPCASE(STR)
+	ST   = 0
+	I    = 0
+	IF (STR(1:1) .EQ. '$') THEN
+	    ST = INDEX(STR,'/')
+	    IF (ST.NE.0) THEN
+		I = INDEX(STR,'.EXE')
+	    ENDIF
+	ENDIF
+	STR  = COMM(:LENG)
+	IF (I.NE.0) STR(I:I+3) = ' '
+C
+	GEN_SYSTEM = LIB$SPAWN (STR(ST+1:LENG))
+	RETURN
+	END

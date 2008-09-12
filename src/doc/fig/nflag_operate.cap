@@ -1,0 +1,13 @@
+%nflag_operate.cap
+
+\begin{figure}
+\fig{nflag_operate}
+\caption{\it
+\label{.nflag.operate}
+%
+Schematic of the operations branch of NFLAG.
+\\
+This branch contains options to set visibility or scan-header flags on the
+basis of a variety of criteria. See text for a description.
+}
+\end{figure}

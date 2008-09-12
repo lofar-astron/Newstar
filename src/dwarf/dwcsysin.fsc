@@ -1,0 +1,106 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	DWC_SYSIN
+C.Keywords:	DWARF, Standard Input Device
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	DWARF-Fortran
+C.Environment:	VAX or Alliant
+C.Comments:
+C	The standard input device code is kept in a local saved variable with
+C	the values:
+C	0:	input from SYS$INPUT which is a terminal
+C		(for interactive EXECUTE)
+C	3:		input from SYS$INPUT which is not a terminal
+C		(for batch EXECUTE, for EXECUTE/INPUT=file, and for EXECUTE
+C		 from a command procedure)
+C	2: 	input from SYS$COMMAND
+C		(for EXECUTE/NOWAIT)
+C.Version:	900301 FMO - creation
+C.Version:	910826 FMO - add code 3
+C.Version:	920214 GvD - no optional arguments in MSG anymore
+C.Version:	940117 CMV - made fsc, removed PARM__SYSIN
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER FUNCTION DWC_SYSIN_SET (INFILE,LI)
+C	        ENTRY    DWC_SYSIN_GET (DEVCOD)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+	INTEGER		DWC_SYSIN_GET
+C
+	CHARACTER*(*)	INFILE		! (i) input file
+	INTEGER		LI		! (i) significant length of INFILE
+	INTEGER		DEVCOD		! (o) input device
+C
+C.Purpose:	Set or get the type of standard input
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	DWC_SUCCESS
+C	false status returned by referenced routines
+C.Notes:
+C	- For EXECUTE/INPUT=file, we must read all parameter input from this
+C	  file. We will do this by defining SYS$INPUT as that file and reading
+C	  the input from SYS$INPUT. SYS$INPUT will be defined in user-mode in
+C	  the process logical table, so that the definition automatically
+C	  disappears after program completion.
+C-------------------------------------------------------------------------
+C
+#ifdef wn_vx__
+	INCLUDE		'($LNMDEF)'
+	INCLUDE		'($SSDEF)'
+C
+	INTEGER*4	SYS$CRELNM, SYS$TRNLNM
+	INTEGER*4	ITEMLST4(4), LN
+	INTEGER*2	ITEMLST2(2)
+		EQUIVALENCE (ITEMLST4,ITEMLST2)
+#endif
+C
+	INTEGER		DWC_PRCMODE_INQ, GEN_TERMSW
+	INTEGER		MSG_SET
+C
+	INTEGER		IS
+	INTEGER		STDIN
+		DATA STDIN /0/
+		SAVE STDIN
+C
+C
+	IF (LI.GT.0) THEN				!input file specified:
+#ifdef wn_vx__
+		IF (INFILE(:LI).NE.'SYS$INPUT') THEN	!make it SYS$INPUT
+			ITEMLST2(1) = LI
+			ITEMLST2(2) = LNM$_STRING
+			ITEMLST4(2) = %LOC (INFILE)
+			ITEMLST4(3) = LI
+			ITEMLST4(4) = 0
+			IS = SYS$CRELNM (,'LNM$PROCESS',
+	1			'SYS$INPUT',,ITEMLST4)
+			IF (IAND(IS,1).EQ.0) GOTO 999
+		END IF
+#endif
+		STDIN = 0			!input from SYS$INPUT
+C
+	ELSE IF (IAND(DWC_PRCMODE_INQ('SUBPROCESS'),1) .NE. 0) THEN !subprocess:
+		STDIN = 1			!input from SYS$COMMAND
+C
+	ELSE
+		STDIN = 0			!input from SYS$INPUT
+	END IF
+C
+	IF (STDIN.EQ.0.AND. GEN_TERMSW('SYS$INPUT').NE.1) THEN
+		STDIN = 3				!SYS$INPUT no terminal
+	END IF
+C
+C
+	DWC_SYSIN_SET =  DWC_SUCCESS
+	RETURN
+C
+ 999	DWC_SYSIN_SET = MSG_SET (IS,0)
+	RETURN
+C
+C	===================
+	ENTRY DWC_SYSIN_GET (DEVCOD)
+C	===================
+C
+	DEVCOD = STDIN
+C
+	DWC_SYSIN_GET =  DWC_SUCCESS
+	RETURN
+	END

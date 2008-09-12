@@ -1,0 +1,63 @@
+C+ NATXCJ.FOR
+C  WNB 920506
+C
+C  Revisions:
+C
+	INTEGER FUNCTION NATXCJ(VALJ)
+C
+C  Convert VAX values to local values
+C
+C  Result:
+C
+C	NATXCJ_J = NATXCJ( VALJ_J:I)
+C				Convert VALJ from VAX to local
+C	NATXCE_E = NATXCE( VALE_E:I)
+C				Convert VALE from VAX to local
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER VALJ		!VALUE TO CONVERT
+	REAL VALE
+C
+C  Entry points:
+C
+	REAL NATXCE		!CONVERT REAL
+C
+C  Function references:
+C
+C
+C  Data declarations:
+C
+	INTEGER*2 CODJ(4)	!CONVERT J
+	  DATA CODJ/3,1,0,1/
+	INTEGER*2 CODE(4)	!CONVERT E
+	  DATA CODE/4,1,0,1/
+C-
+C
+C NATXCJ
+C
+	J0=VALJ					!VALUE
+	CALL WNTTDL(LB_J,J0,CODJ)		!CONVERT
+	NATXCJ=J0
+C
+	RETURN
+C
+C NATXCE
+C
+	ENTRY NATXCE(VALE)
+C
+	R0=VALE					!VALUE
+	CALL WNTTDL(LB_E,R0,CODE)		!CONVERT
+	NATXCE=R0
+C
+	RETURN
+C
+C
+	END

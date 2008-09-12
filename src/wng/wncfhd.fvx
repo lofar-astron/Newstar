@@ -1,0 +1,68 @@
+C+ WNCFHD.FVX
+C  WNB 890417
+C
+C  Revisions:
+C
+	SUBROUTINE WNCFHD(CODE,N,TXT)
+C
+C  Set/reset header line with formatting (FAO with extensions) information.
+C	(see WNCFHD_X for details)
+C
+C  Result:
+C
+C	CALL WNCFHD( CODE_J:I, N_J:I, TXT_C*:I, ARG.......)
+C				Print (bit1=1 of CODE) and/or type (bit0=1)
+C				and/or output to file (bit8-31=1)
+C				the string, using the arguments specified
+C				by ARG.... , as interpreted by codes in TXT,
+C				and set TXT at header line N (if >0), or reset
+C				header line (N<0). Header line 1 will also
+C				always contain program name/version, date/time
+C				and page number.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'WNC_DEF'
+C
+C  Parameters:
+C
+	INTEGER MXNARG			!MAX. # OF ARG ALLOWED
+		PARAMETER (MXNARG=250)
+C
+C  Arguments:
+C
+	INTEGER CODE				!PRINT/TYPE CODE
+	INTEGER N				!HEADER LINE #
+	CHARACTER*(*) TXT			!TEXT TO BE CONVERTED, OUTPUT
+C
+C  Function references:
+C
+	INTEGER WNGARG				!GET CALL LIST ADDRESS
+C
+C  Data declarations:
+C
+	INTEGER ARGL(0:MXNARG+2)		!ARG. LIST
+	CHARACTER*(CMLL) TXTS			!HEADER LINE
+C
+C  Equivalences:
+C
+C
+C  Commons:
+C
+C-
+C
+C WNCFHD
+C
+	CALL WNGARL(%VAL(WNGARG()),ARGL(0))	!MAKE ARGUMENT LIST
+	ARGL(0)=ARGL(0)-1			!DELETE CODE ARG.
+	DO I=1,ARGL(0)
+	  ARGL(I)=ARGL(I+1)
+	END DO
+	CALL WNCTXS_X(TXTS,TXT,ARGL(0))		!GET COMPLETE TEXT LINE
+	CALL WNCFHD_X(CODE,N,TXTS)		!DO
+C
+	RETURN
+C
+C
+	END

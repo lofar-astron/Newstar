@@ -1,0 +1,19 @@
+%doc_sources_and_hyper.tex  
+
+\begin{figure}[hbtp]  
+
+\fig{doc_sources_and_hyper}  
+\caption{ \it  
+\label{.doc.sources.and.hyper}  On-line Help files in the \NEWSTAR
+documentation system and their origins.  
+\\ Files shown in boldface are the documentation and program sources, those
+shown in regular print are the derived Help files. 
+\\ The full-drawn arrows indicate hypertext links for diagrams. The links to
+the other files types are not shown. The dotted arrow indicate links to in-line
+picture files that contain \Textref{formulas and tables}{.formulas}.    
+\\ The dashed arrows indicate the relations between the files: Straight arrows
+represent a direct derivation, merging arrows a source-file inclusion. The
+capital letters on the arrows show in which procedure the derivation is
+implemented: 
+\\ C= ndoc Cook; F= ndoc Fig; T= ndoc Test; P= ndoc Print. } 
+\end{figure}  

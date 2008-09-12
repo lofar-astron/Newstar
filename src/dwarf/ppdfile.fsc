@@ -1,0 +1,237 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	GENUN_PPDFILE
+C.Keywords:	PPD File
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	DWARF-Fortran
+C.Environment:	UNIX
+C.Comments:
+C		Common variables used:
+C	INTEGER*4	PPS$MAPB	! (m) start address of mapped file
+C	INTEGER*4	PPS$MAPE	! (m) end address of mapped file
+C	INTEGER*4	PPS$FABADR	! (m) address of FAB (not used)
+C	INTEGER*4	PPS$FABSIZ	! (m) size of FAB (used for map size)
+C
+C.Version:	900415 FMO - creation
+C.Version:	900502 FMO - new GEN_LUN module
+C.Version:	920214 GvD - no optional arguments in MSG anymore
+C.Version:	920423 GvD - use GEN_FILOPN to open PPD-file
+C.Version:	930923 CMV - logical names for new maintenance system
+C.Version:	940111 CMV - open ppd-file as read only
+C.Version:	940117 CMV - use WNGGVM i.s.o. GEN_GET_VM
+C.Version:	940211 WNB - change file inquire
+C.Version:	010709 AXC - linux port - tmpchar in calls, RECLEN && READONLY
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION PPD_FILE_FIND (PROGNAM,XSPEC,LX)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	PROGNAM		! (i) program name
+	CHARACTER*(*)	XSPEC		! (o) full file specification
+	INTEGER*4	LX		! (o) its significant length
+C
+C.Purpose:	Search for the PPD file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success		1	PPD file found in EXEDWARF
+C	info	DWC_EXEUSER	PPD file found in EXEUSER
+C	error	PPD_PPDNOTFND	PPD file not found
+C	false status code returned by referenced routines
+C.Notes:
+C	- The file <prognam>.PPD is looked for in EXEUSER and, if not found
+C	  there, in EXEDWARF.
+C	- If the logical names EXEUSER and/or EXEDWARF are not defined, they
+C	  default to the current device and directory.
+C-------------------------------------------------------------------------
+C
+	CHARACTER*(*)	 DEFTYP
+		PARAMETER (DEFTYP     = '.PPD'     )
+C
+	INTEGER*4	STR_SIGLEN, FILNAM_FULL, GEN_FORIOS
+	INTEGER		MSG_SET
+	LOGICAL		WNFOP
+C
+	INTEGER*4	IS, LP
+	LOGICAL		EXIST
+	INTEGER		FCAT
+	CHARACTER	TMP*80
+C
+C
+	XSPEC = ' '
+	LX = 0
+	LP = STR_SIGLEN (PROGNAM)
+C
+C					Search for the PPD file
+C					- first in Current dir, then in
+C					  n_uexe and finally in n_exe
+C
+	TMP=PROGNAM(:LP)//DEFTYP
+	IS = FILNAM_FULL (TMP,XSPEC,LX,' ')
+	IF (IAND(IS,1).EQ.0) GOTO 999
+	EXIST=WNFOP(FCAT,XSPEC(:LX),'R')
+	IF (EXIST) GOTO 901
+C
+	IS = FILNAM_FULL (TMP,XSPEC,LX,'n_uexe')
+	IF (IAND(IS,1).EQ.0) GOTO 999
+	EXIST=WNFOP(FCAT,XSPEC(:LX),'R')
+	IF (EXIST) GOTO 901
+C
+	IS = FILNAM_FULL (TMP,XSPEC,LX,'n_exe')
+	IF (IAND(IS,1).EQ.0) GOTO 999
+	EXIST=WNFOP(FCAT,XSPEC(:LX),'R')
+	IF (.NOT.EXIST) GOTO 997
+C
+C
+ 900	PPD_FILE_FIND = 1
+	CALL WNFCL(FCAT)
+	RETURN
+ 901	PPD_FILE_FIND = DWC_EXEUSER
+	CALL WNFCL(FCAT)
+	RETURN
+C
+ 997	PPD_FILE_FIND = MSG_SET (PPD_PPDNOTFND,0)
+	RETURN
+ 998	PPD_FILE_FIND = GEN_FORIOS (XSPEC(:LX))
+	RETURN
+ 999	PPD_FILE_FIND = IS
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION PPD_FILE_OPEN (XSPEC)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+	INCLUDE 'PPDSTAT_2_DEF'
+	INCLUDE 'PPDREC_4_DEF'
+C
+	CHARACTER*(*)	XSPEC		! (i) full file specification
+C
+C.Purpose:	Open and map an existing PPD file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C	error	PPD_SEQERROR	there still was a PPD file open
+C	false status codes returned by referenced routines
+C.Notes:
+C	- The PPD file will be opened and its contents will be copied into
+C	  a virtual memory block starting at address PPS$MAPB.
+C	- The file will always be closed.
+C-------------------------------------------------------------------------
+C
+C
+	INTEGER*4	RECLEN
+		PARAMETER (RECLEN = 512)
+C
+	INTEGER		MSG_SET
+	INTEGER*4	GEN_FORIOS
+	INTEGER*4	MOVE_BLJ, MOVE_BLB
+	LOGICAL		WNGGVM, WNGFVM
+C
+	BYTE		RECORD(RECLEN)
+	INTEGER*4	IS, LUN, NRREC, RCL, ADDRESS
+C
+C
+C					Make sure that no PPD file is open
+C
+	IF (PPS$MAPB.NE.0) THEN
+		IS = MSG_SET (PPD_SEQERROR,0)
+		GOTO 900
+	ENDIF
+C
+C					Open the file for mapping
+C
+#ifdef wn_hp__
+	RCL = RECLEN
+#else
+  #ifdef wn_li__
+	RCL = RECLEN
+  #else
+	RCL = RECLEN/4
+  #endif
+#endif
+	IS = 0
+	CALL WNGLUN(LUN)
+	IF (LUN.EQ.0) GOTO 900
+	OPEN (UNIT=LUN,FILE=XSPEC,STATUS='OLD',ERR=992,
+#ifdef wn_li__
+	1	ACCESS='DIRECT',FORM='UNFORMATTED',RECL=RCL)
+#else
+	1		READONLY,ACCESS='DIRECT',RECL=RCL)
+#endif
+C	READ (UNIT=LUN,REC=1,ERR=992) RECORD
+	READ (UNIT=LUN,REC=1) RECORD
+	IS = MOVE_BLJ (RECORD,PPDFD_,PPDFD__LENGTH)	! fill file description
+	PPS$FABSIZ = PPDFD$STOT				! file size in bytes
+	NRREC = PPS$FABSIZ/RECLEN			! nr of records
+C
+C					"Map" the file
+C
+	IF (.NOT.WNGGVM(PPS$FABSIZ,ADDRESS)) THEN
+	   IS=MSG_SET(DWC_PPDNOVIRT,1)
+	   CALL WNCTXT(DWLOG,DWMSG,PPS$FABSIZ)
+	   GOTO 902
+	END IF
+	PPS$MAPB = ADDRESS				! start address of map
+	ADDRESS=ADDRESS-A_OB
+	IS = MOVE_BLB (RECORD,A_B(ADDRESS),RECLEN)
+	DO I = 2,NRREC
+		READ (UNIT=LUN,REC=I,ERR=993) RECORD
+		ADDRESS = ADDRESS+RECLEN
+		IS = MOVE_BLB (RECORD,A_B(ADDRESS),RECLEN)
+	ENDDO
+	PPS$MAPE = PPS$MAPB+PPS$FABSIZ-1		! end address of map
+C
+C
+	IS = PPD_SUCCESS				! everything OK
+	GOTO 902
+ 992	IS = GEN_FORIOS (XSPEC)				! first READ error
+	GOTO 902
+ 993	IS = GEN_FORIOS (XSPEC)				! other READ error
+C
+C					Clean up
+C
+	JS = WNGFVM(PPS$FABSIZ,PPS$MAPB)
+	PPS$MAPB = 0
+ 902	CLOSE (UNIT=LUN)
+ 901	CALL WNGLUF(LUN)
+ 900	PPD_FILE_OPEN = IS
+	RETURN
+	END
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION PPD_FILE_CLOSE ()
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+	INCLUDE 'PPDSTAT_2_DEF'
+C
+C
+C.Purpose:	Unmap and close the current PPD file
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success	PPD_SUCCESS
+C	error	PPD_SEQERROR	there was no PPD file open
+C.Notes:
+C	- Just release the virtual memory block.
+C-------------------------------------------------------------------------
+C
+	INTEGER		MSG_SET
+	LOGICAL		WNGFVM
+C
+	INTEGER*4	IS
+C
+C
+C					Make sure that a PPD file is open
+C
+	IF (PPS$MAPB.EQ.0) GOTO 999
+C
+C					"Unmap" the file
+C
+	JS = WNGFVM(PPS$FABSIZ,PPS$MAPB)
+	PPS$MAPB = 0
+	PPS$MAPE = 0
+C
+C
+	PPD_FILE_CLOSE = PPD_SUCCESS
+	RETURN
+C
+ 999	PPD_FILE_CLOSE = MSG_SET (PPD_SEQERROR,0)
+	RETURN
+	END

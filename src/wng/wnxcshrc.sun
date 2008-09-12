@@ -1,0 +1,68 @@
+# wnxcshrc.ssc
+# WNB 920911
+#
+# Revisions:
+#	WNB 921015	Change use of OLBEXE
+#	WNB 921021	Add pa3
+#	WNB 921215	Change edt alias
+#	WNB 921224	Make SSC
+#	WNB 930128	Change edt alias; directory change aliases
+#	WNB 930901	Add nod
+#	WNG 930921	Change _COD from symbol to logical (VMS)
+#	WNB 931123	Make back directories consistent (Unix)
+#	WNB 940216	Change nod; add ntd
+#
+#  Additional general definitions WNG package
+#
+	alias prompt	'set prompt="[1m${HOSTNAME}: ${PWD}>[m "'
+	alias bd	'set tmp=$bwd; set bwd=$cwd; cd $tmp; unset tmp; setenv PWD $cwd; prompt'
+	alias bnd	'set tmp=$bnd; set bnd=$cwd:t; chdir $WNG/../$tmp;if ( -e login.sun) source login.sun; unset tmp; setenv PWD $cwd; prompt'
+	if ($?WNG_OLB) then
+	  alias bnod	'set tmp=$bnod; set bnod=$cwd:t; chdir $WNG_OLB/$tmp; if ( -e login.sun) source login.sun; unset tmp; setenv PWD $cwd; prompt'
+	else
+	  alias bnod	'set tmp=$bnod; set bnod=$cwd:t; chdir $WNG_OLBEXE/$tmp; if ( -e login.sun) source login.sun; unset tmp; setenv PWD $cwd; prompt'
+	endif
+	if ($?WNG_EXE) then
+	  alias bnwd	'set tmp=$bnwd; set bnwd=$cwd:t; chdir $WNG_EXE/$tmp; if ( -e login.sun) source login.sun;  unset tmp; setenv PWD $cwd; prompt'
+	else
+	  alias bnwd	'set tmp=$bnwd; set bnwd=$cwd:t; chdir $WNG_OLBEXE/$tmp; if ( -e login.sun) source login.sun;  unset tmp; setenv PWD $cwd; prompt'
+	endif
+	alias cd	'set bwd=$cwd; chdir \!*; setenv PWD $cwd; prompt'
+	alias cp	"cp -i"
+	alias ddel	"rm -i"
+	alias ddir	"ls -AliF"
+	alias del	"'rm' -f"
+	alias dir	"ls -F"
+	alias edt	'(setenv TERM vt100 ; emacs -nw $cwd/\!* )'
+	if ($?EXEDWARF_UNIX) then
+	  alias exe	"$EXEDWARF_UNIX/execute.exe \!* "
+	  alias texe	"$EXEDWARF_UNIX/\!^.exe "
+	endif
+	alias h		"history | more"
+	alias help	"man"
+	alias lo	"logout"
+	alias mv	"mv -i"
+	alias nd	'set bnd=$cwd:t; chdir $WNG/../\!*; if ( -e login.sun) source login.sun; setenv PWD $cwd; prompt'
+	if ($?WNG_OLB) then
+	  alias nod	'set bnod=$cwd:t; chdir $WNG_OLB/\!*; if ( -e login.sun) source login.sun; setenv PWD $cwd; prompt'
+	else
+	  alias nod	'set bnod=$cwd:t; chdir $WNG_OLBEXE/\!*; if ( -e login.sun) source login.sun; setenv PWD $cwd; prompt'
+	endif
+	if ($?WNG_TLB) then
+	  alias ntd	'set bntd=$cwd:t; chdir $WNG_TLB/\!*; if ( -e login.sun) source login.sun; setenv PWD $cwd; prompt'
+	else
+	  alias ntd	'set bntd=$cwd:t; chdir $WNG/../\!*; if ( -e login.sun) source login.sun; setenv PWD $cwd; prompt'
+	endif
+	if ($?WNG_EXE) then
+	  alias nwd	'set bnwd=$cwd:t; chdir $WNG_EXE/\!*; if ( -e login.sun) source login.sun; setenv PWD $cwd; prompt'
+	else
+	  alias nwd	'set bnwd=$cwd:t; chdir $WNG_OLBEXE/\!*; if ( -e login.sun) source login.sun; setenv PWD $cwd; prompt'
+	endif
+	alias pa3	"$WNG/WNGFEX a3 \!* "
+	alias peps	"$WNG/WNGFEX ps \!* "
+	alias plas	"$WNG/WNGFEX la \!* "
+	alias pqms	"$WNG/WNGFEX qm \!* "
+	alias pvax	"$WNG/WNGFEX sp \!* "
+	alias quota	' ls -AsR1 \!* | awk '"'"' NF == 2 && $1 != "total" {x = x+ $1} END {print x,"kbytes for \!*"}' "'"
+	alias rm	"rm -i"
+	alias shd	"pwd"

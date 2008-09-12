@@ -1,0 +1,22 @@
+	if (! $?HOSTNAME) setenv HOSTNAME `hostname`
+	if (! -e $WNG/WNGFEX && -e $WNG/wngfex.sun) \
+		ln -s $WNG/wngfex.sun $WNG/WNGFEX 
+	if ("$?WNG" != "0") then
+	  if ("$?_newpath" != "0") then
+	    set _newpath=($_newpath $WNG)
+	  else
+	    set path=($path $WNG)
+	  endif
+	endif
+	echo "Type nnews for Newstar news"
+#  wnglogin.sun
+#  WNB 920911
+# 
+#  Revisions:
+#	HJV 921001	Change N-series to Newstar
+#	WNB 930128	Add HOSTNAME
+#	WNB 930301	Moved path from wngcshrc
+# 
+# 	General login for all WN programs
+#	Call by inserting in .login as source $WNG/wnglogin.sun
+# 

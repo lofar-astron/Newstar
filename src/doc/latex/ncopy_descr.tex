@@ -1,0 +1,105 @@
+%
+% @(#) ncopy_descr.tex  v1.1 08/02/94 JPH
+%
+%	JPH 940927	Remove non-standard constructs
+
+%
+\chapter{The Program NCOPY}
+\tableofcontents 
+
+\section{General}
+
+	NCOPY is a program to selectively copy data from an input to an
+output SCN file. Its basic use is to condense SCN files by
+\begin{itemize}
+
+\item   selecting only those sectors, scans and polarisations that one wants
+to retain;
+
+\item   eliminating "holes" in a file that are no longer used.
+\end{itemize}
+As an ancillary function, NCOPY can produce overviews of all sectors in a SCN
+file.
+
+
+
+\section{NCOPY options and keywords}
+\begin{itemize}
+\item   OVERVIEW: Produce on terminal and in the log file a listing of all
+sectors in a file. In addition to the layout (as for NFLAG SHOW) and file
+size, the following is shown for each sector:
+
+                {\sf g.o.f.c.s} and absolute sector numbers;
+                field name and WSRT observation number;
+                frequency and bandwidth;
+                hour-range and number of scans;
+                numbers of interferometers and polarisations;
+                technical information for testing/debugging purposes (subject
+to change).
+
+The information relevant to the user is crammed into the width of a terminal
+window.
+
+\item   COPY: Copy sectors. The following additional information is requested
+once for every time the COPY option is selected:
+
+\indent       INPUT\_SCAN \\
+\indent       OUTPUT\_SCAN \\
+\indent       INPUT\_SECTORS \\
+\indent       HA\_RANGE \\
+\indent       POLARISATION \\
+
+	Data will be appended to the output file. If the latter does not
+exist, a new file is created and its creation reported.
+
+	A new output group is created for every input group, the
+remaining indices, o.f.c.s, being taken from the input.
+\end{itemize}
+
+
+\section{Multiple references to the same physical sector}
+
+	This section is relevant only for cases where the input SCN file
+contains sectors that are referred to through more than one g.o.f.c.s
+reference. The only ways such multiple references may have been created is
+through the NSCAN REGROUP option or through an earlier NCOPY COPY operation as
+described below.
+
+	To understand the implications of multiple references for NCOPY,
+one must understand the distinction between {\em physical sectors} and {\em
+sector references}. The former hold the physical data and are therefore
+unique. The references are small data structures embodying the g.o.f.c.s
+hierarchical indexing structure through which the physical sectors are
+accessed.
+
+	An input physical sector specified repeatedly in a {\em single} COPY
+operation will be copied only once. If the INPUT\_SECTORS specification either
+explicitly or implicitly refers to the sector more than once, a single
+physical copy is made, along with a copy of each of the references to it.
+
+	If an input sector already copied is selected again in a {\em new}
+COPY operation, the correct response would be to make a new reference to the
+output sector already in existence. However, NCOPY has no way of knowing which
+sectors were already copied in the past, so a new independent copy of the
+entire sector will be made.
+
+
+\section{Possible later extensions}
+
+	As future options, to be realised only upon user demand, we
+consider:
+\begin{itemize}
+
+\item   integration of data over hour-angle intervals;
+
+\item   selection of interferometers;
+
+\item   definition of output sector numbers by the user and (partial)
+correction of the deficiencies noted above;
+
+\item   permanent application of corrections to the stored data as foreseen in
+the original Newstar design.
+
+\end{itemize}
+
+

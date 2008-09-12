@@ -1,0 +1,141 @@
+!+NSELECT.PEF: Visibility-selection parameters
+!
+!  JPH 941005 - split off from NCOMM.PEF
+!
+!  Revisions:
+!
+!
+! ==============================================================================
+! Keywords for data-selection inside the HA-scan
+! ==============================================================================
+!
+!  Get polarisation
+!       Ref:    NSCPLS
+!
+KEYWORD=SELECT_XYX
+	DATA_TYP=C
+	LENGTH=4
+	IO=I
+	CHECKS=ABBREV_OPTIONS
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	OPTIONS=XYX,XY,Y,X,YX,YYX,XXY
+	SEARCH=L,P
+	PROMPT="polarisations"
+	HELP=" Select the polarisation(s) to be used:
+.
+	XYX     all four combinations (XX,YX,YX,YY)
+	XY      XX and YY
+	X       XX only
+	Y       YY only
+	YX      XY and YX
+	YYX     YX
+	XXY     XY"
+!
+!  Get HA range
+!       Ref:    NSCHAS
+!
+KEYWORD=HA_RANGE
+	DATA_TYP=R
+	IO=I
+	NVALUES=2
+	SWITCHES=VECTOR,NULL_VALUES,WILD_CARDS
+	CHECKS=MAXIMUM,MINIMUM,NON_DESCENDING
+	MINIMUM=-180.,-180.
+	MAXIMUM=+180.,+180.
+	UNITS=DEG,RAD,CIR,HMS
+	SEARCH=L,P
+	PROMPT="HA range"
+	HELP=" Specify the hour-angle range to be selected"
+!
+!  Get Interferometer selection
+!       Ref:    NSCIFS
+!
+KEYWORD=SELECT_IFRS
+	DATA_TYP=C
+	IO=I
+	LENGTH=4
+	NVALUES=40
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARD
+	SEARCH=L,P
+	PROMPT="Changes to the interferometer selection|"
+	HELP=" Specify how you want to change the interferometer selection.
+.
+Interferometers are defined as combinations of two telescopes; an
+interferometer may thus contain 1, 2 or 4 polarisations.
+.
+A combination of two different telescopes is called a CROSS[-correlating]
+interferometer, a telescope combined with itself an AUTO[-correlating]
+interferometer. At present, WSRT data contain only cross-interferometer data,
+so selection/elimination of auto-interferometers is irrelevant.
+.
+The following codes are used to identify (groups of) telescopes:
+.
+	P       show the present selection table
+.
+   For the WSRT:
+	0,1,2,3,4,5,6,7,8,9,A,B,C,D:
+		 individual WSRT telescopes (case-insensitive)
+	*       all telescopes or all cross interferometers
+	F       all fixed telescopes = 0 through 9
+	M       all movable telescopes = A through D
+	Y       telescopes A and B
+	Z       telescopes C and D
+	#       autocorrelation
+.
+   Additional codes for the Australian Telecope Compact Array (ATCA):
+	T       ATCA telescopes (8-D)
+	U       the ATCA complement (0-7).
+.
+An interferometer specification without a prefix or prefixed with a + sign is
+SELECTED, a specification with a minus sign prefixed is ELIMINATED. Selection
+and elimination are incremental. Up to 40 select/eliminate specifications may
+be given, separated by comma's; they will be honored in the order in which you
+give them. Prompting will continue until you stop replying.
+.
+The standard operation is on the cross-correlations. A telescope name followed
+with a # indicates the auto-correlations.
+.
+Examples:
+	-3F     eliminate combinations of 3 with other fixed telescopes
+	FM,-9A  select all fixed-movable combinations (the WSRT's 40 'standard'
+		 interferometers) except 9A
+	-#,33   eliminate all auto-interferometers, then re-select 33
+"
+!
+!  Get Telescope selection
+!       Ref:    NSCTLS
+!
+KEYWORD=SELECT_TELS
+	DATA_TYP=C
+	IO=I
+	LENGTH=4
+	NVALUES=20
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARD
+	SEARCH=L,P
+	PROMPT="Changes to the telescope selection|"
+	HELP=" Specify how you want to change the telescope selection.
+.
+The following codes are used to identify (groups of) telescopes:
+.
+	P       show the present selection table
+.
+   For the WSRT:
+	0,1,2,3,4,5,6,7,8,9,A,B,C,D:
+		individual WSRT telescopes (case-insensitive)
+	*       all telesopes
+	F       all fixed telescopes = 0 through 9
+	M       all movable telescopes = A through D
+	Y       telescopes A and B
+	Z       telescopes C and D
+.
+   Additional codes for the Australian Telecope Compact Array (ATCA):
+	T       ATCA telescopes (8-D)
+	U       the ATCA complement (0-7).
+.
+A telesope specification without a prefix or prefixed with a + sign is
+SELECTED, a specification with a minus sign prefixed is ELIMINATED. Selection
+and elimination are incremental. Up to 20 select/eliminate specifications may
+be given, separated by comma's; they will be honored in the order in which you
+give them. Prompting will continue until you stop replying.
+.
+Examples: -*,3,+3,-8,*,-F,-U,T"

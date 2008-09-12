@@ -1,0 +1,520 @@
+#  ndel.ssc
+# 	WNB 920208
+# 
+#  Revisions:
+#	WNB 920922	Add l switch to ar
+#			Add .fun type
+#	WNB 921002	Overhaul
+#	WNB 921012	Add question
+#	WNB 921016	Wrong nxup called
+#	WNB 921113	Postpone ar
+#	WNB 921122	Delete .uin
+#	WNB 921130	Change tr for HP
+#	WNB 921202	Include .pef
+#	WNB 921204	Limit tlbdel for HP
+#	WNB 921208	Limit update; log data
+#	WNB 921209	Include include files; -a0 switch
+#	WNB 921211	Add PSC
+#	WNB 921215	Typo
+#	WNB 921215	Add FSC, CSC, CUN
+#	WNB 921218	Add SSC
+#	HJV 921221	Delete -f in chmod
+#	WNB 921222	Typo SSC; streamline psc ssc
+#	WNB 921230	Add HP length; make SSC
+#	JPH 930225	Typo. - Use grep -v to remove line from nxldef
+#	WNB 930325	Cater for different fold
+#	WNB 930330	Add .a.. and .x..
+#	WNB 930405	Suppress some error messages (VAX)
+#	WNB 930803	Add .dsf
+#	WNB 940210	Typo FSC handling (vx__ iso vax__)
+# 
+# 	Delete routines in nxec system. Use as:
+#
+#		source $WNG/ndel.sun	(UNIX)
+#		@WNG:NDEL <file>	(VAX)
+#
+#	The command file uses a lot of local nxec variables, and
+#	environment variables: WNG, WNG_TLB, WNG_OLB, WNG_TYPE
+#	command files: nxup
+#
+#  Delete a file.
+#
+#ifdef wn_vax__
+$	ON ERROR THEN GOTO ERR
+$	IF F$SEARCH("''FNM'''FTP'") .NES. "" THEN -
+		PURGE/KEEP=2 'FNM''FTP'			!PURGE AS YOU GO
+$	IF CD_A .EQS. "0"				!CONFIRM
+$	THEN
+$	  READ/TIME=90/END=EXIT/ERROR=EXIT -
+		/PROMPT="Delete ''FNM'''FTP'? (Y N) [N]: " -
+		SYS$COMMAND L0
+$	  IF .NOT.L0 THEN GOTO ERR
+$	ENDIF
+$	MSGT=MSGT+" deleted"				!INDICATE DONE
+$	IF CD_C .NES. "-"				!COMPILE
+$	THEN
+$	  IF FTP .EQS. ".FSC" THEN GOSUB FSC		!FSC
+$	  IF FTP .EQS. ".FOR" .OR. FTP .EQS. ".FVX" THEN GOSUB FOR !FORTRAN
+$	  IF FTP .EQS. ".MVX" THEN GOSUB MAC		!MACRO
+$	  IF FTP .EQS. ".SSC" THEN GOSUB SSC		!SSC
+$	  IF FTP .EQS. ".HLP" THEN GOSUB HLP		!HELP
+$	  IF FTP .EQS. ".DSC" THEN GOSUB DSC		!DSC
+$	  IF FTP .EQS. ".DEF" .OR. FTP .EQS. ".PEF" .OR. -
+		FTP .EQS. ".DSF" THEN GOSUB DEF		! DEF/PEF/DSF
+$	  IF FTP .EQS. ".INC" THEN GOSUB DEF		!INC
+$	  IF FTP .EQS. ".PSC" THEN GOSUB PSC		!PSC
+$	  IF FTP .EQS. ".PIN" THEN GOSUB PIN		!PIN
+$	  IF FTP .EQS. ".AVX" THEN GOSUB ALB		!SPECIAL OLB
+$	  IF FTP .EQS. ".XVX" THEN GOSUB XEX		!SPECIAL EXE
+$	  IF FTP .EQS. ".EXE" THEN GOSUB EXF		!EXE
+$	ENDIF
+$	GOSUB OTH					!ALL OTHERS
+$	GOTO ERR1
+#else
+	set msgt="" ; set b1="Done: "			# message text/ok
+	if ("$cd_a" == "0") then			# ask question?
+	  echo -n "Delete ${lobh}.$lobe ? (Y, N) [N]: "
+	  set loo="$<"
+	  switch ($loo)
+	    case [yY]*:					# do delete
+	      breaksw
+	    default:					# no delete
+	      goto NDERR
+	  endsw
+	endif
+	set msgt="$msgt deleted"			# indicate deleted
+	if ("$cd_c" == "-") goto NDG2			# no compile
+	if ($lobe == fsc || $lobe == fun) then
+	  goto NDF					# FSC
+	else if ($lobe == for || $lobe == f$ext) then
+	  goto NDF					# Fortran
+	else if ($lobe == cee || $lobe == c$ext || $lobe == cun \
+			|| $lobe == csc) then
+	  goto NDC					# C
+	else if ($lobe == m$ext) then
+	  goto NDM					# Macro
+	else if ($lobe == ssc) then
+	  goto NDSS					# SSC
+	else if ($lobe == hlp) then
+	  goto NDH					# Help
+	else if ($lobe == dsc) then
+	  goto NDD					# DSC
+	else if ($lobe == def || $lobe == pef || $lobe == dsf) then
+	  goto NDDF					# def,pef,dsf
+	else if ($lobe == inc) then
+	  goto NDDF					# (dwarf) inc
+	else if ($lobe == psc) then
+	  goto NDPS					# PSC
+	else if ($lobe == pin) then
+	  goto NDP					# PIN
+	else if ($lobe == a$ext) then
+	  goto NDALB					# special olb
+	else if ($lobe == x$ext) then
+	  goto NDXEX					# special exe
+	endif
+NDG2:							# others
+#endif
+#
+#  Others
+#
+#ifdef wn_vax__
+$ OTH:	IF F$SEARCH("''FNM'''FTP'") .NES. "" THEN DELETE 'FNM''FTP';*
+$	IF CD_L .EQS. "0"				!LIBRARY
+$	THEN
+$	  IF F$EXTRACT(1,1,FTP) .EQS. "A" .OR. -
+		F$EXTRACT(1,1,FTP) .EQS. "X"
+$	  THEN
+$	    SET NOON
+$	    ASSIGN/USER NL: SYS$OUTPUT
+$	    ASSIGN/USER NL: SYS$ERROR
+$	    LIBRARY/TEXT/DEL='FNM''FTP' 'WNG_TLB''L_D'_AX.TLB !DELETE IN LIBRARY
+$	    SET ON
+$	    MSGT=MSGT+" [''F$PARSE(L_D,,,"NAME","SYNTAX_ONLY")'_AX.TLB]"
+$	  ELSE
+$	    SET NOON
+$	    ASSIGN/USER NL: SYS$OUTPUT
+$	    ASSIGN/USER NL: SYS$ERROR
+$	    LIBRARY/TEXT/DEL='FNM''FTP' 'WNG_TLB''L_D'.TLB !DELETE IN LIBRARY
+$	    SET ON
+$	    MSGT=MSGT+" [''F$PARSE(L_D,,,"NAME","SYNTAX_ONLY")'.TLB]"
+$	  ENDIF
+$	ENDIF
+$	RETURN
+#else
+NDOTH:
+	if (-e ${lobh}.$lobe) then
+	  'rm' ${lobh}.$lobe				# delete
+	endif
+	if ($cd_l == 0) then				# library
+	  if ("$WNG_TYPE" == "hp") then
+	    set l02=`echo ${lobh}.$lobe | ${fold}14`	# limit name
+	  else
+	    set l02=`echo ${lobh}.$lobe | ${fold}15`
+	  endif
+	  if ("$lobe" =~ [ax]??) then
+	    if ($?taxdel) then
+	      if (`echo $taxdel | wc -c` > 800) then
+	        echo "Update ${l_d}_ax.tlb" | tee -a $c_upd
+	        ar dl $WNG_TLB/${l_d}_ax.tlb $taxdel
+	        setenv taxdel "$l02"			# save for ar
+	      else
+	        setenv taxdel "$taxdel $l02"		# save for ar
+	      endif
+	    else
+	      setenv taxdel "$l02"			# save for ar
+	    endif
+	    set l02=$WNG_TLB
+	    set l00=$l02:h ; set l01=$l02:t
+	    set l00=$l00:t/$l01
+	    set msgt="$msgt [$l00/${l_d}_ax.tlb]"
+	  else
+	    if ($?tlbdel) then
+	      if (`echo $tlbdel | wc -c` > 800) then
+	        echo "Update ${l_d}.tlb" | tee -a $c_upd
+	        ar dl $WNG_TLB/${l_d}.tlb $tlbdel
+	        setenv tlbdel "$l02"			# save for ar
+	      else
+	        setenv tlbdel "$tlbdel $l02"		# save for ar
+	      endif
+	    else
+	      setenv tlbdel "$l02"			# save for ar
+	    endif
+	    set l02=$WNG_TLB
+	    set l00=$l02:h ; set l01=$l02:t
+	    set l00=$l00:t/$l01
+	    set msgt="$msgt [$l00/${l_d}.tlb]"
+	  endif
+	endif
+	goto NDEX					# ready
+#endif
+#
+# Ready
+#
+#ifdef wn_vax__
+$ ERR:	B1="Not:  "
+$ ERR1:	TELL B1+FNM+FTP+MSGT
+$	UTELL B1+FNM+FTP+MSGT
+$ EXIT:	EXIT
+#else
+NDERR:
+	set b1="Not:  "
+NDEX:
+	echo "$b1 ${lobh}.$lobe $msgt" | tee -a $c_upd
+	goto RETURN
+#endif
+#
+#  Fortran
+#
+#ifdef wn_vax__
+$ FOR:
+$	IF F$SEARCH("''FNM'.OBJ") .NES. "" THEN DELETE 'FNM'.OBJ;*
+$	IF CD_L .NES. "-"
+$	THEN
+$	  SET NOON
+$	  ASSIGN/USER NL: SYS$OUTPUT
+$	  ASSIGN/USER NL: SYS$ERROR
+$	  LIBRARY/DEL='FNM' 'WNG_OLB''L_D'
+$	  SET ON
+$	  MSGT=MSGT+" [''F$PARSE(L_D,,,"NAME","SYNTAX_ONLY")'.OLB]"
+$	ENDIF
+$	RETURN
+#else
+NDF:
+	set lot=f					# Fortran extension
+NDF1:
+	if (-e $WNG_LINK/${lobh}.$lot) then
+	  'rm' $WNG_LINK/${lobh}.$lot			# delete link
+	endif
+	'rm' ${lobh}.o >& /dev/null			# remove object
+	'rm' $WNG_OLB/${lobh}.o >& /dev/null
+	if ("$cd_l" != "-") then
+	  set l02=$WNG_OLB
+	  set l00=$l02:h ; set l01=$l02:t
+	  set l00=$l00:t/$l01
+	  if ($?olbdel) then
+	    if (`echo $olbdel | wc -c`> 800) then
+	      echo "Update ${l_d}.olb" | tee -a $c_upd
+	      ar dl $WNG_OLB/${l_d}.olb $olbdel
+	      setenv olbdel "${lobh}.o"			# save for ar
+	    else
+	      setenv olbdel "$olbdel ${lobh}.o"		# save for ar
+	    endif
+	  else
+	    setenv olbdel "${lobh}.o"			# save for ar
+	  endif
+	  set msgt="$msgt [$l00/${l_d}.olb]"
+	endif
+	goto NDOTH					# ready
+#endif
+#
+# FSC
+#
+#ifdef wn_vax__
+$ FSC:	IF F$SEARCH("''FNM'.FOR") .NES. "" THEN DELETE 'FNM'.FOR;*
+$	RETURN
+#endif
+#
+#  Macro
+#
+#ifdef wn_vax__
+$ MAC:
+$	GOTO FOR
+#else
+NDM:
+	set lot=s					# Macro extension
+	goto NDF1					# finish
+#endif
+#
+#  C
+#
+#ifdef wn_vax__
+#else
+NDC:
+	set lot=c					# C extension
+	goto NDF1					# finish
+#endif
+#
+#  SSC
+#
+#ifdef wn_vax__
+$ SSC:
+$	ASSIGN/USER NL: SYS$OUTPUT
+$	ASSIGN/USER NL: SYS$ERROR
+$	DIR/VERSION=1/NOHEAD/NOTRAIL/COL=1/OUT='FNM''PID'.TMP -
+		'FNM'.COM,'FNM'.SUN
+$	GOTO DSC1
+#else
+NDSS:
+	set findb=(${lobh}.sun ${lobh}.com)		# do SUN
+	goto NDOTH
+#endif
+#
+#  Help
+#
+#ifdef wn_vax__
+$ HLP:
+$	IF CD_L .EQS. "0" .AND. F$SEARCH("''WNG_TLB'''FNM'.HLB") .NES. "" THEN -
+		DELETE 'WNG_TLB''FNM'.HLB;*
+$	MSGT=MSGT+" [''FNM'.HLB]"
+$	IF CD_U .NES. "-" .AND. F$TRNLNM("LIBDWARF") .NES. "" .AND. -
+		F$TRNLNM("EXEDWARF") .NES. ""		!UPDATE
+$	THEN
+$	  @WNG:NXUP "A15" "''U_D'" "''P1'" "''FNM'" ""
+$	  MSGT=MSGT+" updated(''U_D')"
+$	ENDIF
+$	RETURN
+#else
+NDH:
+	goto NDOTH					# not yet written###
+#endif
+#
+#  DSC
+#
+#ifdef wn_vax__
+$ DSC:
+$	ASSIGN/USER NL: SYS$OUTPUT
+$	ASSIGN/USER NL: SYS$ERROR
+$	DIR/VERSION=1/NOHEAD/NOTRAIL/COL=1/OUT='FNM''PID'.TMP -
+		'FNM'.DEF,'FNM'_BD.FOR,'FNM'.INC,'FNM'_%.*
+$ DSC1:
+$	L00=""					!ADD YNZ
+$	L01=0
+$ LP17:	  IF F$EXTRACT(L01,1,CODES) .EQS. "Y"
+$	  THEN
+$	    L00=L00+"0"
+$	  ELSE
+$	    IF F$EXTRACT(L01,1,CODES) .EQS. "Z"
+$	    THEN
+$	      L00=L00+"-"
+$	    ELSE
+$	      L00=L00+CD_'F$EXTRACT(L01,1,CODES)'
+$	    ENDIF
+$	  ENDIF
+$	  L01=L01+1
+$	  IF L01 .LT. F$LENGTH(CODES) THEN GOTO LP17
+$	@WNG:NXEC X2 'PNAM' 'PCOD' 'DEP' "''L00'" "''FG_CX'" -
+			'FNM''PID'.TMP			!DO REST
+$	IF F$SEARCH("''FNM'''PID'.TMP") .NES. "" THEN -
+		DELETE 'FNM''PID'.TMP;*
+$	RETURN
+#else
+NDD:
+	set findb=""					# for repeat
+	if (-e ${lobh}.def) set findb=($findb ${lobh}.def)
+	if (-e ${lobh}_bd.for) set findb=($findb ${lobh}_bd.for)
+	if (-e ${lobh}.inc) set findb=($findb ${lobh}.inc)
+	if (-e ${lobh}_o.def) set findb=($findb `ls ${lobh}_?.*`)
+	goto NDOTH					# ready
+#endif
+#
+#  PSC
+#
+#ifdef wn_vax__
+$ PSC:
+$	ASSIGN/USER NL: SYS$OUTPUT
+$	ASSIGN/USER NL: SYS$ERROR
+$	DIR/VERSION=1/NOHEAD/NOTRAIL/COL=1/OUT='FNM''PID'.TMP -
+		'FNM'.PIN
+$	GOTO DSC1
+#else
+NDPS:
+	set findb=(${lobh}.pin)
+	goto NDOTH
+#endif
+#
+#  PIN
+#
+#ifdef wn_vax__
+$ PIN:	L0="A13"					!UPDATE CODE
+$	L1="PPD"					!TYPE
+$	IF F$SEARCH("''FNM'.''L1'") .NES. "" THEN DELETE 'FNM'.'L1';*
+$	IF F$SEARCH("''WNG_OLB'''FNM'.''L1'") .NES. "" THEN -
+			DELETE 'WNG_OLB''FNM'.'L1';*
+$	IF CD_U .NES. "-" .AND. F$TRNLNM("EXEDWARF") .NES. "" !UPDATE
+$	THEN
+$	  @WNG:NXUP "''L0'" "''U_D'" "''P1'" "''FNM'" ""
+$	  MSGT=MSGT+" updated(''U_D')"
+$	ENDIF
+$	RETURN
+#else
+NDP:
+	set l00="a13"
+	set l01="ppd"
+NDP1:
+	if (-e $WNG_OLB/${lobh}.$l01) then
+	  'rm' $WNG_OLB/${lobh}.$l01
+	endif
+	if ("$cd_u" != "-" && $?EXEDWARF_UNIX) then	# update
+	  csh -f $WNG/nxup.sun $l00 "$u_d" "${lobh}.$l01" "$lobh:t"
+	  set msgt="$msgt updated($u_d)"
+	endif
+	goto NDOTH					# finish
+#endif
+#
+#  Special EXE
+#
+#ifdef wn_vax__
+$ XEX:
+$	IF F$SEARCH("''FNM'.''FTP'") .NES. "" THEN DELETE 'FNM'.'FTP';*
+$	IF F$SEARCH("WNG:''FNM'.EXE") .NES. "" THEN -
+			DELETE WNG:'FNM'.EXE;*
+$	RETURN
+#else
+NDXEX:
+	if (-e $WNG_OLBEXE/wng/${lobh}.exe) then
+	  'rm' $WNG_OLBEXE/wng/${lobh}.exe
+	endif
+	goto NDOTH					# finish
+#endif
+#
+#  Special OLB
+#
+#ifdef wn_vax__
+$ ALB:
+$	IF F$SEARCH("''FNM'.''FTP'") .NES. "" THEN DELETE 'FNM'.'FTP';*
+$	IF F$SEARCH("''WNG_OLB'''FNM'.OLB") .NES. "" THEN -
+			DELETE 'WNG_OLB''FNM'.OLB;*
+$	RETURN
+#else
+NDALB:
+	if (-e $WNG_OLB/${lobh}.olb) then
+	  'rm' $WNG_OLB/${lobh}.olb
+	endif
+	goto NDOTH					# finish
+#endif
+#
+#  def
+#
+#ifdef wn_vax__
+$ DEF:
+$	IF CD_U .NES. "-"				!UPDATE
+$	THEN
+$	  LOB="WNG_DIR:''CWDT'''FNM'''FTP'"		!FILE NAME
+$	  LOA=""					!DO NOT
+$	  IF FTP .EQS. ".INC" .AND. CWDT .EQS. "[DWARF]" THEN -
+			LOA="''FNM'"			!WHAT
+$	  IF FTP .EQS. ".INC" .AND. CWDT .NES. "[DWARF]" THEN -
+			LOA="''FNM'_''FTP'"-"."
+$	  IF FTP .EQS. ".DEF" .OR. FTP .EQS. ".PEF" .OR. FTP .EQS. ".DSF" THEN -
+			LOA="''FNM'_''FTP'"-"."
+$	  IF LOA .NES. ""
+$	  THEN
+$	    IF F$TRNLNM("''LOA'") .NES. "" THEN DEASSIGN 'LOA'
+$	    IF F$SEARCH("WNG:NXLDEF.COM") .NES. ""
+$	    THEN
+$	      OPEN/ERROR=ERR/READ NXL'PID''DEP' WNG:NXLDEF.COM !INPUT
+$	      OPEN/ERROR=ERR/WRITE NXL1'PID''DEP' NXL'PID''DEP'.TMP !OUTPUT
+$ LP19:	        READ/ERROR=ERR/END=LP18 NXL'PID''DEP' L0 !READ LINE
+$	        IF F$LOCATE(LOA,L0) .EQS. F$LENGTH(L0) THEN -
+			WRITE/ERROR=ERR NXL1'PID''DEP' L0 !COPY
+$	        GOTO LP19
+$ LP18:	      CLOSE/ERROR=ERR NXL'PID''DEP'
+$	      CLOSE/ERROR=ERR NXL1'PID''DEP'
+$	      SORT NXL'PID''DEP'.TMP WNG:NXLDEF.COM
+$	      DELETE NXL'PID''DEP'.TMP;*
+$	      PURGE WNG:NXLDEF.COM
+$	    ENDIF
+$	    MSGT=MSGT+" updated(''U_D')"
+$	  ENDIF
+$	ENDIF
+$	RETURN
+#else
+NDDF:
+	set lot=`echo ${lobh}.$lobe | tr $Lowc $Upc`	# make UC
+	if ("$cd_u" != "-") then			# update
+	  set lot=`echo ${lobh}_$lobe | tr $Lowc $Upc`	# make UC
+	  set lotr=`echo ${lobh} | tr $Lowc $Upc`	# make UC
+	  set lob="../$cwd:t/${lobh}.$lobe"		# file name
+	  foreach i ($c_dir)
+	    unset loa
+	    if ($lobe == inc && $cwd:t == dwarf) then
+	      set loa="../$i/$lotr"
+	    else if ($lobe == inc) then
+	      set loa="../$i/${lobh}_$lobe"
+	    else if ($lobe == def || $lobe == pef || $lobe == dsf) then
+	      set loa="../$i/$lot"
+	    endif
+	    if ($?loa) then				# to do
+	      'rm' $loa >& /dev/null
+	      if ($cwd:t == $i) then
+	        if (-e $WNG/nxldef.sun) then
+	          'cp' $WNG/nxldef.sun nxl$pid$dep.tmp
+	          set loc="	rm -f $loa:t >& /dev/null; ln -s $lob $loa:t"
+	          set loc='"'"$loc # $c_date"'"'
+##	          set lod="$0 !~ /'"$loa:t"'/ {print $0}"
+##	          awk "$lod" nxl$pid$dep.tmp >! nxln$pid$dep.tmp
+		  grep -v "$loa:t" nxl$pid$dep.tmp >! nxln$pid$dep.tmp 
+
+	          sort -bf +0.1 nxln$pid$dep.tmp > $WNG/nxldef.sun
+	          chmod +rx $WNG/nxldef.sun
+	          'rm' nxl*$pid$dep.tmp >& /dev/null
+	        endif
+	      endif
+	    endif
+	  end
+	  set msgt="$msgt updated($u_d)"
+	endif
+	goto NDOTH					# finish
+#endif
+#
+# EXE files
+#
+#ifdef wn_vax__
+$ EXF:
+$	IF F$SEARCH("''WNG_EXE'''FNM'''FTP'") .NES. "" THEN -
+			DELETE 'WNG_EXE''FNM''FTP';*
+$	IF CD_U .NES. "-" .AND. F$TRNLNM("EXEDWARF") .NES. "" !UPDATE
+$	THEN
+$	  @WNG:NXUP "A4" "''U_D'" "''P1'" "''FNM'" ""
+$	  MSGT=MSGT+" updated(''U_D')"
+$	ENDIF
+$	RETURN
+#endif
+#
+# Exit
+#
+#ifdef wn_vax__
+#else
+RETURN:
+#endif
+

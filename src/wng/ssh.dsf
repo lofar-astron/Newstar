@@ -1,0 +1,17 @@
+!+ SSH.DSF
+!  WNB 931015
+!
+!  Revisions:
+!	WNB 931015	Original version
+!
+!	Define standard set header first part
+!
+!	SSH.DSF defines the standard beginning of any standard
+!		set header (like STH, MPH, NGF)
+!	Use as: %INCLUDE=SSH_DEF
+!-
+	LINK	J(0:1)		<XJ,1>		!LINK SETS (MUST BE FIRST)
+	LEN	I		<,1>		!LENGTH HEADER
+	VER	I		<,1>		!VERSION HEADER
+	SETN	J		<,1>		!# OF SET
+!-

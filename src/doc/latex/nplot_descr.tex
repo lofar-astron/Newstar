@@ -1,0 +1,220 @@
+% 
+% @(#) nplot_descr.tex  v1.2 04/08/93 JEN 
+% 
+% History: 
+%       JPH 940916      \ref --> \textref 
+%       HjV 950615      Separate parts by indenting text or by using two blank 
+%                       lines
+%       JPH 960429      Add NOTE. Missing \ on \textref. 
+%
+% NOTE:
+%       Text terminated after PLUVO by a '.c+' marker because currently there 
+%       is nothing relevant beond that point
+%
+\chapter{The Program NPLOT} 
+
+\tableofcontents  
+
+
+%============================================================================== 
+\section{Overview of NPLOT options} 
+\label{.options} 
+
+The program NPLOT has the following main options: 
+
+\begin{itemize} 
+\item {\bf MAP:}        Plot map(s) of various types (from WMP-file) 
+\item {\bf DATA:}       Plot uv-data from SCN-file 
+\item {\bf MODEL:}      Plot uv-model from SCN-file  
+        (i.e. the uv-representation of a Selfcal model,  
+        calculated for the uv-coordinates of the uv-data in the SCN-file) 
+\item {\bf TELESCOPE:}  Plot telescope errors 
+\item {\bf RESIDUAL:}   Plot interferometer residuals 
+        (i.e. the residual scatter of redundant spacing data after a 
+        Redundancy solution, or the residual differences with the  
+        source model after a Selfcal solution. 
+\item {\bf QUIT:}       Quit the program NPLOT 
+\end{itemize} 
+
+%============================================================================== 
+\section{NPLOT output} 
+\label{.output} 
+
+After selecting an NPLOT option, the {\bf PLOTTER} question is asked: 
+
+\skeyword{PLOTTER} 
+\sprompt{(QMS,QMSP,REGIS,FREGIS,EPS,EPP,PSL,PSP,...)} 
+\sdefault{= PSP:} 
+\suser{?} 
+
+Produces QMS formatted files, for which currenlty no printers are available\\ 
+{\tt  QMS    QMS laser printer in landscape orientation}\\ 
+{\tt  QMSP   QMS laser printer in portrait orientation}\\ 
+Produces output on VT terminal:\\ 
+{\tt  REGIS  graphics VT terminal (e.g. VT330)}\\ 
+{\tt  FREGIS (*) REGIS to file}\\ 
+Produces PostScript files on disk (which may fill up quickly!):\\ 
+{\tt  EPS    encapsulated PostScript for use in textprocessors etc}\\ 
+{\tt  EPP    EPS in portrait mode}\\ 
+{\tt  EAL    encapsulated PostScript A3 plotter landscape}\\ 
+{\tt  EAP    EPS A3 in portrait mode}\\ 
+Produces PostScript files, and prints them automatically (if you are lucky)\\ 
+on the New PostScript laser printer in the Dwingeloo computer room:\\ 
+{\tt  PSL    Postscript (do not use halftone: slow!)}\\ 
+{\tt  PSP    PostScript in portrait mode}\\ 
+{\tt  PAL    Postscript A3 (do not use halftone: slow!)}\\ 
+{\tt  PAP    PostScript A3 in portrait mode}\\ 
+Bit maps:\\ 
+{\tt  BIT1   (*) bitmap for 100 dpi}\\ 
+{\tt  BIT2   (*) bitmap for 200 dpi}\\ 
+{\tt  BIT3   (*) bitmap for 300 bpi}\\ 
+Produces a X11-plot on the Workstation (or X-terminal) screen.\\ 
+{\tt  X11    X11 terminal}\\ 
+
+{\tt (*) = not implemented yet.} 
+
+All plot file names start with the 3-4 letters of the selected option (e.g.
+EPS), followed by a unique combination of characters based on the time and the
+date. All plot files have the extension .PLT. 
+
+%============================================================================== 
+\section{Plotting a map from a WMP file} 
+\label{.map} 
+
+NPLOT option MAP can be used to make {\bf contour plots} or {\bf greyscale
+plots} of 2-dimensional pixel-arrays stored in a  WMP-file.  These may be maps,
+antenna-patterns, residuals etc, but also gridded uv-data (see the description
+of the program NMAP, and the WMP file).  They can also be displayed (and
+analysed) as a color image on the X11 screen with the program NGIDS. 
+
+
+*** Put new script here **** 
+
+
+The plot is now made, and sent to the laser plotter automatically if that has
+been specified. The program will then prompt the user for the next plot  to be
+specified. 
+
+
+**** Put new script here **** 
+
+
+It is also possible to make `ruled-surface' plots, halftone plots and plots in
+polar coordinates (gridded uv-data). 
+
+
+%============================================================================== 
+\section{Plotting uv-data from a SCN-file} 
+\label{.data} 
+
+
+%----------------------------------------------------------------------------- 
+\subsection{NORMAL: interferometers vs time (HA)} 
+\label{.data.normal} 
+
+**** Put new script here **** 
+
+
+The plot is now made, and sent to the laser plotter automatically if that has
+been specified. The program will then prompt the user for the next plot  to be
+specified. 
+
+
+**** Put new script here **** 
+
+
+%----------------------------------------------------------------------------- 
+\subsection{PLUVO: frequency channels vs time (HA)} 
+\label{.pluvo} 
+
+
+**** Put new script here **** 
+
+
+Etc... 
+
+.c+ 
+%============================================================================== 
+\section{Plotting a uv-model from a SCN-file} 
+\label{.model} 
+
+The same as plotting \textref{uv data}{.data}. 
+
+**** Put new script here **** 
+
+The plot is now made, and sent to the laser plotter automatically if that has
+been specified. The program will then prompt the user for the next plot  to be
+specified. 
+
+**** Put new script here **** 
+
+
+%============================================================================== 
+\section{Plotting telescope corrections} 
+\label{.tel} 
+
+The telescope corrections are stored in the HA-Scan headers of the SCN-file.
+Plotted are the {\bf total} telescope corrections: Redundancy (REDC) plus Align
+(ALGC) plus `other' (OTHC). 
+
+
+%----------------------------------------------------------------------------- 
+\subsection{NORMAL: telescopes vs time (HA)} 
+\label{.tel.normal} 
+
+**** Put new script here **** 
+
+The plot is now made, and sent to the laser plotter automatically if that has
+been specified. The program will then prompt the user for the next plot  to be
+specified. 
+
+**** Put new script here **** 
+
+
+%----------------------------------------------------------------------------- 
+\subsection{PLUVO: frequ channels vs time (HA)} 
+\label{.tel.pluvo} 
+
+
+**** Put new script here **** 
+
+Etc... 
+
+%============================================================================== 
+
+\section{Plotting NCALIB residuals from SCN-file} 
+\label{.residuals} 
+
+
+The residuals are calculated by going though the SCN-file and  subtracting a
+uv-model from the uv-data (Selfcal rediduals), or the average of redundant
+spacings (Redundancy residuals). 
+
+%----------------------------------------------------------------------------- 
+\subsection{Redundancy residuals} 
+\label{.redun.residuals} 
+
+**** Put new script here **** 
+
+The plot is now made, and sent to the laser plotter automatically if that has
+been specified. The program will then prompt the user for the next plot  to be
+specified. 
+
+**** Put new script here **** 
+
+
+%----------------------------------------------------------------------------- 
+\subsection{Selfcal residuals} 
+\label{.selfcal.residuals} 
+
+**** Put new script here **** 
+
+The plot is now made, and sent to the laser plotter automatically if that has
+been specified. The program will then prompt the user for the next plot  to be
+specified. 
+
+**** Put new script here **** 
+
+
+
+

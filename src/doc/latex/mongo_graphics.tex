@@ -1,0 +1,54 @@
+% mongo_graphics.txt
+%
+% History:
+%	JPH 940919	Make compilable in new doc. system
+%
+%
+\chapter{ MONGO graphics}
+
+In many cases, the user will need the results of \NEWSTAR processing in
+graphical form. In order to make this easier, the output of programs
+like NGCALC can be specified to be in `MONGO' format. These are
+ASCII files, organised in columns, which can be processed by the
+MONGO graphics program. Because it is ASCII, the knowledgeable user
+can easily edit the file with a standard editor, to fine-tune the 
+resulting representation.
+
+MONGO \copyright is an interactive graphics program, written by John L. Tonry.
+For a detailed description, see the MONGO manual. %% (\cite{MONGO}).
+In this section, a few simple examples are given to give the user the
+general idea, and to get him/her over the initial barrier.
+
+In Dwingeloo, MONGO is only available on the VAX.
+Create the MONGO command by typing
+\\ \verb&MONGO :== @user5:[mongo]mongo.com& 
+
+MONGO can be used interactively, or by means of a command ``macro'' (.MAC).
+The data usually reside in an ASCII data file, which may be edited by
+the user. 
+
+%==============================================================================
+\subsection{A simple MONGO plot}
+\label{.simple.plot}
+
+Create a MONGO data file (extension .DAT).
+This is an ASCII, in which the data is lined up in columns.
+In this case, replace the string "....." in the first column with 0,1,2,3 etc
+to indicate channel nr. 
+
+Then make a MONGO command macro (ext .MAC):
+\begin{tabbing}
++++\=+++++++++++++\=   \kill			% set tabs
+\\ \> \verb&data gain64a.dat& 	\>MONGO data file
+\\ \> \verb&limits -5 70 -10 10&\>
+\\ \> \verb&xcol 1&		\>x-values in 1st column of data file
+\\ \> \verb&ycol 2&		\>y-values in 2nd column of data file
+\\ \> \verb&box&		\>draw a box around the plot
+\\ \> \verb&ptype 4 3&		\>
+\\ \> \verb&connect&		\>
+\\ \> \verb&xlabel channel #&	\>horizontal axis label string
+\\ \> \verb&ylabel ....&	\>vertical axis label string
+\\ \> \verb&id&			\>
+\end{tabbing}
+
+Alternative: use MONGO interactively.

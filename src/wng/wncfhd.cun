@@ -1,0 +1,149 @@
+/* wncfhd.cun
+.  WNB 920120
+.
+.   Revisions:
+.	WNB 921216	Make CUN
+.	WNB 930527	Correct error in string codes in header line
+.	CMV 940111	Changed for alpha
+	CMV 031205	Changed for stdarg
+...									*/
+/*
+.   Include files:
+...									*/
+/*#include <varargs.h>*/
+#include <stdarg.h>
+
+#define MXNARG 250
+#define CMLL 132L
+/*
+.  Set/reset header line with formatting (FAO with extensions) information.
+.	(see WNCFHD_X for details)
+...									*/
+#ifdef wn_al__
+				void wncfd1_(va_alist)
+#else
+				void wncfhd_(int* c_i,int* n_i,char* t_i,...)
+#endif
+/*
+.   Result:
+.
+.	CALL WNCFHD( CODE_J:I, N_J:I, TXT_C*:I, ARG....)
+.				Print and/or type and/or output to file
+.				(depending on F_* bits set in CODE) the
+.				TXT, using the arguments ARG specified as
+.				interpreted by codes in TXT; and set TXT at
+.				header line N (if >0), or reset header line
+.				(N<0). Header line will also always contain
+.				program name/version, date/time and page
+.				number.
+...									*/
+/*
+.   Arguments:
+...									*/
+/*		va_dcl	*/			/* address list to get	*/
+{
+/*
+.   Parameters:
+...									*/
+/*
+.   Function references:
+...									*/
+	void wncfhd_x_();			/* routine to call	*/
+	void wnctxs_x_();
+/*
+.   Data declarations:
+...									*/
+	va_list ap;				/* list argument ptr	*/
+#ifdef wn_da__
+	int args[2*MXNARG+4];			/* argument list	*/
+	int argl[2*MXNARG+4];
+#else
+	char *args[2*MXNARG+4];			/* argument list	*/
+	char *argl[2*MXNARG+4];			/* argument list	*/
+#endif
+	int i = 0;				/* argument count	*/
+	int i1 = 0;				/* string counts	*/
+	char *p;				/* pointer to argument  */
+	char lstr[CMLL];			/* header line		*/
+        int  *code,*n;                            /* Save first two args  */
+        char *txt;                              /*  and third one       */
+
+/*-									*/
+/*
+. Get argument list
+...									*/
+	va_start(ap,t_i);
+	args[MXNARG] = 0;			/* number arguments	*/
+	args[MXNARG-1] = 0;			/* count for strings	*/
+	args[MXNARG-2] = 0;			/* number strings	*/
+	while (i < MXNARG)
+	{ i++;
+	  if (i==1) {
+	     p = (char*)c_i;
+	  } else if (i==2) {
+	     p = (char*)n_i;
+	  } else if (i==3) {
+	     p = (char*)t_i;
+	  } else {
+	     p = va_arg(ap, char *);
+	  }
+#ifdef wn_da__
+	  args[MXNARG + i] = (int )p;
+#else
+	  args[MXNARG + i] = p;
+#endif
+          if (i==1) code=(int *)p;
+          if (i==2) n   =(int *)p;
+          if (i==3) txt =p;
+
+	  if (p > 0 && p < 65536) break;	/* found string	length  */
+	  args[MXNARG] = i;			/* found argument	*/
+	}
+/*
+. Get string lengths
+...									*/
+	args[MXNARG-3] = args[MXNARG + i];	/* possible length	*/
+	while (i1 < MXNARG && i1 < (int)args[MXNARG]) {
+	  if (p <= 0 || p >= 65536) break;	/* no more string       */
+	  i1++;
+	  args[MXNARG - 2] = i1;		/* count strings	*/
+	  p = va_arg(ap, char *); 		/* next length	*/
+#ifdef wn_da__
+	  args[MXNARG -3 - i1] = (int )p;
+#else
+	  args[MXNARG -3 - i1] = p;
+#endif
+	}
+        va_end(ap);
+/*
+. Copy shortened argument list
+...									*/
+	argl[MXNARG] = args[MXNARG] -1;		/* delete one		*/
+	for (i = 1; i <= (int)argl[MXNARG]; i++) /* arguments		*/
+			argl[MXNARG + i] = args[MXNARG + 1 + i];
+	argl[MXNARG - 1] = args[MXNARG - 1];	/* count strings seen	*/
+	for (i = 1; i <= (int)args[MXNARG - 2]; i++) /* lengths	*/
+			argl[MXNARG - 3 - i] = args[MXNARG - 2 - i];
+	argl[MXNARG-2] = args[MXNARG]+1;	/* add one		*/
+/*
+.  Call routine
+...									*/
+#ifdef wn_hp__
+	wnctxs_x_( lstr, 
+#else
+	wnctxs_x_( &lstr, 
+#endif
+                           txt, &argl[MXNARG], 
+                   CMLL,   args[MXNARG - 3]);       /* make text	*/
+	wncfhd_x_( code, n, lstr, CMLL);
+	return;
+}
+/*
+.
+...									*/
+
+
+
+
+
+

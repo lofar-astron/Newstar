@@ -1,0 +1,30 @@
+!+ FBC.DSC
+!  WNB 890725
+!
+!  Revisions:
+!
+%REVISION=WNB=930803="Rearrange text"
+%REVISION=WNB=890724="Original version"
+!
+!	Define FBC (File Buffer Control area)
+!
+%COMMENT="FBC.DSC defines the FBC (File Buffer Controlblock)"
+!
+%VERSION=1					!VERSION
+%SYSTEM=1
+%USER=WNB
+%%DATE
+%%NAME
+!-
+.PARAMETER
+	FBC_M_WRITE	J	/1/		!REWRITE BUFFER
+	FBC_V_WRITE	J	/0/
+.BEGIN=FBC
+	BQA	J(2)			!ADDRESS LINK, MUST BE AT 0
+	BQT	J(2)			!TIME LINK, MUST BE AT 8
+	ADDR	J			!BUFFER ADDRESS
+	DISK	J			!START DISK ADDRESS IN BUF
+	DISKND	J			!END DISK ADDRESS+1 IN BUF
+	BITS	J			!BITS
+.END					!END DEFINITION
+!-

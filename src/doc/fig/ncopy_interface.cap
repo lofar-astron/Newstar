@@ -1,0 +1,11 @@
+%ncopy_interface.tex
+\begin{figure}[hbtp]
+
+%\fig{ncopy_interface}
+%
+\caption{\it 
+\label{.ncopy.interface}
+Overview of the actions in NCOPY.
+}
+
+\end{figure}

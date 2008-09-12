@@ -1,0 +1,82 @@
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*.Ident:	GENUN_LINKHTONJ
+/*.Keywords:	Network Task-to-task Communication
+/*.Author:	Ger van Diepen (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	UNIX
+/*.Comments:
+/*.Version:	920113 GvD - creation
+/*--------------------------------------------------------------------------*/
+
+/*+PDOC+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	link_htonj_ (in,out,nr)
+	long	in[];			/* (i) input numbers	*/
+	long	out[];			/* (o) output numbers	*/
+	int	*nr;			/* (i) nr of numbers	*/
+	{
+
+/*.Purpose:	Convert a long integer from host to network byte order
+/*.Returns:	None
+/*.Notes:
+/*--------------------------------------------------------------------------*/
+
+	    int		i;
+
+	    for (i=0; i<*nr; i++)
+		out[i] = htonl (in[i]);
+	    return;
+	}
+/*+PDOC+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	link_htoni_ (in,out,nr)
+	short	in[];			/* (i) input numbers	*/
+	short	out[];			/* (o) output numbers	*/
+	int	*nr;			/* (i) nr of numbers	*/
+	{
+
+/*.Purpose:	Convert a short integer from host to network byte order
+/*.Returns:	None
+/*.Notes:
+/*--------------------------------------------------------------------------*/
+
+	    int		i;
+
+	    for (i=0; i<*nr; i++)
+		out[i] = htons (in[i]);
+	    return;
+	}
+/*+PDOC+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	link_ntohj_ (in,out,nr)
+	long	in[];			/* (i) input numbers	*/
+	long	out[];			/* (o) output numbers	*/
+	int	*nr;			/* (i) nr of numbers	*/
+	{
+
+/*.Purpose:	Convert a long integer from network to host byte order
+/*.Returns:	None
+/*.Notes:
+/*--------------------------------------------------------------------------*/
+
+	    int		i;
+
+	    for (i=0; i<*nr; i++)
+		out[i] = ntohl (in[i]);
+	    return;
+	}
+/*+PDOC+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	link_ntohi_ (in,out,nr)
+	short	in[];			/* (i) input numbers	*/
+	short	out[];			/* (o) output numbers	*/
+	int	*nr;			/* (i) nr of numbers	*/
+	{
+
+/*.Purpose:	Convert a short integer from network to host byte order
+/*.Returns:	None
+/*.Notes:
+/*--------------------------------------------------------------------------*/
+
+	    int		i;
+
+	    for (i=0; i<*nr; i++)
+		out[i] = htons (in[i]);
+	    return;
+	}

@@ -1,0 +1,19 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/*.Ident:		GENUN_EXECL
+/*.Keywords:	Process
+/*.Author:	Ger van Diepen (NFRA, Dwingeloo)
+/*.Language:	C
+/*.Environment:	UNIX
+/*.Comments:
+/*	- Uses EXECL to start a program on behalf of another (Fortran) program.
+/*	- The routine returns if EXECL fails, otherwise the program is stopped
+/*	  and replaced by the new program.
+/*.Version:	911204 GvD - Creation
+/*-------------------------------------------------------------------------*/
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+gen_execl_ (comm,prog)
+char comm[];				/* command to start program */
+char prog[];				/* name of program          */
+{
+    execl (comm, prog, (char *)0);
+}

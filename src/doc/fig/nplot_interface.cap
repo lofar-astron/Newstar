@@ -1,0 +1,11 @@
+%nplot_interface.tex
+\begin{figure}[hbtp]
+
+%\fig{nplot_interface}
+%
+\caption{\it 
+\label{.nplot.interface}
+Overview of the actions in NPLOT.
+}
+
+\end{figure}

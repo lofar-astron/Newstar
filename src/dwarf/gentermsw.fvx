@@ -1,0 +1,53 @@
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C.Ident:	VGEN_TERMSW
+C.Keywords:	Device, Inquire
+C.Author:	Friso Olnon (NFRA, Dwingeloo)
+C.Language:	VAX-Fortran
+C.Environment:	VAX
+C.Comments:
+C.Version:	900226 FMO - creation
+C.Version:	920224 GvD - no optional arguments in MSG anymore
+C-------------------------------------------------------------------------
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	INTEGER*4 FUNCTION GEN_TERMSW (DEVICE)
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'DWC_DEF'
+C
+	CHARACTER*(*)	DEVICE		! (i) device name
+C
+C.Purpose:	Determine whether the device is the terminal
+C.Returns:	Status code (.TRUE. for success, .FALSE. otherwise)
+C	success		1	is terminal
+C	warning		0	is not a terminal
+C	false status code returned by referenced routine
+C.Notes:
+C-------------------------------------------------------------------------
+C
+	INCLUDE		'($DVIDEF)'
+	INCLUDE		'($DCDEF)'
+C
+	INTEGER*4	STR_SIGLEN, MSG_SET  , SYS$GETDVI
+C
+	INTEGER*4	ITEMLST4(4), IS, CLASS, LD
+	INTEGER*2	ITEMLST2(2)
+		EQUIVALENCE (ITEMLST4,ITEMLST2)
+C
+C
+	ITEMLST2(1) = 4				! buffer length
+	ITEMLST2(2) = DVI$_DEVCLASS		! item code
+	ITEMLST4(2) = %LOC(CLASS)		! buffer address
+	ITEMLST4(3) = 0
+	ITEMLST4(4) = 0
+C
+	LD = STR_SIGLEN (DEVICE)
+	IS = SYS$GETDVI (,,DEVICE(:LD),ITEMLST4,,,,)
+	IF (.NOT.IS) THEN
+		GEN_TERMSW = MSG_SET (IS,0)
+	ELSE IF (CLASS.EQ.DC$_TERM) THEN
+		GEN_TERMSW = 1
+	ELSE
+		GEN_TERMSW = 0
+	ENDIF
+	RETURN
+	END

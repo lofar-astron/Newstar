@@ -1,0 +1,138 @@
+#  nxclup.ssc
+# 	WNB 921209
+# 
+#  Revisions:
+#	WNB 921224	Make SSC
+#	WNB 930303	NSTAR_DIR added
+#	WNB 930305	Make sure aliases
+#	WNB 930630	Typo in VAX check symbols
+#	WNB 940124	Leave _TLB
+# 
+# 	Cleanup Newstar directories
+#
+#	Uses environment variables:
+#		WNG			where to find wng-type sources
+#		WNG_TYPE		machine (sw, dw, hp, al, cv etc)
+#		WNG_OLBEXE		root of wng-type .olb, .ppd, .exe
+#		WNG_SITE		site (nfra, atnf, rug ...)
+#		EXEDWARF_UNIX		where to find/set DWARF .exe, .ppd
+#		LIBDWARF		where to find DWARF .olb
+#		NSTAR_DIR		N directories
+#	and also possible:
+#		WNG_EXE, WNG_OLB, WNG_TLB, WNG_ERR, WNG_LIS, WNG_LINK
+#
+# Intro
+#
+	onintr exex					# finish neatly
+	if ($?echo) unset echo				# no verify
+	if ($?verbose) unset verbose			# no verbose
+	set pid=$$ ; @ dep=1				# for tmp files
+#
+# Check environment
+#
+	if (! $?WNG || ! $?WNG_TYPE || ! $?WNG_OLBEXE ||\
+			! $?WNG_SITE || ! $?NSTAR_DIR) then
+	  echo " Error: Must have environment variables"
+	  echo "        WNG, WNG_TYPE, WNG_OLBEXE, WNG_SITE, NSTAR_DIR defined"
+	  echo "        You probably have not included the proper"
+	  echo "        files in .cshrc"
+	  goto exex
+	endif
+	if (! $?EXEDWARF_UNIX || ! $?LIBDWARF) then
+	  echo " Error:   Cannot do everything with EXEDWARF_UNIX and/or"
+	  echo "          LIBDWARF not defined"
+	  echo "          You probably have not included the proper"
+	  echo "          files in .cshrc"
+	  goto exex
+	endif
+	source $WNG/wngcshrc.sun			# get aliases
+	if ("`alias nxec`" == "") then
+	  echo " Error:   You have no alias for nxec etc."
+	  echo "          You probably have not included the proper"
+	  echo "          files in .cshrc"
+	  goto exex
+	endif
+#
+# Creating environment
+#
+	cd $WNG
+	if (! $?WNG_EXE) setenv WNG_EXE $WNG_OLBEXE	# make names
+	if (! $?WNG_OLB) setenv WNG_OLB $WNG_OLBEXE
+	set blddir=($NSTAR_DIR)				# Newstar directories
+	foreach i ($blddir)
+	  if (! -d $WNG_EXE/$i) mkdir $WNG_EXE/$i	# make directories
+	  if (! -d $WNG_OLB/$i) mkdir $WNG_OLB/$i
+	endif
+##	if ($?WNG_TLB) unsetenv WNG_TLB			# make sure
+	if ($?WNG_ERR) unsetenv WNG_ERR
+	if ($?WNG_LIS) unsetenv WNG_LIS
+	if ($?WNG_LINK) unsetenv WNG_LINK
+#
+# Get questions
+#
+	echo -n "Delete tmp, old, new, err? (y|n) [y]: "
+	set l0=($<)
+	set dotmp
+	if ("$l0" =~ [nN]) unset dotmp
+	echo -n "Delete log, lis, map? (y|n) [y]: "
+	set l0=($<)
+	set dolog
+	if ("$l0" =~ [nN]) unset dolog
+	echo -n "Delete source files? (y|n) [n]: "
+	set l0=($<)
+	unset dosrc
+	if ("$l0" =~ [yY]) set dosrc
+#
+# Cleanup
+#
+CLUP:
+	cd $WNG
+	if ($?dotmp) then
+	  echo "Removing tmp ..."
+	  foreach i ($blddir)
+	    cd ../$i
+	    'rm' *.old >& /dev/null
+	    'rm' *.err >& /dev/null
+	    'rm' *.new >& /dev/null
+	    'rm' *.tmp >& /dev/null
+	    'rm' *.OLD >& /dev/null
+	    'rm' *.ERR >& /dev/null
+	    'rm' *.NEW >& /dev/null
+	    'rm' *.TMP >& /dev/null
+	    'rm' *~ >& /dev/null
+	    'rm' *.o >& /dev/null
+	    'rm' "#*#" >& /dev/null
+	  end
+	endif
+	if ($?dolog) then
+	  echo "Removing log ..."
+	  foreach i ($blddir)
+	    cd ../$i
+	    'rm' *.log >& /dev/null
+	    'rm' *.lis >& /dev/null
+	    'rm' *.map >& /dev/null
+	    'rm' *.LOG >& /dev/null
+	    'rm' *.LIS >& /dev/null
+	    'rm' *.MAP >& /dev/null
+	    'rm' $WNG_EXE/$i/*.MAP >& /dev/null
+	  end
+	endif
+	if ($?dosrc) then
+	  echo "Removing source files ..."
+	  foreach i ($blddir)
+	    cd ../$i
+	    'rm' *.f?? >& /dev/null
+	    'rm' *.m?? >& /dev/null
+	    'rm' *.pin >& /dev/null
+	    'rm' *.c[a-np-z]? >& /dev/null
+	  end
+	endif
+#
+# Ready
+#
+END:
+#
+#  EXIT
+#
+exex:
+	exit

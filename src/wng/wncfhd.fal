@@ -1,0 +1,80 @@
+C+ WNCFHD.FAL
+C  WNB 890713
+C
+C  Revisions:
+C	WNB 910307	FX compiler bug
+C
+	SUBROUTINE WNCFHD(CODE,N)
+C
+C  Set/reset header line with formatting (FAO with extensions) information.
+C	(see WNCFHD_X for details)
+C
+C  Result:
+C
+C	CALL WNCFHD( CODE_J:I, N_J:I, TXT_C*:I [, ARG.......])
+C				Print (bit1=1 of CODE) and/or type (bit0=1)
+C				and/or output to file (bit8-31=1)
+C				the string, using the arguments specified
+C				by ARG.... , as interpreted by codes in TXT,
+C				and set TXT at header line N (if >0), or reset
+C				header line (N<0). Header line 1 will also
+C				always contain program name/version, date/time
+C				and page number.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'WNC_DEF'
+C
+C  Parameters:
+C
+	INTEGER MXNARG			!MAX. # OF ARG ALLOWED
+		PARAMETER (MXNARG=250)
+C
+C  Arguments:
+C
+	INTEGER CODE				!PRINT/TYPE CODE
+	INTEGER N				!HEADER LINE #
+C
+C  Function references:
+C
+	INTEGER WNGARG				!GET CALL LIST ADDRESS
+	INTEGER WNGARA				!GET ADDRESS OF ARGUMENT
+C
+C  Data declarations:
+C
+	INTEGER ARGL(-MXNARG-2:MXNARG+2)	!ARG. LIST
+	INTEGER ARGL1(-3:3)			!INTERMEDIATE ARG. LIST
+	CHARACTER*(CMLL) TXTS			!HEADER LINE
+	EXTERNAL WNCTXS_X			!ROUTINE TO DO
+C
+C  Equivalences:
+C
+C
+C  Commons:
+C
+C-
+C
+C WNCFHD
+C
+	J=WNGARG()
+	CALL WNGARL(%VAL(J),ARGL(0))		!MAKE ARGUMENT LIST
+	ARGL(0)=ARGL(0)-1			!DELETE CODE ARG.
+	DO I=1,ARGL(0)				!SHIFT ARGUMENTS
+	  ARGL(I)=ARGL(I+1)
+	END DO
+	ARGL1(1)=WNGARA(TXTS)			!SET ADDRESS TXTS
+	ARGL1(2)=ARGL(2)			!ADDRESS TXT
+	ARGL1(3)=WNGARA(ARGL(0))		!ARGUMENT LIST
+	ARGL1(0)=3				!# OF ARGUMENTS
+	J=LEN(TXTS)				!LENGTH TXTS
+	ARGL1(-3)=WNGARA(J)
+	ARGL1(-2)=ARGL(-ARGL(0)+1)		!LENGTH TXT
+	ARGL1(-1)=0
+	CALL WNGARX(WNCTXS_X,ARGL1(0))		!MAKE FULL STRING
+	CALL WNCFHD_X(CODE,N,TXTS)		!DO HEADER
+C
+	RETURN
+C
+C
+	END

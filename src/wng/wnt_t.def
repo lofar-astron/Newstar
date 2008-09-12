@@ -1,0 +1,81 @@
+C+ Created from wnt.dsc on 970828 at 17:01:50 at daw18
+C  WNT_T.DEF
+C  WNB 970828
+C
+C  Revisions:
+C
+C       WNB 931216      New edit default for D/E unformatted items
+C       WNB 930902      Make 32 array indices, 64 field length
+C       WNB 930801      Original version
+C                                                                             
+C
+C  Result:
+C
+C  WNT.DSC describes the include files (WNT_O.DEF[.inc],
+C  	WNT.DEF [.inc]) for the WNTINC program.
+C  	Most WNTI* routines need:
+C  	INCLUDE 'WNT_O_DEF' and
+C  	INCLUDE 'WNT_DEF'
+C                                                                             
+C
+C       Specification of translation tables:
+C
+C        0= end of table                1= character
+C        2= 16 bits integer             3= 32 bits integer
+C        4= 32 bits real                5= 64 bits real
+C        6= repeat                      7= end repeat
+C        8= undefined                   9= byte
+C       10= external repeat            11= start union
+C       12= start map                  13= end union
+C       14= 64 bits complex            15= 128 bits complex
+C                                                                             
+C
+C  WNTB translation definitions:
+C                                                                             
+	INTEGER*2 WNTB_T(2,3)
+	  EQUIVALENCE (WNTB_T,WNT__T(1,1))
+	  DATA WNTB_T(1,1),WNTB_T(2,1) /3,5/
+	  DATA WNTB_T(1,2),WNTB_T(2,2) /9,4/
+	  DATA WNTB_T(1,3),WNTB_T(2,3) /0,1/
+C
+C  WNTI translation definitions:
+C                                                                             
+	INTEGER*2 WNTI_T(2,2)
+	  EQUIVALENCE (WNTI_T,WNT__T(1,4))
+	  DATA WNTI_T(1,1),WNTI_T(2,1) /3,4/
+	  DATA WNTI_T(1,2),WNTI_T(2,2) /0,1/
+C
+C  WNTV translation definitions:
+C                                                                             
+	INTEGER*2 WNTV_T(2,4)
+	  EQUIVALENCE (WNTV_T,WNT__T(1,6))
+	  DATA WNTV_T(1,1),WNTV_T(2,1) /1,16/
+	  DATA WNTV_T(1,2),WNTV_T(2,2) /3,2/
+	  DATA WNTV_T(1,3),WNTV_T(2,3) /1,64/
+	  DATA WNTV_T(1,4),WNTV_T(2,4) /0,1/
+C
+C  WNTF translation definitions:
+C                                                                             
+	INTEGER*2 WNTF_T(2,3)
+	  EQUIVALENCE (WNTF_T,WNT__T(1,10))
+	  DATA WNTF_T(1,1),WNTF_T(2,1) /3,78/
+	  DATA WNTF_T(1,2),WNTF_T(2,2) /1,64/
+	  DATA WNTF_T(1,3),WNTF_T(2,3) /0,1/
+C
+C  WNTD translation definitions:
+C                                                                             
+	INTEGER*2 WNTD_T(2,3)
+	  EQUIVALENCE (WNTD_T,WNT__T(1,13))
+	  DATA WNTD_T(1,1),WNTD_T(2,1) /3,1/
+	  DATA WNTD_T(1,2),WNTD_T(2,2) /1,36/
+	  DATA WNTD_T(1,3),WNTD_T(2,3) /0,1/
+C
+C  WNTE translation definitions:
+C                                                                             
+	INTEGER*2 WNTE_T(2,3)
+	  EQUIVALENCE (WNTE_T,WNT__T(1,16))
+	  DATA WNTE_T(1,1),WNTE_T(2,1) /3,1/
+	  DATA WNTE_T(1,2),WNTE_T(2,2) /1,36/
+	  DATA WNTE_T(1,3),WNTE_T(2,3) /0,1/
+	INTEGER*2 WNT__T(2,18)
+C-                                                                            

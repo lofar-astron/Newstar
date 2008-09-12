@@ -1,0 +1,283 @@
+/* wnctxt.cun
+.  WNB 920113
+.
+.   Revisions:
+.	WNB 921216	Make CUN
+.	CMV 940111	Changed for alpha
+	CMV 031205	Changed for stdarg
+...									*/
+/*
+.   Include files:
+...									*/
+/*#include <varargs.h>*/
+#include <stdarg.h>
+#define MXNARG 250
+/*
+.  Print/type/read string with formatting (FAO with extensions) information.
+.	(see WNCTXT_X for details)
+...									*/
+#ifdef wn_al__
+				void wnctd1_(va_alist)
+#else
+				void wnctxt_(int* code_in,...)
+#endif
+/*
+.   Result:
+.
+.	CALL WNCTXT( CODE_J:I, TXT_C*:I, ARG....)
+.				Print and/or type and/or output to file
+.				(depending on F_* bits set in CODE) the
+.				TXT, using the arguments ARG specified as
+.				interpreted by codes in TXT.
+.	CALL WNCTXS( OST_C*:O, TXT_C*:I, ARG...)
+.				Write interpreted TXT to string OST
+.	CALL WNCTXI( OST_C*:I, TXT_C*:I, ARG...)
+.				Read text OST interpreted by TXT to ARG
+...									*/
+/*
+.   Arguments:
+...									*/
+/*		va_dcl	*/			/* address list to get	*/
+{
+/*
+.   Parameters:
+...									*/
+/*
+.   Function references:
+...									*/
+	void wnctxt_x_();			/* routine to call	*/
+/*
+.   Data declarations:
+...									*/
+	va_list ap;				/* list argument ptr	*/
+#ifdef wn_da__
+	int args[2*MXNARG+4];			/* argument list	*/
+#else
+	char *args[2*MXNARG+4];			/* argument list	*/
+#endif
+	int i = 0;				/* argument count	*/
+	int i1 = 0;				/* string counts	*/
+	char *p;				/* pointer to argument  */
+	int *code;				/* first argument	*/
+	char *txt;				/* second argument	*/
+/*-									*/
+/*
+. Get argument list
+...									*/
+	va_start(ap,code_in);
+	args[MXNARG] = 0;			/* number arguments	*/
+	args[MXNARG-1] = 0;			/* count for strings	*/
+	args[MXNARG-2] = 0;			/* number strings	*/
+	while (i < MXNARG)
+	{ i++;
+          if (i==1) {
+	    p = (char *)code_in;
+          } else {
+	    p = va_arg(ap, char *);
+          }
+#ifdef wn_da__
+	  args[MXNARG + i] = (int )p;
+#else
+	  args[MXNARG + i] = p;
+#endif
+	  if (i==1) code=(int *)p;
+	  if (i==2) txt=p;
+
+	  if (p > 0 && p < 65536) break;	/* found string	length  */
+	  args[MXNARG] = i;			/* found argument	*/
+	}
+/*
+. Get string lengths
+...									*/
+	args[MXNARG-3] = args[MXNARG + i];	/* possible length	*/
+	while (i1 < MXNARG && i1 < (int)args[MXNARG]) {
+	  if (p <= 0 || p >= 65536) break;	/* no more string       */
+	  i1++;
+	  args[MXNARG - 2] = i1;		/* count strings	*/
+	  p = va_arg(ap, char *); 		/* next length	*/
+#ifdef wn_da__
+	  args[MXNARG -3 - i1] = (int )p;
+#else
+	  args[MXNARG -3 - i1] = p;
+#endif
+	}
+	va_end(ap);
+/*
+.  Call routine
+...									*/
+	wnctxt_x_(code, txt, &args[MXNARG], args[MXNARG -3]);
+	return;
+}
+/*
+.  WNCTXS
+.
+...									*/
+#ifdef wn_al__
+				void wnctd2_(va_alist)
+#else
+				void wnctxs_(char* o_in,...)
+#endif
+/*
+.   Arguments:
+...									*/
+/*		va_dcl */			/* address list to get	*/
+{
+/*
+.   Parameters:
+...									*/
+/*
+.   Function references:
+...									*/
+	void wnctxs_x_();			/* routine to call	*/
+/*
+.   Data declarations:
+...									*/
+	va_list ap;				/* list argument ptr	*/
+#ifdef wn_da__
+	int args[2*MXNARG+4];			/* argument list	*/
+#else
+	char *args[2*MXNARG+4];			/* argument list	*/
+#endif
+	int i = 0;				/* argument count	*/
+	int i1 = 0;				/* string counts	*/
+	char *p;				/* pointer to argument  */
+        char *out,*txt;                         /* Save first two args  */
+/*-									*/
+/*
+. Get argument list
+...									*/
+	va_start(ap,o_in);
+	args[MXNARG] = 0;			/* number arguments	*/
+	args[MXNARG-1] = 0;			/* count for strings	*/
+	args[MXNARG-2] = 0;			/* number strings	*/
+	while (i < MXNARG)
+	{ i++;
+	  if (i==1) {
+	     p=o_in;
+	  } else {
+	     p = va_arg(ap, char *);
+	  }
+#ifdef wn_da__
+	  args[MXNARG + i] = (int )p;
+#else
+	  args[MXNARG + i] = p;
+#endif
+	  if (i==1) out=p;
+	  if (i==2) txt=p;
+
+	  if (p > 0 && p < 65536) break;	/* found string	length  */
+	  args[MXNARG] = i;			/* found argument	*/
+	}
+/*
+. Get string lengths
+...									*/
+	args[MXNARG-3] = args[MXNARG + i];	/* possible length	*/
+	while (i1 < MXNARG && i1 < (int)args[MXNARG]) {
+	  if (p <= 0 || p >= 65536) break;	/* no more string       */
+	  i1++;
+	  args[MXNARG - 2] = i1;		/* count strings	*/
+	  p = va_arg(ap, char *); 		/* next length	*/
+#ifdef wn_da__
+	  args[MXNARG -3 - i1] = (int )p;
+#else
+	  args[MXNARG -3 - i1] = p;
+#endif
+	}
+	va_end(ap);
+/*
+.  Call routine
+...									*/
+	wnctxs_x_( out,              txt, &args[MXNARG], 
+                   args[MXNARG - 3], args[MXNARG - 4]);
+	return;
+}
+/*
+.  WNCTXI
+.
+...									*/
+#ifdef wn_al__
+				void wnctd3_(va_alist)
+#else
+				void wnctxi_(char* o_in,...)
+#endif
+/*
+.   Arguments:
+...									*/
+/*		va_dcl*/			/* address list to get	*/
+{
+/*
+.   Parameters:
+...									*/
+/*
+.   Function references:
+...									*/
+	void wnctxi_x_();			/* routine to call	*/
+/*
+.   Data declarations:
+...									*/
+	va_list ap;				/* list argument ptr	*/
+#ifdef wn_da__
+	int args[2*MXNARG+4];			/* argument list	*/
+#else
+	char *args[2*MXNARG+4];			/* argument list	*/
+#endif
+	int i = 0;				/* argument count	*/
+	int i1 = 0;				/* string counts	*/
+	char *p;				/* pointer to argument  */
+        char *out,*txt;                         /* Save first two args  */
+/*-									*/
+/*
+. Get argument list
+...									*/
+	va_start(ap,o_in);
+	args[MXNARG] = 0;			/* number arguments	*/
+	args[MXNARG-1] = 0;			/* count for strings	*/
+	args[MXNARG-2] = 0;			/* number strings	*/
+	while (i < MXNARG)
+	{ i++;
+	  if (i==1) {
+	     p=o_in;
+	  } else {
+	     p = va_arg(ap, char *);
+	  }
+#ifdef wn_da__
+	  args[MXNARG + i] = (int )p;
+#else
+	  args[MXNARG + i] = p;
+#endif
+	  if (i==1) out=p;
+	  if (i==2) txt=p;
+
+	  if (p > 0 && p < 65536) break;	/* found string	length  */
+	  args[MXNARG] = i;			/* found argument	*/
+	}
+/*
+. Get string lengths
+...									*/
+	args[MXNARG-3] = args[MXNARG + i];	/* possible length	*/
+	while (i1 < MXNARG && i1 < (int)args[MXNARG]) {
+	  if (p <= 0 || p >= 65536) break;	/* no more string       */
+	  i1++;
+	  args[MXNARG - 2] = i1;		/* count strings	*/
+	  p = va_arg(ap, char *); 		/* next length	*/
+#ifdef wn_da__
+	  args[MXNARG -3 - i1] = (int )p;
+#else
+	  args[MXNARG -3 - i1] = p;
+#endif
+	}
+        va_end(ap);
+/*
+.  Call routine
+...									*/
+	wnctxi_x_( out,             txt,  &args[MXNARG], 
+                   args[MXNARG -3], args[MXNARG - 4]);
+	return;
+}
+/*
+.
+...									*/
+
+
+
+

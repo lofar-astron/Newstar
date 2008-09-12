@@ -1,0 +1,19 @@
+<TITLE>Description of SCANS (NCOPY)</TITLE>
+<H1>Program NCOPY: private keyword SCANS</H1> 
+
+<DT><EM>Prompt:</EM> First and last scan number from each sector
+<DT><EM>Default:</EM>  0, 10000.
+<DT><EM>Expected input:</EM> Integer number, 2 values.<P>
+From all sectors selected, only the scan numbers within the selected scan 
+number and HA ranges wiull be copied. E.g., the specification <P>
+                SCANS= 0, 4 <P>
+will remove the last scan (number 5) from allo sectors of a mosaic observation 
+that produces 6-scan sectors. <P>
+Remember that the first scan in a sector is numbered 0.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncopy/ncopy_keys.html">List of keywords</A> for NCOPY
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncopy_descr/ncopy_descr.html">program NCOPY</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

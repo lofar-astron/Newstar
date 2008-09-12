@@ -1,0 +1,68 @@
+C+ WNGGVM.FVX
+C  WNB 890724
+C
+C  Revisions:
+C
+	LOGICAL FUNCTION WNGGVM(LEN,ADDR)
+C
+C  Get/free virtual memory
+C
+C  Result:
+C
+C	WNGGVM_L = WNGGVM( LEN_J:I, ADDR_J:O)
+C					Get virtual memory area of length LEN.
+C					Address returned (if ok) in ADDR
+C					Area wil in general be not aligned.
+C					See WNGGVA.FOR for aligned area.
+C	WNGFVM_L = WNGFVM( LEN_J:I, ADDR_J:IO)
+C					Free virtual area at address ADDR with
+C					length LEN.
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER LEN			!LENGTH TO GET/FREE
+	INTEGER ADDR			!ADDRESS OF AREA
+C
+C  Entry points:
+C
+	LOGICAL WNGFVM
+C
+C  Function references:
+C
+	INTEGER LIB$GET_VM,LIB$FREE_VM		!GET/FREE AREA
+C
+C  Data declarations:
+C
+C-
+C
+C GET AREA
+C
+	E_C=LIB$GET_VM(LEN,ADDR)		!GET AREA
+	IF (.NOT.E_C) THEN			!ERROR
+	  WNGGVM=.FALSE.
+	  ADDR=0				!MAKE SURE
+	ELSE
+	  WNGGVM=.TRUE.
+	END IF
+C
+	RETURN
+C
+C FREE AREA
+C
+	ENTRY WNGFVM(LEN,ADDR)
+C
+	E_C=LIB$FREE_VM(LEN,ADDR)		!FREE AREA
+	ADDR=0					!AND SET FREE
+	WNGFVM=.TRUE.
+C
+	RETURN
+C
+C
+	END

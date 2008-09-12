@@ -1,0 +1,278 @@
+
+%\section{ References to public interfaces}
+%\label{.public}
+
+% \input dwarf.tmp.ref.1
+{\em See also:}
+\begin{itemize}
+\item \textref{DWARF}{introduction.user.interface} user interface
+\end{itemize}
+
+
+
+\subsection{ Parameter ASK}
+\label{.ask}
+
+\spbegin
+{\em Expected input:} Character *4:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+ASK=YES directs DWARF programs to always prompt for parameters, even if
+an external default has been defined (through SPECIFY or otherwise).
+        This setting can be overridden by use of the /NOASK qualifier with the
+EXECUTE command or with run-time parameter input.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter BELL}
+\label{.bell}
+
+\spbegin
+{\em Prompt:} Terminal bell with prompts and error messages\\ 
+{\em Expected input:} Character *4:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Controls the sounding of the terminal bell with error messages and
+with prompts for parameters
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter CURNODE}
+\label{.curnode}
+
+\spbegin
+{\em Prompt:} Current node name\\ 
+{\em Expected input:} Character *80:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+This is the node name with respect to which relative node names, i.e.
+node specifications starting with "." or "-", will be expanded
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter EXTENDSIZE}
+\label{.extendsize}
+
+\spbegin
+{\em Prompt:} Default extension size in blocks for DWARF data files\\ 
+{\em Expected input:} Integer:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Defines the minimum extension size to be applied by DWARF I/O routines.
+An actual extension will be the maximum of this parameter and the extension
+requested by the program.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter IBMODE}
+\label{.ibmode}
+
+\spbegin
+{\em Expected input:} Character *11:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+This is the batch/interactive flag maintained by DWARF, It can not be
+changed by the user.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter IDENT}
+\label{.ident}
+
+\spbegin
+{\em Expected input:} Character *3:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+This is the process identification used by DWARF. It can not be
+changed by the user.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter IOBUFSIZE}
+\label{.iobufsize}
+
+\spbegin
+{\em Prompt:} Default I/O buffer size in bytes\\ 
+{\em Expected input:} Integer:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+This is the default size of I/O buffers to be allocated by the DWARF
+bulk I/O routines. This parameter is intended primarily for adapting DWARF to
+host systems with limited physical memory.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter LOGFATAL}
+\label{.logfatal}
+
+\spbegin
+{\em Prompt:} Do you want unsuccessful program runs logged\\ 
+{\em Expected input:} Character *4:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+This parameter controls the logging of program runs that terminate
+with a failure status. If LOGFATAL=NO, only successfull runs will be logged.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter LOGLEVEL}
+\label{.loglevel}
+
+\spbegin
+{\em Prompt:} Severity threshold for logging messages\\ 
+{\em Expected input:} Integer:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+This parameter defines the level below which messages will not be
+logged. If LOGLEVEL=0, all messages are logged; if it is 8 you get no log at
+all.
+        LOGLEVEL=4 will give you all informational messages from DWARF programs
+plus fatal error messages.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter MESSAGEDEVICE}
+\label{.messagedevice}
+
+\spbegin
+{\em Prompt:} Device(s) for messages\\ 
+{\em Expected input:} Character *8:  1 to 2 values
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Defines where messages will be shown: On the terminal and/or in a file
+to be spooled automatically to the line printer
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter SAVELAST}
+\label{.savelast}
+
+\spbegin
+{\em Expected input:} Character *4:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+SAVELAST=YES directs DWARF programs to save the last value typed in
+during program execution as an external default for later program runs.
+        The setting of this paramater can be overriden by use of the
+/[NO]SAVELAST qualifier with the EXECUTE command or with parameter input.
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter STREAM}
+\label{.stream}
+
+\spbegin
+{\em Prompt:} Stream name\\ 
+{\em Expected input:} Character *11:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Defines the "current stream name" to be used as default for the
+stream component in program and DWARF symbol names
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter TEST}
+\label{.test}
+
+\spbegin
+{\em Prompt:} Set DWARF test mode\\ 
+{\em Expected input:} Character *4:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+In testing mode:
+                Parameters with the TEST attribute will be prompted for.
+                The debugger will be automatically invoked at the instant an
+error is reported. (Note that this may already happen during the execution
+of the remainder of the SPECIFY DWARF command. In that case, just type "GO" in
+reply to debugger prompts, and "EXIT" when the debugger reports program
+completion.)
+\end{verbatim}\svend
+\spend
+
+
+\subsection{ Parameter USERLEVEL}
+\label{.userlevel}
+
+\spbegin
+{\em Prompt:} How do you rate yourself as a DWARF user\\ 
+{\em Expected input:} Character *8:  1 value
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+\spend
+\spbegin
+\svbegin\begin{verbatim}
+Defines the amount of information to be given with parameter prompts:
+                EXPERT: Keyword name and default only
+                AVERAGE: Same plus available options where applicable
+                BEGINNER: Some descriptive information in addition
+        While being prompted, you may temporarily descend to a "lower" level
+by typing a question mark; by adding /KEEP to the "?" you may retain this lower
+level until program exit.
+\end{verbatim}\svend
+\spend 
+

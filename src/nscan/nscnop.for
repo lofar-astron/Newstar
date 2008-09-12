@@ -1,0 +1,292 @@
+C+ NSCNOP.FOR
+C  WNB 930819
+C
+C  Revisions:
+C
+C	JEN 960415: Remove condition from NSCCLP call (temporary?) 
+C
+	SUBROUTINE NSCNOP
+C
+C  Calculate some new options data in SCN
+C
+C  Result:
+C
+C	CALL NSCNOP	will convert a SCN file to contain all proper (new)
+C			data. Use NSCNVS to make new version
+C			Data calculated:
+C				Convert from Stokes
+C				Rotation angle phi
+C				Start UT
+C				Correct MJD if observation stopped
+C				Parallactic angle
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+	INCLUDE 'NSC_DEF'
+	INCLUDE 'STH_O_DEF'		!SET HEADER
+	INCLUDE 'SCH_O_DEF'		!SCAN HEADER
+	INCLUDE 'OHW_O_DEF'
+	INCLUDE 'SCW_O_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+C
+C  Function references:
+C
+	LOGICAL WNFRD			!READ DATA
+	LOGICAL WNFWR			!WRITE DATA
+	CHARACTER*32 WNTTSG		!PRINT SET NAME
+	LOGICAL NSCSTH			!GET A SET WITH NO VERSION CHECK
+	LOGICAL NSCSCH			!READ SCAN HEADER
+	LOGICAL NSCSCW			!WRITE SCAN HEADER
+C
+C  Data declarations:
+C
+	INTEGER SET(0:7,0:1)		!ALL SETS
+	INTEGER STHP			!SET HEADER POINTER
+	INTEGER SNAM(0:7)		!SET NAME
+	INTEGER TNAM(0:7)		!TEST NAME
+	LOGICAL PNAM			!PRINT ASKED
+        INTEGER*2 IFR(0:STHIFR-1)       !IFR LIST
+	INTEGER SAVE_OHP		!Last OH block with Stokes
+	INTEGER ZWEIGHT(0:1)		!Count zeroeth weights
+	INTEGER*2 LDAT(0:2,0:4*STHIFR-1) !DATA BUFFER
+	REAL WGT(0:3)			!WEIGHT
+	COMPLEX CDAT(0:3),NDAT(0:3)	!DATA
+	BYTE STH(0:STHHDL-1)		!SET HEADER
+	  INTEGER*2 STHI(0:STHHDL/2-1)
+	  INTEGER STHJ(0:STHHDL/4-1)
+	  REAL STHE(0:STHHDL/4-1)
+	  DOUBLE PRECISION STHD(0:STHHDL/8-1)
+	  EQUIVALENCE (STH,STHI,STHJ,STHE,STHD)
+	BYTE SCH(0:SCHHDL-1)		!SCAN HEADER
+	  INTEGER SCHJ(0:SCHHDL/LB_J-1)
+	  REAL SCHE(0:SCHHDL/4-1)
+	  EQUIVALENCE (SCH,SCHJ,SCHE)
+	BYTE OHW(0:OHWHDL-1)		!OH BLOCK
+	  INTEGER*2 OHWI(0:OHWHDL/2-1)
+	  INTEGER OHWJ(0:OHWHDL/4-1)
+	  REAL OHWE(0:OHWHDL/4-1)
+	  DOUBLE PRECISION OHWD(0:OHWHDL/8-1)
+	  EQUIVALENCE (OHW,OHWI,OHWJ,OHWE,OHWD)
+	BYTE SCW(0:SCWHDL-1)		!SC BLOCK
+	  INTEGER*2 SCWI(0:SCWHDL/2-1)
+	  INTEGER SCWJ(0:SCWHDL/4-1)
+	  REAL SCWE(0:SCWHDL/4-1)
+	  DOUBLE PRECISION SCWD(0:SCWHDL/8-1)
+	  EQUIVALENCE (SCW,SCWI,SCWJ,SCWE,SCWD)
+C-
+C
+C INIT
+C
+	DO I=0,7				!SET SET *.*.*.*.*.*.*
+	  DO I1=0,1
+	    SET(I,I1)=0
+	  END DO
+	END DO
+	SET(0,0)=1				!1 LINE
+	DO I=0,7
+	  SET(I,1)=-1				!*
+	  TNAM(I)=-1				!TEST PRINT NAME
+	END DO
+	SAVE_OHP=-1				!Impossible pointer
+C
+C DO ALL SETS
+C
+	DO WHILE (NSCSTH(FCAOUT,SET,STH,STHP,SNAM))	!GET SET
+	  PNAM=.FALSE.					!ASSUME NO PRINT
+	  DO I=0,3
+	    IF (TNAM(I).NE.SNAM(I)) PNAM=.TRUE.		!PRINT
+	  END DO
+	  DO I=0,3
+	    TNAM(I)=SNAM(I)				!NEW TEST SET
+	  END DO
+C
+C GET OH, SC AND IFR
+C
+	  IF (STHJ(STH_OHP_J).NE.0) THEN
+	    IF (.NOT.WNFRD(FCAOUT,STHJ(STH_NOH_J),OHW,
+	1		STHJ(STH_OHP_J))) GOTO 10	!READ OH
+	  END IF
+	  IF  (STHJ(STH_SCP_J).NE.0) THEN
+	    IF (.NOT.WNFRD(FCAOUT,STHJ(STH_NSC_J),SCW,
+	1		STHJ(STH_SCP_J))) GOTO 10	!READ SC
+	  END IF
+	  IF (.NOT.WNFRD(FCAOUT,LB_I*STHJ(STH_NIFR_J),IFR,
+	1		STHJ(STH_IFRP_J))) GOTO 10	!READ IFRS
+C
+C MAKE PHI
+C NB: Temporarily always called (JEN):
+C
+CC	  IF (STHE(STH_PHI_E).EQ.0 .AND.
+CC	1	STHJ(STH_NOH_J).GT.216 .AND.
+CC	1		STHJ(STH_NSC_J).GT.460) THEN
+	    CALL NSCCLP(FCAOUT,STH(0),STHE(STH_PHI_E))	!MAKE PHI
+	    STHE(STH_PHI_E)=STHE(STH_PHI_E)/PI2		!MAKE CIRCLES
+	    IF (PNAM) CALL WNCTXT(F_TP,
+	1		'Sector(s) !AS precession rotation calculated',
+	1		WNTTSG(TNAM,0))
+CC	  END IF
+C
+C MAKE UTST
+C
+	  IF (STHD(STH_UTST_D).EQ.0) THEN		!NO UT YET
+	    IF (STHJ(STH_SCP_J).NE.0 .AND.
+	1		STHJ(STH_NSC_J).GT.SCW_CUTST_1) THEN !CAN DO
+	      STHD(STH_UTST_D)=1.+SCWD(SCW_CUTST_D)	!UT/ST DAY LENGTH
+	      IF (PNAM) CALL WNCTXT(F_TP,
+	1		'Sector(s) !AS UT to ST conversion calculated',
+	1		WNTTSG(TNAM,0))
+	    END IF
+	  END IF
+C
+C MAKE CORRECT MJD
+C
+	  IF (STHJ(STH_OHP_J).NE.0 .AND.
+	1		STHJ(STH_NOH_J).GT.OHW_LST_1) THEN
+	    D1=OHWD(OHW_JDAY_D)+40000D0-0.5D0		!MJD MIDDLE OBS.
+	    D0=OHWI(OHW_STIM_I)/360.D0/24D0		!START TIME
+	    IF (D0.GT.MOD(D1,1D0)) D1=D1-1D0		!PREVIOUS DAY
+	    D1=D1-MOD(D1,1D0)+D0			!MJD START TIME
+	    D1=D1-(OHWD(OHW_HAST_D)-5D0/3600D0/24D0)	!MJD AT HA0
+	    STHD(STH_MJD_D)=D1+STHE(STH_HAB_E)/
+	1		STHD(STH_UTST_D)		!MJD AT START
+	    IF (PNAM) CALL WNCTXT(F_TP,
+	1		'Sector(s) !AS MJD calculated',
+	1		WNTTSG(TNAM,0))
+	  END IF
+C
+C CALCULATE FROM STOKES PARAMETERS
+C
+C Conversion is done if:  - OH Block available
+C                         - OH Block contains STOPAR field
+C                         - STOPAR fiels is 1
+C                         - All four polarizations present
+C Conversion assumes vectors (I,Q,U,V) and converts to XX,XY,YX,YY 
+C according to parallel dipole equations (no problem since NMAP uses
+C same equations and OH block dipole flag is never checked).
+C
+C Since the STOPAR field is set to 0 after a sector has been processed 
+C and since multiple sectors share the same OH block, we remember the
+C last OH pointer for which conversion needed to be done.
+C
+C Also output number of zero weigths
+C
+	  IF (STHJ(STH_OHP_J).NE.0 .AND.
+	1		STHJ(STH_NOH_J).GT.OHW_STOPAR_1) THEN
+	    IF ((OHWI(OHW_STOPAR_I).EQ.1 .OR.		!DATA IN STOKES
+	1	 STH_OHP_J.EQ.SAVE_OHP) .AND.		!or old OH block
+	1	  	STHI(STH_PLN_I).EQ.4) THEN	!AND ALL POL.
+C
+	      SAVE_OHP=STH_OHP_J			!Remember pointer
+	      ZWEIGHT(0)=0
+	      ZWEIGHT(1)=0
+C
+	      DO I=0,STHJ(STH_SCN_J)-1			!ALL SCANS
+		IF (.NOT.WNFRD(FCAOUT,STHJ(STH_SCNL_J)-SCHHDL,
+	1		LDAT,STHJ(STH_SCNP_J)+
+	1			STHJ(STH_SCNL_J)*I+SCHHDL)) GOTO 10 !READ SCAN
+		DO I1=0,STHJ(STH_NIFR_J)-1		!ALL IFRS
+		  DO I2=0,3				!ALL POL.
+		    WGT(I2)=LDAT(0,4*I1+I2)		!WEIGHT
+		    CDAT(I2)=CMPLX(LDAT(1,4*I1+I2),LDAT(2,4*I1+I2)) !DATA
+		    IF (WGT(I2).LT.0 .OR.
+	1		WGT(I2).GT.255) THEN
+			ZWEIGHT(0)=ZWEIGHT(0)+1
+	                WGT(0)=0.	!SET DELETED
+		    END IF
+		  END DO
+		  IF (WGT(0).LE.0) THEN			!NO DATA
+		    DO I2=0,3
+		      WGT(I2)=0.
+		      NDAT(I2)=CMPLX(0.,0.)
+		    END DO
+		  ELSE					!MAKE XY
+		    NDAT(0)=CDAT(0)-CDAT(1)
+		    NDAT(1)=-CDAT(2)+CDAT(3)*CMPLX(0.,1.)
+		    NDAT(2)=CDAT(2)+CDAT(3)*CMPLX(0.,1.)
+		    NDAT(3)=CDAT(0)+CDAT(1)
+		  END IF
+		  DO I2=0,3				!CHECK RANGE
+		    IF (ABS(REAL(NDAT(I2))).GE.32767. .OR.
+	1		ABS(AIMAG(NDAT(I2))).GE.32767.) THEN	!TOO LARGE
+			ZWEIGHT(1)=ZWEIGHT(1)+1
+	   	        WGT(I2)=0.
+	            END IF
+		  END DO
+		  DO I2=0,3
+		    IF (WGT(0).LE.0.) THEN		!DELETED
+		      LDAT(0,4*I1+I2)=0
+		      LDAT(1,4*I1+I2)=0
+		      LDAT(2,4*I1+I2)=0
+		    ELSE				!NEW DATA
+		      LDAT(0,4*I1+I2)=WGT(I2)
+		      LDAT(1,4*I1+I2)=NINT(REAL(NDAT(I2)))
+		      LDAT(2,4*I1+I2)=NINT(AIMAG(NDAT(I2)))
+		    END IF
+		  END DO
+		END DO
+		IF (.NOT.WNFWR(FCAOUT,STHJ(STH_SCNL_J)-SCHHDL,
+	1		LDAT,STHJ(STH_SCNP_J)+
+	1			STHJ(STH_SCNL_J)*I+SCHHDL)) GOTO 10 !WRITE DATA
+	      END DO
+C
+	      OHWI(OHW_STOPAR_I)=0			!SET NOT STOKES
+	      IF (.NOT.WNFWR(FCAOUT,STHJ(STH_NOH_J),OHW,
+	1		STHJ(STH_OHP_J))) GOTO 10	!WRITE OH
+C
+	      IF (ZWEIGHT(0).GT.0) CALL WNCTXT(F_TP,
+	1	'Zeroeth !SJ points because weight <0 or >255',
+	1	ZWEIGHT(0))
+	      IF (ZWEIGHT(1).GT.0) CALL WNCTXT(F_TP,
+	1	'Zeroeth !SJ points because data out of range',
+	1	ZWEIGHT(1))
+	      IF (PNAM) CALL WNCTXT(F_TP,
+	1		'Sector(s) !AS Stokes input converted to XY',
+	1		WNTTSG(TNAM,0))
+C
+	    END IF
+	  END IF
+C
+C CALCULATE PARALLACTIC ANGLE
+C
+	  IF (STHJ(STH_INST_J).EQ.1) THEN		!ATNF
+	    DO I=0,STHJ(STH_SCN_J)-1			!ALL SCANS
+	      IF (.NOT.NSCSCH(FCAOUT,STH,0,I,0,0,SCH)) GOTO 10 !READ SCAN HEAD
+	      SCHE(SCH_PANG_E)=
+	1		ATAN2(DBLE(CLATA*SIN(PI2*SCHE(SCH_HA_E))),
+	1		COS(PI2*STHD(STH_DEC_D))*SLATA-
+	1		CLATA*SIN(PI2*STHD(STH_DEC_D))*
+	1			COS(PI2*SCHE(SCH_HA_E)))/PI2 !PARAL. ANGLE
+	      IF (.NOT.NSCSCW(FCAOUT,STH,0,I,0,0,SCH)) GOTO 10 !WRITE HEADER
+	    END DO
+	  END IF
+C
+C WRITE NEW HEADER
+C
+	  IF (.NOT.WNFWR(FCAOUT,STHHDL,STH(0),STHP)) THEN !REWRITE SET HEADER
+ 10	    CONTINUE
+	    CALL WNCTXT(F_TP,'!/Error rewriting Sector(s)')
+	    GOTO 900
+	  END IF
+	END DO
+C
+C READY
+C
+ 800	CONTINUE
+	CALL WNFCL(FCAOUT)				!CLOSE FILE
+C
+	RETURN
+C
+C ERROR
+C
+ 900	CONTINUE
+	CALL WNFCL(FCAOUT)				!CLOSE FILE
+	RETURN						!READY
+C
+C
+	END

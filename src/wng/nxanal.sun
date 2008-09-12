@@ -1,0 +1,109 @@
+#  nxanal.sun
+# 	WNB 920908
+# 
+#  Revisions:
+#	WNB 920930	Full overhaul for speed, some additions
+#	WNB 921130	Alliant scanning; HP tr
+#	WNB 930325	Cater for different fold
+# 
+# 	Analyze codestring containing repetitions of one or more of:
+#		[-][N|+]*[d][<string>]
+#	Use as:
+#		source $WNG/nxanal.sun
+#
+#	It assumes the code string to be in a0; selectable codes (N) in scodes;
+#	selectable qualifiers in squal; additive qualifiers in squala;
+#	extendable codes in scodex.
+#	It assumes for all qualifiers the variables *q_d are set.
+#	It returns new values for *q_d and encountered cd_* and *_d
+#	where * is a single character
+#
+#  Analyze codes
+#
+	set a0=(`echo $a0 | ${fold}1`)			# expand input string
+GC1A:
+	set l1=1					# no n seen
+GC14:
+	if ($#a0 < 1) goto RETURN			# check all
+	set lz=$a0[1]					# isolate
+	if ("$lz" == "<") then
+	  set return=GC1A ; goto GA0			# skip <>
+	endif
+	shift a0					# delete code
+	if ("$lz" == "-") goto GC1A			# skip -
+	if ("$lz" =~ [nN] || "$lz" == "+") then		# negate
+	  set l1=0 ; goto GC14				# n/+ seen; next part
+	endif
+	if ("$lz" =~ [qQ] && $l1) then			# qualifier
+	  if ($#a0 < 1) goto RETURN			# ready
+	  if ("$a0[1]" =~ [A-Z]) then
+	    set lz=`echo $a0[1] | tr $Upc $Lowc`	# qualifier
+	  else
+	    set lz=$a0[1]
+	  endif
+	  shift a0					# delete qualifier
+	  if ("$lz" !~ [$squal]) goto GC1A		# unknown qual.
+	  set return=GC10A ; goto GA0			# get qual. argument
+GC10A:
+	  if ("$lz" !~ [$squala]) then			# not additive
+	    if ($a1 != "") set ${lz}q_d=$a1		# and value
+	  else						# additive
+	    if ($a1 != "") then				# and value
+	      set l3=\$${lz}q_d 
+	      set ${lz}q_d=(`eval echo $l3` $a1)
+	    endif
+	  endif
+	  goto GC1A					# next code
+	endif
+	if ("$lz" =~ [A-Z]) then
+	  set lz=`echo $lz | tr $Upc $Lowc`		# code
+	endif
+	if ("$lz" !~ [$scodes]) goto GC1A		# unknown code
+	set cd_$lz="-"					# empty code
+	if ($l1) then
+	  set cd_$lz=0					# standard code
+	else
+	  set cd_$lz="-"				# empty code
+	  goto GC1A					# next
+	endif
+	if ($#a0 < 1) goto RETURN			# ready
+	set l0=$a0[1]					# digit
+	if("$l0" =~ [0-9]) then
+	  set cd_$lz=$l0 ; shift a0			# set/delete digit
+	endif
+	if ("$lz" !~ [$scodex]) goto GC1A		# not extended code
+	set return=GC13A ; goto GA0			# get extended code
+GC13A:
+	if ($a1 != "") set ${lz}_d=$a1			# new setting
+	goto GC1A					# next code
+#
+#  Routines
+#
+#  Get <string>
+#
+GA0:
+	set a1=""					# empty result
+	if ($#a0 < 1) goto $return			# no value
+	if ("$a0[1]" == " ") goto GA0			# skip space
+	if ("$a0[1]" != "<") goto $return		# no value
+	@ loo=0 ; set l01=0				# count <>/""
+	while ($#a0 > 0)
+	  set l02=$a0[1] ; shift a0			# char.
+	  if ($l01 != 0) then				# string
+	    if ("$l02" == """") set l01=0		# reset string
+	  else if ("$l02" == "<") then			# <
+	    @ loo=$loo + 1				# count <
+	    if ($loo == 1) continue			# no save
+	  else if ("$l02" == ">") then			# >
+	    @ loo=$loo - 1				# count >
+	    if ($loo == 0) goto $return			# ready
+	  else if ("$l02" == """") then			# "
+	    set l01=1					# indicate "
+	  endif
+	  set a1=$a1$l02				# add character
+	end
+	set a1="" ; goto $return			# error
+#
+# Ready
+#
+RETURN:

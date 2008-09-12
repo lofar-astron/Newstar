@@ -1,0 +1,92 @@
+C+ WNGARL.FVX
+C  WNB 890308
+C
+C  Revisions:
+C
+	INTEGER FUNCTION WNGARL(ADDR,ARGL)
+C
+C  Get and reset argument list
+C
+C  Result:
+C
+C	J = WNGARL ( ADDR_J(0:*):I, ARGL_J(0:*):O) Copy the call list
+C					pointed to by ADDR to a proper ARGL.
+C					The result (if wanted) is # of arguments
+C	VAL =WNGARX ( ROUT_ENT:O, ARGL_J(0:*):IO) Transfer to ROUT with proper
+C					call list made from ARGL. VAL, if any,
+C					depends on ROUT type
+C	J = WNGARF ( NA_J:I, ARGL_J(0:*):IO) Make ARGL arg. list for NA
+C					arguments, using existing ARGL
+C				The ARGL produced will be:
+C					0	N (# of arguments)
+C					1	address arg 1
+C					...	...
+C					N	address arg N
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Arguments:
+C
+	INTEGER ADDR(0:*)			!CALL LIST
+	INTEGER ARGL(0:*)			!ARGUMENT LIST
+	EXTERNAL ROUT				!ROUTINE TO CALL
+	INTEGER NA				!# OF ARG.
+C
+C  Entry points:
+C
+	INTEGER WNGARX
+	INTEGER WNGARF
+C
+C  Function references:
+C
+	INTEGER WNGARQ				!CALL TRANSFER
+C
+C  Data declarations:
+C
+C
+C  Equivalences:
+C
+C
+C  Commons:
+C
+C-
+	ARGL(0)=IAND(ADDR(0),'FF'X)		!MAKE PROPER COUNT
+	DO I=1,ARGL(0)
+	  ARGL(I)=ADDR(I)			!SET ARG. LIST
+	END DO
+	WNGARL=ARGL(0)				!RETURN # OF ARG.
+C
+	RETURN
+C
+C WNGARX
+C
+	ENTRY WNGARX(ROUT,ARGL)
+C
+	WNGARX=WNGARQ(ROUT,ARGL)		!DO ROUTINE
+C
+	RETURN
+C
+C WNGARF
+C
+	ENTRY WNGARF(NA,ARGL)
+C
+	IF (NA.LT.0) THEN			!CANNOT DO
+	ELSE IF (NA.LE.ARGL(0)) THEN
+	  ARGL(0)=NA
+	ELSE
+	  DO I=ARGL(0)+1,NA
+	    ARGL(I)=0				!SET EMPTY ARGUMENTS
+	  END DO
+	  ARGL(0)=NA
+	END IF
+	WNGARF=ARGL(0)				!RETURN # OF ARGUMENTS
+C
+	RETURN	
+C
+C
+	END

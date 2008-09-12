@@ -1,0 +1,86 @@
+c+ WNDPAP.FOR
+C  WNB 910828
+C
+C  Revisions:
+C	GvD 920501	Use J5 iso. JS
+C	CMV 940117	Changed PUT_PARM call to PUT_PARM_C
+C	CMV 940427	Add entry WNDPAG to define global symbol
+C
+	LOGICAL FUNCTION WNDPAP(KW,VAL)
+C
+C  Set user parameter
+C
+C  Result:
+C
+C	WNDPAP_L = WNDPAP( KW_C*:I, VAL_C*:I)
+C			Set DWARF user parameter KW with VAL.
+C	WNDPAG_L = WNDPAG( KW_C*:I, VAL_C*:I)
+C			Set DWARFglobal symbol KW with VAL.
+C
+C
+C  Include files:
+C
+	INCLUDE 'WNG_DEF'
+C
+C  Parameters:
+C
+C
+C  Entry points:
+C
+	LOGICAL WNDPAG				!DEFINE GLOBAL SYMBOL
+C
+C  Arguments:
+C
+	CHARACTER*(*) KW			!KEYWORD
+	CHARACTER*(*) VAL
+C
+C  Function references:
+C
+	INTEGER PUT_PARM_C			!SET PARAMETER
+	INTEGER PUT_PARM_G			!SET GLOBAL SYMBOL
+C
+C  Data declarations:
+C
+	CHARACTER*80 PRGSTR			!PROGRAM AND STREAM
+	CHARACTER*32 KEYW
+C-
+	J5=INDEX(KW,'$')
+	IF (J5.LE.0) THEN
+	  PRGSTR=' '
+	  KEYW=KW
+	ELSE
+	  IF (J5.EQ.1) THEN
+	    PRGSTR=' '
+	  ELSE
+	    PRGSTR=KW(1:J5-1)
+	  END IF
+	  J5=J5+1
+	  J=INDEX(KW(J5:),'$')
+	  IF (J.LE.0) THEN
+	    KEYW=KW(J5:)
+	  ELSE IF (J.EQ.1) THEN
+	    KEYW=KW(J5+1:)
+	  ELSE
+	    PRGSTR(J5-1:)='$'//KW(J5:J5+J-1)
+	    KEYW=KW(J5+J:)
+	  END IF
+	END IF
+	E_C=PUT_PARM_C(KEYW,VAL,PRGSTR)
+	GOTO 100
+C
+	ENTRY WNDPAG(KW,VAL)
+C
+	E_C=PUT_PARM_G(KW,VAL)
+C
+ 100	CONTINUE
+	CALL WNCTXT(F_P+F_P1,'!AS := !AS',KW,VAL) !SHOW
+	IF (IAND(E_C,1).EQ.1) THEN		!CHECK ERROR
+	  WNDPAP=.TRUE.
+	ELSE
+	  WNDPAP=.FALSE.
+	END IF
+C
+	RETURN					!READY
+C
+C
+	END

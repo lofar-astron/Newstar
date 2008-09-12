@@ -1,0 +1,11 @@
+%nflag_interface.tex
+\begin{figure}[b]
+
+%\fig{nflag_interface}
+%
+\caption{\it 
+Overview of the actions in NFLAG.
+}
+
+\label{.nflag.interface}
+\end{figure}

@@ -1,0 +1,182 @@
+!+UNIT.PEF: tape UNIT parameters
+!
+!  JPH 941005	Split from ncomm.pef
+!
+!  Revisions:
+!	HjV 941107	Add OUTPUT_VOLUME, VOLUME_TYPE, OVERWRITE
+!	JPH 941215	Help texts, prompt formatting
+!
+!
+!  Get input unit
+!       Ref:    NSCDAT
+!
+KEYWORD=UNIT
+	DATA_TYP=C
+	IO=I
+	LENGTH=1
+	CHECKS=ABBREV_OPTIONS
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	OPTIONS=0,1,2,3,4,5,6,7,8,9,D
+	PROMPT="'tape' unit: number or 'D' for 'disk' |"
+	HELP=" Specify the input unit for your data:
+.
+	0,..9    Tape/optical disk/DAT unit
+	D        Disk
+.
+The correspondence between the unit numbers and the devices on your host
+machine is defined by the environment variables MAG<n>. The list below shows
+the values with which NEWSTAR is distributed, but your local installation may
+be different, so you do well to check with your local site manager
+.
+   classic 0.5-inch magtape:
+	0        1600 bpi
+	1        6250 bpi
+	2         800 bpi
+.
+   optical disk, formatted as a magtape:
+	4
+	5
+.
+   DAT, ExaByte or similar tape:
+	6
+	7
+	8
+	9
+.
+You may enter '*' to get a list of unit numbers available for you, but this
+will not tell you to what physical devices these correspond."
+!
+!  Get input unit
+!       Ref:    NSCDAT
+!
+KEYWORD=INPUT_UNIT
+	DATA_TYP=C
+	IO=I
+	LENGTH=1
+	CHECKS=ABBREV_OPTIONS
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	OPTIONS=0,1,2,3,4,5,6,7,8,9,D
+	PROMPT="input 'tape' unit: number or 'D' for 'disk' |"
+	HELP=" Specify the input unit for your data:
+.
+	0,..9    Tape/optical disk/DAT unit
+	D        Disk
+.
+The correspondence between the unit numbers and the devices on your host
+machine is defined by the environment variables MAG<n>. The list below shows
+the values with which NEWSTAR is distributed, but your local installation may
+be different, so you do wello to check with your local site manager
+.
+   classic 0.5-inch magtape:
+	0        1600 bpi
+	1        6250 bpi
+	2         800 bpi
+.
+   optical disk, formatted as a magtape:
+	4
+	5
+.
+   DAT, ExaByte or similar tape:
+	6
+	7
+	8
+	9
+.
+You may enter '*' to get a list of unit numbers available for you, but this
+will not tell you to what physical devices these correspond."
+!
+!  Get output unit
+!       Ref:    NSCDAT
+!
+KEYWORD=OUTPUT_UNIT
+	DATA_TYP=C
+	IO=I
+	LENGTH=1
+	CHECKS=ABBREV_OPTIONS
+	SWITCHES=LOOP,NULL_VALUES,WILD_CARDS
+	SEARCH=L,P
+	PROMPT="output 'tape' unit: number or 'D' for 'disk' |"
+	OPTIONS=0,1,2,3,4,5,6,7,8,9,D
+	HELP=" 
+Specify the input unit for your data:
+.
+	0,..9    Tape/optical disk/DAT unit
+	D        Disk
+.
+The correspondence between the unit numbers and the devices on your host
+machine is defined by the environment variables MAG<n>. The list below shows
+the values with which NEWSTAR is distributed, but your local installation may
+be different, so you do wello to check with your local site manager
+.
+   classic 0.5-inch magtape:
+	0        1600 bpi
+	1        6250 bpi
+	2         800 bpi
+.
+   optical disk, formatted as a magtape:
+	4
+	5
+.
+   DAT, ExaByte or similar tape:
+	6
+	7
+	8
+	9
+.
+You may enter '*' to get a list of unit numbers available for you, but this
+will not tell you to what physical devices these correspond.
+"
+!
+!  Get output volume
+!       Ref:    NSCDAT
+!
+KEYWORD=OUTPUT_VOLUME
+	DATA_TYP=C
+	IO=I
+	LENGTH=6
+	SWITCHES=LOOP,NULL_VALUES
+	SEARCH=L,P
+	PROMPT="Output volume name"
+	HELP="
+Specify the full name for the output volume.
+.
+This name is used for the administration in MEDIAD"
+!
+!  Get output file
+!       Ref:    WNGMED
+!
+KEYWORD=VOLUME_TYPE
+	DATA_TYP=C
+	IO=I
+	LENGTH=4
+	SWITCHES=LOOP,NULL_VALUES
+	SEARCH=L,P
+	PROMPT="Abbreviated medium type"
+	HELP="
+Specify the type for the output volume.
+.
+This name is used for the administration in MEDIAD
+.
+	DOD	- DEC Optical Disk
+	DAT	- Digital Audio Tape
+	800	- 9-track tape,  800 bpi
+	1600	- 9-track tape, 1600 bpi
+	6250	- 9-track tape, 6250 bpi"
+!
+!  Overwrite cuurent label
+!       Ref:    NSCDMP
+!
+KEYWORD=OVERWRITE
+        DATA_TYP=L
+        IO=I
+        SWITCHES=NULL_VALUES,WILD_CARDS
+        SEARCH=L,G:NGEN,P
+        PROMPT="Overwrite (YES/NO)"
+        DEFAULTS=YES /ASK
+        HELP="
+Specify if one wants to overwrite the current label (YES) or not (NO).
+.
+BEWARE: All subsequent labels will also be overwritten.
+"

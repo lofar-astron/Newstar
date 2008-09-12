@@ -1,0 +1,215 @@
+!   
+!		16 March 1990	      IONOST.PIN
+!				****** VAX 3400 ******
+!
+!............................................................
+!
+KEYWORD=SOURCE_NAME
+	DATA_TYPE=C
+	LENGTH=12
+	IO=I
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Specify the source name for which the ionosphere corrections have
+	to be calculated"
+KEYWORD=DAY_NUMBER
+	DATA_TYPE=J
+	IO=I
+	DEFAULTS="0 /ASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	day number for which the calculations have to be done. The format is
+	as YYMMDD, where YY is the year - 1900, MM the month number in the
+	year and DD the daynumber in the month. Several dates may be specified:
+	Specify after the last day wanted a "0" (= zero) - then the program
+	will exit after the last calculations needed."
+KEYWORD=LONGITUDE_OBS
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="6.6041694 /NOASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Geographic longitude observatory (in degrees)"
+KEYWORD=LATITUDE_OBS
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="52.9169152 /NOASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Geographic latitude observatory (in degrees)"
+KEYWORD=LONGITUDE_STAT
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="5.18 /NOASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Geographic longitude ionosphere station (in degrees)"
+KEYWORD=LATITUDE_STAT
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="52.10 /NOASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Geographic latitude ionosphere station (in degrees)"
+KEYWORD=FREQUENCY
+	DATA_TYPE=D
+	IO=I
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Observing frequency in MHz"
+KEYWORD=RIGHT_ASCENSION
+	DATA_TYPE=D
+	IO=I
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Right Ascension of source for which ionosphere corrections have 
+	to calculated: the value should be given in degrees"
+KEYWORD=DECLINATION
+	DATA_TYPE=D
+	IO=I
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Declination of source for which ionosphere corrections have 
+	to calculated: the value should be given in degrees"
+KEYWORD=CORRECTIONS
+	DATA_TYP=C
+	LENGTH=5
+	NVALUES=2
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTION
+	OPTION=VLBI,RIF,FAR,DELAY
+	SEARCH=L,G,P
+	DEFAULTS="RIF,FAR /NOASK"
+	PROMPT="(Corrections to be calculated)"
+	HELP="
+	Corrections which should be calculated:
+	VLBI: VLBI refraction corrections are calculated
+	RIF:  corrections for ionospheic refraction are calculated
+	FAR:  corrections for Faraday rotation are calculated
+	DELAY: corrections for path length errors are calculated"
+KEYWORD=FARADAY_INPUT
+	DATA_TYP=C
+	IO=I
+	LENGTH=3
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTIONS
+	SEARCH=L,G,P
+	DEFAULTS="NO /NOASK"
+	OPTIONS=YES,NO
+	PROMPT="(Is Faraday rotation input required?)"
+	HELP="
+	Faraday input flag: = NO  no input data for Faraday rotation are used
+		            = YES input data for Faraday rotation are used"
+KEYWORD=CHANGE_F0F2_INP
+	DATA_TYP=C
+	IO=I
+	LENGTH=3
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTIONS
+	SEARCH=L,G,P
+	DEFAULTS="NO /NOASK"
+	OPTIONS=YES,NO
+	PROMPT="(Should foF2 input data be changed?)"
+	HELP="
+	change f0F2 input data by used input Faraday rotation data flag:
+			= NO  no change by using ionospheric Faraday rotation 
+			      input
+			= YES change by using ionospheric Faraday rotation 
+			      input"
+KEYWORD=SRCE_ALTAZ_FIXED
+	DATA_TYP=C
+	IO=I
+	LENGTH=3
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTIONS
+	SEARCH=L,G,P
+	DEFAULTS="NO /NOASK"
+	OPTIONS=YES,NO
+	PROMPT="(Is source fixed in altazimuth coordinates?)"
+	HELP="
+	source position flag: = NO  source not fixed in altazimuth coordinates
+			      = YES source fixed in altazimtuh coordinates"
+KEYWORD=GEOMETRY
+	DATA_TYP=C
+	LENGTH=8
+	NVALUES=2
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTION
+	OPTION=FIXED,VARIABLE,DEFAULT
+	SEARCH=L,G,P
+	DEFAULTS="FIXED,DEFAULT /NOASK"
+	PROMPT="(Geometry selection)"
+	HELP="
+	The following options for geometry selection are valid:
+	FIXED:    fixed ionosphere geometry is taken
+	VARIABLE: variable ionosphere geometry is taken
+	DEFAULT:  default ionosphere is taken"
+KEYWORD=F2_BOTTOM_HEIGHT
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="6440.0 /ASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Altitude of the bottomside of the F2-layer (in km)"
+KEYWORD=F2_P1_HEIGHT
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="6470.0 /ASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Altitude of the P1 height of the F2-layer (in km) [see ITR-162]"
+KEYWORD=F2_MAX_HEIGHT
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="6770.0 /ASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Altitude of the maximum electron density in the F2-layer (in km)"
+KEYWORD=F2_P2_HEIGHT
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="7035.0 /ASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Altitude of the P2 height of the F2-layer (in km) [see ITR-162]"
+KEYWORD=F2_TOP_HEIGHT
+	DATA_TYPE=D
+	IO=I
+	DEFAULTS="7570.0 /ASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Altitude of the topside of the F2-layer (in km)"
+KEYWORD=UT_TIME
+	DATA_TYPE=I
+	IO=I
+	DEFAULTS="-32767 /ASK"
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Universal Time of observations Faraday rotation [in hours and 
+	fractions of hours - i.e. hh.hhh]. If no more values are given:
+	specify <CR>."
+KEYWORD=OBSERVED_FAR_ROT
+	DATA_TYPE=D
+	IO=I
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Observed Faraday rotation values at moments UT_TIME (in degrees)"
+KEYWORD=NR_180_DEG_STEPS
+	DATA_TYPE=I
+	IO=I
+	SEARCH=LOCAL,GLOBAL,PROGRAM
+	HELP="
+	Number of 180 degree steps in Faraday rotation data at UT_TIME"
+KEYWORD=NEXT_DAY
+	DATA_TYP=C
+	IO=I
+	LENGTH=3
+	SWITCH=LOOP
+	CHECKS=ABBREV_OPTIONS
+	SEARCH=L,G,P
+	DEFAULTS="NO /NOASK"
+	OPTIONS=YES,NO
+	PROMPT="(Next day flag)"
+	HELP="
+	next day flag: = NO  data not for next day
+ 		       = YES data for next day."

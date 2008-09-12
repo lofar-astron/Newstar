@@ -1,0 +1,49 @@
+#  wngcshrc_kosma.ssc
+#  HjV 930630
+# 
+#  Revisions:
+#	HjV 930720	Typo's
+# 
+# 	Environment for all WN programs
+#	Call by inserting in .cshrc as source wngcshrc_kosma.sun
+# 
+#ifdef wn_vax__
+$	WNG_SITE=="KOSMA"
+$	WNG_TYPE=="VX"
+$	ASSIGN/NOLOG/TRANS=CONCEAL APOLLO_UTILDSK:[NEWSTAR.] WNG_DIR:
+$	ASSIGN/NOLOG WNG_DIR:[WNG] WNG		!GENERAL
+$	ASSIGN/NOLOG WNG_DIR:[NSCAN] NSC
+$	ASSIGN/NOLOG WNG_DIR:[NMAP] NMA
+$	ASSIGN/NOLOG WNG_DIR:[NPLOT] NPL
+$	ASSIGN/NOLOG WNG_DIR WNG_OLBEXE:
+$	WNG_NODE=="192.87.1.105"
+$	WNG_NODEUSER=="PRINTVAX PRINTVAX_90A"
+$	WNG_NODEDIR=="USER5:[WNB]"
+$	IF F$TRNLNM("MAG0") .EQS. "" THEN -
+		ASSIGN/NOLOG/TRANS=CONCEAL MTAPE MAG0
+$	IF F$TRNLNM("MAG1") .EQS. "" THEN -
+		ASSIGN/NOLOG/TRANS=CONCEAL GTAPE MAG1
+$	IF F$TRNLNM("MAG8") .EQS. "" THEN -
+		ASSIGN/NOLOG/TRANS=CONCEAL DAT MAG8
+$	@WNG:WNGCSHRC.COM
+$ !
+$	EXIT
+#else
+	setenv WNG_SITE kosma
+	if (! $?host) set host=`hostname`
+	if ($host =~ apollo*) then
+	  setenv WNG_TYPE hp
+	  setenv MAG8 "/dev/rmt/0m"
+	  setenv WNG_LDFILES "/usr/lib/X11R4/libX11.a"
+	else
+	  setenv WNG_TYPE hp
+	  setenv MAG8 "/dev/rmt/0m"
+	  setenv WNG_LDFILES "/usr/lib/X11R4/libX11.a"
+	endif
+	setenv WNG /utildsk/newstar/wng
+	setenv WNG_OLBEXE $WNG/..
+	setenv WNG_NODE 192.87.1.105
+	setenv WNG_NODEUSER "printvax printvax_90a"
+	setenv WNG_NODEDIR "user5:[wnb]"
+	source $WNG/wngcshrc.sun
+#endif

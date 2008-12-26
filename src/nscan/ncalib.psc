@@ -59,6 +59,7 @@
 !       JPH 960802      WGT_FACTOR
 !       JPH 970205      GAIN_NORM negative-values option
 !	WNB 080711	Add INVERT SET option
+!	WNB 081226      Add polarisation correction INVERT option
 !
 !
 !  Get overall action
@@ -96,7 +97,7 @@ KEYWORD=POLAR_OPTION
         SEARCH=L,P
         PROMPT="action on polarisation corrections|"
         OPTIONS=-
-CALC,VZERO; COPY,SET,ZERO; SHOW,EDIT; QUIT
+CALC,VZERO; COPY,SET,ZERO,INVERT; SHOW,EDIT; QUIT
         HELP="
 Specify action to perform on polarisation corrections:
 .
@@ -117,6 +118,8 @@ Specify action to perform on polarisation corrections:
         SET      set dipole corrections manually
 .
         ZERO     zero dipole corrections
+.
+	INVERT	 invert dipole corrections
 .
    Inspection:
 .

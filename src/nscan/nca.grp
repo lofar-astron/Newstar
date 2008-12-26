@@ -18,6 +18,7 @@
 !	HjV 950713	Add NCACIC
 !	AXC 010628	Changes for linux port
 !	WNB 080711	Add NCASTV
+!	WNB 081226	Add NCAPOI
 !
 !  Calibration
 !
@@ -54,6 +55,7 @@ NCAPOL.FOR		!NCAPOL		Calculate polarisation corrections
 			!NCAPOT		Set corrections manually
 			!NCAPOE		Edit corrections
 			!NCAPOC		Copy corrections
+			!NCAPOI		Invert corrections
 NCAPVZ.FOR		!NCAPVZ		Calculate and show X-Y phase
 			!NCAPVA		Apply X-Y phase
 			!NCAPVQ		Apply after user consent

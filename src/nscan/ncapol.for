@@ -23,6 +23,7 @@ C       WNB 950611	Change to WNML routines for least squares
 C	JPH 960625	Narrower format for constraints output
 C	JPH 960627	Suppress constraints output
 C	JPH 970123	Include HA in "No valid data" report
+C       WNB 081226      Add NCAPOI: invert corrections
 C
 C
 	SUBROUTINE NCAPOL
@@ -37,6 +38,7 @@ C	CALL NCAPOS	will show the polarisation corrections
 C	CALL NCAPOT	will set the polarisation corrections manually
 C	CALL NCAPOE	will edit the polarisation corrections manually
 C	CALL NCAPOC	will copy the polarisation corrections
+C       CALL NCAPOI     will invert the polarisation corrections
 C
 C  PIN reference:
 C
@@ -310,6 +312,36 @@ C
 	  END DO
 	  IF (.NOT.WNFWR(FCAOUT,STHHDL,STH,STHP)) THEN	!WRITE CORRECTIONS
 	    CALL WNCTXT(F_TP,'Error zeroing corrections in sector !AS',
+	1		WNTTSG(SETNAM,0))
+	  END IF
+	  NDONE=NDONE+1
+	  IF (MOD(NDONE,100).EQ.0)
+	1	CALL WNCTXT(F_T,'!AS: !UJ sectors done',
+	1	WNTTSG(SETNAM,0),NDONE)
+	END DO						!END SET
+C
+	CALL WNCTXT(F_TP,'!UJ sectors processed',NDONE)
+	RETURN
+C
+C INVERT CORRECTIONS
+C
+	ENTRY NCAPOI
+C
+C INVERT SOLUTION
+C
+	CALL WNCTXT(F_TP,' ')
+	NDONE=0
+	DO WHILE(NSCSTG(FCAOUT,SETS,STH(0),STHP,SETNAM)) !NEXT SET
+	  DO I=0,1					!GAIN/PHASE
+	    DO I1=0,STHTEL-1				!TEL.
+	      DO I2=0,1					!X,Y
+		STHE(STH_POLC_E+I+2*I1+2*STHTEL*I2)=
+	1	    -STHE(STH_POLC_E+I+2*I1+2*STHTEL*I2)
+	      END DO
+	    END DO
+	  END DO
+	  IF (.NOT.WNFWR(FCAOUT,STHHDL,STH,STHP)) THEN	!WRITE CORRECTIONS
+	    CALL WNCTXT(F_TP,'Error inverting corrections in sector !AS',
 	1		WNTTSG(SETNAM,0))
 	  END IF
 	  NDONE=NDONE+1

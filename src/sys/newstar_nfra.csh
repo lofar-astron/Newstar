@@ -43,7 +43,7 @@
 #
 setenv n_site    nfra
 setenv n_install li
-setenv n_hosts   dop66
+setenv n_hosts   dop64
 setenv n_ftp     ftp.astron.nl
 setenv n_doabp   ok
 setenv _Merge    0
@@ -52,7 +52,7 @@ setenv _Merge    0
 #  Define the root of the Newstar directory tree
 #
 unsetenv n_src n_exe   # If people started old system first
-setenv n_root /dop66_0/newstar
+setenv n_root /dop64_0/newstar
 setenv n_hlp  $n_root/hlp
 
 #

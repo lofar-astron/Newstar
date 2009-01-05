@@ -42,6 +42,7 @@
 #     HjV 970728  Remove rzmws5
 #     JPH 981113  Bug fix in setting of L_Obj  
 #     AXC 040127  Removes IGETARG iso GETARG exception for HP
+#     WNB 070831  Replace termcap ncurses
 #
 #  compile.csh  Process all files specified in Input_file
 #
@@ -1099,7 +1100,8 @@ _EOD_
      if (-e $n_lib/giplib.olb) set L_Lib=( $L_Lib $n_lib/giplib.olb )
 
      
-     set L_Lib=( $L_Lib -lm -ltermcap )
+##     set L_Lib=( $L_Lib -lm -ltermcap )
+##     set L_Lib=( $L_Lib -L/usr/lib -lm -lncursesw )
 
      if (-e $n_lib/wnglib.olb) set L_Lib=( $L_Lib $n_lib/wnglib.olb )
      if (-e $n_lib/nstlib.olb) set L_Lib=( $L_Lib $n_lib/nstlib.olb )
@@ -1119,7 +1121,13 @@ _EOD_
          set L_Lib=( $L_Lib $LD_USER )
      endif
 
-     set L_Lib=( $L_Lib  -lm -ltermcap )
+##     set L_Lib=( $L_Lib  -lm -ltermcap )
+     if ($?LD_USER) then                # Add user supplied libraries
+	set L_Lib=( $L_Lib  $LD_USER -lm  )
+     else
+ ##      	set L_Lib=( $L_Lib -lncursesw -lm  )
+      	set L_Lib=( $L_Lib -lm -lncursesw )
+     endif
 
      set Flag=( $FFLAGS_L )
      if ($_Optimise) set Flag=( $Flag $FFLAGS_O )
@@ -1131,8 +1139,10 @@ _EOD_
      endif
 
      log "$FC -o $Name.exe $Flag main_${Name}$$.f "
-#     log "  Libraries: $L_Lib     "
+     log "  Libraries: $L_Lib     "
 
+###
+#echo L_Lib $L_Lib
      $FC -o $n_work/$Name.exe $Flag  $n_work/main_${Name}$$.f  $L_Obj \
 	$L_Lib >&! $List_file
 

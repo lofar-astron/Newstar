@@ -62,6 +62,7 @@
 #   HjV 960423  Bitmaps have now extension .xbm in source tree
 #   HjV 960522  Change files to exclude for PACK option (different for hlp)
 #   HjV 000309  Change elm -s into nsmail
+#   WNB 090303  Change 'tail +<num>' into 'tail -n +<num>'
 #
 #
 # This is the update script for the Newstar programs
@@ -912,7 +913,7 @@ _EOD_
              @ iline = -9         # Means 1 after first increment by 10
              while ($iline < $nline)              # Lines left?
               @ iline = $iline + 10               # Next series of 10
-              foreach wfile ( `tail +$iline $Tmpfile | head -10` )
+              foreach wfile ( `tail -n +$iline $Tmpfile | head -10` )
 
                if ("$wfile" =~ -* || "$wfile" =~ +* ) then
                   set Options=( local  $wfile ); 
@@ -1003,7 +1004,7 @@ _EOD_
        @ iline = -9         # Means 1 after first increment by 10
        while ($iline < $nline)              # Lines left?
         @ iline = $iline + 10               # Next series of 10
-        foreach wfile ( `tail +$iline $Tmpfile | head -10` )
+        foreach wfile ( `tail -n +$iline $Tmpfile | head -10` )
           if ("$wfile" !~ -* && "$wfile" !~ +* ) then
              set Flag=`grep '^'$wfile'$' $n_work/continue.idx`
              if ("$Flag" == "") echo "Error: remaining dependency $wfile"
@@ -1058,7 +1059,7 @@ _EOD_
             @ iline = -9         # Means 1 after first increment by 10
             while ($iline < $nline)              # Lines left?
               @ iline = $iline + 10               # Next series of 10
-              foreach file ( `tail +$iline $Tmpfile | head -10` )
+              foreach file ( `tail -n +$iline $Tmpfile | head -10` )
 #
 #  If the file does no longer exist in $n_import is has been moved in 
 #  $n_src earlier, so no need to worry.
@@ -1219,7 +1220,7 @@ _EOD_
 #
 # Append the remainder of nnews.hlp and put the new version in the system
 #
-               tail +2l $n_src/doc/nnews.hlp >>$Tmpfile
+               tail -n +2l $n_src/doc/nnews.hlp >>$Tmpfile
                mv $n_src/doc/nnews.hlp $n_src/doc/nnews.hlp.old
                mv $Tmpfile $n_src/doc/nnews.hlp
                'rm' -f $Tmpfile
@@ -1633,7 +1634,7 @@ _EOD_
                @ iline = -9         # Means 1 after first increment by 10
                while ($iline < $nline)              # Lines left?
                  @ iline = $iline + 10              # Next series of 10
-                 foreach file ( `tail +$iline $Tmpfile | head -10` )
+                 foreach file ( `tail -n +$iline $Tmpfile | head -10` )
                    set Lock=(` grep $file $n_src/sys/lock.idx `)
                    if ("$file" != "+doc/nnews.hlp" && "$Lock" != "") then
                       echo "Warning: $Lock"
@@ -1662,7 +1663,7 @@ _EOD_
                  @ iline = -9         # Means 1 after first increment by 10
                  while ($iline < $nline)              # Lines left?
                    @ iline = $iline + 10              # Next series of 10
-                   foreach file ( `tail +$iline $Tmpfile | head -10` )
+                   foreach file ( `tail -n +$iline $Tmpfile | head -10` )
                      echo \
           "+$file locked User=Newstar Date=$C_Date/$C_Time" \
                                  |  tee -a  $n_src/sys/lock.idx
@@ -1857,7 +1858,7 @@ _EOD_
        @ iline = -9			# Means 1 after first increment by 10
        while ($iline < $nline)		# Lines left?
         @ iline = $iline + 10		# Next series of 10
-        foreach file ( `tail +$iline $Tmpfile | head -10` )
+        foreach file ( `tail -n +$iline $Tmpfile | head -10` )
          if (! -d $file) then
             if (-e $file ) then 
                if ("$_Confirm" == 0) then
@@ -2033,7 +2034,7 @@ _EOD_
             @ iline = -9         # Means 1 after first increment by 10
             while ($iline < $nline)              # Lines left?
              @ iline = $iline + 10              # Next series of 10
-             foreach file ( `tail +$iline $Tmpfile | head -10` )
+             foreach file ( `tail -n +$iline $Tmpfile | head -10` )
 #
 #  Store the date field for the next file
 #
@@ -2085,7 +2086,7 @@ _EOD_
             @ iline = -9         # Means 1 after first increment by 10
             while ($iline < $nline)              # Lines left?
              @ iline = $iline + 10              # Next series of 10
-             foreach file ( `tail +$iline $Tmpfile.2 | head -10` )
+             foreach file ( `tail -n +$iline $Tmpfile.2 | head -10` )
                if ("$file" =~ *.* && "$file:e" != "dsc") then
                   set Flag=$file:t
                   set Flag=${Flag:r}.o

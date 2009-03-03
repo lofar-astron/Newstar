@@ -43,6 +43,7 @@
 #     JPH 981113  Bug fix in setting of L_Obj  
 #     AXC 040127  Removes IGETARG iso GETARG exception for HP
 #     WNB 070831  Replace termcap ncurses
+#     WNB 090303  Change 'tail +<num>' into 'tail -n +<num>'
 #
 #  compile.csh  Process all files specified in Input_file
 #
@@ -163,7 +164,7 @@ while ( "$Input_file" != "")
         set Object_file=""
         while ($c_iline < $c_nline)              # Lines left?
           @ c_iline = $c_iline + 1
-          set Object_file=($Object_file `tail +$c_iline $Flag | head -1`)
+          set Object_file=($Object_file `tail -n +$c_iline $Flag | head -1`)
           if (`echo $Object_file | wc -c ` > 500) then
              log `$ARR $File $Object_file`
              'rm' -f $Object_file

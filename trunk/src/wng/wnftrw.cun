@@ -7,6 +7,7 @@
 .	CMV 940204	Remote tapeunits
 .	CMV 940216	Add Hello call to identify client
 .	CMV 941017	Add "method" like rmtd: or disk:
+.	WNB 090303	Put declaration before use of disk_open etc
 .
 ...									*/
 #include "mca_o_inc"
@@ -42,6 +43,254 @@ extern int errno;
 #define DEBUG(x) /* x; */
 
 static char tmpbuf[1024];		/* General character buffer 	*/
+
+/*
+.
+...									*/
+
+/************************************************************************
+  The following routine opens a (disk: type) file on disk
+ ************************************************************************/
+
+static int disk_open(mcap,open_mode)
+
+struct mca *mcap;
+int open_mode;
+
+{
+    int js,flg,ii,js2;
+
+    if (mcap->chan > 0) return(1);		/* Already open		*/
+
+    if (mcap->iosb[1] <= 0) return(0);          /* Beyond EOD, error    */
+
+    sprintf(tmpbuf,"%s/file%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+
+    if (open_mode == DISK_TEST) {
+       js=open(tmpbuf,O_RDONLY,0744);
+       if (js<0) {
+         sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+         js=open(tmpbuf,O_RDONLY,0744);
+         if (js<0) {
+           sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
+  	   js=open (tmpbuf,O_RDONLY);              
+           if (js<0) {
+             sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
+  	     js=open (tmpbuf,O_RDONLY);              
+           }
+         }
+       }
+       if (js>0) close(js);
+       
+    } else {
+       flg=mcap->iosb[0];
+       if (flg&O_RDWR && 
+           open_mode==DISK_WRITE) {		/* File should be created   */
+	  flg |= O_CREAT;			/* So set proper flag       */
+	  chmod(tmpbuf,0666);			/* And overwrite existing   */
+          
+       }
+
+       js=open (tmpbuf,flg,0444);
+       if (js<0) {
+         sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+         js=open(tmpbuf,flg,0744);
+         if (js<0) {
+           sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
+  	   js=open (tmpbuf,O_RDONLY);              
+           if (js<0) {
+             sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
+  	     js=open (tmpbuf,O_RDONLY);              
+           }
+         }
+       }
+       mcap->chan=js;
+                      
+       if (js>0 && flg&O_CREAT) {
+	  fchmod(js,0444);          		/* If created, make readonly */
+          ii=mcap->iosb[1]+1;	          	/* And delete higher labels  */
+	  for (js2=1; js2>0; ii++) {
+             sprintf(tmpbuf,"%s/file%6.6d.mt",(char *)mcap->undes[1],ii);
+             js2=open(tmpbuf,O_RDONLY,0744);
+             if (js2<0) {
+               sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
+               js2=open(tmpbuf,flg,0744);
+               if (js2<0) {
+                 sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
+  	         js2=open (tmpbuf,O_RDONLY);              
+                 if (js2<0) {
+                   sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
+  	           js2=open (tmpbuf,O_RDONLY);              
+                 }
+               }
+             }
+             if (js2>0) {
+                fchmod(js2,0666);
+                close(js2);
+                unlink(tmpbuf);
+             }
+          }
+       }
+    }
+
+    return(js);
+}
+
+
+/************************************************************************
+  The following routines implement the client routines for rmtd transfer
+ ************************************************************************/
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+static int open_socket(unit)
+
+char *unit;
+
+{
+    struct hostent *gethostbyname();
+    char *malloc();
+
+    char *p,*buf;
+    int  port,sock,st;
+    struct hostent     *remote;
+    struct sockaddr_in srv;
+
+    sock=socket(AF_INET,SOCK_STREAM,0);
+    if (sock == -1) {
+       fprintf(stderr,"Cannot create socket\n");
+       return(sock);
+    } 
+
+    buf=malloc(strlen(unit));
+    if (buf==NULL) {
+       fprintf(stderr,"Cannot allocate buffer\n");
+       return(-1);
+    }
+    strcpy(buf,unit+2);
+
+    for (p=buf; *p!='\0' && *p!=':'; p++);
+    if (*p=='\0') {
+       fprintf(stderr,"No port number in unit string, default to 8083\n");
+       port=8083;
+    } else {
+       *p='\0';
+       port=atoi(p+1);
+    }
+
+    remote=gethostbyname(buf);
+    if (remote==NULL) {
+       fprintf(stderr,"Cannot get host by name\n");
+       st= -1;
+    } else {
+       srv.sin_family=AF_INET;
+       srv.sin_addr.s_addr=INADDR_ANY;
+       srv.sin_port=htons(port);
+       srv.sin_addr= *((struct in_addr *) remote->h_addr);
+/*
+       memmove( &srv.sin_addr, remote->h_addr, remote->h_length);
+*/
+       st=connect(sock,&srv,sizeof(srv));
+       if (st== -1) fprintf(stderr,"Cannot connect to server\n");
+       else         st=sock;
+    }
+
+    free(buf);
+    return(st);
+}
+
+static int close_socket()
+
+{
+    return(1);
+}
+
+/*
+    The trick to catch the EINTR has been shamelessly taken from 
+    the Gipsy routine mtiodev.c (KGB, Kapteyn Lab, Univ. of Groningen)
+*/
+
+static int put(socket,buf,size)
+
+int  socket,size;
+char *buf;
+
+{
+   int left,done;
+
+   for (left=size; left; left-=done,buf+=done) {
+      while ( (done=write(socket,buf,left)) == -1 && errno == EINTR);
+      if (done== -1) return(done);
+   }
+   return(size);
+}
+
+static int get(socket,buf,size)
+
+int  socket,size;
+char *buf;
+
+{
+   int left,done;
+
+   for (left=size; left; left-=done,buf+=done) {
+      while ( (done=read(socket,buf,left)) == -1 && errno == EINTR);
+      if (done== -1) return(done);
+   }
+   return(size);
+}
+
+static int send_command(socket,command,arg)
+
+int  socket,arg;
+char *command;
+
+{
+    char str[81];
+    int js;
+
+    errno=EINTR;  /* Default: error */
+/*
+   Check if valid socket
+*/
+    if (socket<3) {
+       fprintf(stderr,"Invalid socket\n");
+       return(-1);
+    }
+/*
+   Create the command string
+*/
+    if (strlen(command)>40) command[40]='\0';
+    sprintf(str,"%-40.40s %+7.7d %30c",command,arg,'>');
+/*
+   Send the string to the socket
+*/
+    js=put(socket,str,80);
+    if (js!=80) {
+       fprintf(stderr,"Cannot send command on socket\n");
+       return(js);
+    }
+/*
+   Wait for reply
+*/
+    *str='\0';
+    js=get(socket,str,8);
+    str[js]='\0';                /* terminate the string */
+    if (js<=0) {
+       fprintf(stderr,"Cannot read response from socket\n");
+       return(js);
+    } 
+/*
+   Return status
+*/
+    errno=0;
+    js=atoi(str);
+    if (js<0) js= -1;           /* Should set errno as well... */
+    return( js );
+}
 
 /*
 ...									*/
@@ -129,6 +378,8 @@ static char tmpbuf[1024];		/* General character buffer 	*/
 .									*/
 	struct mtop mto;			/* mt operations	*/
 	int js;
+/*
+.									*/
 /*
 .									*/
 	DEBUG(printf("Skip block\n");)
@@ -512,253 +763,5 @@ static char tmpbuf[1024];		/* General character buffer 	*/
 	   close(mcap->chan);
 	}
 	return(1);
-}
-/*
-.
-...									*/
-
-/************************************************************************
-  The following routine opens a (disk: type) file on disk
- ************************************************************************/
-
-static int disk_open(mcap,open_mode)
-
-struct mca *mcap;
-int open_mode;
-
-{
-    int js,flg,ii,js2;
-
-    if (mcap->chan > 0) return(1);		/* Already open		*/
-
-    if (mcap->iosb[1] <= 0) return(0);          /* Beyond EOD, error    */
-
-    sprintf(tmpbuf,"%s/file%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
-
-    if (open_mode == DISK_TEST) {
-       js=open(tmpbuf,O_RDONLY,0744);
-       if (js<0) {
-         sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
-         js=open(tmpbuf,O_RDONLY,0744);
-         if (js<0) {
-           sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
-  	   js=open (tmpbuf,O_RDONLY);              
-           if (js<0) {
-             sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
-  	     js=open (tmpbuf,O_RDONLY);              
-           }
-         }
-       }
-       if (js>0) close(js);
-       
-    } else {
-       flg=mcap->iosb[0];
-       if (flg&O_RDWR && 
-           open_mode==DISK_WRITE) {		/* File should be created   */
-	  flg |= O_CREAT;			/* So set proper flag       */
-	  chmod(tmpbuf,0666);			/* And overwrite existing   */
-          
-       }
-
-       js=open (tmpbuf,flg,0444);
-       if (js<0) {
-         sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
-         js=open(tmpbuf,flg,0744);
-         if (js<0) {
-           sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
-  	   js=open (tmpbuf,O_RDONLY);              
-           if (js<0) {
-             sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
-  	     js=open (tmpbuf,O_RDONLY);              
-           }
-         }
-       }
-       mcap->chan=js;
-                      
-       if (js>0 && flg&O_CREAT) {
-	  fchmod(js,0444);          		/* If created, make readonly */
-          ii=mcap->iosb[1]+1;	          	/* And delete higher labels  */
-	  for (js2=1; js2>0; ii++) {
-             sprintf(tmpbuf,"%s/file%6.6d.mt",(char *)mcap->undes[1],ii);
-             js2=open(tmpbuf,O_RDONLY,0744);
-             if (js2<0) {
-               sprintf(tmpbuf,"%s/f%6.6d.mt",(char *)mcap->undes[1],mcap->iosb[1]);
-               js2=open(tmpbuf,flg,0744);
-               if (js2<0) {
-                 sprintf(tmpbuf,"%s/F%6.6d.MT",(char *)mcap->undes[1],mcap->iosb[1]);
-  	         js2=open (tmpbuf,O_RDONLY);              
-                 if (js2<0) {
-                   sprintf(tmpbuf,"%s/F%6.6d.MT;1",(char *)mcap->undes[1],mcap->iosb[1]);
-  	           js2=open (tmpbuf,O_RDONLY);              
-                 }
-               }
-             }
-             if (js2>0) {
-                fchmod(js2,0666);
-                close(js2);
-                unlink(tmpbuf);
-             }
-          }
-       }
-    }
-
-    return(js);
-}
-
-
-/************************************************************************
-  The following routines implement the client routines for rmtd transfer
- ************************************************************************/
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-
-static int open_socket(unit)
-
-char *unit;
-
-{
-    struct hostent *gethostbyname();
-    char *malloc();
-
-    char *p,*buf;
-    int  port,sock,st;
-    struct hostent     *remote;
-    struct sockaddr_in srv;
-
-    sock=socket(AF_INET,SOCK_STREAM,0);
-    if (sock == -1) {
-       fprintf(stderr,"Cannot create socket\n");
-       return(sock);
-    } 
-
-    buf=malloc(strlen(unit));
-    if (buf==NULL) {
-       fprintf(stderr,"Cannot allocate buffer\n");
-       return(-1);
-    }
-    strcpy(buf,unit+2);
-
-    for (p=buf; *p!='\0' && *p!=':'; p++);
-    if (*p=='\0') {
-       fprintf(stderr,"No port number in unit string, default to 8083\n");
-       port=8083;
-    } else {
-       *p='\0';
-       port=atoi(p+1);
-    }
-
-    remote=gethostbyname(buf);
-    if (remote==NULL) {
-       fprintf(stderr,"Cannot get host by name\n");
-       st= -1;
-    } else {
-       srv.sin_family=AF_INET;
-       srv.sin_addr.s_addr=INADDR_ANY;
-       srv.sin_port=htons(port);
-       srv.sin_addr= *((struct in_addr *) remote->h_addr);
-/*
-       memmove( &srv.sin_addr, remote->h_addr, remote->h_length);
-*/
-       st=connect(sock,&srv,sizeof(srv));
-       if (st== -1) fprintf(stderr,"Cannot connect to server\n");
-       else         st=sock;
-    }
-
-    free(buf);
-    return(st);
-}
-
-static int close_socket()
-
-{
-    return(1);
-}
-
-static int send_command(socket,command,arg)
-
-int  socket,arg;
-char *command;
-
-{
-    char str[81];
-    int js;
-
-    errno=EINTR;  /* Default: error */
-/*
-   Check if valid socket
-*/
-    if (socket<3) {
-       fprintf(stderr,"Invalid socket\n");
-       return(-1);
-    }
-/*
-   Create the command string
-*/
-    if (strlen(command)>40) command[40]='\0';
-    sprintf(str,"%-40.40s %+7.7d %30c",command,arg,'>');
-/*
-   Send the string to the socket
-*/
-    js=put(socket,str,80);
-    if (js!=80) {
-       fprintf(stderr,"Cannot send command on socket\n");
-       return(js);
-    }
-/*
-   Wait for reply
-*/
-    *str='\0';
-    js=get(socket,str,8);
-    str[js]='\0';                /* terminate the string */
-    if (js<=0) {
-       fprintf(stderr,"Cannot read response from socket\n");
-       return(js);
-    } 
-/*
-   Return status
-*/
-    errno=0;
-    js=atoi(str);
-    if (js<0) js= -1;           /* Should set errno as well... */
-    return( js );
-}
-
-
-/*
-    The trick to catch the EINTR has been shamelessly taken from 
-    the Gipsy routine mtiodev.c (KGB, Kapteyn Lab, Univ. of Groningen)
-*/
-
-static int put(socket,buf,size)
-
-int  socket,size;
-char *buf;
-
-{
-   int left,done;
-
-   for (left=size; left; left-=done,buf+=done) {
-      while ( (done=write(socket,buf,left)) == -1 && errno == EINTR);
-      if (done== -1) return(done);
-   }
-   return(size);
-}
-
-static int get(socket,buf,size)
-
-int  socket,size;
-char *buf;
-
-{
-   int left,done;
-
-   for (left=size; left; left-=done,buf+=done) {
-      while ( (done=read(socket,buf,left)) == -1 && errno == EINTR);
-      if (done== -1) return(done);
-   }
-   return(size);
 }
 

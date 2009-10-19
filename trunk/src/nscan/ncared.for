@@ -50,6 +50,7 @@ C			Skip solution if No data in scan
 C	WNB 980701	New MIFR calculations
 C	WNB 000725	Add variability calculation options polarisation
 C       WNB 070814      CHANGE MIFR
+C       WNB 091019      Back to pre-070814
 C
 C                                               
 	SUBROUTINE NCARED                       
@@ -181,7 +182,7 @@ C
 	REAL WGT1(0:STHIFR-1,0:3)               !DATA WEIGHTS XX,XY,YX,YY
 	INTEGER N		                !DATA COUNTS
 	REAL R2,R3
-	COMPLEX C0                              !WNB070814
+C!091019	COMPLEX C0                              !WNB070814
 C-                                              
 C                                               
 C INIT                                          
@@ -638,7 +639,9 @@ C
 	    END DO                                               
 !=
 C                                               
-C XYSOL(X=0:Y=1) indicates which of XX and YY polarisations must be processed                                C APSOL(gn=0:ph=1) does the same for gain, phase
+C           XYSOL(X=0:Y=1) indicates which of XX and YY polarisations
+C           must be processed
+C APSOL(gn=0:ph=1) does the same for gain, phase
 C XOSOL indicates complex-only processing       
 C DOALG: align or selfcal                       
 C DOSCAL: selfcal                               
@@ -1374,18 +1377,22 @@ C!980701		    EAV(I4,1,IGP,IXY)=100*(EXP(EAV(IFR,1,IGP,IXY)/
 C!980701	1                       JAV(IFR,1,IGP,IXY))-1)
 C!070814	    EAV(I4,1,IGP,IXY)=100*(EXP(EAV(IFR,4,IGP,IXY)/  !980701
 C!070814	1                       DAV(IFR,4,IGP,IXY))-1) !980701
-		    C0=CMPLX(EAV(IFR,4,IGP,IXY)/DAV(IFR,4,IGP,IXY),
-	1		    EAV(IFR,4,1,IXY)/DAV(IFR,4,1,IXY)) !070814
-		    IF (ABS(C0).NE.0) THEN                          !070814
-		      EAV(IFR,4,IGP,IXY)=100*REAL(LOG(C0))          !070814
-		      EAV(IFR,4,1,IXY)=DEG*AIMAG(LOG(C0)) !070814
-		    ELSE
-		      EAV(IFR,4,IGP,IXY)=0                          !070814
-		      EAV(IFR,4,1,IXY)=0                            !070814
-		    END IF
+		    EAV(I4,1,IGP,IXY)=100*(EXP(EAV(IFR,4,IGP,IXY)/ !091019
+	1		DAV(IFR,4,IGP,IXY))-1)                     !091019
+C!091019	    C0=CMPLX(EAV(IFR,4,IGP,IXY)/DAV(IFR,4,IGP,IXY),
+C!091019	1		    EAV(IFR,4,1,IXY)/DAV(IFR,4,1,IXY)) !070814
+C!091019	    IF (ABS(C0).NE.0) THEN                          !070814
+C!091019	      EAV(IFR,4,IGP,IXY)=100*REAL(LOG(C0))          !070814
+C!091019	      EAV(IFR,4,1,IXY)=DEG*AIMAG(LOG(C0)) !070814
+C!091019	    ELSE
+C!091019	      EAV(IFR,4,IGP,IXY)=0                          !070814
+C!091019	      EAV(IFR,4,1,IXY)=0                            !070814
+C!091019	    END IF
 		  ELSE                          !PHASE
 C!980701	EAV(I4,1,IGP,IXY)=DEG*EAV(IFR,1,IGP,IXY)/JAV(IFR,1,IGP,IXY)
 C!070814	    EAV(I4,1,IGP,IXY)=DEG*EAV(IFR,4,IGP,IXY)/DAV(IFR,4,IGP,IXY)
+		    EAV(I4,1,IGP,IXY)=DEG*EAV(IFR,4,IGP,IXY)/DAV(IFR,4,
+	1		IGP,IXY)                                    !091019
 		  END IF                        
 		  EAV(I4,2,IGP,IXY)=DAV(I4,2,IGP,IXY)
 		  EAV(I4,3,IGP,IXY)=DAV(I4,1,IGP,IXY)

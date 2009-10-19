@@ -15,6 +15,7 @@ C       WNB 950718	Typo for some machines
 C	WNB 980701	Add for new MIFR calculations
 C	CMV 030116	Acommodated for unsorted IFR table
 C       WNB 070814      Change in inconsistency calculations
+C       WNB 091019      Change back to old (pre-070814)
 C
 	LOGICAL FUNCTION NCARCS(MAR,NIFR,IFR,BASEL,NDEG,
 	1			IRED,WGT,AWGT,CDAT,AMP,PHAS,CMOD,CWGT,
@@ -526,7 +527,7 @@ C
 	1		-CSOL(TW1,1,0)+CSOL(TE1,1,0))) 	!CORRECTED DATA
 	      C0=C1-CELES(I1) 				!ERROR
 	      IF (ABS(CELES(I1)).NE.0) THEN
-		C2=C0/CELES(I1)                         !070714
+		C2=C0/CELES(I1)                         !070814
 	      ELSE
 		C2=0
 	      END IF
@@ -576,7 +577,7 @@ C
 	        EAV(I,1,I2)=EAV(I,1,I2)+J0*R0		!FRACT. NOISE
 	        JAV(I,2,I2)=JAV(I,2,I2)+J0		!IFR AVG RMS
 	        DAV(I,2,I2)=DAV(I,2,I2)+J0*(R1**2)
-		EAV(I,4,I2)=EAV(I,4,I2)+J0*R3*R2*R2     !980701 070814
+		EAV(I,4,I2)=EAV(I,4,I2)+J0*R0*R2*R2     !980701 070814 091019
 	        DAV(I,4,I2)=DAV(I,4,I2)+J0*R2*R2        !980701
 	      END DO
 	    END IF

@@ -94,7 +94,7 @@ static unsigned int timeout=1200;   /* Default timeout value */
 
 static int put();
 static int get();
-static int getline();
+static int getaline();
 static void getline_timed_out();
 
 /*
@@ -217,7 +217,7 @@ char *command,*retbuf;
 */
     while (js>=0) {
       *str='\0';
-      js=getline(str,2000,socket);
+      js=getaline(str,2000,socket);
       if (js<0) {
          fprintf(stderr,"Cannot read qed response from socket\n");
          return(-1);
@@ -279,7 +279,7 @@ char *buf;
 }
 
 
-static int getline(str,n,ld)
+static int getaline(str,n,ld)
 
 char *str;
 int n,ld;
@@ -294,7 +294,7 @@ int n,ld;
       if ( (ret = read(ld,&str[i],1)) <= 0) {
             /* Mmmmm, Solaris.  */
          if ( (ret == -1) && (errno == EINTR)) continue;
-         perror("qed getline");
+         perror("qed getaline");
          str[i] = '\0';
          return(i);
       }
@@ -305,7 +305,7 @@ int n,ld;
           alarm(0);
           signal(SIGALRM,SIG_IGN);
           str[i] = '\0';
-          if (i==(n-1)) fprintf(stderr,"qed getline: response too long\n");
+          if (i==(n-1)) fprintf(stderr,"qed getaline: response too long\n");
           return(i);
        }
        if (str[i] != CR) ++i;

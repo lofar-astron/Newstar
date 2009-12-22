@@ -182,7 +182,7 @@ static unsigned int timeout=1200;   /* Default timeout value */
 
 static int put();
 static int get();
-static int getline();
+static int getaline();
 static void getline_timed_out();
 
 /*
@@ -305,7 +305,7 @@ char *command,*retbuf;
 */
     while (js>0) {
       *str='\0';
-      js=getline(str,2000,socket);
+      js=getaline(str,2000,socket);
       if (js<=0) {
          fprintf(stderr,"Cannot read response from socket\n");
          return(-1);
@@ -363,7 +363,7 @@ char *buf;
 }
 
 
-static int getline(str,n,ld)
+static int getaline(str,n,ld)
 
 char *str;
 int n,ld;

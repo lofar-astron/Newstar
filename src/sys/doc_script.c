@@ -27,7 +27,7 @@ static char *s_line[]={"line","long"};
 
 /*****************************************************************************/
 
-char* getline (ln, len, f)
+char* getaline (ln, len, f)
 	char *ln; int len; FILE *f;
 {
 	char *p; char* st;
@@ -110,7 +110,7 @@ int main(argc,argv)
       	  return 1;
     	}
    
-    	while (getline(line,MAX_STRING,fp) !=NULL) {
+    	while (getaline(line,MAX_STRING,fp) !=NULL) {
 
 /* Find pointer to second word, if any  */        
      	  for (w2=line; *w2!=' ' && *w2!='\t' && *w2!='\0'; w2++);
@@ -193,7 +193,7 @@ Program prompt sequence
             prompt=deflt=user=cmt=NULL; forcereply=0;
 	    for (p=buf; user==NULL; ) {
               if (*p=='\0') {
-             	if (getline(line,MAX_STRING,fp)==NULL) { /* continuation line */
+             	if (getaline(line,MAX_STRING,fp)==NULL) { /* continuation line */
              	  if (prompt==NULL) prompt="(????)";
                   if (deflt==NULL)  deflt="= :";
              	  if (user==NULL)   user="??";

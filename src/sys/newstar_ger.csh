@@ -35,7 +35,6 @@ source $n_root/src/sys/newstar_env.csh
 #
 #  Any non-standard environment settings should be made here
 #
-setenv n_arch linux
 #
 #  Now do the general setup
 #

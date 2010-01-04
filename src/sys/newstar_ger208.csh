@@ -19,7 +19,7 @@
 #
 #  Define the name of this site
 #
-setenv n_site    ger
+setenv n_site    ger208
 setenv n_install li
 setenv n_hosts   dop208
 setenv n_ftp     ftp.astron.nl

@@ -14,6 +14,7 @@
 #     Revision:
 #	091221 AxC	Initialise 
 #       100103 WNB      Make newstar_ger208.csh
+#       100104 WNB      Correct for absence 'standard' login
 #-
 #
 #  Define the name of this site
@@ -29,6 +30,8 @@ setenv n_ftp     ftp.astron.nl
 # unset some variables if people started old system first
 unsetenv n_root n_src n_exe n_lib n_hlp n_arch n_doc
 unsetenv n_inc n_tst n_batch n_master n_remote
+# set the standard NFRA HOSTTYPE
+setenv HOSTTYPE linux
 # O.K. set root now
 setenv n_root /dop208_1/newstar
 setenv n_hlp  $n_root/hlp

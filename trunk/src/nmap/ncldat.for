@@ -14,6 +14,7 @@ C	CMV 931220	Pass FCA of input file to WNDXLP and WNDSTA/Q
 C	JPH 940221	Comments. - DMEMORY_USE prompt with default
 C       HjV 950512	Add data factor
 C       WNB 950621	New LSQ routines
+C       WNB 100128      Allow larger beam clean area
 C 
 C
 	SUBROUTINE NCLDAT
@@ -266,7 +267,7 @@ C
 	    ELSE IF (J0.LE.0) THEN
 	      MEMSIZ=I				!ASSUME VALUE
 	    END IF
-	    MEMSIZ=16*MEMSIZ                    !MAKE LARGER
+	    MEMSIZ=16*MEMSIZ+16                 !MAKE LARGER
 	    GOTO 23				!RETRY
 	  END IF
 C

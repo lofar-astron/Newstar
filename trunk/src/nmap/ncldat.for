@@ -261,11 +261,12 @@ C
 	    CALL WNCTXT(F_TP,'You may try to increase the memory size')
 	    IF (.NOT.WNDPAR('DMEMORY_USE',	!prompt with I as default value
 	1	MEMSIZ,LB_J,J0,
-	1	A_B(-A_OB),I,1)) THEN
-	      MEMSIZ=I				!ASSUME VALUE
+	1	A_B(-A_OB),I/16,1)) THEN
+	      MEMSIZ=I               		!ASSUME VALUE
 	    ELSE IF (J0.LE.0) THEN
 	      MEMSIZ=I				!ASSUME VALUE
 	    END IF
+	    MEMSIZ=16*MEMSIZ                    !MAKE LARGER
 	    GOTO 23				!RETRY
 	  END IF
 C

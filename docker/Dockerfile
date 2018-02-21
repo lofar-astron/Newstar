@@ -3,9 +3,10 @@
 FROM ubuntu:8.04
 
 # Install dependencies
-RUN apt-get update && apt-get install -y build-essential git tcsh g77 wget vim libx11-dev libncursesw5-dev
+RUN apt-get update && apt-get install -y build-essential git tcsh g77 wget vim libx11-dev libncursesw5-dev sudo
 
-RUN useradd -ms /bin/tcsh newstar
+RUN useradd -ms /bin/tcsh newstar && echo "newstar:newstar" | chpasswd && adduser newstar sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER newstar
 

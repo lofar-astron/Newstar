@@ -1,0 +1,27 @@
+<TITLE>Description of USER_FLAG (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword USER_FLAG</H1> 
+
+<DT><EM>Prompt:</EM> default flag type(s) NONE, ALL, MAN, CLIP, NOISE, ADD, SHAD, |U1, U2, U3; OLD 
+<DT><EM>Expected input:</EM> Character(16), 16 values.<P>
+ Specify the default flag type(s) for flagging operations. <P>
+    NONE:      no flag type specified (i.e. use default types) 
+    ALL or *   all flag types (not very useful) 
+    MAN        flag type for the MANUAL class of operations 
+    CLIP       flag type for the CLIP class of operations 
+    NOISE      flag type for the NOISE class of operations 
+    ADD        flag type for the ADDITIVE class of operations 
+    SHAD       flag type for the SHADOW class of operations 
+    U1, U2, U3 'user' flag types, i.e. types you may use as you please <P>
+Note:   Flags U1, U2, U3 can be used to experiment with some flagging operation 
+        without affecting the flag type that is 'officially' associated 
+        with the same operation. <P>
+    OLD        use the flag type for the 'OLD' class (i.e. flagged before 
+                930609, and converted with NVS option) 
+                NB: OLD uses the same flag-bit as MAN  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

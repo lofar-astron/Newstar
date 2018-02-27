@@ -1,0 +1,20 @@
+<TITLE>Description of DECONVOLUTION (NCLEAN)</TITLE>
+<H1>Program NCLEAN: private keyword DECONVOLUTION</H1> 
+
+<DT><EM>Prompt:</EM> Correct antenna pattern for mapping taper: YES/NO
+<DT><EM>Default:</EM> NO /NOASK.
+<DT><EM>Expected input:</EM> Logical.<P>
+The gridding convolution in map-making is usually compensated for by 
+multiplying the output map and antenna pattern with a taper function that rises 
+toward the map edges. <P>
+If this is the case, answering YES here will instruct the program to account 
+for this effect; this will reduce the aliasing errors in the residual map,  
+allowing you to clean a somewhat larger part of the map. YES will in general 
+produce a result with less aliasing, NO the reverse. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nclean/nclean_keys.html">List of keywords</A> for NCLEAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nclean_descr/nclean_descr.html">program NCLEAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

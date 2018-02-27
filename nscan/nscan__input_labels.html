@@ -1,0 +1,24 @@
+<TITLE>Description of INPUT_LABELS (NSCAN)</TITLE>
+<H1>Program NSCAN: private keyword INPUT_LABELS</H1> 
+
+<DT><EM>Prompt:</EM> input tape labels
+<DT><EM>Expected input:</EM> Integer number, 256 values.<P>
+Specify the tape labels to be read. <P>
+   '*' selects all labels <P>
+   '&lt;begin&gt; TO &lt;end&gt;&gt; BY &lt;step&gt;' selects labels &lt;begin&gt;, &lt;begin&gt;+&lt;step&gt;, ... 
+        up to &lt;end&gt;. The 'BY &lt;step&gt;' part may be omitted. 
+   BEWARE: The notation &lt;begin&gt;-&lt;end&gt;:&lt;step&gt; will be interpreted as an 
+        expression and give incorrect results <P>
+Each of the selected labels will be stored in the .SCN file as a separate 
+'observation' (obs) in the current 'group' grp. (Remember that .SCN file 
+'sectors' are identified by indices grp.obs.fld.chn.seq). <P>
+Example: 
+        If the current group nr is &lt;g&gt;, the selected input labels will be 
+stored sequentially in the .SCN file as observations &lt;g&gt;.0, &lt;g&gt;.1, &lt;g&gt;.2  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nscan/nscan_keys.html">List of keywords</A> for NSCAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nscan_descr/nscan_descr.html">program NSCAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

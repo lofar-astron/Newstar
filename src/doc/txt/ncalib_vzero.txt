@@ -1,0 +1,82 @@
+The VZERO algorithm	- JPH 960212
+
+Summary
+-------
+	Following a query by Jayaram Chengalur, this note provides an exegesis of W.N. Brouw's algorithm for determining the phase-zero-difference ('PZD') between the XX and YY interferometer subsets as implemeneted in the Newstar program NCALIB. The 180-degree ambiguity suggested by Chengalur appears indeed to exist; I suggest that a check could be implemented to insure selection of the  proper value for the PZD.
+				-------------
+
+
+Brouw's algorithm
+-----------------
+	I reproduce here the relevant lines of code from the program module NCAPVZ where the PZD is calculated:
+
+
+ 1	    DO I1=0,STHJ(STH_NIFR_J)-1			!ALL IFRS
+ 2	      IF (WGT(I1,1).GT.0 .AND. WGT(I1,2).GT.0 .AND. !XY/YX PRESENT
+ 3	1		ABS(DATC(I1,2)).NE.0) THEN	!SOME POWER
+ 4		CF=1					!COEFFICIENT
+ 5		CW=-DATC(I1,2)*DATC(I1,1)		!-YX.XY
+ 6		R0=ABS(CW)				!WEIGHT
+ 7		IF (R0.NE.0)
+ 8	1		CALL WNMLMN(MAR,LSQ_C_COMPLEX,CF,R0,
+ 9	1			(DATC(I1,2)-CONJG(DATC(I1,1)))/SQRT(CW))
+			.
+			solve 
+			.
+	IF (ABS(CSOL).NE.0) THEN
+10	  XYDIF=ATAN2(AIMAG(CSOL),REAL(CSOL))		!GET ANGLE
+	ELSE
+	  XYDIF=0
+	END IF
+11	CALL WNCTXT(F_TP,'A complex angle of !EC9.2\(!EC9.2) '//
+	1		'or !EAR9.2 degrees',
+	1		CSOL,CME,XYDIF)
+C
+
+	1: Process all interferometers, I1 = interferometer index
+	2: DATC = cpomplex visibility, WGT = weight; the first index is the 
+	   interferometer number, second index is 1 for XY, 2 for YX. Check 
+	   validity of data: if weight WGT equals 0, point has been deleted.	
+	3: This check seems to be redundant: If either XY or YX is 0, so will 
+	   be R0 in line 6 and consequently lines 8 and 9 will be skipped.
+	5: CW = -XY.YX
+	6: R0 = weight of this interferometer in the solution.
+	7: If the weight is 0, bypass lines 8 and 9 including the division by
+	   sqrt(CW).
+	8: Accumulate sum of (XY-YX*)/sqrt(-XY.YX) with weights |XY.YX|.
+	10: The result is a complex number, the weighted average of the 
+	   quantities of line 9 over all interferometers; its argument is the 
+	   phase difference we were after.
+	11: The test displaying this result is a bit sloppy!
+ 
+So the quantity that is averaged (line 8) is
+
+		P = sqrt(XY/YX) - sqrt(YX*/YX).sqrt(YX/XY)
+
+
+Interpretation
+--------------
+
+	I suggest the following interpretation:
+
+We seek to minimise |V| by multiplying X with a factor a.e^(i.phi), so
+
+		YX' = YX.a^2.e^(2i.phi)
+
+making
+
+		P' = sqrt(XY/YX) - a.e^(i.phi).sqrt(YX/XY)
+
+Setting P' = 0 gives us 
+
+		a.e^(i.phi) = sum[sqrt(XY/YX)] / sum[sqrt(YX/XY)]
+
+The amplitude factor a should be 1 after XX and YY Selfcal, and could be used for a consistency check. NCALIB implicity displays its value by printing out a.e^(i.phi) as a 'complex angle', but otherwise ignores it. 
+
+
+The PZD ambiguity
+-----------------
+ 
+	The 180-degree ambiguity in the VZERO determination noted by Chengalur is represented in the algorithm above by the sign ambiguity of the sqrt() function. 
+
+	It seems to me that whatever algorithm one uses, there is probably no way to avoid the appearance in one form or another of a factor 2 on the unknown phase phi. This means that one must check afterwards in some way that the algorithm selected the right value; for a calibrator there should be enough flux in a single scan to do this straightaway.  

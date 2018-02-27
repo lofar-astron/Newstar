@@ -1,0 +1,31 @@
+<TITLE>Description of GAIN_NORM (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword GAIN_NORM</H1> 
+
+<DT><EM>Prompt:</EM> Gain reference telescopes
+<DT><EM>Expected input:</EM> Integer number, 14 values.<P>
+Define the telescopes to be used as reference for renormalising the telescope 
+gains. <P>
+Your reply should be an array of values (separated by commas) for telescopes 0 
+through D; 1 means that you select the telescope, 0 that you don't. Trailing 0s 
+may be omitted. <P>
+A wildcard ('*') means 'all', i.e. 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 <P>
+Example: 
+        0, 1, 0, 1, 0 means 'use telescopes 1 and 3 as reference' <P>
+NOTES: <P>
+Renormalisation adjusts the gains so that the average for the fixed telescopes 
+selected equals that for the moving telescopes. If either group is absent from 
+yous selection, the average gain of the other group is made 0. <P>
+Consequently, proper gain renormalisation is possible only for the 'standard' 
+WSRT configuration: If there are any fixed-fixed or movable-movable 
+interferometers, a message will be given and the operation aborted. <P>
+You may, however, insist by putting a -1 instead of any of the 1s in your 
+reply. The renormalisation will then be performed as if the fixed-movable 
+interferometers were absent, and a warning given that the gain corrections for 
+those interferometers are jeopardized. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

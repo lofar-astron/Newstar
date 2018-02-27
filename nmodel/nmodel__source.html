@@ -1,0 +1,31 @@
+<TITLE>Description of SOURCE (NMODEL)</TITLE>
+<H1>Description of general keyword SOURCE</H1>
+
+<DT><EM>Prompt:</EM> I, l, m, id, Q, U, V, lax, sax, pa, si, rm, rs
+<DT><EM>Expected input:</EM> Real number, 13 values.<P>
+Specify the source parameters in order shown. <P>
+   I            intensity (W.U.) 
+   l, m         coordinates w.r.t. reference (arcsec) 
+   id           identification number (see below) 
+   Q            Stokes Q relative to I (%) 
+   U            Stokes U relative to I (%) 
+   V            Stokes V relative to I (%) 
+   lax          long-axis full halfwidth (arcsec, =0 for a point source) 
+   sax          short-axis full halfwidth (arcsec, =0 for a point source) 
+   pa           position angle of long axis (degrees, North through East) 
+   si           spectral index 
+   rm           intrinsic rotation measure ( rad/m**2 at 1 Ghz) 
+   rs           reserved <P>
+You may omit values that you want to leave alone, but not the commas that 
+delimit them. Trailing values and commas may be omitted. <P>
+    Example: 
+        , , 3 will set m to 3 and leave all other parameters unchanged. <P>
+The identification number is of the form <P>
+        &lt;sequence number&gt;-&lt;mask byte&gt; 
+  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_comm.html">List of general keywords</A> for NMODEL
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

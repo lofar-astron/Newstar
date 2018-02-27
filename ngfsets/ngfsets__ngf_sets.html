@@ -1,0 +1,54 @@
+<TITLE>Description of NGF_SETS (NGFSETS)</TITLE>
+<H1>Description of general keyword NGF_SETS</H1>
+
+<DT><EM>Prompt:</EM> Sectors to do:  grp.fld.chn.pol.iort.seq 
+<DT><EM>Expected input:</EM> Character(32), 64 values.<P>
+	A NEWSTAR .NGF file contains visibilities and associated data for one 
+or more objects. The basic unit of data is the CUT, which is a one-dimensional 
+vector of some type of data extracted from a .SCN file. The data may be either 
+visibilities or associated data such as corrections; they may be associated 
+with an interferometer or with a telescope. Cuts are addressed through a CUT 
+INDEX which is a string of six integers separated by dots: <P>
+	grp.fld.chn.pol.iort.seq <P>
+	A GROUP is basically an administrative unit, allowing the user to 
+subdivide his data, e.g. per object. 
+	The FIELD and CHANNEL are the field and channel numbers in the .SCN 
+file of the observation from which the cut was taken. 
+	POL is a number indicating the polarisation. For interferometer data,  
+pol=0, 1, 2, 3 represents XX, XY, YX, YY. For telescope data pol=0, 1 represents X, Y. 
+	Depending on the type of data, IORT is the interferometer or telescope 
+number. (The former is difficult to interpret; rather use the SELECT_IFRS 
+parameter if you want to select interferometers.) 
+	The cut SEQuence number distinguishes cuts for which all five of the 
+preceding indices are identical. It is your responsibility to know what the 
+different seq values represent. <P>
+	Index values start at zero. (Remember that for the CHN index 0 is the 
+continuum channel.) <P>
+	You may select SETS of cuts for processing through [ranges of] values 
+for the ive indices, e.g. <P>
+		2.3-5:2.*.1-7.*.2 <P>
+The WILDCARD value '*' means 'all'. Each index may also be specified as a 
+RANGE: &lt;first&gt;-&lt;last&gt;[&lt;:increment&gt;]. Indices omitted are assumed to be '*',  
+i.e.  ...1.0  means *.*.*.1.0. For wildcards at the end the dots may also be 
+omitted, i.e. 1.0 means 1.0.*.*.* <P>
+	The notation 3-5:2 stands for 'from 3 through 5 in steps of 2'. The 
+step must be positive. If it is omitted, it is taken to be 1 (as in '1-7' 
+above). <P>
+	Multiple cut SETS may be specified, separated by comma's: 
+&lt;Set1&gt;, &lt;Set2&gt;, ... The associated NGF_LOOPS keyword allows even more looping 
+over index values. <P>
+IF YOU WANT TO BE REMINDED OF WHAT CUTS ARE IN YOUR FILE: 
+	Type O or L in response to this prompt to get an Overview or Layout 
+	of your .NGF file. <P>
+IF YOU DO NOT YET FEEL COMFORTABLE WITH THESE CONCEPTS MORE HELP IS PROVIDED: 
+	Type '@' or '&gt;' to be prompted for each of the 6 indices separately,  
+	with more specific explanation per index. <P>
+IF YOU GET BORED WITH 6-NUMBER INDICES: 
+	Absolute Cut nrs '#&lt;n&gt;' can be used as an alternative. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngfsets/ngfsets_comm.html">List of general keywords</A> for NGFSETS
+<LI>Description of the <A HREF="../ngf_descr/ngf_descr.html">NGF file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,175 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Source models and their construction </b> <P><em>Contributed by Johan Hamaker, December 1994  <P></em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=make_model.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=make_model.html#SECTION0002000000000000000>  <b>The use of source models </b></A>
+<LI> <A NAME=tex2html3 HREF=make_model.html#SECTION0003000000000000000>  <b>The <i>NEWSTAR </i> source model </b></A>
+<LI> <A NAME=tex2html4 HREF=make_model.html#SECTION0004000000000000000>  <b>Model-making in the map domain </b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=make_model.html#SECTION0004100000000000000>  <b>CLEAN </b></A>
+<LI> <A NAME=tex2html6 HREF=make_model.html#SECTION0004200000000000000>  <b>NMODEL FIND </b></A>
+</UL> 
+<LI> <A NAME=tex2html7 HREF=make_model.html#SECTION0005000000000000000>  <b>Model refinement in the visibility domain </b></A>
+<UL> 
+<LI> <A NAME=tex2html8 HREF=make_model.html#SECTION0005100000000000000>  <b>Cotton-Schwab CLEAN </b></A>
+<LI> <A NAME=tex2html9 HREF=make_model.html#SECTION0005200000000000000>  <b>NMODEL UPDATE </b></A>
+</UL>
+</UL>
+<A NAME=.source.use><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000>  <b>The use of source models </b></A></H1>
+<P>
+        The maps that a synthesis instrument produces do not represent the <em>true sky</em>, but the true sky convolved with the instrumental response, the so-called <em>synthesised beam</em>.
+<P>
+        Whether or not this form is an adequate representation for the purposes of the observer depends both on the information he is trying to extract and on the 'completeness' of the observation. In many cases it will be desirable to obtain a purer representation of the true source distribution. What one needs, then, is a <em>model</em> of the source; the process of constructing such a model is known under various names, such as <em>model-making</em> and <em>deconvolution</em>.
+<P>
+        Even if the user could dispense with a model, a model is needed in <em>self-calibration</em>, the process which seeks to determine instrumental errors from the observation itself. In self-calibration, a source model and a model of the instrumental errors are built up side by side, using algorithms that take into account <em>a priori</em> knowledge about their signatures in an observation.
+<P>
+        Deconvolution amounts to extrapolating from the data actually observed into in the rest of the data domain: In aperture synthesis, one tries to estimate the visibilities between and outside the interferometer baselines and hour angles covered by the observation. The extrapolation is essentially no more than an 'intelligent guess' and one must always remain wary of the possibility that it may be wrong, - in particular when the observed field has complex structure, and/or when the observation has incomplete hour-angle or baseline coverage or parts are unusable due to interference. You are advised to start with relatively simple cases and only tackle more complicated jobs when you have developed a feeling for the possibilities and pitfalls of the methods.
+<P>
+<H1><A NAME=SECTION0003000000000000000>  <b>The <i>NEWSTAR </i> source model </b></A></H1>
+<P>
+        A <em>source model</em> is a list of <em>source components</em> that together approximate the true brightness distribution of a region on the celestial sphere. 
+        A simple and widely known type of model is the list of CLEAN components. A CLEAN model is restricted by the fact that its components lie on grid points of the map in which they were found and that they are point sources. In <i>NEWSTAR </i> a much more general model is used: 
+<UL><LI>   Components can be arbitrarily placed. 
+<LI>   Components can have an elliptic-Gaussian shape, characterised by its half-widths along the long and short axes and the position angle of its long axis.
+<P>
+<LI>   Components can have a spectral index.
+<P>
+<LI>   Components can be polarised, their polarisation state being described by the ratios of stokes parameters <em>Q/I, U/I, V/I</em> as well as an intrinsic rotation measure. 
+</UL>
+<P>
+        Obviously, to take full advantage of these modeling options one needs a lot of functionality. Not all of it is presently available in <i>NEWSTAR </i>, and you are encouraged to share with us ideas that you might have on extending what exists.
+<P>
+<A NAME=.clean.vs.find><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Comparison of <em>(a)</em> the iterative CLEAN and <em>(b)</em> NMODEL FIND/UPDATE procedures. <BR><A HREF="../fig/clean_vs_find.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i>Drawn lines show the process loops, dashed lines the auxiliary data involved. <BR><BR>(a) In CLEAN, both the source finding and subtraction occur in the map and can therefore be combined in a single program, <em>NCLEAN</em>. <BR><BR>(b) In FIND, sources are modeled in the map but their subtraction must take place in the visibility domain when a new map is made. <BR>In UPDATE, parameters of an existing source model are refined by comparing the corresponding visibilities against the observed ones. <BR><BR>In both procedures, the final product is a source model plus a residual map containing, along with error artefacts, a fraction of the source that has not (yet) been modeled. </i>
+<P>
+<A NAME=.methods><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000>  <b>Model-making in the map domain </b></A></H1>
+<P>
+<A NAME=.clean><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004100000000000000>  <b>CLEAN </b></A></H2>
+<P>
+        The most well-known method of constructing a source model is through the <A HREF="../nclean_descr/nclean_descr.html">CLEAN algorithm</A>. In its simplest form, this iterative algorithm consists of a repetition of the following steps:
+<P>
+<UL><LI>   Find the highest point in the map.
+<P>
+<LI>   Subtract from the map the theoretical response corresponding to a point source at that position with some fraction of the peak intensity found. 
+</UL>
+<P>
+The user defines the map areas in which sources are looked for, and also has control over several other process parameters. Since CLEAN removes each model component found from the map, it is capable in principle of modeling an entire observed field in a single operation.
+<P>
+        The model obtained is a collection of point sources at map-grid positions. Consequently, a CLEAN model is not particularly suitable for representing point sources at arbitrary locations nor for sources of an extent in the order of a few syntesised-beam widths. It is, on the other hand, the only representation we have for extended sources of arbitrary shape.
+<P>
+        CLEAN depends on the subtraction of an antenna pattern shifted to the position of each new source component. Since an antenna pattern normally has the same size as the map to which it applies, shifting it leaves part of the map 'uncovered'. Moreover, both the map and the antenna pattern are contaminated near their edges by aliasing effects. The net result is that satisfactory CLEANING is limited to (somewhat less than) the central quarter of the map.
+<P>
+        For incomplete observations (e.g. Southern sources with limited hour-angle coverage) CLEAN is known to produce artefacts (i.e. incorrect visibility interpolations) which are difficult to control.
+<P>
+        Several variations on the basic theme of CLEAN have been proposed, both to speed it up and to suppress undesirable artefacts. <i>NEWSTAR </i>'s 
+<A HREF="../nclean_descr/nclean_descr.html">NCLEAN</A> includes only a few of these; of them, Cotton-Schwab CLEAN is the most inportant one because it addresses the fundamental limitations outlined above.
+<P>
+<A NAME=.nmodel.find><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004200000000000000>  <b>NMODEL FIND </b></A></H2>
+<P>
+        The FIND algorithm in NMODEL determines source positions and shapes by fitting a two-dimensional quadratic function to selected source peaks. The selection is made by finding peaks in the map as for CLEAN; the user defines the map areas in which such peaks are looked for.
+<P>
+        Subtracting the source components found is not part of the FIND process. Therefore, FINDing can only proceed to the extent that sources being fitted are not too much disturbed by sidelobes from other sources. Before prpoceeding any further, one must first make a new map in which the source model constructed so far is subtracted.
+<P>
+        <A HREF=" #.clean.vs.find">Figure</A> shows the similarities and differences between FIND and CLEAN.
+<P>
+<A NAME=.model.refine><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000>  <b>Model refinement in the visibility domain </b></A></H1>
+<P>
+        The complicated details of making a map on a Cartesian grid out of the visibilities observed on a polar grid need not concern us here. It is important to realise, however, that it involves several parameters whose definition is in principle quite arbitrary:
+<P>
+<UL><LI>   The <em>convolution function</em> used in interpolating the visibilities from a polar grid to a Cartesian grid.
+<P>
+<LI>   The <em>taper function</em> used for weighing down the long baselines in order to suppress near-in sidelobes in the antenna pattern.
+<P>
+<LI>   The selection of baselines and hour angle ranges, which may be dictated by scheduling constraints, malfunctions and interference. 
+</UL>
+<P>
+        The choice of such parameters affects the source-modeling procedures in various ways, <em>e.g.</em>:
+<P>
+<UL><LI>   In general, the model cannot be expected to accurately represent structure on a scale significantly smaller than the syntesised beamwidth. Thus, the model to be constructed from a map is affected by the taper used in making the map.
+<P>
+<LI>   The peak-fitting process in FIND is affected by sidelobes from other sources: A sloping sidelobe will shift the peak. a non-zero local 'base level' in the map will result in an incotrrect flux estimate. 
+</UL>
+<P>
+        CLEAN, being an iterative procedure, automatically corrects inaccuraccies in its flux determinations, but it works only for the central part of the map as discussed above. FIND does not do this <em>per se</em>. In all methods, the ultimate method of source removal rely on a comparison or subtraction not in the map, but in the visibility domain.
+<P>
+<A NAME=.cotton><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005100000000000000>  <b>Cotton-Schwab CLEAN </b></A></H2>
+<P>
+        Cotton-Schwab CLEAN is a variant of CLEAN is which only a rough model is constructed in the map domain and then properly subtracted in the visibility domain. This variant of CLEAN is thus very similar to the FIND loop of 
+<A HREF=" #.clean.vs.find">figure</A><em>b</em>, the difference being that instead of FIND a quick-and-dirty H&#246;gbom CLEAN is used.
+<P>
+<A NAME=.nmodel.update><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005200000000000000>  <b>NMODEL UPDATE </b></A></H2>
+<P>
+<A NAME=.model.update><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Schematic diagram of the model-update operation. 
+<A HREF="../fig/model_update.ps"><STRONG>FIGURE</STRONG></A> 
+ <i><BR><BR>The observation consists of the true source visibilities plus observing errors. The source model consists of the true source components minus some unknown defects. 
+<BR><BR>It is these latter defects that the update procedure tries to determine. To do this, it transforms the model into visibilities and compares it to the observed visibilities. It then uses a least-square model fit to determine which part of the difference is attributable to a model defect. 
+<BR><BR>The update model to be fitted is different for each model component; moreover it depends on constraints defined by the user in the form of an update mode (i.e. update position, update flux, update extents etc.) </i>
+<P>
+        As discussed above, both iterated FINDing and Cotton-Schwab CLEAN rely on successive refinement of the model by locating additional components in the map domain. NMODEL's UPDATE function refines the model through a compariuson in the <em>visibility</em> domain; in doing so it relies exclusively on observed data and avoids all the ambiguities introduced by the <A HREF="#.model.refine">map-making process</A>.
+<P>
+        The UPDATE procedure is shown schematically in <A HREF=" #.model.update">figure</A>. Starting from an initial model (typically generated by FIND), it calculates its contribution to the observed visibilities. It then tries to explain the difference between observed and model visibilities in terms of errors in the parameters of each of the model components and adjusts the components accordingly. The result is an improved model. i.e. one that more accurately represents the true observed source distribution.
+<P>
+        Note that UPDATE does not generate any new components. Thus, a complete source model can usually only be obtained by iterating through FIND and UPDATE, mixing in some form of CLEAN for modeling the more extended sources.
+<P>
+        A very neat property of UPDATE is that it suppresses 'mistaken' sources: for example, peaks in the map where grating rings of two sources cross and sources 'aliased in' from ouside the observed field. For such sources, no corresponding pattern exists in the visibility data and UPDATE consequently cancels them.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

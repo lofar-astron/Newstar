@@ -1,0 +1,21 @@
+<TITLE>Description of DRY_SCANS (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword DRY_SCANS</H1> 
+
+<DT><EM>Prompt:</EM> Number of scans to use in trial runs
+<DT><EM>Expected input:</EM> Integer number; min.value: 1.000000.<P>
+'Clipping' operations need (a) threshold value(s) that is (are) related to the 
+magnitude of the data at hand. <P>
+The program determines a 'rasonable' default for such cases by performing a 
+'trial run' on the first of the scans in the data cube selected. You may 
+specify their number here. The trial run evaluates the clipping criterion but 
+does NOT modify the .SCN file.  For data with reasonably stationary statistics,  
+the default number should be adequate. A larger number obviously will take more 
+time to process. If you specify a very large number, the trial run will include 
+the entire data cube selected.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

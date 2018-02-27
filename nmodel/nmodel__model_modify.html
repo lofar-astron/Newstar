@@ -1,0 +1,42 @@
+<TITLE>Description of MODEL_MODIFY (NMODEL)</TITLE>
+<H1>Description of general keyword MODEL_MODIFY</H1>
+
+<DT><EM>Prompt:</EM> Model-handling action MERGE, RMERGE, SORT, FSORT; CALIB, EDIT, FEDIT, FLUX_KNOWN;| -DEL, DNCLOW, DCLOW, DAREA; SHOW, QUIT
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify what you want to do with the model list in core: <P>
+   Consolidating/rearranging the list: <P>
+        MERGE   Combine (point-) sources at the same position. 
+                 Must have the same spectral index and rotation measure. 
+                 Stokes Q, U, V are properly taken into account. 
+                 CLEAN components are NOT combined with non-CLEAN comp. 
+                 Extended sources are ignored. 
+        RMERGE  As MERGE, but within specified radius (which may be 0). 
+                 The (l, m) position of the strongest source is taken. 
+                 CLEAN components are combined if at the same position. 
+!!               Discard duplicates or add fluxes? See MODEL_ACTION MERGE 
+!!               below 
+        SORT    Sort source list in decreasing amplitude. (This will be done 
+                 automatically when you write the list back to a .MDL file.) 
+        FSORT   Sort on a specified field in source list (for subsequent 
+                 display) <P>
+   Modifying sources in the list: <P>
+        CALIB   Calibrate the source list to a new amplitude and/or position 
+        EDIT    Edit source list (an amplitude of zero will delete the source) 
+        FEDIT   Edit a field in a range of sources 
+        FLUX_KNOWN Toggle the 'unknown-flux' bit. When this bit is off, NCALIB 
+                 will by default refrain from attempting a Selfcan gain 
+                 solution. <P>
+   Deleting sources in the list: <P>
+        DEL     Delete sources 
+        DNCLOW  Delete non-clean sources with low amplitudes 
+        DCLOW   Delete clean components with low amplitudes 
+        DAREA   Delete sources in specified area <P>
+   Miscellaneous: <P>
+        SHOW       Show the list. (You will be prompted for details) <P>
+        QUIT       Quit model-handling.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_comm.html">List of general keywords</A> for NMODEL
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

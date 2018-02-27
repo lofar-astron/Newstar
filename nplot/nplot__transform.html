@@ -1,0 +1,38 @@
+<TITLE>Description of TRANSFORM (NPLOT)</TITLE>
+<H1>Program NPLOT: private keyword TRANSFORM</H1> 
+
+<DT><EM>Prompt:</EM> Grey-scale transfer coefficients:|-
+up to 5 groups of 2 limits plus 3 coefficients of quadratic|
+<DT><EM>Expected input:</EM> Real number, 5 values, min: 3.<P>
+Specify the range coefficients for the CONTINUOUS quadratic transfer function 
+that you selected. 
+!               {\em parameter \textref{HALFTONE}{.halftone} } <P>
+Remember that the data at this point have been normalised to the range [0, 1]. 
+You may specify 5 values, of which the first three are REQUIRED: <P>
+        m, M     Range of normalised data values to be represented by the full 
+                 halftone range. Values outside this range will be truncated. 
+        a, b, c   The 0-th through 2nd-order coefficients in the transfer 
+                 quadratic. <P>
+The result will be ('ndv' = normalised data value): <P>
+        ndv &lt; m:         OUT = 0                         (white) 
+        m &lt; ndv &lt; M:     OUT = a + b*IN + c*IN*IN        (grey scale) 
+        ndv &gt; M:         OUT = 1                         (black) <P>
+You may break the IN range up into partial ranges by specifying multiple sets 
+of m, M, a, b, c separated by semicolons, or specifying the sets one by one as the 
+prompt is repeated. Input will be considered complete when you give no new 
+reply. <P>
+Examples: 
+        standard linear, halftone=ndv:  0, 1, 0, 1 
+        ndv distance from .5:           0, .5, 1, -2; .5, 1, -1, 2 
+        four grey levels:               0, .25, 0; .25, .5, .25; .5, .75, .5; .75, 1, 1 
+        an approximation to an exp 
+         that seeks to match the 
+         quasi-logarithic response 
+         of the human eye:              0, 1, 0, .1, .9  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nplot/nplot_keys.html">List of keywords</A> for NPLOT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nplot_descr/nplot_descr.html">program NPLOT</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,31 @@
+<TITLE>Description of . (SELECT)</TITLE>
+<H1>Description of general keyword .</H1>
+
+<DT><EM>Prompt:</EM> Changes to the telescope selection|
+<DT><EM>Expected input:</EM> Character(4), 20 values.<P>
+ Specify how you want to change the telescope selection. <P>
+The following codes are used to identify (groups of) telescopes: <P>
+	P       show the present selection table <P>
+   For the WSRT: 
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D: 
+		individual WSRT telescopes (case-insensitive) 
+	*       all telesopes 
+	F       all fixed telescopes = 0 through 9 
+	M       all movable telescopes = A through D 
+	Y       telescopes A and B 
+	Z       telescopes C and D <P>
+   Additional codes for the Australian Telecope Compact Array (ATCA): 
+	T       ATCA telescopes (8-D) 
+	U       the ATCA complement (0-7). <P>
+A telesope specification without a prefix or prefixed with a + sign is 
+SELECTED, a specification with a minus sign prefixed is ELIMINATED. Selection 
+and elimination are incremental. Up to 20 select/eliminate specifications may 
+be given, separated by comma's; they will be honored in the order in which you 
+give them. Prompting will continue until you stop replying. <P>
+Examples: -*, 3, +3, -8, *, -F, -U, T <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../select/select_comm.html">List of general keywords</A> for SELECT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

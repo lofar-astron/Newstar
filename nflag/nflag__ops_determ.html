@@ -1,0 +1,36 @@
+<TITLE>Description of OPS_DETERM (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_DETERM</H1> 
+
+<DT><EM>Prompt:</EM> Select coordinate criterion | SHAD, PBAS , ELEVATION; REDUN, NONRED; INSPECT, STATIST, MODE, CLEAR, QUIT 
+<DT><EM>Expected input:</EM> Character(24).<P>
+ Remember that only the primary data cube is affected. <P>
+   Flagging of data points on the basis of their coordinates. The flag type is 
+   SHADOW, unless you have selected your own type (parameter FLAG_MODE). <P>
+        SHAD      In each scan, flag all data that are affected by 'shadowing',  
+                   i.e. all interferometers in which the aperture of either 
+                   telecope is partly blocked by another telescope in the line 
+                   of sight. <P>
+        PBAS      Flag all data for which the length of the projected baseline 
+                   is within a range (for which you will be prompted). This is 
+a 
+                   way to eliminate short baselines susceptible to 
+interference,  
+                   without losing more data than necessary. <P>
+        ELEVATION Flag all uv-data that have been taken at elevations below a 
+                   limit (for which you will be prompted). <P>
+        REDUN     Flag all redundant baselines. 
+        NONRED    Flag all non-redundant baselines. <P>
+   Navigation: <P>
+        INSPECT Make detour into the (flag) INSPECTion section of the program 
+        STATIST Make detour into the (data) STATISTics section of the program 
+        MODE    Make detour into the enviornment MODE-control section of the 
+                 program 
+        CLEAR   Go to the CLEAR-flags operation. 
+        QUIT    Return to FLAG_OPTION.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

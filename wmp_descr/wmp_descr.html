@@ -1,0 +1,213 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The WMP-file (image data)</b>  
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=wmp_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=wmp_descr.html#SECTION0002000000000000000> <b>Organisation of the WMP file: Maps</b></A>
+<LI> <A NAME=tex2html3 HREF=wmp_descr.html#SECTION0003000000000000000> <b>File layout and file header</b></A>
+<LI> <A NAME=tex2html4 HREF=wmp_descr.html#SECTION0004000000000000000> <b>The Map header</b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=wmp_descr.html#SECTION0004100000000000000> <b>Explanation of items in the Map header</b></A>
+</UL> 
+<LI> <A NAME=tex2html6 HREF=wmp_descr.html#SECTION0005000000000000000> <b>The Map data</b></A>
+</UL>
+<A NAME=.organ><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0002000000000000000> <b>Organisation of the WMP file: Maps</b></A></H1>
+<P>
+        The <i>NEWSTAR </i> WMP file contains `image data', i.e.  a collection of 2-dimensional arrays of data.  The various `images' in a WMP file <i>are related in some way</i>, but do not have to have the same dimensions.  Examples are radio maps at various frequencies (line observations), polarisations, or pointing directions (mosaicking).  There may also be antenna patterns and various kinds of residual maps, or even rectangular arrays ov uv-data.
+<P>
+The basic unit in the WMP file is the Map (a 2-dimensional array of pixel values). It can be selected by the user by means of 6 integer indices:  
+<BR><BR><P><IMG ALIGN=BOTTOM ALT="" SRC="_13339_tabular112.png"><P>  
+<BR><BR>Indices may also be ranges of indices, or wildcards (<IMG ALIGN=BOTTOM ALT="" SRC="_13339_tex2html_wrap278.png">), as explained in more detail in the section `Overview of <i>NEWSTAR </i> files' in this Cookbook.  Note that the Map in the WMP-file plays the same role as the Set in the  SCN-file.
+<P>
+        All indices are just running numbers (<b>starting at 0!</b>), except `type' and `polarisation', which have fixed codes (see above).
+<P>
+        Neither the `field' nor the `channel' index nrs correspond with the `field' or `channel' nrs in the SCN-file.  The reason for this is that a map may be made from a <em>combination</em> of fields or channels.
+<P>
+        Usually, all Maps belong to the same `group' (0).  Therefore, the first index is called a `spare index' here.  However, any selection of Maps may be put into a new group in the same WMP file, using the NMAP option REGROUP.
+<P>
+        The 6th index allows for a sequence of Maps of a certain type, usually derived from each other.  Examples are residual Maps after  
+<A HREF="../nclean_descr/nclean_descr.html">CLEANing</A>, or the Maps that result from  
+<A HREF="../nmap_descr/nmap_descr.html#.fiddle">combining other Maps</A>.
+<P>
+<A NAME=.file.layout><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0003000000000000000> <b>File layout and file header</b></A></H1>
+<P>
+        A summary of the WMP-file contents and layout may be obtained by using the program NMAP, option SHOW:
+<P>
+****** Put new script here ******
+<P>
+This particular WMP-file actually contains the following (rather strange) collection of Maps:
+<P>
+		<BR><tt>g.f.c.p.t.n (#abs)</tt>
+<P>
+		<i>group.field.chan.pol.type.nseq</i>
+<P>
+		<BR><tt>0.0.0.0.2.0(#0) type COVE </tt>
+<P>
+		<i>uv-coverage for XY-map</i>
+<P>
+		<BR><tt>0.0.0.0.6.0(#1) type PHAS </tt>
+<P>
+		<i>map of XY phases</i>
+<P>
+		<BR><tt>0.0.0.0.0.0(#2) type MAP </tt>
+<P>
+		<i>XY-map</i>
+<P>
+		<BR><tt>0.0.0.0.1.0(#3) type AP </tt>
+<P>
+		<i>antenna pattern for XY-map</i>
+<P>
+		<BR><tt>0.0.0.1.6.0(#4) type PHAS </tt>
+<P>
+		<i>map of Q phases</i>
+<P>
+		<BR><tt>0.0.0.1.0.0(#5) type MAP </tt>
+<P>
+		<i>Q-map</i>
+<P>
+		<BR><tt>0.0.0.2.6.0(#6) type PHAS </tt>
+<P>
+		<i>map of V phases</i>
+<P>
+		<BR><tt>0.0.0.2.0.0(#7) type MAP </tt>
+<P>
+		<i>V-map</i>
+<P>
+		<BR><tt>0.0.0.3.6.0(#8) type PHAS </tt>
+<P>
+		<i>map of iV phases</i>
+<P>
+		<BR><tt>0.0.0.3.0.0(#9) type MAP </tt>
+<P>
+		<i>iV-map</i>
+<P>
+The 10 `datasets' (Maps) in this WMP-file belong to 1 `group' (1st index, =0).  The number in parentheses indicates the <em>absolute Map nr</em> within the file.
+<P>
+Note that the number of polarisations is not really 4, and that the number of types is not really 7.  Indicated are the highest index values present, plus one.
+<P>
+The WMP file header only contains book-keeping information that allows the program to find its way around:
+<P>
+****** Put new script here *****
+<P>
+<A NAME=.map.header><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0004000000000000000> <b>The Map header</b></A></H1>
+<P>
+Each Map in a WMP file contains a header with information, which can be inspected with the program <A HREF="../nmap_descr/nmap_descr.html#.show">NMAP, option SHOW</A>:
+<P>
+****** Put new script here *****
+<P>
+<A NAME=.header.items><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004100000000000000> <b>Explanation of items in the Map header</b></A></H2>
+<P>
+<UL><LI>  LINK: Link (pointer) to other Maps  
+<LI>  LEN: Length of header block (bytes?)  
+<LI>  VER: Version nr of the header  
+<LI>  SETN: Abs Map (Set) nr, i.e. the one needed for direct reference  
+        (e.g. #setn)  
+<LI>  FNM: Field (pointing centre) name  
+<LI>  EPO: Epoch (e.g. 1950.0)  
+<LI>  RA: RA of field centre (degr)  
+<LI>  DEC: DEC of field centre (degr)  
+<LI>  FRQ: Central frequency (MHz)  
+<LI>  BDW: Bandwidth (MHz)  
+<LI>  RAO, DECO, FRQO: Observed RA (degr), DEC (degr), freq (MHz)  
+<LI>  ODY, OYR: Observed day (since January 0th) and year (since 1900)  
+<LI>  DCD: Data code (2=I, 4=J, 5=E, 8=D)  
+<LI>  PCD: Program code (0=NMAP)  
+<LI>  SRA, SDEC, SFRQ: Separation in RA (degr), DEC (degr) and freq (MHz)  
+<LI>  NRA, NDEC, NFRQ: Nr of points in RA, DEC and frequ  
+<LI>  ZRA, ZDEC, ZFRQ: Centre RA (1st point=0), DEC (1st line=0), frequ (1st map=0)  
+<LI>  MXR, MXD, MXF: Position max in RA, DEC, frequ  
+<LI>  MNR, MND, MNF: Position min in RA, DEC, frequ  
+<LI>  MAX, MIN: Max, min map value  
+<LI>  SHR, SHD, SHF: Shift in RA, DEC (add, degr?) or frequ (add, MHz)  
+<LI>  SUM: Normalising sum  
+<LI>  UNI: Multiplier to get Jy  
+<LI>  UCM: User comment  
+<LI>  NPT: Nr of input uv-data points  
+<LI>  TYP: Map type (MAP, AP, COV, PHAS etc)  
+<LI>  POL: Polarisation type (I,Q,U,V or XX,XY,YX,YY)  
+<LI>  CD: Codes (array of 8 integer switches, 0-7):  
+        taper type (0), convolution type (1),  
+        correct for convolution (2), clipping done (3),  
+        source subtraction (4), data type (5),  
+        uv coordinate type (6), de-beam count (7)  
+<LI>  EPT: Map epoch used (0=apparent, 1=as specified in EPO above)  
+<LI>  OEP: Observation epoch (e.g. 1985.78)  
+<LI>  NOS: Map rms noise (W.U.)  
+<LI>  FRA, FDEC, FFRQ: Field size in RA (degr), DEC (degr), frequ (MHz)  
+<LI>  TEL: Telescope name (e.g. WSRT)  
+<LI>  FSR, FSD: FFT size RA, DEC  
+<LI>  MDP: Map data pointer  
+<LI>  NBL: Nr of baselines that have contributed to the Map  
+<LI>  NST: Nr of uv-data sets that have contributed to the Map  
+<LI>  VEL: Velocity (m/s)  
+<LI>  VELC: Velocity code (0=continuum, 1=heliocentric radio, 2=LSR radio,  
+        3=heliocentric optical, 4=LSR optical)  
+<LI>  VELR: Velocity at reference frequ (FRQC)  
+<LI>  INST: Instrument code (0=WSRT, 1=ATCA)  
+<LI>  FRQ0, FRQV, FRQC: Rest, Real and Centre frequency for line (MHz)  
+</UL>
+<P>
+<A NAME=.data><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0005000000000000000> <b>The Map data</b></A></H1>
+<P>
+        The actual data in a Map can be displayed on the X-screen as a color map by using the program NGIDS, or as a contour or gray-scale plot with the program NPLOT.  However, its is also possible to inspect small areas of a WMP Map, or its statistics, with the program NMAP, option  SHOW:
+<P>
+****** Put new script here *****
+<P>
+Note that the `noise' option gives the rms of the pixel values in the selected area(s), while the `offset' option gives the rms with respect to their average value (offset). A histogram of pixel values is printed in the log-file (NMAP.LOG).
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

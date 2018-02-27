@@ -1,0 +1,167 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Private parameters for program NCOPY</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=ncopy_private_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=ncopy_private_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=ncopy_private_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=ncopy_private_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=ncopy_private_intfc.html#SECTION0003200000000000000>  <b>Parameter COPY_IFDATA</b></A>
+<LI> <A NAME=tex2html6 HREF=ncopy_private_intfc.html#SECTION0003300000000000000>  <b>Parameter COPY_MODEL</b></A>
+<LI> <A NAME=tex2html7 HREF=ncopy_private_intfc.html#SECTION0003400000000000000>  <b>Parameter OPTION</b></A>
+<LI> <A NAME=tex2html8 HREF=ncopy_private_intfc.html#SECTION0003500000000000000>  <b>Parameter POLARISATION</b></A>
+<LI> <A NAME=tex2html9 HREF=ncopy_private_intfc.html#SECTION0003600000000000000>  <b>Parameter SCANS</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the parameter interface of the program NCOPY. The program also uses a number of public interfaces; references to these are also <A HREF="#.public">listed</A>. 
+show parameters that 
+        The remainder of the document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<em>See also:</em> 
+<UL><LI> <A HREF="../introduction/introduction.html#.user.interface">DWARF</A> user interface 
+<LI> <A HREF="../ngen_public_intfc/ngen_public_intfc.html">NGEN</A> public keywords 
+<LI> <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html">SCNNODE</A> public keywords 
+<LI> <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html">SCNSETS</A> public keywords 
+<LI> <A HREF="../select_public_intfc/select_public_intfc.html">SELECT</A> public keywords 
+</UL>
+<P>
+<A NAME=.copy.ifdata><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter COPY_IFDATA</b></A></H2>
+<P>
+  <em>Prompt:</em> copy IF-data/Total Powers?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+    <PRE>
+        Specify YES if you want to copy IF-data (Total Powers) together
+with the data
+</PRE>
+<P>
+<A NAME=.copy.model><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter COPY_MODEL</b></A></H2>
+<P>
+<em>Prompt:</em> copy model data?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+        Specify YES if you want to copy the model together with the data
+</PRE>
+<P>
+<A NAME=.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter OPTION</b></A></H2>
+<P>
+<em>Expected input:</em> Character *12:  1 value
+<P>
+  <PRE>
+Actions:
+</PRE>
+<P>
+  <PRE>
+  COPY          Copy sectors from one SCN file to another.
+  SHORTCOPY     As copy, but only scans selected by scan number; this option
+                 allows you to cut out the invalid trailing scan from a mosaic
+                 sector
+</PRE>
+<P>
+  <PRE>
+  OVERWIEW      Display and log an overview of all sectors in a SCN file
+  QUIT          Exit from NCOPY
+</PRE>
+<P>
+<A NAME=.polarisation><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter POLARISATION</b></A></H2>
+<P>
+<em>Prompt:</em> Select polarisations<BR><em>Expected input:</em> Character *4:  1 value
+<P>
+  <PRE>
+Select polarisations to be copied:
+        XYX:    XX, XY, YX, YY
+        XY:     XX, YY only
+        X:      XX only
+</PRE>
+<P>
+  <PRE>
+        YX:     for special applications only:
+                 overwrite XX with XY, YY with YX, then output as if XY
+</PRE>
+<P>
+<A NAME=.scans><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003600000000000000>  <b>Parameter SCANS</b></A></H2>
+<P>
+<em>Prompt:</em> First and last scan number from each sector<BR><em>Expected input:</em> Integer:  1 to 2 values
+<P>
+  <PRE>
+From all sectors selected, only the scan numbers within the selected scan
+number and HA ranges wiull be copied. E.g., the specification
+</PRE>
+<P>
+  <PRE>
+                SCANS= 0,4
+</PRE>
+<P>
+  <PRE>
+will remove the last scan (number 5) from allo sectors of a mosaic observation
+that produces 6-scan sectors.
+</PRE>
+<P>
+  <PRE>
+Remember that the first scan in a sector is numbered 0.
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

@@ -1,0 +1,11 @@
+# LaTeX2HTML 0.5.3 (Wed Jan 26 1994)
+# Associate image original text (scrambled) with physical files.
+
+$key = q/{}$T_<<115>>sys<<115>>${}/;
+$cached_env_img{$key} ='<IMG ALIGN=BOTTOM ALT="" SRC="_13438_tex2html_wrap215.xbm">'; 
+$key = q/{}$times${}/;
+$cached_env_img{$key} ='<IMG ALIGN=BOTTOM ALT="" SRC="_13438_tex2html_wrap213.xbm">'; 
+$key = q/{tabular}<<198>>|c|r@<<118>>--<<118>>l|c|c|c|<<198>>hlinemulticolumn<<119>>1<<119>><<120>>|c|<<120>><<121>><<217>><<217>>$lambda$<<218>><<218>><<121>>;html_special_mark_amp;multicolumn<<122>>2<<122>><<123>>|c|<<123>><<124>>Frequ<<124>>;html_special_mark_amp;multicolumn<<125>>1<<125>><<126>>|c|<<126>><<199>><<219>><<219>>$T_<<127>>sys<<127>>$<<220>><<220>><<199>>;html_special_mark_amp;multicolumn<<128>>1<<128>><<129>>|c|<<129>><<130>>MaxBW<<130>>;html_special_mark_amp;multicolumn<<131>>1<<131>><<132>>|c|<<132>><<133>>Sensitivity<<133>>multicolumn<<134>>1<<134>><<135>>|c|<<135>><<136>>cm<<136>>;html_special_mark_amp;multicolumn<<137>>2<<137>><<138>>|c|<<138>><<139>>MHz<<139>>;html_special_mark_amp;multicolumn<<140>>1<<140>><<141>>|c|<<141>><<142>>K<<142>>;html_special_mark_amp;multicolumn<<143>>1<<143>><<144>>|c|<<144>><<145>>MHz<<145>>;html_special_mark_amp;multicolumn<<146>>1<<146>><<147>>|c|<<147>><<148>>mJy<<148>>hline92;html_special_mark_amp;320;html_special_mark_amp;330;html_special_mark_amp;130;html_special_mark_amp;5;html_special_mark_amp;0.549;html_special_mark_amp;607;html_special_mark_amp;610;html_special_mark_amp;110;html_special_mark_amp;2.5;html_special_mark_amp;0.621;html_special_mark_amp;1365;html_special_mark_amp;1425;html_special_mark_amp;60;html_special_mark_amp;60;html_special_mark_amp;0.0618;html_special_mark_amp;1590;html_special_mark_amp;1730;html_special_mark_amp;60;html_special_mark_amp;80;html_special_mark_amp;0.156;html_special_mark_amp;4770;html_special_mark_amp;5020;html_special_mark_amp;110;html_special_mark_amp;80;html_special_mark_amp;0.07hline{tabular}/;
+$cached_env_img{$key} ='<IMG ALIGN=BOTTOM ALT="" SRC="_13438_tabular117.xbm">'; 
+
+1;

@@ -1,0 +1,45 @@
+<TITLE>Description of OPTION (NGIDS)</TITLE>
+<H1>Program NGIDS: private keyword OPTION</H1> 
+
+<DT><EM>Prompt:</EM> action MAP, DATA; DOFLAG, CLIPFLAG, FLAG; UNLOAD, WRITE, CLEAR;| -GCLEAR, NOFLAG, QUIT; POINT
+<DT><EM>Expected input:</EM> Character(24).<P>
+!!                      POINT?? 
+Specify the action to perform. <P>
+   Loading/unloading visibility data or images for half-tone/colour display. The 
+   visibility 'planes' or images that you select are stored in display memory 
+   for rapid access. The number of pictures that you can store is limited by the 
+   availablity of this memory. 
+!!                      Correct? <P>
+	MAP      Load images(s) from map (.WMP) files. 
+	DATA     Load (corrected) data from visibility (.SCN) files <P>
+   Select mode for flagging of visibility data on the display. The flags you set 
+   will not yet be written back to the .SCN file, so you can freely experiment. <P>
+	DOFLAG   Switch to Flagging mode for .SCN-file visibilities 
+	CLIPFLAG Switch to Flagging mode using cliplevels 
+	FLAG     Flagging in .WMP maps using the PGPLOT cursor in GIDS <P>
+!! In this mode, no maps will be stored in GIDS (this allows you to flag in a 
+!! lot of channels etc in a single command, without overloading the GIDS 
+!! memory). In normal display mode, consequtive images will be stored in GIDS 
+!! for playback (this sequence is reset with the GCLEAR command). 
+!!                      Is this relevant? <P>
+   Saving the flags you set on your display: <P>
+	UNLOAD   Save flags list in a .FLF (binary file), from which you can 
+		  then transfer to the .SCN file through NFLAG LOAD. 
+	WRITE    Save flags list in an ASCII file, which you may manually 
+		  edit before transferringt it to the .SCN file through NFLAG 
+		  READ. 
+	CLEAR    Clear flags list. 
+!                       {\em see 
+!                       \textref{NFLAG OPS_FLIST}{nflag_private_keys.ops.flist} 
+!                       parameter }\ <P>
+   Terminate current action sequence: <P>
+	GCLEAR   Remove a sequence of loaded pictures. 
+	NOFLAG   Switch back to normal display mode. 
+	QUIT     Leave NGIDS (the GIDS window will remain on the screen). <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngids/ngids_keys.html">List of keywords</A> for NGIDS
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ngids_descr/ngids_descr.html">program NGIDS</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

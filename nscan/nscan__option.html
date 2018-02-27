@@ -1,0 +1,55 @@
+<TITLE>Description of OPTION (NSCAN)</TITLE>
+<H1>Program NSCAN: private keyword OPTION</H1> 
+
+<DT><EM>Prompt:</EM> Action QUIT; LOAD, IFLOAD, LEIDEN, LIST, ARC, DUMP; UVFITS, PFITS; | -SHOW; [CVX, NVS, NOPT; REGROUP; FROM_OLD, WERR, AERR, VFIX]
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify the action to be performed by the program NSCAN: <P>
+   Operations on WSRT 'circle' observation files (on classical, DAT or Exabyte 
+   tape, magnetic or optical disk): <P>
+        LOAD     transfer observed visibilities into a .SCN file. 
+        IFLOAD   same, but also transfer the 'IF' data (total powers etc). The 
+                  extra data will enlarge the .SCN file by some 30%; you need 
+                  them only if you suspect that the on-line gain calibration has 
+                  been incorrect. 
+        LEIDEN   transfer observed visibilities from standard LEIDEN file into a 
+                  .SCN file 
+        LIST     show contents of selected labels 
+        ARC      as list, but update the Scissor database if at NFRA 
+        DUMP     copy selected label(s) byte for byte into a disk file <P>
+   Conversion to and listing of data in FITS format <P>
+        UVFITS   convert .SCN file to UVFITS tape/disk file for use in AIPS 
+        PFITS    print AIPS-like FITS info (but also other) from UVFITS file 
+                   header <P>
+   Display and editing of .SCN files: <P>
+        SHOW     show/edit data and header information in .SCN file. (This 
+                   option is duplicated in NFLAG.) <P>
+   Utilities: <P>
+        QUIT     leave the program NSCAN <P>
+        CVX      convert a .SCN file from other machine's number format 
+        NVS      convert a .SCN file to newest version. Needs only to be run if 
+                   programs report that the data has the wrong version 
+
+<DT>                  - calculates parallactic angle for ATNF 
+        NOPT     update contents of sector/scan headers and polarisation format 
+                  of visibility data: 
+
+<DT>                   - convert input data in Stokes parameter format to XX format 
+
+<DT>                   - calculate UT start 
+
+<DT>                   - calculate precession rotation angle if not filled 
+
+<DT>                   - recalculate MJD for observations aborted at Wbork 
+        REGROUP  create a second index for each of one or more sets of sector.! <P>
+   One-time fixes: <P>
+        FROM_OLD convert old (R-series) uv-data file into NEWSTAR .SCN file 
+        WERR     correct one-time mosaic WSRT tape errors (1991 data only) 
+        AERR     change sign of phases 
+        VFIX     recalculate velocities <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nscan/nscan_keys.html">List of keywords</A> for NSCAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nscan_descr/nscan_descr.html">program NSCAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

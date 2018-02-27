@@ -1,0 +1,290 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The indexing and navigation of <i>NEWSTAR </i>'s compound data files </b>
+<P>
+<P><em>Contributed by Johan Hamaker, November 1994 <BR>960104: Add <A HREF="#.loops.vs.aggregates">loops vs. aggregates</A> 
+                and <A HREF="#.repetitive">repetitive processing</A> 
+ <P></em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=file_indexing.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=file_indexing.html#SECTION0002000000000000000>  <b>Indexed data-file types </b></A>
+<LI> <A NAME=tex2html3 HREF=file_indexing.html#SECTION0003000000000000000>  <b>The index structure </b></A>
+<LI> <A NAME=tex2html4 HREF=file_indexing.html#SECTION0004000000000000000>  <b>Addressing groups of data blocks </b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=file_indexing.html#SECTION0004100000000000000>  <b>Data-block aggregates </b></A>
+<LI> <A NAME=tex2html6 HREF=file_indexing.html#SECTION0004200000000000000>  <b>Looping</b></A>
+<UL> 
+<LI> <A NAME=tex2html7 HREF=file_indexing.html#SECTION0004210000000000000>  <b>Repetitive execution </b></A>
+</UL> 
+<LI> <A NAME=tex2html8 HREF=file_indexing.html#SECTION0004300000000000000>  <b>Nested loops, aggregate start sets </b></A>
+<LI> <A NAME=tex2html9 HREF=file_indexing.html#SECTION0004400000000000000>  <b>Loops versus data-block aggregates </b></A>
+</UL> 
+<LI> <A NAME=tex2html10 HREF=file_indexing.html#SECTION0005000000000000000>  <b>When one is not sure of the existing index ranges </b></A>
+<LI> <A NAME=tex2html11 HREF=file_indexing.html#SECTION0006000000000000000>  <b>Absolute indexing </b></A>
+</UL>
+<A NAME=.file.types><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000>  <b>Indexed data-file types </b></A></H1>
+<P>
+        The indexing structure described in this document is common to three types of <i>NEWSTAR </i> files. Each of these is a collection of 'elementary' <em>data blocks</em> under a <em>hierarchical index</em>:
+<P>
+ <UL><LI>   The <A HREF="../scn_file/scn_file.html">.SCN file</A>, collecting visibility <em>sectors</em>;
+<P>
+<LI>   The <A HREF="../wmp_descr/wmp_descr.html">.WMP file</A>, collecting <em>images</em>: maps and antenna patterns;
+<P>
+<LI>   The <A HREF="../ngcalc_descr/ngcalc_descr.html#.ngf.file">.NGF file</A>, collecting one-dimensional <em>cuts</em> through the visibility and correction 
+<A HREF="../scn_file/scn_file.html#.hypercube">hypercubes</A>. 
+ </UL>
+<P>
+        This document describes the generic properties of the index mechanism and the versatile mechanisms in the <i>NEWSTAR </i> program-parameter interface through which sets of data blocks can be defined for processing.
+<P>
+<A NAME=.index.structure><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>The index structure </b></A></H1>
+<P>
+        The data blocks are organised in a <em>hierarchical index</em>. This structure is isomorphous to the familiar directory structure for files, the data blocks taking the place of the individual files. Unlike directories, however, the indices are not names but <em>numbers</em>. As we shall see below, in some cases these numbers are related to some physical parameter, in other cases they are simply administrative sequence numbers.
+<P>
+        Just like a full file path is composed of concatenated directory names, a data block is adressed through its <em>compound index</em>, <em>i.e.</em> its concatenated indices: 
+<BR><BR>  &lt;index0&gt;.&lt;index1&gt;.&lt;index2&gt;.... 
+<BR><BR>At all levels, the first index value is 0. You may find this uncomfortable at first, but you will soon get used to it
+<P>
+        The successive indices convey specific information which is different between file types. The following information levels are used:
+<P>
+ <DL COMPACT><DT>
+<DD>   &lt;grp&gt;   group 
+<DT>
+<DD>   &lt;obs&gt;   observation 
+<DT>
+<DD>   &lt;fld&gt;   mosaic subfield 
+<DT>
+<DD>   &lt;chn&gt;   frequency channel 
+<DT>
+<DD>   &lt;pol&gt;   polarisation 
+<DT>
+<DD>   &lt;typ&gt;   type 
+<DT>
+<DD>   &lt;ifr&gt;   interferometer 
+<DT>
+<DD>   &lt;seq&gt;   sequence number
+<P>
+ </DL>  
+  The compound indices are:
+<P>
+ <DL COMPACT><DT>
+<DD>   &lt;grp&gt;.&lt;obs&gt;.&lt;fld&gt;.&lt;chn&gt;.&lt;seq&gt;             for the 
+<A HREF="../scn_file/scn_file.html">.SCN file</A>; 
+<DT>
+<DD>   &lt;grp&gt;.&lt;fld&gt;.&lt;chn&gt;.&lt;pol&gt;.&lt;typ&gt;.&lt;seq&gt;       for the <A HREF="../wmp_descr/wmp_descr.html">.WMP file</A>; 
+<DT>
+<DD>   &lt;grp&gt;.&lt;fld&gt;.&lt;chn&gt;.&lt;pol&gt;.&lt;ifr&gt;.&lt;seq&gt;       for the 
+<A HREF="../ngcalc_descr/ngcalc_descr.html#.ngf.file">.NGF file</A>.
+<P>
+ </DL>  
+  More details about the meaning and use of these levels is given in the documents on the individual file types.
+<P>
+<A NAME=.addressing.groups><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000>  <b>Addressing groups of data blocks </b></A></H1>
+<P>
+        The true power of the indexing mechanism lies in its ability to address data blocks in aggregates of widely varying composition, through shorthand notations that one may type in response to a prompt asking for the data blocks to be processed.
+<P>
+<A NAME=.sets><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004100000000000000>  <b>Data-block aggregates </b></A></H2>
+<P>
+        Firstly, a compound index may refer to a <em>set</em> or <em>aggregate</em> of data blocks in several ways:
+<P>
+ <DL COMPACT><DT><DD>   Instead of a single index value, one may define an aggregate through a <em>range</em> with an <em>increment</em>: 
+<BR><BR>  &lt;start value&gt;-&lt;end value&gt;:&lt;step&gt; 
+<BR><BR>or abbreviations thereof (with obvious meaning):
+<P>
+  &lt;start value&gt;-&lt;end value&gt; 
+  &lt;start value&gt;-:&lt;step&gt; 
+  &lt;start value&gt;-
+<P>
+   <UL><DT>
+<DD> <em>WARNING: The range ('-') and step (':') notation is valid <em>only</em> for the index parameter &lt;xxx&gt;_SETS. In all other contexts they will be interpreted as expression operators.</em> 
+   </UL>  
+<DT><DD>   One may also use the <em>wildcard</em> character '*', meaning 'all values'. An index level may be omitted (by putting nothing between the dots that delimit it), and even the dots themselves for the trailing values; in all these cases <i>NEWSTAR </i> will substitute wildcards. Thus 
+<BR><BR>  3.*.1.*.*       3..1.*.*        3.*.1           3..1 
+<BR><BR>all mean the same thing.
+<P>
+<DT><DD>   Secondly, a number of sets in any of these forms may be concatenated with commas in between,  <em>e.g. </em>  
+<BR><BR>  3.1-5:2, 4, 5.1..3-:3
+<P>
+ </DL>
+<P>
+        For all practical purposes, the number of data blocks that can be addressed in these ways through a single specification is unlimited.
+<P>
+<A NAME=.looping><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004200000000000000>  <b>Looping</b></A></H2>
+<P>
+        Suppose one wants to make 8 maps from 16 visibility sectors and specifies 
+ <DL COMPACT><DT>
+<DD>   3.5.0-15.1.0
+<P>
+ </DL>   for the input. NMAP will take this specification to mean that all 16 sectors must be used in the first map and will then stop because the input sectors are exhausted.
+<P>
+        What one needs is a mechanism to tell NMAP that it should use the sectors in pairs. One way to do this is to 'manually' execute it 8 times with sector specifications
+<P>
+ <DL COMPACT><DT>
+<DD>   SCN_SETS = 3.5.0-1.1.0 
+<DT>
+<DD>   SCN_SETS = 3.5.2-3.1.0 
+<DT>
+<DD> <em>etc.</em>
+<P>
+ </DL>
+<P>
+        <em>LOOPS</em> provide an efficient shorthand to do just that. With a LOOP specification, one directs the program to execute a program a number of times, incrementing the data-block specification after every cycle. The LOOP specification takes the form 
+ <DL COMPACT><DT>
+<DD>   &lt;number of cycles&gt;,&lt;compound-index increment per cycle&gt;
+<P>
+ </DL>
+<P>
+In combination with this, the initial set of data blocks is specified.
+<P>
+        Thus for the above example one would specify
+<P>
+ <DL COMPACT><DT>
+<DD>   SCN_LOOPS = 8,0.0.2  
+<DT>
+<DD>   SCN_SETS  = 3.1.0-1.1.0 
+<P>
+ </DL>  
+   Zeros may be omitted in the increment; thus in the above, the shorter notation 
+SCN_LOOPS = 8,..2 is just as good.
+<P>
+<A NAME=.repetitive><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H3><A NAME=SECTION0004210000000000000>  <b>Repetitive execution </b></A></H3>
+<P>
+        The LOOPS construct may also be used for executing the same operation more than once in a single run. viz. by specifying an increment of 0. E.g. 
+ <DL COMPACT><DT>
+<DD>   SCN_LOOPS = 8,...1, 3,0 
+<P>
+ </DL>  will select 8 sector aggregates, processing each 3 times in a row.
+<P>
+<A NAME=.nested.loops><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004300000000000000>  <b>Nested loops, aggregate start sets </b></A></H2>
+<P>
+        It is possible to specify more than one loop simultaneously,  <em>e.g. </em>
+<P>
+ <DL COMPACT><DT>
+<DD>   SCN_LOOPS = 64,..1, 8,...1 
+<DT>
+<DD>   SCN_SETS = 2.0.0.1.* 
+<P>
+ </DL>  
+  for a mosaic of 64 subfields and 8 frequency channels. This will result in 8 maps being made in succession for each of the 64 subfiels; <em>i.e.</em> a following loop is nested <em>inside</em> the ones specified before it.
+<P>
+        It more than one set is specified for the start cycle, incrementation is applied to each set. Thus,  <em>e.g. </em> , for a specification
+<P>
+ <DL COMPACT><DT>
+<DD>   SCN_LOOPS = 8,.1 
+<DT>
+<DD>   SCN_SETS = 1.0.3.1, 1.1-3:2.0.7
+<P>
+ </DL>
+<P>
+the data blocks used would be 
+ <DL COMPACT><DT>
+<DD>   1.0.3.1, 1.1.0.7, 1.3.0.7 for the first cycle; 
+<DT>
+<DD>   1.1.3.1, 1.2.0.7, 1.4.0.7 for the second cycle; 
+<DT>
+<DD>   1.1.3.1, 1.3.0.7, 1.5.0.7 for the third cycle;
+<P>
+ </DL>  
+  <em>etc.</em>. (This example merely serves to show how the loop mechanism works; one is not likely in reality to want successive cycles with partly overlapping input data blocks.)
+<P>
+<A NAME=.loops.vs.aggregates><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004400000000000000>  <b>Loops versus data-block aggregates </b></A></H2>
+<P>
+        In those operations where each data block is processaed individually, the blocks to be selected may be specified either as an aggregate or through a loop construct. For instance, Self-calibration operates on each data block ('sector') in a .SCN file in isolation; in this case, e.g. the specifications 
+ <DL COMPACT><DT>
+<DD>   SCN_SETS = 0.3-6.0.0-8
+<P>
+ </DL>  and 
+ <DL COMPACT><DT>
+<DD>   SCN_LOOPS = 4,.1, 9,...1  
+<DT>
+<DD>   SCN_SETS = 0.3.0.0 
+<P>
+ </DL>  are equivalent. The only reason why one might want to use a LOOPS specification in this case is to control the order in shich the dat blocks are selected.
+<P>
+        There are also applications in which data blocks are combined, for instance when a sky map is made using an aggregate of .SCN-file sectors as input. Here the LOOPS construct results in a separate map for each loop cycle, rather than a single map from all input sectors as an aggregate specification would. See <A HREF="#.nested.loops">above</A> for an example where a number of maps are made each using a sector aggregate as input.
+<P>
+<A NAME=.query><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000>  <b>When one is not sure of the existing index ranges </b></A></H1>
+<P>
+        Data files may become so large and complex that one does not remember precisely the ranges of the indices in all the various branches of the index hierarchy. If one doesn't particularly care, one may use wildcards or deliberately specify an index range that is too large: In most cases a <i>NEWSTAR </i> program, finding that a requested data block does not exist, will simply proceed to the next one. Thus, for example, if one specifies 8 loop cycles but there are only data for the first three, the 4th through 8th cycles will be traversed but nothing will be done in them.
+<P>
+        Another possibility one has is to reply with 'L' (for <em>Layout</em>) or 'O' (for <em>Overview</em>) to a _SETS or _LOOPS prompt. This will give you information about the composition of your data file.
+<P>
+<H1><A NAME=SECTION0006000000000000000>  <b>Absolute indexing </b></A></H1>
+<P>
+        In addition to the compound indices discussed so far, one may also use the <em>absolute</em> index to address a data block. The absolute index is a sequence number that is allocated sequentially to each new data block created; thus the newest data block invariably has the highest absolute index. Like the other indices, the absolute index starts at 0. 
+        To address a data block through its absolute index, prefix the number with a hash sign,  <em>e.g. </em>  
+ <DL COMPACT><DT>
+<DD>   WMP_SETS = #23-27
+<P>
+ </DL>
+<P>
+Absolute indices can be used throughout in place of compound indices. For example, the loop specification 
+ <DL COMPACT><DT>
+<DD>   NGF_LOOPS = 3,#1, 4,#3 
+<DT>
+<DD>   MGF_SETS = 3.7.5.1.*
+<P>
+ </DL>
+<P>
+is valid (but is may not be very easy to be sure that it does the right thing).
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

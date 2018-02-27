@@ -1,0 +1,34 @@
+<TITLE>Description of HA_MODE (NPLOT)</TITLE>
+<H1>Program NPLOT: private keyword HA_MODE</H1> 
+
+<DT><EM>Prompt:</EM> Special HA plot coordinates ST, IST, SEQUENCE, ISEQUENCE
+<DT><EM>Expected input:</EM> Character(10).<P>
+This parameter selects a coordinate conversion for the vertical (HA) plot 
+coordinate in plots of .SCN-file entities. <P>
+    ST          Sidereal time i.s.o. HA. This is useful for plotting a series of 
+                 observations (e.g. calibrators-object-calibrators) in a time 
+                 sequence, e.g. to survey interference. Vertical coordinate is 
+                 ST in degrees <P>
+    SEQUENCE    Pseudo sidereal time: Sidereal time is forced into an ascending 
+                 sequence: When the start ST for a sector is less than that of 
+                 the one just plotted, it is changed to make the new sector 
+                 follow the previous one contiguously. Within each sector,  
+                 vertical scale size is that of HA or ST, but the sectors are 
+                 displaced in ST. Sectors are plotted in order of their index. 
+                This mode is useful to stuff a lot of information into a single 
+                 plot, e.g. to check for interference, but the plot may become 
+                 too confusing. <P>
+    I&lt;xxx&gt;      The prefix I indicates that you want to integrate scans; you 
+                 will be prompted for the HA interval over which to integrate. 
+                 As currently implemented, this mode is effective only for plots 
+                 that have HA or (pseudo)ST as vertical coordinate. The plot 
+                 scale for this coordinate will not be affected. <P>
+NPLOT will set plotting mode according to your reply and return to the OPTION 
+prompt. The mode will remain in force until you change it or NPLOT exits.    <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nplot/nplot_keys.html">List of keywords</A> for NPLOT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nplot_descr/nplot_descr.html">program NPLOT</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,23 @@
+<TITLE>Description of FREQ_CORR (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword FREQ_CORR</H1> 
+
+<DT><EM>Prompt:</EM> Increment to frequency correction (MHz)
+<DT><EM>Expected input:</EM> Real number, 1 values.<P>
+Specify the 'frequency correction' in MHz. <P>
+This is an idiosyncratic way of representing a correction to the metric scale 
+of the interferometer array: A scale correction with a factor (1+x) is 
+represented by correcting the nominal observing frequency F with an additive 
+term -x.F. <P>
+Clearly this does not represent a real frequency shift since the observing 
+frequency is precisely defined by the settings of local-oscillator frequencies 
+and fringe-stopping parameters during the observation. <P>
+The correction will be ADDED as an hour-angle-dependent phase to the OTH 
+telescope corrections, and can only be undone by either zeroing these 
+corrections, or inserting the same BASEL_POLE value with opposite sign.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

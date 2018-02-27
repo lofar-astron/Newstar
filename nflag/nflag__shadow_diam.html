@@ -1,0 +1,23 @@
+<TITLE>Description of SHADOW_DIAM (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword SHADOW_DIAM</H1> 
+
+<DT><EM>Prompt:</EM> Telescope shadowing diameter (metres)
+<DT><EM>Expected input:</EM> Real number.<P>
+ Specify the diameter (m) of the telescopes. <P>
+A telescope is 'shadowed' as soon as part of its aperture gets blocked by the 
+presence of another telecope in its line of sight. This condition occurs when 
+the projected baseline between the two telecopes becomes less than the 
+telescope diameter D (25 m for the WSRT). If you want to retain as much as 
+possible of your data, you may specify a somewhat smaller number (e.g. 0.8 D) 
+to take into account the fact that the edge of the aperture is only weakly 
+illuminated. <P>
+For the hour-angles at which a telescope is shadowed, all intreferometers are 
+flagged of which it is a part. The default flag-type is SHADOW. <P>
+  ? Another flag may be selected through the FLAG_MODE parameter.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

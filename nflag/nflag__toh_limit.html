@@ -1,0 +1,21 @@
+<TITLE>Description of TOH_LIMIT (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword TOH_LIMIT</H1> 
+
+<DT><EM>Prompt:</EM> Maximum number of data flags to tolerate per scan
+<DT><EM>Expected input:</EM> Integer number; min.value: 1.000000.<P>
+ NFLAG will check in each scan the number of points for which the 
+flag type selected is set. If that number exceeds this value you define here,  
+the entire scan will be flagged. This will subsequently result in faster 
+processing 
+(because individualdata points need not be tested) at the expense of the loss 
+of some healthy data. <P>
+The operation of setting header flags is reversible: The individual data flags 
+are retained so you can restore the present condition by clearing the header 
+flags.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

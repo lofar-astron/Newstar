@@ -1,0 +1,300 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Common features of <i>NEWSTAR </i> programs</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=common_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=common_descr.html#SECTION0002000000000000000> <b>Running <i>NEWSTAR </i> programs under DWARF</b></A>
+<UL> 
+<LI> <A NAME=tex2html3 HREF=common_descr.html#SECTION0002100000000000000> <b>DWARF environment set-up</b></A>
+<LI> <A NAME=tex2html4 HREF=common_descr.html#SECTION0002200000000000000> <b>Running programs</b></A>
+<LI> <A NAME=tex2html5 HREF=common_descr.html#SECTION0002300000000000000> <b>Streams</b></A>
+<LI> <A NAME=tex2html6 HREF=common_descr.html#SECTION0002400000000000000> <b>Specifying program parameters (keywords)</b></A>
+<LI> <A NAME=tex2html7 HREF=common_descr.html#SECTION0002500000000000000> <b>Asking all</b></A>
+<LI> <A NAME=tex2html8 HREF=common_descr.html#SECTION0002600000000000000> <b>Maintenance of keyword values</b></A>
+</UL> 
+<LI> <A NAME=tex2html9 HREF=common_descr.html#SECTION0003000000000000000> <b>Some common <i>NEWSTAR </i> keywords</b></A>
+<UL> 
+<LI> <A NAME=tex2html10 HREF=common_descr.html#SECTION0003100000000000000> <b>NGEN: General keywords</b></A>
+<LI> <A NAME=tex2html11 HREF=common_descr.html#SECTION0003200000000000000> <b>Some frequently used <i>NEWSTAR </i> keywords</b></A>
+</UL>
+</UL>
+<A NAME=common.descr.dwarf><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000> <b>Running <i>NEWSTAR </i> programs under DWARF</b></A></H1>
+<P>
+All <i>NEWSTAR </i> programs run under  the Dwingeloo Westerbork Astronomical Reduction Facility (DWARF).  This means that the programs communicate with the user via the DWARF interface, especially the DWARF parameter interface. DWARF also provides the user with various commands to modify the environment in which programs will be executed. This chapter tells you enough of DWARF to be able to run your first 
+<i>NEWSTAR </i> programs.
+<P>
+A full explanation of all the DWARF possibilities can be found in the  ``DWARF User's Guide'', written by Friso Olnon.
+<P>
+<H2><A NAME=SECTION0002100000000000000> <b>DWARF environment set-up</b></A></H2>
+<P>
+Before running the programs some symbols and logicals (aliases) should be known. Ask the System manager about the proper login commands. 
+The current values of the DWARF environment variables can be viewed: 
+ <BR> > <i>dwv dwarf</i> 
+		<i>dwview (see below)</i>
+<P>
+		<BR><tt>DWARF$0_STREAM(program) = 1</tt>
+<P>
+		<BR><tt>DWARF$0_CURNODE(program) = 0</tt>
+<P>
+		<BR><tt>DWARF$0_ASK(program) = NO</tt>
+<P>
+		<BR><tt>DWARF$0_SAVELAST(program) = NO</tt>
+<P>
+		<BR><tt>DWARF$0_USERLEVEL(program) = BEGINNER</tt>
+<P>
+		<BR><tt>DWARF$0_BELL(program) = ON</tt>
+<P>
+		<BR><tt>DWARF$0_MESSAGEDEVICE(program) = TERMINAL</tt>
+<P>
+		<BR><tt>DWARF$0_EXTENDSIZE(program) = 64</tt>
+<P>
+		<BR><tt>DWARF$0_IOBUFSIZE(program) = 32768</tt>
+<P>
+		<BR><tt>DWARF$0_TEST(program) = NO</tt>
+<P>
+		<BR><tt>DWARF$0_LOGLEVEL(program) = 4</tt>
+<P>
+		<BR><tt>DWARF$0_LOGFATAL(program) = NO</tt>
+<P>
+		<BR><tt>DWARF$0_IDENT(local) = 143</tt>
+<P>
+		<BR><tt>DWARF$0_IBMODE(local) = INTERACTIVE</tt>
+<P>
+The DWARF environment variables can also be changed by typing: 
+ <BR> > <i>dws dwarf</i>
+		<i>dwspecify (see below)</i>
+<P>
+<A NAME=common.descr.dwarf-run><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0002200000000000000> <b>Running programs</b></A></H2>
+<P>
+Programs are normally run by typing:
+<P>
+ <BR> > <i>exe <IMG ALIGN=BOTTOM ALT="" SRC="_7152_tex2html_wrap404.png">programname></i>
+		<i>(e.g. exe[cute] NSCAN)</i>
+<P>
+Note: <tt>exe</tt> stands for execute, and can, and this is preferred,  also be given as <tt>dwe</tt> or <tt>dwexe</tt>.
+<P>
+The program starts running, and asks questions (parameters, or `keywords')  that will specify the action of the program. All questions have some prompt information, and more help on the specific question can be obtained by typing a `?' as answer.
+<P>
+The type of answer (value, name, option, yes/no, ...) depends on the question. Some answer should be a single value, some should be a list separated by commas. In the case of a numeric list, the answer can also be of the form: start-value [by increment] [to end-value] There are three special answers that can always be given:
+<P>
+<UL><LI>   #or <IMG ALIGN=BOTTOM ALT="" SRC="_7152_tex2html_wrap410.png">D (<IMG ALIGN=BOTTOM ALT="" SRC="_7152_tex2html_wrap410.png">Z) means end-of-file.  
+                        The general action is to restart the 
+                          asking of questions at a <em>higher logical level</em>  
+                          in the 
+                          program. In the case of options it indicates in 
+                          general the QUIT option. 
+<LI>   &quot;&quot; means empty answer. In general this is taken to mean that no 
+                          answer is given. Depending on the keyword this can 
+                          mean to by-pass a certain action, or to go back to 
+                          another level of questions. If the answer is 
+                          essential, it will be repeated. 
+<LI>   * means `all'. If interpretable it is taken as meaning &quot;all 
+                          possible values&quot;, otherwise the question is repeated, 
+                          or a special default value is taken. 
+</UL>
+<P>
+In general (but with the exception of obvious interactive programs) all questions for the program are asked and checked for consistency, availability of files etc, before the program starts actually executing.
+<P>
+After the program is finished, a log of the program, including the questions and their answers and all data produced by the program, may be spooled to the lineprinter (controlled by the common <i>NEWSTAR </i> keyword <b>LOG</b>, see below). On this log you will see the answers to some questions that were never asked. The default answers to these hidden questions need normally sufficient,  and are, therefore, not asked. Ways to change them are given in below.
+<P>
+<A NAME=common.descr.DWARF-stream><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0002300000000000000> <b>Streams</b></A></H2>
+<P>
+It is sometimes useful to run the same program in parallel, or to run a program regularly with a specified set of answers. To be able to differentiate between the programs, programs can be run in different streams. For all practical purposes the program (and its parameters) have different names. Streamnames can be any alpha-numeric string, although for practical reasons integers may be preferred by the user:
+<P>
+		<BR><tt>`program-name'$`stream'</tt>
+		<i>(e.g. dwe nscan$5)</i>
+<P>
+The zero stream has a special meaning in specifying values across streams.
+<P>
+<H2><A NAME=SECTION0002400000000000000> <b>Specifying program parameters (keywords)</b></A></H2>
+<P>
+In addition to answering questions asked, keyword values can be also be specified beforehand.  This is especially handy if you want to run programs in Batch mode, or you want to make sure that for a set of programs the  keyword values will be the same. 
+Keyword values can be specified before a program is run, by using the  <tt>dws(pecify)</tt> command. To answer all questions, type: 
+ <BR> > <i>dws `program-name'</i>
+		<i>(e.g. dws NSCAN)</i>  
+All keywords (and their current values) will now be displayed one after the other, and may be modified by the user. The process can be stopped at any time by giving <IMG ALIGN=BOTTOM ALT="" SRC="_7152_tex2html_wrap410.png">D (<IMG ALIGN=BOTTOM ALT="" SRC="_7152_tex2html_wrap410.png">Z) as answer. If you only want to specify a few keyword values only (and know the name of the keyword), type:  
+ <BR> > <i>dws `program-name'/nomenu</i>
+		<i>(e.g. dws nscan/nom)</i>
+<P>
+		<BR><tt>: keyword=`value'</tt>
+		<i>(e.g. ha-range=-10,10)</i>
+<P>
+		<BR><tt>:</tt>
+<P>
+The prog-name can be replaced  by <tt>`prog-name'$`stream'</tt> to specify keyword values for a separate stream (the default stream is in general $1). NB: The program name and/or stream can contain the wildcard <IMG ALIGN=BOTTOM ALT="" SRC="_7152_tex2html_wrap420.png">.
+<P>
+Some questions are asked more than once in the program, for instance in an interactive loop.  To specify all answers beforehand, seperate them in <tt>dws</tt> with a  semi-colon (;). However, to make really sure that all answers are given, it is much safer to use the `Dry-run' or the `Saved-run' method (see below).
+<P>
+Keywords in DWARF have several levels of default values. The decision  process is as follows:
+<P>
+- is there a value for this keyword in the currect stream? If yes: use it. 
+<BR>- is there a value for this keyword in stream 0? If yes: use it. 
+<BR>- is there a value for this keyword in NGEN in this stream? If yes: use it. 
+<BR>- is there a value for this keyword in NGEN for stream 0? If yes: use it. 
+<BR>- should the program ask the keyword? If no: use program default. 
+<BR>- prompt the user for a value and use it.
+<P>
+Note: NGEN is a collection of special <i>NEWSTAR </i> keywords, described below.
+<P>
+<A NAME=common.descr.dwarf-ask><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0002500000000000000> <b>Asking all</b></A></H2>
+<P>
+All questions (including the hidden ones) will be asked if you run the program as:
+<P>
+ <BR> > <i>dwe `name' /ask</i>
+		<i>(e.g. dwe nscan/ask)</i>
+<P>
+Asking can also be enabled for all runs of all programs by setting the global DWARF parameter ASK:
+<P>
+ <BR> > <i>dws dwarf/nomenu</i>
+<P>
+		<BR><tt>: ask=yes</tt>
+<P>
+		<BR><tt>:</tt>
+<P>
+<H2><A NAME=SECTION0002600000000000000> <b>Maintenance of keyword values</b></A></H2>
+<P>
+From the above it is clear that the variety of possibilities to specify keyword values also makes the possibility of errors quite large. It is therefore recommended to make sure that programs are run as intended. To aid in maintaining the specified answers, run the following regularly: 
+ <BR> > <i>dwv(iew) 'prog-name'[$`stream']/extern</i> 
+shows all current values for the specified program and stream. 
+ <BR> > <i>dwc(lear) `prog-name'[$`stream']</i> 
+clears all current values for the specified program and stream.
+<P>
+<A NAME=common.descr.newstar><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000> <b>Some common <i>NEWSTAR </i> keywords</b></A></H1>
+<P>
+<A NAME=common.descr.newstar.ngen><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000> <b>NGEN: General keywords</b></A></H2>
+<P>
+The following keywords (parameters) are used for most <i>NEWSTAR </i> programs, but they are usually hidden from the user (default switch /NOASK). Their current values  can be inspected by:
+<P>
+ <BR> > <i>dwv ngen</i>
+<P>
+		<BR><tt>NGEN$1_LOG(program) = SPOOL /NOASK</tt>
+<P>
+		<BR><tt>NGEN$1_RUN(program) = YES /NOASK</tt>
+<P>
+		<BR><tt>NGEN$1_DATAB(program) = "" /NOASK</tt>
+<P>
+		<BR><tt>NGEN$1_INFIX(program) = "" /NOASK</tt>
+<P>
+		<BR><tt>NGEN$1_APPLY(program) = * /NOASK</tt>
+<P>
+		<BR><tt>NGEN$1_DE_APPLY(program) = NONE /NOASK</tt>
+<P>
+		<BR><tt>NGEN$1_LOOPS(program) = "" /ASK</tt>
+<P>
+		<BR><tt>NGEN$1_DELETE_NODE(program) = NO /ASK</tt>
+<P>
+More information about these keywords can be found in the Summary of Common keywords in the next section.
+<P>
+Usually, their default values are taken for the NGEN keywords,  but they may also be specified by the user in a number of ways, for instance with <tt>dwspecify</tt>:
+<P>
+ <BR> > <i>dws `prog-name'[$`stream']/nomenu</i>
+<P>
+		<i>will set the keyword for specified program and stream.</i>
+<P>
+ <BR> > <i>dws `prog-name'$0/nomenu</i>
+<P>
+		<i>will set the keyword for specified program and all streams.</i>
+<P>
+ <BR> > <i>dws ngen[$`stream']/nomenu</i>
+<P>
+		<i>will set the keyword for all programs in the stream.</i>
+<P>
+ <BR> > <i>dws ngen$0/nomenu</i>
+<P>
+		<i>will set the keyword for all programs and streams.</i>
+<P>
+It is also possible to give (any) keyword values as switches when running the program:
+<P>
+ <BR> > <i>dwe `prog-name'[$`stream']/keyw[=`value']</i>
+		<i>or</i>  
+ <BR> > <i>dwe `prog-name'[$`stream']/nokeyw</i>
+<P>
+will set the keyword for the specified program and stream
+<P>
+Some examples in the case of NGEN keywords:
+<P>
+<UL><LI> <tt>/LOG= spool/yes/no/append</tt><BR>specify if program log should be 
+        spooled (the name will be the first 
+        three letters of the program name 
+        (capital), followed by date, time, 
+        letter (capital), .LOG), made but not 
+        spooled (name will be PROG-NAME.LOG), 
+        not made, appended to PROG-NAME.LOG. 
+<LI> <tt>/LOG X /LOG=spool</tt> 
+<LI> <tt>/NOLOG X /LOG=no</tt> 
+<LI> <tt>/RUN</tt><BR>run the program 
+<LI> <tt>/NORUN</tt><BR>start the program, ask all questions, 
+        save all the keyword values (as if specified). 
+        This can be used to prepare a batch run for intance. 
+<LI> <tt>/INFIX= 'node shorthand'</tt><BR>specify a part of the node name that is always the same (see later) 
+<LI> <tt>/INFIX X /INFIX=&quot;&quot;</tt> 
+<LI> <tt>/NOINFIX X /INFIX=&quot;&quot;</tt> 
+<LI> <tt>/APPLY=list-of-options</tt><BR>specify the corrections to be applied to data (see later for full 
+        explanation). The list can contain one or more of: 
+        ALL, NONE, RED, ALG, OTH, EXT, POL, 
+        FAR, MOD, IFR, MIFR , NORED, ... NOMIFR 
+<LI> <tt>/APPLY X /APPLY=*</tt><BR><LI> <tt>/NOAPPLY X /APPLY=NONE</tt><BR><LI> <tt>/DE_APPLY='list-of-options'</tt><BR><LI> <tt>/DE_APPLYX /DE_APPLY=NONE</tt><BR><LI> <tt>/NODE_APPLYX /DE_APPLY=*</tt><BR>(i.e. NO DE_APPLY) 
+</UL>
+<P>
+<A NAME=common.descr.NEWSTAR-other><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000> <b>Some frequently used <i>NEWSTAR </i> keywords</b></A></H2>
+<P>
+Some other keywords are also used by many <i>NEWSTAR </i> programs, but not hidden to the user. They are usually concerned with the  selection of data: <b>SETS, POLARISATION, SELECT_IFRS, HA_RANGE, AREA</b>. There are also some others. They have been collected into this `common' section to emphasize their communality, and also to make it possible to treat some of them in some more detail. More information about these keywords can be found in the Summary of Common keywords in the next section.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

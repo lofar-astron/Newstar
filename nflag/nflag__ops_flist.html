@@ -1,0 +1,58 @@
+<TITLE>Description of OPS_FLIST (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_FLIST</H1> 
+
+<DT><EM>Prompt:</EM> Flag-list operation| DELETE, GET, PUT; LOAD, UNLOAD, READ, WRITE; HEADER, LIST, LCOUNT;|-INSPECT, STATIST, MODE, CLEAR, QUIT 
+<DT><EM>Expected input:</EM> Character(24).<P>
+ Specify operations on the internal flag list: The entries in 
+this list represent flagging instructions. Each entry contains a flag type, and 
+ranges for the secondary data cube (i.e. hour angle, polarisation,  
+interferometer and channel ranges) to which it applies. <P>
+   Flagging operations involving the internal flag list: <P>
+        DELETE  Clear the entire list. <P>
+        GET     Collect flags of specified type(s) from the specified primary 
+                 data cube, translate them into flaqg-list entries and merge 
+                 them into the list. 
+                The default flag type is ALL, but it can be changed (parameter 
+                 FLAG_MODE). 
+!                       {\em see \whichref{paremeter FLAG_MODE}{} } 
+!!                      correct? <P>
+        PUT     Use he entries in the internal flag list to set flags for 
+                 selected visibilities or scans. 
+                If an entry in the list results in setting the flags on all 
+data 
+                 points in a scan, the corresponding scan-header flag is set 
+                 instead for efficiency reasons. <P>
+   Transfer of the flag list to/from an external file. Two types of file may be 
+   used: <P>
+      The .FLF file is in a compact binary format that is efficient in both 
+      operating speed and disk-space. It is accessed through: 
+        LOAD    Merge contents of a .FLF file into the internal flag list 
+        UNLOAD  Write the internal flag list to a new .FLF file <P>
+     The list can also be stored in an ASCII file which you can inspect and 
+edit 
+     as you please. ASCII files are bulky and take much more time to process. 
+     They are accessed through: 
+        READ    Merge contents of an ASCII flag-list file into the internal 
+flag 
+                 list 
+        WRITE   Write the internal flag list to a new ASCII flag-list file <P>
+   Inspection: <P>
+        HEADER  Show the contents of the flag-list header. 
+        LIST    Show the contents of the flag-list (can be long!). 
+!!                       Implement control-C 
+        LCOUNT  Count the flags in the flag list (NOT in the data!). 
+                 These can be INSPECTed in various one-dimensional projections. <P>
+   Navigation: <P>
+        INSPECT Make detour into the (flag) INSPECTion section of the program 
+        STATIST Make detour into the (data) STATISTics section of the program 
+        MODE    Make detour into the environment MODE-control section of the 
+                 program 
+        CLEAR   Go to the CLEAR-flags operation. 
+        QUIT    Go back to what you were doing before.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

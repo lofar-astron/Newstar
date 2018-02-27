@@ -1,0 +1,40 @@
+<TITLE>Description of INFIX (NGEN)</TITLE>
+<H1>Description of general keyword INFIX</H1>
+
+<DT><EM>Prompt:</EM> node name shorthand
+<DT><EM>Default:</EM> "" /NOASK.
+<DT><EM>Expected input:</EM> Character(80).<P>
+NEWSTAR file names can be very long. In order to avoid having to type them 
+fully each time, the user may store (part of) the node name in the keyword 
+INFIX. From then on, the user may specify node names in a short-hand notation 
+which contains a hash (#) character. The latter is automatically replaced by 
+the contents of INFIX, to produce the full file name. <P>
+Example: if part of the full node name is enclosed in brackets: 
+        mynode.21(cm.yesterday.s.x.c.d.file.d)d the value of INFIX (for the 
+current $stream) will be: 
+        cm.yesterday.s.x.c.d.file.d Subsequently, typing '92#e' will produce 
+the node name: 
+        mynode.92cm.yesterday.s.x.c.d.file.de <P>
+This keyword is part of NGEN, i.e. it is a NEWSTAR 'environment keyword', which 
+is available to all NEWSTAR programs. The switch /NOASK indicates that it is 
+'hidden', i.e. the user is not prompted for it, but the default value is used. <P>
+Its value may be modified (for a given $stream) in several ways: 
+        Permanently for all programs and streams during current login: 
+                change the default value: dws[pecify] 'NGEN$0' 
+        Permanently for all programs in certain stream during current login: 
+                change the default value: dws[pecify] NGEN['$stream'] 
+        Permanently for certain program in all streams during current login: 
+                change the default value: dws[pecify] 'program$0' 
+        Permanently for certain program in certain stream during current login: 
+                change the default value: dws[pecify] program['$stream'] <P>
+Note: use automatic saving in LOGOUT to pass on values beyond current login 
+        Incidentally for a certain incarnation of program[$stream]: 
+                run as: dwe program['$stream']/INFIX=value 
+        Incidentally for all hidden values: 
+                run a NEWSTAR program as: dwe program['$stream']/ASK  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngen/ngen_comm.html">List of general keywords</A> for NGEN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

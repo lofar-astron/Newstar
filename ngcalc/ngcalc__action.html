@@ -1,0 +1,64 @@
+<TITLE>Description of ACTION (NGCALC)</TITLE>
+<H1>Program NGCALC: private keyword ACTION</H1> 
+
+<DT><EM>Prompt:</EM> type of action | EXTRACT, COPY, CALC, MERGE, COMBINE, TRANS, BASE, MONGO, PLOT, SHOW, BRIEF, FULL, DELETE, NODE, CVX, NVS, QUIT
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify the action to be performed: <P>
+   Creating cuts from external data: 
+	EXTRACT extract information from SCN file into cuts 
+	COPY    copy cuts to other NGF file, retaining their indices 
+		 (this action is mainly useful for discarding cuts no longer 
+		  needed and thereby freeing disk space) <P>
+   Viewing the contents of the .NGF file: 
+	SHOW    show information in cut headers and data 
+	BRIEF   show summary per group/field showing numbers of polarisations,  
+		interferometers, cuts and data points <P>
+   Calculations: 
+	CALC    Perform one of a set of predefined algorithms on individual cuts 
+	MERGE   Merge a number of cuts into a single new cut. 
+		NOTE: Overlapping points will be averaged so you may use MERGE 
+		      to average e.g. a set of interferometers with data points 
+		      at coincident hour angles. 
+	COMBINE Combine cut(s) in user-specified expression <P>
+   Sorting: 
+     Starting from a cut in the HA direction, these actions produce a new cut 
+in the frequency or baseline direction for each hour angle present in any of 
+the input cuts. Use the HA_RANGE parameter to limit the number of output cuts. 
+     The output cuts are in a primitive format in which the data are transposed 
+but NOT the coordinate axes. These wrong axes appear in plots of the transposed 
+cuts and must be interpreted as indicated below. In calculations, however,  
+coordinates will be interpreted correctly (provided you specify a sensible 
+calculation). <P>
+     Transposing a transposed group of cuts reproduces the original cuts. You 
+may also try to combine TRANS and BASE operations but sensible results are not 
+guaranteed. <P>
+	TRANS   transpose frequency and HA axes. 
+		In the transposed cuts, each channel is represented by an hour 
+		angle of &lt;channel number&gt;*0.125 deg. 
+		Each hour-angle bin of 0.125 deg is represented by a channel 
+		number, which starts at 0 for the lowest hour angle present. <P>
+	BASE    transpose interferometer and hour-angle axes. 
+		In the transposed cuts, each baseline bin of 10 metres is 
+		represented by an HA bin of .125 deg at HA = &lt;baseline&gt;/10*.125 
+		deg; baselines landing in the same bin are averaged. 
+		Each hour-angle bin of .125 deg is represented by a baseline 
+		sequence number of HA*.125. <P>
+   Plotting: 
+	MONGO   output cut data in a MONGO-readable file 
+	PLOT    plot data in NGF cut(s) <P>
+   Miscellaneous: 
+	DELETE  delete cuts. (Only the index linkage is removed but the cut data 
+		 remain in the file: Use COPY to free the file space.) 
+		BEWARE: This action is IRREVERSIBLE. 
+	NODE    switch to other NGF file 
+	QUIT    terminate NGCALC <P>
+   Data-format conversions: 
+	CVX     convert NGF file from other machine's format to local format 
+	NVS     update to latest NGF-file format  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngcalc/ngcalc_keys.html">List of keywords</A> for NGCALC
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ngcalc_descr/ngcalc_descr.html">program NGCALC</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

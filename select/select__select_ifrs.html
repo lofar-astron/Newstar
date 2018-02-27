@@ -1,0 +1,46 @@
+<TITLE>Description of SELECT_IFRS (SELECT)</TITLE>
+<H1>Description of general keyword SELECT_IFRS</H1>
+
+<DT><EM>Prompt:</EM> Changes to the interferometer selection|
+<DT><EM>Expected input:</EM> Character(4), 40 values.<P>
+ Specify how you want to change the interferometer selection. <P>
+Interferometers are defined as combinations of two telescopes; an 
+interferometer may thus contain 1, 2 or 4 polarisations. <P>
+A combination of two different telescopes is called a CROSS[-correlating] 
+interferometer, a telescope combined with itself an AUTO[-correlating] 
+interferometer. At present, WSRT data contain only cross-interferometer data,  
+so selection/elimination of auto-interferometers is irrelevant. <P>
+The following codes are used to identify (groups of) telescopes: <P>
+	P       show the present selection table <P>
+   For the WSRT: 
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D: 
+		 individual WSRT telescopes (case-insensitive) 
+	*       all telescopes or all cross interferometers 
+	F       all fixed telescopes = 0 through 9 
+	M       all movable telescopes = A through D 
+	Y       telescopes A and B 
+	Z       telescopes C and D 
+	#       autocorrelation <P>
+   Additional codes for the Australian Telecope Compact Array (ATCA): 
+	T       ATCA telescopes (8-D) 
+	U       the ATCA complement (0-7). <P>
+An interferometer specification without a prefix or prefixed with a + sign is 
+SELECTED, a specification with a minus sign prefixed is ELIMINATED. Selection 
+and elimination are incremental. Up to 40 select/eliminate specifications may 
+be given, separated by comma's; they will be honored in the order in which you 
+give them. Prompting will continue until you stop replying. <P>
+The standard operation is on the cross-correlations. A telescope name followed 
+with a # indicates the auto-correlations. <P>
+Examples: 
+
+<DT>	-3F     eliminate combinations of 3 with other fixed telescopes 
+	FM, -9A  select all fixed-movable combinations (the WSRT's 40 'standard' 
+		 interferometers) except 9A 
+
+<DT>	-#, 33   eliminate all auto-interferometers, then re-select 33 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../select/select_comm.html">List of general keywords</A> for SELECT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

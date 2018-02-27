@@ -1,0 +1,696 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ &quot;,,&quot;  
+substitutes  
+''
+<P>
+<b>Guide for writing and maintaining <i>NEWSTAR </i> documents</b>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=doc_guide.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=doc_guide.html#SECTION0002000000000000000>  <b>Summary of <i>NEWSTAR </i> LaTeX commands </b></A>
+<LI> <A NAME=tex2html3 HREF=doc_guide.html#SECTION0003000000000000000>  <b>The <i>NEWSTAR </i> documentation system</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=doc_guide.html#SECTION0003100000000000000>  <b>General layout</b></A>
+</UL> 
+<LI> <A NAME=tex2html5 HREF=doc_guide.html#SECTION0004000000000000000>  <b>Cross-references</b></A>
+<UL> 
+<LI> <A NAME=tex2html6 HREF=doc_guide.html#SECTION0004100000000000000>  <b>Cross-references to text in LaTeX documents </b></A>
+<LI> <A NAME=tex2html7 HREF=doc_guide.html#SECTION0004200000000000000>  <b>Cross-references to other types of documents</b></A>
+<LI> <A NAME=tex2html8 HREF=doc_guide.html#SECTION0004300000000000000>  <b>Equations and equation references</b></A>
+</UL> 
+<LI> <A NAME=tex2html9 HREF=doc_guide.html#SECTION0005000000000000000>  <b>Figures and figure references</b></A>
+<UL> 
+<LI> <A NAME=tex2html10 HREF=doc_guide.html#SECTION0005100000000000000>  <b>Caption files</b></A>
+<LI> <A NAME=tex2html11 HREF=doc_guide.html#SECTION0005200000000000000>  <b>Xfig figures</b></A>
+<LI> <A NAME=tex2html12 HREF=doc_guide.html#SECTION0005300000000000000>  <b>Postscript figures</b></A>
+<LI> <A NAME=tex2html13 HREF=doc_guide.html#SECTION0005400000000000000>  <b>Figure references</b></A>
+</UL> 
+<LI> <A NAME=tex2html14 HREF=doc_guide.html#SECTION0006000000000000000>  <b>Session transcripts</b></A>
+<UL> 
+<LI> <A NAME=tex2html15 HREF=doc_guide.html#SECTION0006100000000000000>  <b>Programmer's commands: Processing individual files </b></A>
+<LI> <A NAME=tex2html16 HREF=doc_guide.html#SECTION0006200000000000000>  <b><i>NEWSTAR </i> manager's commands: Maintaining the documentation system
+</b></A>
+</UL> 
+<LI> <A NAME=tex2html17 HREF=doc_guide.html#SECTION0007000000000000000>  <b>Debugging .tex files</b></A>
+<UL> 
+<LI> <A NAME=tex2html18 HREF=doc_guide.html#SECTION0007100000000000000>  <b>LaTeX bugs</b></A>
+<LI> <A NAME=tex2html19 HREF=doc_guide.html#SECTION0007200000000000000>  <b>Processing errors in ndoc</b></A>
+<LI> <A NAME=tex2html20 HREF=doc_guide.html#SECTION0007300000000000000> <b>Processing errors in ndoc Cook</b></A>
+</UL> 
+<LI> <A NAME=tex2html21 HREF=doc_guide.html#SECTION0008000000000000000> <b>latex2html </b></A>
+<UL> 
+<LI> <A NAME=tex2html22 HREF=doc_guide.html#SECTION0008100000000000000>  <b>Formulas and the like in latex2html </b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Summary of <i>NEWSTAR </i> LaTeX commands </b></A></H1>
+<P>
+        For quick reference use the following list of special LaTeX commands available in the <i>NEWSTAR </i> documentation system:  
+<BR><BR><A HREF="#.cross.ref.other">ascref</A> <BR><A HREF="#.cross.ref">Ascref</A> <BR><A HREF="#.caption">caption</A> <BR><A HREF="#.layout">chapter</A> <BR><A HREF="#.eqref">eqref</A> <BR><A HREF="#.eqref">Eqref</A> <BR><A HREF="#.caption">fig</A> <BR><A HREF="#.figref">figref</A> <BR><A HREF="#.figref">Figref</A> <BR><A HREF="#.cross.ref.latex">label</A> <BR><A HREF="#.ps">ps</A> <BR><A HREF="#.cross.ref.other">psref</A> <BR><A HREF="#.cross.ref">Psref</A> <BR><A HREF="#.cross.ref.latex">ref</A>: <em>Not to be used</em> <BR><A HREF="#.layout">tableofcontents</A> <BR><A HREF="#.cross.ref.latex">textref</A> <BR><A HREF="#.cross.ref">Textref</A> <BR><A HREF="#.cross.ref">whichref</A> <BR><H1><A NAME=SECTION0003000000000000000>  <b>The <i>NEWSTAR </i> documentation system</b></A></H1>
+<P>
+        The <i>NEWSTAR </i> documentation system provides documentation in two forms: An on-line hypertext system based on the public-domain program &quot;xmosaic&quot; and standard LATeX documents. Both forms are derived from a single set of LaTeX source files; for the hypertext form, the public-domain translator  latex2html  is used.  
+        Broadly speaking, authors are free to use the standard LaTeX constructs. In particular,  latex2html  handles tabular material, mathematical formulas and the inclusion of diagrams very well. Writers should be aware, however, that every bit of math-mode text is translated into a little bitmap that must be loaded separately for display. This considerably slows down both the processing by ndoc Cook and the display by xmosaic.  
+         Simple macros defined through  
+\newcommand can be used freely, but complicated nesting of macros should be avoided.  
+        To satisfy the specific needs of the <i>NEWSTAR </i> system and circumvent some deficiencies of  latex2html , the guidelines given below should be followed.
+<P>
+<A NAME=.layout><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0003100000000000000>  <b>General layout</b></A></H2>
+<P>
+ <UL><LI>   Preamble
+<P>
+        The document compiler  ndoc automatically inserts a preamble including the \begin{document} and also appends the \end{document}. The source of a document may add private preamble elements such as  
+\newcommand definitions. Apart from that, the first document line is the  
+\chapter line:
+<P>
+<LI> \chapter{&lt;text&gt;}
+<P>
+        The chapter is the basic documentation unit.  ndoc formats the argument  
+&lt;text&gt; as a hypertext or printed document title.
+<P>
+<LI> \tableofcontents
+<P>
+        This creates a standard table of the chapter's contents in the printed document and an equivalent unnumbered table with links to the (sub)(sub)sections in the hypertext display.
+<P>
+<LI>   ,,[sub]sub]]section{&lt;text&gt;}
+<P>
+        These commands produce standard section headings, numbered in the printed document, unnumbered in the hypertext display.  
+ </UL>
+<P>
+<A NAME=.cross.ref><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0004000000000000000>  <b>Cross-references</b></A></H1>
+<P>
+        In writing documents, the placeholder \whichref{text}{} can be used for references whose target is not yet known.
+<P>
+        For most referencing commands, a companion with the leading character capitalised is available; these work the same way except that the text argument is printed in boldface. This feature is intended for use in the documentation home-page document, hb_contents.tex.
+<P>
+<A NAME=.cross.ref.latex><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004100000000000000>  <b>Cross-references to text in LaTeX documents </b></A></H2>
+<P>
+        Cross-references must work in both the printed and hypertext versions of a document. For this reason, <i>the standard LaTeX \ref command is unsuitable</i> and the rules given below must be followed instead.
+<P>
+ <UL><LI>   \label{.&lt;label&gt;}
+<P>
+        A label name <em>must start in a dot</em> as shown. LaTeX <em>forbids the use of underscores in labels</em>, even if they are escaped by a backslash; it is recommended to use <em>dots</em> instead.
+<P>
+<LI>   \textref{&lt;text&gt;}{.&lt;label&gt;}
+<P>
+        This is translated for the printed document as &lt;text&gt; (sec. &lt;section number&gt;). In the hypertext display, &lt;text&gt; becomes a hypertext link to &lt;label&gt;. &lt;text&gt; may have a local format of its own, e.g.  
+{\em &lt;text&gt;} or {\bf &lt;text&gt;}.
+<P>
+<LI>   \textref{&lt;text&gt;}{&lt;file name&gt;.&lt;label&gt;}
+<P>
+        This is the form for a reference to a label in an external file. In the printed document it becomes &lt;text&gt; with a numbered footnote showing the directory and name of the target file's source and the target label.
+<P>
+        &lt;file name&gt; is the name of a .tex file (without the .tex extension!) in directory \$n\_doc/latex; the name may contain <em>neither dots nor uppercase characters</em>, but underscores are allowed (and need not to be quotes with a backslash).
+<P>
+<LI>   \whichref{&lt;text&gt;}{}
+<P>
+         can be used as a placeholder for a \textref whose target is as yet unknown.
+<P>
+ </UL>
+<P>
+<A NAME=.cross.ref.other><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004200000000000000>  <b>Cross-references to other types of documents</b></A></H2>
+<P>
+        The documentation system also contains ASCII documents and PostScript documents imported from elswehere. Such documents may be referred to through the following commands:
+<P>
+ <UL><LI>   \ascref{&lt;text&gt;}{&lt;file name&gt;}  
+<LI>   \psref{&lt;text&gt;}{&lt;file name&gt;}  
+ </UL>
+<P>
+        &lt;file name&gt; is the name (without extension!) of a .txt file in directory \$n\_doc/txt or of a .ps file in directory \$n\_hlp; the name may contain <em>neither dots nor uppercase characters</em>, but underscores are allowed (and need not to be quotes with a backslash).
+<P>
+ <UL><LI>   \srcref{&lt;text&gt;}{&lt;directory&gt;&lt;file name&gt;&lt;extension&gt;}  
+ </UL>
+<P>
+        This command is used to refer to program code or WNTINC table definitions (.dsc files). directory must be specified relative to  
+n_src and the file extension must be included.
+<P>
+<A NAME=.eqref><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004300000000000000>  <b>Equations and equation references</b></A></H2>
+<P>
+        The commands \Eqref{.&lt;label&gt;} and \eqref{.&lt;label&gt;} are entirely analogous to the <A HREF="#.figref">figure references</A>  
+\Figref and \figref.
+<P>
+<A NAME=.fig><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0005000000000000000>  <b>Figures and figure references</b></A></H1>
+<P>
+        Figures with their captions reside in the directory  
+\$n\_doc/fig. A figure consists of two components:  
+ <UL><LI>   a &lt;name&gt;.cap <em>caption file</em> containing a caption and a the directive to include the figure.
+<P>
+<LI>   the diagram proper in the form of either an xfig drawing  
+&lt;name&gt;.fig, or a binary (e.g. &lt;name&gt;.ps or &lt;name&gt;.gif) file.  
+ </UL>
+<P>
+        A figure with its caption is included in a document source file through the command
+<P>
+  \input{../fig/&lt;name&gt;.cap  
+<P>
+In the printed document, figure and caption are included in the standard way. In the hypertext display the word FIGURE is included, followed by the caption text, with a hypertext link from FIGURE to a postscript file.  ndoc generates that file automatically from the .fig file.
+<P>
+<A NAME=.caption><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0005100000000000000>  <b>Caption files</b></A></H2>
+<P>
+        The purpose of the caption file (as opposed to spelling out the caption text in the document source) is to enable the figure with its caption to exist as an independent unit that can be included in more than one document and also exist outside the context of any document.
+<P>
+        The caption file must not only provide the caption, but also the title under which the figure may be listed in the Handbook Overview. It is therefore important to adhere strictly to the following format:
+<P>
+ <PRE> 
+        \begin{figure}[htbp] 
+          \fig{<name>} 
+          \caption[]{<optional LaTeX commands, e.g. \it> 
+        <title> 
+        <optional LaTeX commands, e.g. \> <optional remainder of caption> 
+        } 
+          \label{.<label>} 
+        \end{figure} 
+</PRE>
+<P>
+ Examples can be found in the 
+/\$n\_doc/fig directory.
+<P>
+        You are free to choose the label; the recommended choice, however, is
+the file name with underscores replaced by dots. (Remember that underscores are
+illegal in labels and that labels must start with a dot.)
+<P>
+        Comment lines (but no <em>empty</em> lines!) may be arbitrarily added,
+except that the &lt;title&gt; line must <em>immediately follow</em> the 
+\caption command.
+<P>
+<A NAME=.xfig><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005200000000000000>  <b>Xfig figures</b></A></H2>
+<P>
+        .fig files may be created without any restrictions with the
+public-domain program xfig. It is not necessary to produce a postscript
+file with this program.  ndoc/ will take the .fig file and convert it
+automatically.
+<P>
+        Often, figures drawn on a convenient scale on a workstation screen will
+not fit on a standard A4 page.  ndoc/ may be instructed to automatically reduce
+its scale by including in the figure a text line
+<P>
+  &lt;file name&gt;.fig &lt;nn&gt; It is best to put this text in an inconspicuous corner and a small font (e.g.
+10pt as opposed to a standard 20pt).
+<P>
+<A NAME=.ps><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005300000000000000>  <b>Postscript figures</b></A></H2>
+<P>
+        It is also possible to include Postscript figures produced in other
+ways than through xfig: Use the command \ps{&lt;filename&gt;} instead of 
+\fig and place the postscript file &lt;filename&gt;.ps in the
+directory /\$n\_doc/bin with a soft link to it in \$n\_hlp. If it
+can not be easily recovered, it is advisable to protect it against accidental
+deletion!
+<P>
+<A NAME=.figref><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005400000000000000>  <b>Figure references</b></A></H2>
+<P>
+        For references to figures, use
+<P>
+  \figref{.&lt;label&gt;} and   \Figref{.&lt;label&gt;}
+<P>
+ These commands translate to hypertext links figure or Figure
+in the hypertext document, and to a standard reference figure &lt;n&gt; or 
+Figure &lt;n&gt; in the printed document.
+<P>
+<H1><A NAME=SECTION0006000000000000000>  <b>Session transcripts</b></A></H1>
+<P>
+        Verbatim transcripts of pieces of terminal dialogue controlling program
+execution are an important ingredient to documentation. Such transcripts are
+easily produced through the command 
+        ndoc S[cript] &lt;file name&gt; 
+This starts a cshell script session in which you execute the program of which
+you want a transcript. After exit from the script session, the collected script
+is automatically formatted into a LaTeX file &lt;file name&gt;.trs; what
+remains for you to do is to cut out the irrelevant parts and perhaps add some
+comments. A sample section of such a file is shown below
+<P>
+  <PRE> %
+\spbegin %
+\skeyword{USE\_SCN\_NODE} \sprompt{(input node name)} \sdefault{= *:}
+\suser{?} %
+\svbegin \begin{verbatim} 
+ Specify the node name from which the corrections should be calculated. 
+ * indicates the same as the output node name. 
+</PRE>  
+\end{verbatim}\svend 
+  <PRE> \spend
+%
+%
+\spbegin %
+\skeyword{USE\_SCN\_NODE} \sprompt{(input node name)} \sdefault{= *:}
+\suser{*} \sinline{Use the same SCN file} \spend
+%
+%
+\spbegin %
+\skeyword{USE\_SCN\_SETS} \sprompt{(Set(s) of input uv-data Sectors:
+g.o.f.c.s)} \sdefault{= "":} \suser{2.0.0.0.0} \sinline{Sets in job 2}
+\spend %
+%
+\spbegin %
+\skeyword{HA\_RANGE} \sprompt{(DEG) (HA range)} \sdefault{= *:}
+\suser{\scr} \sinline{Use all scans in these sets} %
+\svbegin \begin{verbatim} 
+   0123456789ABCD 
+ 0 -+++++++++++++ 
+ 1  -++++++++++++ 
+ 2   -+++++++++++ 
+ 3    -++++++++++ 
+ 4     -+++++++++ 
+ 5      -++++++++ 
+ 6       -+++++++ 
+ 7        -++++++ 
+ 8         -+++++ 
+ 9          -++++ 
+ A           -+++ 
+ B            -++ 
+ C             -+ 
+ D              - 
+</PRE>  
+\end{verbatim}\svend 
+  <PRE>
+\spend%
+</PRE>
+<P>
+        The file consists of sections delimited by \spbegin and 
+\spend, each consisting of a prompt with its reply and the ensuing
+output from the computer. LaTeX will treat these sections as blocks in which a
+page break can not occur. The following LaTeX commands are used:
+<P>
+ <UL><LI>   \skeyword, \sprompt and \sdefault are the
+components of a program prompt;
+<P>
+<LI>   \suser is the user's reply (in which \scr represents a
+null reply (carriage return only) and \seof an end-of-file
+(control-D)).;
+<P>
+<LI>   \sinline is an inline comment typed in during the session (an
+exclamation mark plus text following the answer to a prompt);
+<P>
+<LI>   \svbegin and \svend delimit the verbatim section in
+which computer output is rendered.
+<P>
+ </UL>
+<P>
+        It is necessary to check these scripts with some care. The system does
+occasionally get confused by the way the parameter interface splits long input
+and output lines. The errors are usually easily corrected.
+<P>
+ <UL><LI>   To replace parts of lengthy computer output, e.g. by ellipses; note
+that, since this occurs inside verbatim sections, LaTeX commands such as 
+\vdots can not be used. A line consisting of just three dots gives a
+satisfactory effect.
+<P>
+<LI>   To add \sinline comments. These must be placed either
+immediately following \suser commands or between an 
+\end{verbatim} and the adjacent \svend.
+<P>
+<LI>   To reduce the size of verbatim sections that are more than 80
+characters wide (e.g. sections from a log file).
+<P>
+ </UL>
+<P>
+<A NAME=.doc.sources.and.hyper><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  On-line Help files in the <i>NEWSTAR </i>
+<A HREF="../fig/doc_sources_and_hyper.ps"><STRONG>FIGURE</STRONG></A>  
+ .] <i>documentation system and their origins.  
+<BR>Files shown in boldface are the documentation and program sources, those
+shown in regular print are the derived Help files. 
+<BR>The full-drawn arrows indicate hypertext links for diagrams. The links to
+the other files types are not shown. The dotted arrow indicate links to in-line
+picture files that contain <A HREF="#.formulas"><b>formulas and tables</b></A>.    
+<BR>The dashed arrows indicate the relations between the files: Straight arrows
+represent a direct derivation, merging arrows a source-file inclusion. The
+capital letters on the arrows show in which procedure the derivation is
+implemented: 
+<BR>C= ndoc Cook; F= ndoc Fig; T= ndoc Test; P= ndoc Print. </i>
+<P>
+<A NAME=.doc.sources.and.print><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  Printable documents in the <i>NEWSTAR </i>
+<A HREF="../fig/doc_sources_and_print.ps"><STRONG>FIGURE</STRONG></A> 
+ .] <i>documentation system and their origins. 
+<BR>Files shown in boldface are the documentation and program sources, those
+shown in regular print are the derived printable files in the Help system.
+<BR>The dashed arrows indicate the relations between the files: Straight arrows
+represent a direct derivation, merging arrows a source-file inclusion. The
+capital letters on the arrows show in which procedure the derivation is
+implemented: F= ndoc Fig; T= ndoc Test; P= ndoc Print. </i>
+<P>
+        The documentation system encompasses three classes of files. The
+document source files reside in subdirectories of $n_doc; the code
+source files which may also be referenced reside in subdirectories of 
+$n_src. All hypertext files reside in a tree of subdirectories rooted in 
+\$n\_hlp. The interrelations of all these files are shown in 
+<A HREF=" #.doc.sources.and.hyper">figure</A>.
+<P>
+        The following types of source texts are used: 
+ <UL><LI>   Narrative LaTeX source texts: $n_doc/latex/&lt;name&gt;.tex
+<P>
+<LI>   Caption LaTeX source texts: $n_doc/fig/&lt;name&gt;.cap
+<P>
+<LI>   Standardised LaTeX files describing the private and public program
+parameter interfaces: $n_doc/intfc/&lt;name&gt;.tex. These files incorporate 
+.tef files derived from the program-parameter definition files
+(&lt;name&gt;.psc).
+<P>
+<LI>   ASCII texts: $n_doc/txt/&lt;name&gt;.txt
+<P>
+<LI>   Postscript files for which no source exists: $n_doc/ps/&lt;name&gt;.ps
+<P>
+<LI>   Code sources: $n_src/&lt;directory&gt;/&lt;name&gt;.&lt;extension&gt; 
+ </UL>
+<P>
+        In processing, temporary files are created in the current directory;
+their names either contain the string \_tmp. or end in .tmp. 
+ ndoc normally deletes them when exiting.
+<P>
+        latex2html, invoked by ndoc Cook, translates each file 
+&lt;name&gt;.tex into a file 
+\$n\_hlp/&lt;name&gt;/&lt;name&gt;.html. A large number of 
+.html files are therefore in subdirectories of 
+\$n\_hlp.
+<P>
+        ndoc Print creates .ps PostScript text files in \$n\_hlp. 
+        ndoc Fig creates .fps PostScript diagram files in 
+\$n\_hlp.
+<P>
+<H2><A NAME=SECTION0006100000000000000>  <b>Programmer's commands: Processing individual files </b></A></H2>
+<P>
+        The commands are of the form 
+        ndoc &lt;operation&gt; [-&lt;option&gt;] &lt;file&gt; 
+        &lt;file&gt; is the full file name including the extension, and it
+must be in the current directory. Wildcards may be used. 
+        The &lt;operation&gt; and -&lt;option&gt; arguments may be
+abbreviated and are case-insensitive. The following operations and options are
+available:
+<P>
+ <DL COMPACT><DT><DD>   P[rint] creates [a] PostScript file[s] from [a] .tex source
+file[s], with the following options: 
+   <UL><DT>
+<DD> -S[yntax] do nothing else; 
+  <DT>
+<DD> -V[iew] display the output using ghostview; 
+  <DT>
+<DD> -P[rint] print the PostScript output. 
+   </UL>
+<P>
+Print uses the LaTeX program. It attempts to suppress the verbose output
+of this program by filtering out everything except essential error messages. If
+you encounter a problem that you can not solve, submit your source file to the 
+<i>NEWSTAR </i> group for diagnosis.
+<P>
+<DT><DD>   C[ook] creates a Hypertext file from [a] .tex document[s]. This
+operation makes use of  latex2html . This program may crash over LaTeX syntax errors
+without properly analysing them. <em>It is therefore recommended to first do a 
+Print -Syntax check.</em>
+<P>
+<DT><DD>   K[ey] creates Hypertext files from [a] .pin, .psc or .pef
+file[s]
+<P>
+<DT><DD>   L[ink] creates the softlinks from the n_hlp directory to
+the $n_doc/txt and $n_src directories.
+<P>
+ </DL>
+<P>
+         ndoc checks the dates of its input and output files. If the output is
+newer than the date,  ndoc emits a message and proceeds with the next input
+file. This check is incomplete in that it does not check the status of 
+\input files such as figure captions.
+<P>
+        There are two ways of bypassing this check: 
+ <UL><LI>   Setting the environment variable n_force. 
+<LI>   touching the inpout file to set its modification time to the
+present time. 
+ </UL>
+<P>
+        When working in a shadow system,  ndoc makes no difference between hard
+copies and soft links to the master system: Both are unconditionally compiled.
+<P>
+<H2><A NAME=SECTION0006200000000000000>  <b><i>NEWSTAR </i> manager's commands: Maintaining the documentation system
+</b></A></H2>
+<P>
+        To recompile the entire documentation collection from its sources, one
+uses the command 
+          ndoc All 
+ndoc will ask which parts of the system to recompile, the default
+being 'yes' for all subsystems. In this mode of operation  ndoc bypasses the
+check for an up-to-date output file.
+<P>
+        One of the actions available in ndoc All is a systematic check
+of the correspondence between source and output files. This is a very useful
+action because it clears up leftovers of obsolete documents and pinpoints areas
+of trouble.
+<P>
+<H1><A NAME=SECTION0007000000000000000>  <b>Debugging .tex files</b></A></H1>
+<P>
+         ndoc goes a long way in filtering from the verbiage that LaTeX spews
+out the essential diagnostics. It shows the essential section of LaTeX output
+where the error is reported (including a line number) plus five lines of text
+in the middle of which the error was found. Very often this information
+suffices to pinpoint the error. If it does not, you may have to take a better
+look either at your source or at the &lt;file name&gt;_tmp.tex file that is
+the file LaTeX was actually processing. Note that the line number reported
+refers to this latter file!
+<P>
+        Specific errors that have been encountered and are not covered by this
+diagnosis mechanism are described below.
+<P>
+<H2><A NAME=SECTION0007100000000000000>  <b>LaTeX bugs</b></A></H2>
+<P>
+        Both ndoc Print and ndoc Cook make use of LaTeX and may
+therefore be affected by LaTeX bugs. For cases not covered here, refer to &quot;The
+LaTex Book&quot;, which is probably the best informed source about that program. 
+ <UL><LI>   Symptom: 
+        <em>The word dump appears in the place of a Figure or Table.</em>
+<P>
+        This is an obscure problem. One situation in which it has been observed
+is when a \figure environment is put at the very start of a document,
+i.e. without any preceding text. (This condition will not occur for regular
+documents but may occur in test situations.) It has also been seen in a case
+where a tabular environment was nested inside a table, in which
+case the solution was to remove the table environment.
+<P>
+<LI>   Symptom: 
+        <em>LaTeX complains about a 'runaway argument' in a \caption
+environment.</em>
+<P>
+        This may happen when the optional argument in square brackets is
+omitted. As of 940914, this argument is automatically provided for by 
+doc_preprocess.csh.
+<P>
+<LI>   Symptom: 
+        <em>ndoc Print runs without reporting any error, but produces a
+PostScript file in which figure references appear without numbers filled in.</em>
+<P>
+        This happens when the \label directive in a figure
+declaration is placed before the \caption command.!
+<P>
+<LI>   Symptom: 
+        <em>LaTeX reports: TeX capacity exceeded, sorry [parameter stack
+size=60].</em>
+<P>
+        This has been seen to happen when a \section title argument is
+too complicated, e.g. because it contains italicised text.
+<P>
+<LI>   Symptom: 
+        <em>LaTeX finds a $or _in a \textref file argument that is
+not escaped by a preceding backslash.</em>
+<P>
+        This may happen when the expansion of a command defined through 
+\newcommand contains a <A HREF="#.cross.ref">referencing command</A>. Fix
+the problem by including escape charaters in the \newcommand
+definition.
+<P>
+<LI>   Symptom: 
+        <em>LaTeX complains about &quot;Paragraph ended before \sbox was
+complete&quot; in a figure caption.</em>
+<P>
+        The \caption environment appears to be sensitive to formatting.
+In particular new paragraphs (i.e. blank lines) and \indent commands
+have been noted to produce this nasty error. In some cases it was found
+necessary to put the \label before the \caption. 
+ </UL>
+<P>
+<H2><A NAME=SECTION0007200000000000000>  <b>Processing errors in ndoc</b></A></H2>
+<P>
+        When LaTeX reports an error to  ndoc,  ndoc displays a five-line text
+section in the middle of which the error occurred. This is not from the
+original input text, but from the preprocessed text as it was eventually
+presented tp LaTeX. Most errors are easily recognised and traced back to the
+input  .tex  file.
+<P>
+ <UL><LI>   Symptom: 
+        An error occurs which is associated with lines from the .tex input that
+were concatenated by ndoc.
+<P>
+        This may very well be an error in the algorithm used by ndoc to merge
+paragraphs into single long lines. It is not necessarily clear why LaTeX does
+not accept the long line. An any rate, the recommended action is to check with
+the <i>NEWSTAR </i> manager.
+<P>
+<LI>   Symptom: 
+        ndoc cook stops with message 
+           nawk: record `[...]' has too many fields
+<P>
+        In preprocessing documents, ndoc formats paragraphs into single lines
+to make it easier to identify LaTeX command sequences. Find the offending
+paragraph in you documents and insert &lt;newline&gt;&lt;blank&gt; at some
+appropriate place. The leading paragraph will inhibit the merger of the two
+parts of the paragraph, yet LaTeX will format the two parts into one paragraph.
+<P>
+ </UL>
+<P>
+<H2><A NAME=SECTION0007300000000000000> <b>Processing errors in ndoc Cook</b></A></H2>
+<P>
+        The program  latex2html  on which ndoc Cook is based is rather lax on
+checking LaTeX syntax but may stumble over the consequences of an error missed.
+<i>It is therefore strongly recommended to first check the syntactical
+correctness of the .tex file through ndoc P</i>. 
+ <UL><LI>   Symptom: 
+        .DVI file can't be opened
+<P>
+         latex2html  runs LaTeX on a selection from the .tex file consisting of
+formulas, tabular material and diagrams. This run failed to produce a 
+.dvi file, but  latex2html  gobbled up all the error information. This error
+may be due to improper configuration of your system, <em>e.g.</em> a misplaced 
+.sty file. It is virtually impossible to diagnose except by using a 
+<A HREF="#.latex2html">modified version of  latex2html </A>.
+<P>
+<LI>   Symptom 
+ <PRE> The nplot_descr.aux file was not found, so sections will not
+be numbered and cross-references will be shown as icons. 
+</PRE>
+<P>
+        Your .tex file contains a \ref directive. Convert al 
+\refs to \textrefs.
+<P>
+<LI>   Symptom: 
+        Commands that are normally accepted are reported as unknown.
+<P>
+        This is likely to be the result of a syntax error. (For example, a
+missing \end{itemize} will cause \item to be reported as
+unknown.) Check your input file by running ndoc Print on it.
+<P>
+<LI>   Symptom: 
+        xmosaic can not find a file pointed at by a hypertext link.
+<P>
+        Note the file name appearing at the bottom of the xmosaic window
+when you point at the reference. This reference should be in either of the
+forms:
+<P>
+        &lt;file name&gt;/&lt;file name&gt;.html 
+\indent \verb../&lt;file name&gt;/&lt;file name&gt;.html
+<P>
+If it starts in a /, you have to replace your  latex2html  by the 
+<A HREF="#.latex2html">modified version</A>.
+<P>
+<LI>   Symptom: 
+        latex2html warns that the .aux file was not found but
+otherwise ndoc Cook seems to complete normally.
+<P>
+        The precise nature of this error is not understood, but it seems to
+indicate that something is wrong in a cross-reference. (e.g. a LaTeX 
+\ref command). It has been seen to occur when a \ref with a
+label name containing dots is used (cf. the section on <A HREF="#.cross.ref">cross references</A>). 
+ </UL>
+<P>
+<A NAME=.latex2html><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0008000000000000000> <b>latex2html </b></A></H1>
+<P>
+         latex2html  is a public-domain perl script created by Nikos Drakos at Leeds
+University, England (Email: nikos@cbl.leeds.ac.uk) and available through
+anonymous ftp. It has been found to be a reliable and highly capable program.
+Apart from configuring it to the local environment, two changes were found
+necessary:
+<P>
+ <UL><LI>   All lines containing the string s/\W//g must be commented out by
+prefixing them with a #. This makes  latex2html  capable of handling relative
+file references and removes an inconsistency it the processing of labels and
+references.
+<P>
+<LI>   After the line
+<P>
+system(&quot;$LATEX $$_images.tex&quot;);
+<P>
+insert the lines
+<P>
+ <PRE> 
+        if (!-e "20756_images.dvi") 
+          {system("cat 20756_images.log"); die "Failure to process formulas"; } 
+</PRE>
+ </UL>
+<P>
+<A NAME=.formulas><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0008100000000000000>  <b>Formulas and the like in latex2html </b></A></H2>
+<P>
+        LaTeX allows many constructs, such as formulas, tables etc., for which
+there is no HTML counterpart (yet).  latex2html  converts each single occurrence of
+these into a little picture file that is linked in-line into the .html
+document. The pictures are stored in .png files in the same directory as
+the .html file.
+<P>
+        Since building these pictures is a very time-consuming process,  latex2html 
+seeks to reuse them as much as possible whenever it recompiles a .tex
+file. To this end, it maintains an administration in the file images.pl
+in the .html file's directory. Therefore, to insure the integrity of the
+.html document, both the .png files and images.pl must be left in
+place. As of May 1996, doc_cook.csh contains a section of code that
+finds all in-line picture references in the renewed .html file, reports
+any referred-to files that are missing and deletes unreferenced .png
+files.
+<P>
+        In cases a .png file is reported missing, the way to get it
+rebuilt is to delete images.pl in order to force  latex2html  to rebuild all
+the picture files from scratch.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

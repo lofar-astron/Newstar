@@ -1,0 +1,27 @@
+<TITLE>Description of MAP_POLAR (NMAP)</TITLE>
+<H1>Program NMAP: private keyword MAP_POLAR</H1> 
+
+<DT><EM>Prompt:</EM> Select 1 to 4 output-map polarisation(s)| XX, XY, YX, YY; I, L, Q, U, V; XXI, XYI, YXI, YYI; II, LI, QI, UI, VI
+<DT><EM>Default:</EM> XX.
+<DT><EM>Expected input:</EM> Character(4), 4 values.<P>
+Specify up to four polarisations for the maps to make: <P>
+        XX      XX only 
+        XY      XY only 
+        YX      YX only 
+        YY      YY only <P>
+        I       Stokes I 
+        L       'line' Stokes I: Incomplete input data (e.g. no valid XX or YY) 
+                 will be filled in aassuming that the field is unpolarised 
+                 (Q=U=V=0) 
+        Q       Stokes Q 
+        U       Stokes U 
+        V       Stokes V <P>
+Each of the above may be suffixed with 'I' to indicate that visibilities must 
+be pre-multiplied with sqrt(-1) <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

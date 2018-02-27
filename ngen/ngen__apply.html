@@ -1,0 +1,58 @@
+<TITLE>Description of APPLY (NGEN)</TITLE>
+<H1>Description of general keyword APPLY</H1>
+
+<DT><EM>Prompt:</EM> Specify visibility corrections  ALL;NORED, NOALG, NOOTH;NOEXT, NOREF, NOIREF, NOFAR;NOCLK, NOPOL;NOIFR, NOMIFR;|-NONE;  RED,  ALG,  OTH;  EXT,  REF,  IREF,  FAR;  CLK,  POL;  IFR,  MIFR|
+<DT><EM>Default:</EM> * /NOASK.
+<DT><EM>Expected input:</EM> Character(8), 16 values.<P>
+In general, the uv data in a .SCN file are not physically modified. Instead,  
+correction parameters are stored in the sector and scan headers of the .SCN 
+file, to be applied 'on-the-fly' to the visibilities as they are read into 
+memory to be processed. <P>
+You may specify here the corrections to be applied by specifying a combination 
+of possible options (separated by commas). The prefix 'NO' indicates that a 
+correction must not be applied and would most likely be used in combination of 
+ALL. <P>
+        ALL or *       apply all available corrections 
+        NONE or ""     apply no corrections 
+        [NO]RED        redundancy corrections (telescope gain, phase) 
+        [NO]ALG        align corrections (telescope gain, phase) 
+        [NO]OTH        other telesc. gain/phase corrns (i.e. from calibrator) 
+        [NO]EXT        extinction correction (elevation-dependent gain) 
+        [NO]REF        refraction correction (elevation-dependent phase) 
+        [NO]IREF       ionospheric refracion 
+        [NO]CLK        clock correction 
+        [NO]POL        polarisation corrections (dipole angle, ellipticity) 
+        [NO]FAR        Faraday rotation 
+        [NO]MIFR       multiplicative interferometer errors <P>
+NOTES: 
+   1. If two options are mutually exclusive, the one specified last prevails,  
+e.g. 
+        NONE, CLK, POL    selects only the CLK and POL corrections; 
+        CLK, POL, NONE    selects no corrections at all. <P>
+   2. If a certain correction is to be disabled permanently, the safest way is 
+to zero it in the .SCN file itself, using NCALIB option SET ZERO. <P>
+. 
+This keyword is part of NGEN, i.e. it is a NEWSTAR 'environment keyword', which 
+is available to all NEWSTAR programs. The switch /NOASK indicates that it is 
+'hidden', i.e. the user is not prompted for it, but the default value is used. <P>
+Its value may be modified (for a given $stream) in several ways: 
+        Permanently for all programs and streams during current login: 
+                change the default value: dws[pecify] 'NGEN$0 
+        Permanently for all programs in certain stream during current login: 
+                change the default value: dws[pecify] NGEN['$stream'] 
+        Permanently for certain program in all streams during current login: 
+                change the default value: dws[pecify] 'program$0' 
+        Permanently for certain program in certain stream during current login: 
+                change the default value: dws[pecify] program['$stream'] <P>
+Note: use automatic saving in LOGOUT to pass on values beyond current login 
+        Incidentally for a certain incarnation of program[$stream]: 
+                run as: dwe program['$stream']/APPLY=value (or: 
+                ='(val1, val2, ...)') 
+        Incidentally for all hidden values: 
+                run a NEWSTAR program as: dwe program['$stream']/ASK  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngen/ngen_comm.html">List of general keywords</A> for NGEN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

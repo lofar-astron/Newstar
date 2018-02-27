@@ -1,0 +1,25 @@
+<TITLE>Description of SCN_GROUPS (SCNSETS)</TITLE>
+<H1>Description of general keyword SCN_GROUPS</H1>
+
+<DT><EM>Prompt:</EM>  1st index: grp = groups
+<DT><EM>Expected input:</EM> Character(32).<P>
+ Give the 'group' index-range (grp) of a sector-set specification 
+							(grp.obs.fld.chn.seq) <P>
+An example of multiple groups in a .SCN file is one group for an observation 
+and another one for the associated calibrator observation(2). <P>
+Possible answers ([]=optional): <P>
+	0               take first (or only) group 
+	n1              take group nr n1 (n1=0, 1, 2, 3, ....) 
+	n1-n2[:n3]      loop over groups n1 through n2 [step n3] 
+	*               loop over all available groups (wildcard) 
+	n1-[*][:n3]     loop over all available groups,  
+			 starting with n1 [step n3] <P>
+NB: The associated SCN_LOOPS keyword allows even more looping over index 
+values. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../scnsets/scnsets_comm.html">List of general keywords</A> for SCNSETS
+<LI>Description of the <A HREF="../scn_descr/scn_descr.html">SCN file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

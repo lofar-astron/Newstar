@@ -1,0 +1,45 @@
+<TITLE>Description of OPS_MANUAL (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_MANUAL</H1> 
+
+<DT><EM>Prompt:</EM> Manual-flagging operation| CLEAR, CLDAT, CLHEAD; UVDATA, HARANGE; INSPECT, STATIST, MODE, QUIT 
+<DT><EM>Expected input:</EM> Character(24).<P>
+ Specify one of the manual flagging operations. Remember that 
+only the selected primary/secondary data cube is affected. Make sure that you 
+understand which of the 8 flag types are affected. 
+!!                      Is it the secondary? <P>
+   Clear flags. You will be prompted for the flag-type(s) to be cleared: 
+   BEWARE! Much work can be undone with careless clearing! <P>
+        CLEAR   Clear all flags of the specified type(s) in both the 
+                 scan headers and the uv data of the selected cube. 
+!!                      What if a scan "protrudes" outside the cube? 
+        CLDAT   Clear flags on the visibilities only (i.e. leave scan headers 
+                 alone). 
+        CLHEAD  Clear flags in the scan headers only. <P>
+   Set flags: <P>
+        UVDATA  Set flags of the specified type(s) in the individual 
+                 visibilities, for selected interferometer(s) within the 
+primary 
+                 data cube. 
+                Default flag type is MANUAL, but can be overridden (parameter 
+                 FLAG_MODE). 
+        HARANGE Set flags of the specified type(s) on the individual 
+                 visibilities, for selected interferometer(s) within the 
+primary 
+                 data cube. 
+                Default flag type is MANUAL, but can be overridden (parameter 
+                 FLAG_MODE). 
+                You will be repeatedly prompted for an hour-angle range. <P>
+   Navigation: <P>
+        INSPECT Make detour into the (flag) INSPECTion section of the program 
+        STATIST Make detour into the (data) STATISTics section of the program 
+        MODE    Make detour into the enviornment MODE-control section of the 
+                 program 
+        CLEAR   Go to the CLEAR-flags operation. 
+        QUIT    Return to FLAG_OPTION prompt.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

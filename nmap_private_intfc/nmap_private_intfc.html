@@ -1,0 +1,1258 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Private parameters for program NMAP</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nmap_private_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nmap_private_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=nmap_private_intfc.html#SECTION0003000000000000000>  <b>Interface diagrams</b></A>
+<LI> <A NAME=tex2html4 HREF=nmap_private_intfc.html#SECTION0004000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=nmap_private_intfc.html#SECTION0004100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html6 HREF=nmap_private_intfc.html#SECTION0004200000000000000>  <b>Parameter AREA</b></A>
+<LI> <A NAME=tex2html7 HREF=nmap_private_intfc.html#SECTION0004300000000000000>  <b>Parameter BAS_RESOLUTION</b></A>
+<LI> <A NAME=tex2html8 HREF=nmap_private_intfc.html#SECTION0004400000000000000>  <b>Parameter CLIPPING</b></A>
+<LI> <A NAME=tex2html9 HREF=nmap_private_intfc.html#SECTION0004500000000000000>  <b>Parameter CLIP_AREA</b></A>
+<LI> <A NAME=tex2html10 HREF=nmap_private_intfc.html#SECTION0004600000000000000>  <b>Parameter CLIP_LEVELS</b></A>
+<LI> <A NAME=tex2html11 HREF=nmap_private_intfc.html#SECTION0004700000000000000>  <b>Parameter COMMENT</b></A>
+<LI> <A NAME=tex2html12 HREF=nmap_private_intfc.html#SECTION0004800000000000000>  <b>Parameter CONVOLVE</b></A>
+<LI> <A NAME=tex2html13 HREF=nmap_private_intfc.html#SECTION0004900000000000000>  <b>Parameter CSUM_FACTORS</b></A>
+<LI> <A NAME=tex2html14 HREF=nmap_private_intfc.html#SECTION00041000000000000000>  <b>Parameter CUBIC</b></A>
+<LI> <A NAME=tex2html15 HREF=nmap_private_intfc.html#SECTION00041100000000000000>  <b>Parameter DATA_ACTION</b></A>
+<LI> <A NAME=tex2html16 HREF=nmap_private_intfc.html#SECTION00041200000000000000>  <b>Parameter DATA_TYPE</b></A>
+<LI> <A NAME=tex2html17 HREF=nmap_private_intfc.html#SECTION00041300000000000000>  <b>Parameter DECONVOLVE</b></A>
+<LI> <A NAME=tex2html18 HREF=nmap_private_intfc.html#SECTION00041400000000000000>  <b>Parameter FIDDLE_OPTION</b></A>
+<LI> <A NAME=tex2html19 HREF=nmap_private_intfc.html#SECTION00041500000000000000>  <b>Parameter FIELD_CENTRE</b></A>
+<LI> <A NAME=tex2html20 HREF=nmap_private_intfc.html#SECTION00041600000000000000>  <b>Parameter FIELD_SHIFT</b></A>
+<LI> <A NAME=tex2html21 HREF=nmap_private_intfc.html#SECTION00041700000000000000>  <b>Parameter FIELD_SIZE</b></A>
+<LI> <A NAME=tex2html22 HREF=nmap_private_intfc.html#SECTION00041800000000000000>  <b>Parameter FILENAME</b></A>
+<LI> <A NAME=tex2html23 HREF=nmap_private_intfc.html#SECTION00041900000000000000>  <b>Parameter FITS_SCALE</b></A>
+<LI> <A NAME=tex2html24 HREF=nmap_private_intfc.html#SECTION00042000000000000000>  <b>Parameter FT_SIZE</b></A>
+<LI> <A NAME=tex2html25 HREF=nmap_private_intfc.html#SECTION00042100000000000000>  <b>Parameter GRID_SIZE</b></A>
+<LI> <A NAME=tex2html26 HREF=nmap_private_intfc.html#SECTION00042200000000000000>  <b>Parameter HA_RESOLUTION</b></A>
+<LI> <A NAME=tex2html27 HREF=nmap_private_intfc.html#SECTION00042300000000000000>  <b>Parameter IFR_RESOLUTION</b></A>
+<LI> <A NAME=tex2html28 HREF=nmap_private_intfc.html#SECTION00042400000000000000>  <b>Parameter INPUT_FILE</b></A>
+<LI> <A NAME=tex2html29 HREF=nmap_private_intfc.html#SECTION00042500000000000000>  <b>Parameter INPUT_LABELS</b></A>
+<LI> <A NAME=tex2html30 HREF=nmap_private_intfc.html#SECTION00042600000000000000>  <b>Parameter LM_CENTRE</b></A>
+<LI> <A NAME=tex2html31 HREF=nmap_private_intfc.html#SECTION00042700000000000000>  <b>Parameter LOAD_OPTION</b></A>
+<LI> <A NAME=tex2html32 HREF=nmap_private_intfc.html#SECTION00042800000000000000>  <b>Parameter MAP_COORD</b></A>
+<LI> <A NAME=tex2html33 HREF=nmap_private_intfc.html#SECTION00042900000000000000>  <b>Parameter MAP_FACTORS</b></A>
+<LI> <A NAME=tex2html34 HREF=nmap_private_intfc.html#SECTION00043000000000000000>  <b>Parameter MAP_LEVEL</b></A>
+<LI> <A NAME=tex2html35 HREF=nmap_private_intfc.html#SECTION00043100000000000000>  <b>Parameter MAP_POLAR</b></A>
+<LI> <A NAME=tex2html36 HREF=nmap_private_intfc.html#SECTION00043200000000000000>  <b>Parameter OLD_DATTYP</b></A>
+<LI> <A NAME=tex2html37 HREF=nmap_private_intfc.html#SECTION00043300000000000000>  <b>Parameter OPTION</b></A>
+<LI> <A NAME=tex2html38 HREF=nmap_private_intfc.html#SECTION00043400000000000000>  <b>Parameter OUTPUT</b></A>
+<LI> <A NAME=tex2html39 HREF=nmap_private_intfc.html#SECTION00043500000000000000>  <b>Parameter OUTPUT_LABEL</b></A>
+<LI> <A NAME=tex2html40 HREF=nmap_private_intfc.html#SECTION00043600000000000000>  <b>Parameter OUT_CENTRE</b></A>
+<LI> <A NAME=tex2html41 HREF=nmap_private_intfc.html#SECTION00043700000000000000>  <b>Parameter OUT_SIZE</b></A>
+<LI> <A NAME=tex2html42 HREF=nmap_private_intfc.html#SECTION00043800000000000000>  <b>Parameter QDATAS</b></A>
+<LI> <A NAME=tex2html43 HREF=nmap_private_intfc.html#SECTION00043900000000000000>  <b>Parameter RADEC_CENTRE</b></A>
+<LI> <A NAME=tex2html44 HREF=nmap_private_intfc.html#SECTION00044000000000000000>  <b>Parameter REF_COORD</b></A>
+<LI> <A NAME=tex2html45 HREF=nmap_private_intfc.html#SECTION00044100000000000000>  <b>Parameter ROTATION_MEASURE</b></A>
+<LI> <A NAME=tex2html46 HREF=nmap_private_intfc.html#SECTION00044200000000000000>  <b>Parameter SUBTRACT</b></A>
+<LI> <A NAME=tex2html47 HREF=nmap_private_intfc.html#SECTION00044300000000000000>  <b>Parameter SUM_FACTORS</b></A>
+<LI> <A NAME=tex2html48 HREF=nmap_private_intfc.html#SECTION00044400000000000000>  <b>Parameter SUM_OPTION</b></A>
+<LI> <A NAME=tex2html49 HREF=nmap_private_intfc.html#SECTION00044500000000000000>  <b>Parameter TAPER</b></A>
+<LI> <A NAME=tex2html50 HREF=nmap_private_intfc.html#SECTION00044600000000000000>  <b>Parameter USER_COMMENT</b></A>
+<LI> <A NAME=tex2html51 HREF=nmap_private_intfc.html#SECTION00044700000000000000>  <b>Parameter USER_DATA</b></A>
+<LI> <A NAME=tex2html52 HREF=nmap_private_intfc.html#SECTION00044800000000000000>  <b>Parameter USE_NOISE</b></A>
+<LI> <A NAME=tex2html53 HREF=nmap_private_intfc.html#SECTION00044900000000000000>  <b>Parameter UV_COORDINATES</b></A>
+<LI> <A NAME=tex2html54 HREF=nmap_private_intfc.html#SECTION00045000000000000000>  <b>Parameter WGT_LIMIT</b></A>
+<LI> <A NAME=tex2html55 HREF=nmap_private_intfc.html#SECTION00045100000000000000>  <b>Parameter WMP_NODE_1</b></A>
+<LI> <A NAME=tex2html56 HREF=nmap_private_intfc.html#SECTION00045200000000000000>  <b>Parameter WMP_NODE_2</b></A>
+<LI> <A NAME=tex2html57 HREF=nmap_private_intfc.html#SECTION00045300000000000000>  <b>Parameter WMP_SET_1</b></A>
+<LI> <A NAME=tex2html58 HREF=nmap_private_intfc.html#SECTION00045400000000000000>  <b>Parameter WMP_SET_2</b></A>
+</UL>
+</UL>
+<A NAME=.overview><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the parameter interface of the program NMAP. The program also uses a number of public interfaces; references to these are also <A HREF="#.public">listed</A>.
+<P>
+        Apart from a number of utility options, the main functions of NMAP are the making of maps from .SCN files (option MAKE) and manipulating these maps in various ways (option FIDDLE).
+<P>
+        &quot;Roadmap&quot;-style overviews for the entire parameter interface are shown in <A HREF="#.diagrams">below</A>.
+<P>
+        The remainder of the document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+<A NAME=.diagrams><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Interface diagrams</b></A></H1>
+<P>
+        The first diagram, an synopsis of NMAP's parameter interface, does not yet exist. Following that diagram several sub-diagrams are planned, of which those for the FIDDLE and utility options still have to be made.
+<P>
+        <A HREF=" #.nmap.make">Figure</A> shows the parameter interface for MAKE. Two detours in this interface, for parameters QMAPS and QDATAS, are normally bypassed; they are shown in <A HREF=" #.nmap.make.q">figure</A>.
+<P>
+        Included in these diagrams are NMAP's public parameters. These are interleaved with the private ones so they can not be diagrammed as a separate unit. In fact, the only reason that they are public is that the NCLEAN 
+<A HREF="../nclean_descr/nclean_descr.html#.data.clean">'data clean'</A> operation uses them. This use is indicated on the right-hand side of <A HREF=" #.nmap.make">figure</A> and 
+<A HREF=" #.nmap.make.q">figure</A>.
+<P>
+<A NAME=.nmap.make><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Overview of NMAP's map-making interface. 
+<A HREF="../fig/nmap_make.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i><BR><BR>See <A HREF=" #.nmap.make.q">figure</A> for the QMAPS and QDATS branches; by default, these branches are bypassed. 
+<BR><BR>(The rightmost column in the diagram is irrelevant for map-making in NMAP.) </i>
+<P>
+<A NAME=.nmap.make.q><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Overview of the optional detailed-question sequences of the map-making interface. This diagram expands the <em>QMAPS</em> and <em>QDATAS</em> stubs in 
+<A HREF="../fig/nmap_make_q.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i><A HREF=" #.nmap.make">figure</A>. </i>
+<P>
+<A NAME=.nmap.handle><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Overview of NMAP's map-handling interface. } 
+<A HREF="../fig/nmap_handle.ps"><STRONG>FIGURE</STRONG></A> 
+ .]{<i><A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+</i><H1><A NAME=SECTION0004000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<em>See also:</em> 
+<UL><LI> <A HREF="../introduction/introduction.html#.user.interface">DWARF</A> user interface 
+<LI> <A HREF="../mdlnode_public_intfc/mdlnode_public_intfc.html">MDLNODE</A> public keywords 
+<LI> <A HREF="../ngen_public_intfc/ngen_public_intfc.html">NGEN</A> public keywords 
+<LI> <A HREF="../nmap_public_intfc/nmap_public_intfc.html">NMAP</A> public keywords 
+<LI> <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">NMODEL</A> public keywords 
+<LI> <A HREF="../nshow_public_intfc/nshow_public_intfc.html">NSHOW</A> public keywords 
+<LI> <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html">SCNNODE</A> public keywords 
+<LI> <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html">SCNSETS</A> public keywords 
+<LI> <A HREF="../select_public_intfc/select_public_intfc.html">SELECT</A> public keywords 
+<LI> <A HREF="../unit_public_intfc/unit_public_intfc.html">UNIT</A> public keywords 
+<LI> <A HREF="../wmpnode_public_intfc/wmpnode_public_intfc.html">WMPNODE</A> public keywords 
+<LI> <A HREF="../wmpsets_public_intfc/wmpsets_public_intfc.html">WMPSETS</A> public keywords 
+</UL>
+<P>
+<A NAME=.area><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004200000000000000>  <b>Parameter AREA</b></A></H2>
+<P>
+  <em>Prompt:</em> Area: l,m, dl,dm<BR><em>Expected input:</em> Integer:  1 to 4 values
+<P>
+    <PRE>
+Specify the area to be selected:
+</PRE>
+<P>
+  <PRE>
+        l, m    position in grid spacings of centre of area
+                0,0 is the map centre, increaing toward the upper right (i.e.
+                 with DEcreasing RA and INcreasing DEC)
+</PRE>
+<P>
+  <PRE>
+        dl, dm  horizontal and vertical area sizes
+</PRE>
+<P>
+<A NAME=.bas.resolution><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004300000000000000>  <b>Parameter BAS_RESOLUTION</b></A></H2>
+<P>
+<em>Prompt:</em> Baseline averaging interval (m)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the width in metres of baseline over which visibilities will be
+averaged.
+</PRE>
+<P>
+  <PRE>
+The minimum value is 9, representing the smallest baseline increment ever
+present in practice in a (set of) WSRT observation(s). The maximum is
+(arbitrarily) fixed at 300.
+</PRE>
+<P>
+<A NAME=.clipping><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004400000000000000>  <b>Parameter CLIPPING</b></A></H2>
+<P>
+<em>Prompt:</em> Clipping?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+'Clipping' means discarding data in a certain annulus that fall within a
+certain range of values (yet to be specified).
+</PRE> 
+ <em>parameters <A HREF="#.clip.area">CLIP_AREA</A>,
+                 <A HREF="#.clip.levels">CLIP_LEVELS</A> </em>
+<P>
+  <PRE>
+It is a simple (and primitive) method of eliminating data affected by strong
+interference. (Note that NFLAG provides a much wider scala of operations to
+find and suppress interference.)
+</PRE>
+<P>
+<A NAME=.clip.area><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004500000000000000>  <b>Parameter CLIP_AREA</b></A></H2>
+<P>
+<em>Prompt:</em> UV-radius range for clipping (m)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the (circular) UV-plane radii (in metres) between which you want to
+clip the data. The default is to clip everywhere.
+</PRE>
+<P>
+<A NAME=.clip.levels><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004600000000000000>  <b>Parameter CLIP_LEVELS</b></A></H2>
+<P>
+<em>Prompt:</em> Amplitude range to be discarded<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify amplitude range (in Westerbork Units) of visibility magnitudes that you
+want to discard.
+</PRE>
+<P>
+  <PRE>
+In the annulus defined by CLIP_AREA, values between the limits you specify will
+be discarded.
+</PRE> 
+ <em>parameter <A HREF="#.clip.area">CLIP_AREA</A> </em>
+<P>
+  <PRE>
+NOTE: It would be more natural to define a range within which visibilities are
+considered valid. As it is, only the lower limit is actually useful, allowing
+you to define a rejection threshold for interference. To do so, specify your
+threshold for the lower and 'infinity' for the upper limit, e.g.
+</PRE>
+<P>
+  <PRE>
+                <threshold>,100000
+</PRE>
+<P>
+<A NAME=.comment><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004700000000000000>  <b>Parameter COMMENT</b></A></H2>
+<P>
+<em>Prompt:</em> FITS comment (<IMG ALIGN=BOTTOM ALT="" SRC="_26913_tex2html_wrap580.png"><BR><em>Expected input:</em> Character *70:  1 value
+<P>
+  <PRE>
+The given text will be included as COMMENT in FITS output.
+</PRE>
+<P>
+<A NAME=.convolve><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004800000000000000>  <b>Parameter CONVOLVE</b></A></H2>
+<P>
+<em>Prompt:</em> Convolution type<BR><em>Expected input:</em> Character:  1 value
+<P>
+  <PRE>
+This is the interpolation function to be used in horizontally and vertically
+interpolating the observed visibilities onto the rectangular grid to be used in
+the Fast Fourier Transform.
+</PRE>
+<P>
+  <PRE>
+The choice of function determines the detailed aliasing properties of the
+map(s). NMAP chooses appropriate horizontal and vertical width parameters for
+each. You may specify one of the following functions:
+</PRE>
+<P>
+  <PRE>
+   Gaussian-based:
+</PRE>
+<P>
+  <PRE>
+        EXPSINC Sinc*exp on 6*6 grid points: An 'approximation' to the ideal
+                 sinc (=sin(x)/x) function. This is the function selected as the
+                 default for map-making after extensive experience with all of
+                 the options available here.
+        GAUSS   Gaussian type over 4*4 grid points: The function used in the
+                 first years of WSRT operations; it was later replaced by the
+                 prolate spheroids. The expense in computing time is the same as
+                 for P4ROL.
+</PRE>
+<P>
+  <PRE>
+   Prolate spheroids: These function minimise the 'power' (= the integral of the
+    intensity squared) 'aliased in' from sources outside the map
+</PRE>
+<P>
+  <PRE>
+        P4ROL   Prolate spheroidal function with 4*4 grid points.
+        P6ROL   Prolate spheroidal function with 6*6 grid points: By using more
+                 points in the interpolation, this function pushes the aliasing
+                 down considerably, - at the expense of a factor two or more in
+                 computing time for the interpolation
+</PRE>
+<P>
+  <PRE>
+All the above functions may also be used in constructing a UV-plane for display
+(UV_COORDINATES=UV).
+</PRE>
+<P>
+  <PRE>
+For plotting visibilities versus baseline or interferometer
+(UV_COORDINATES=BASHA or IFRHA), they are of little use, and the default one
+would normally select is
+</PRE>
+<P>
+  <PRE>
+        BOX     Shift to nearest grid point.
+</PRE> 
+ <em>see parameter <A HREF="#.uv.coordinates">UV_COORDINATES</A> </em>
+<P>
+<A NAME=.csum.factors><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004900000000000000>  <b>Parameter CSUM_FACTORS</b></A></H2>
+<P>
+<em>Prompt:</em> Summing multipliers<BR><em>Expected input:</em> Real:  1 to 16 values
+<P>
+  <PRE>
+Specify up to 8 complex weight factors by which the input maps have to be
+multiplied. For each factor the real part should be given first, the imaginary
+next. So 1,0,0,-1  means add the real part of the first map-pair to the
+imagingary part of the second map-pair:
+</PRE>
+<P>
+  <PRE>
+    (1+0*i)*(map1r + i*map1i) + (0-1*i)*(map2r + i*map2i)
+</PRE>
+<P>
+  <PRE>
+If the number of weights you give is less than the number of maps  to be
+combined, the weights will re-used in a cyclic fashion. Example:
+        1,1,-1,-1 will average the first, third, ... pairs in your WMP_SETS
+specification with the negated second, fourth ... pairs.
+</PRE>
+<P>
+<A NAME=.cubic><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041000000000000000>  <b>Parameter CUBIC</b></A></H2>
+<P>
+<em>Prompt:</em> Make line cube (Yes/No) ?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Specify if you want to output the FITS maps in one cube or in separate maps
+</PRE>
+<P>
+<A NAME=.data.action><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041100000000000000>  <b>Parameter DATA_ACTION</b></A></H2>
+<P>
+<em>Prompt:</em> Action to perform on the data<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify action to perform:
+</PRE>
+<P>
+  <PRE>
+        SHOW    show detailed map data
+</PRE>
+<P>
+  <PRE>
+        NOISE   calculate noise
+        OFFSET  calculate noise and offset
+</PRE>
+<P>
+  <PRE>
+        QUIT    quit data part
+</PRE>
+<P>
+<A NAME=.data.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041200000000000000>  <b>Parameter DATA_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> Data transformation for display<BR><em>Expected input:</em> Character:  1 value
+<P>
+  <PRE>
+Specify how to transform the complex input visibilities. NORMAL is the default;
+the others are for special experiments and diagnostics only.
+</PRE>
+<P>
+  <PRE>
+        NORMAL  Complex value
+</PRE>
+<P>
+  <PRE>
+        COS     Real part
+        SIN     Imaginary part
+</PRE>
+<P>
+  <PRE>
+        AMPL    Amplitude
+        PHASE   Phase
+</PRE>
+<P>
+<A NAME=.deconvolve><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041300000000000000>  <b>Parameter DECONVOLVE</b></A></H2>
+<P>
+<em>Prompt:</em> Correct map for convolution taper (Yes/No) ?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+The interpolation (convolution) in the visibility domain results in a
+multiplication ('tapering') of the output map(s) and antenna pattern(s) by the
+Fourier transform of the convolving function; i.e., toward the edge of the map
+the sources, sidelobes and grating responses appear weaker than they actually
+are.
+</PRE>
+<P>
+  <PRE>
+By default this effect will be corrected for by dividing the map through the
+taper. A side effect of this correction is that the noise, which is uniform
+over the whole uncorrected map, is amplified toward the map edges.
+</PRE>
+<P>
+  <PRE>
+Here you are given the option to bypass this correction. e.g. because uniform
+noise is more important for your application than source fluxes.
+</PRE>
+<P>
+<A NAME=.fiddle.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041400000000000000>  <b>Parameter FIDDLE_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Fiddle action|<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify action to perform.
+</PRE>
+<P>
+  <PRE>
+   In-place modifications: Modify data of (an) input image(s):
+</PRE>
+<P>
+  <PRE>
+        BEAM    correct map for primary beam attenuation so it will represent
+                 the 'true' sky
+        DEBEAM  apply primary beam attenuation to map so it will reprsent the
+                 product of the 'true' sky and the primary beam
+        FACTOR  multiply image with a constant factor
+</PRE>
+<P>
+  <PRE>
+   Unary operations: Create 1 new image from each input image:
+</PRE>
+<P>
+  <PRE>
+        EXTRACT extract an area from (a) image(s)
+        COPY    copy image(s)
+        LOAD    read or write (an) image(s) in a foreign format (e.g. Holog)
+</PRE>
+<P>
+  <PRE>
+   Binary combinations: make (a) new output image(s) from (a) pair(s) of input
+   images:
+</PRE>
+<P>
+  <PRE>
+        ADD     weighted sum of two images: F1*image1 + F2*image2
+        AVER    weighted average of two images:
+                        (F1*image1 + F2*image2) / [abs(F1) + abs(F2)]
+        POL     degree of linear polarisation from Q and U maps:
+                        sqrt (Qmap**2 + Umap**2)]
+        ANGLE   polarisation orientation (radians) from Q and U maps:
+                        0.5*atan (Umap / Qmap)
+</PRE>
+<P>
+  <PRE>
+   Combinations of more than two images:
+</PRE>
+<P>
+  <PRE>
+        SUM     weighted summation of (a) set(s) of images in a single .WMP file
+                 (you will be prompted to select the weighing method)
+        CSUM    weighted summation of pairs of images. You will be prompted
+                 for (a) set(s) of "real" images and (a) set(s) of
+                 "imaginary" images and complex weighting factors.
+        RSUM    idem, but the complex weighting factors will be calculated
+                 based on a specified rotation measure.
+        MOSCOM  'mosaic combine': merge a set of maps (generally for different
+                 field centres) into one output map
+</PRE>
+<P>
+  <PRE>
+   Miscellaneous:
+</PRE>
+<P>
+  <PRE>
+        QUIT    Return to OPTIONS level
+</PRE>
+<P>
+<A NAME=.field.centre><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041500000000000000>  <b>Parameter FIELD_CENTRE</b></A></H2>
+<P>
+<em>Prompt:</em> Field centre: RA,DEC (decimal deg)<BR><em>Expected input:</em> DoublePrecision:  1 to 2 values
+<P>
+  <PRE>
+Specify the map centre wanted in the apparent-coordinate frame.
+Default is the fringe-stopping centre.
+</PRE>
+<P>
+<A NAME=.field.shift><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041600000000000000>  <b>Parameter FIELD_SHIFT</b></A></H2>
+<P>
+<em>Prompt:</em> l,m field shift (arcsec)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the field-centre shift in l,m coordinates.
+</PRE>
+<P>
+  <PRE>
+(l,m) are 'horizontal' and 'vertical' Cartesian coordinates in a plane tangent
+to the celestial sphere at the reference centre. The coordinate system is
+B1950/J2000 or apparent as defined by your value for parameter MAP_COORD.
+</PRE> 
+      <i>See <A HREF="#.map.coord">MAP_COORD</A>,
+               <A HREF="#.ref.coord">REF_COORD</A> </i>
+<P>
+  <PRE>
+If you enter a null value (\ or ""), you will be prompted for a FIELD_CENTRE
+instead. This option is intended for instrumental test programs only and has
+not been tested for general applications; use it at your own risk if you wish.
+</PRE>
+<P>
+<A NAME=.field.size><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041700000000000000>  <b>Parameter FIELD_SIZE</b></A></H2>
+<P>
+<em>Prompt:</em> Fieldsize l,m (deg)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the l and m field size of the map to be transformed. The default will
+produce a map with a resolution of about 3.5 grid intervals per
+synthesized-beam half-width.
+</PRE>
+<P>
+  <PRE>
+If you give a NULL answer (two double quotes), you will be prompted for the
+grid steps.
+</PRE>
+<P>
+<A NAME=.filename><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041800000000000000>  <b>Parameter FILENAME</b></A></H2>
+<P>
+<em>Prompt:</em> Name for output disk file<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the file name (without an extension) to be used in creating a
+pseudo-tape output file name (e.g. FITS write).
+</PRE>
+<P>
+  <PRE>
+Specify a full filename otherwise (e.g. LOAD/UNLOAD in FIDDLE).
+</PRE>
+<P>
+<A NAME=.fits.scale><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00041900000000000000>  <b>Parameter FITS_SCALE</b></A></H2>
+<P>
+<em>Prompt:</em> Units of source flux<BR><em>Expected input:</em> Character *4:  1 value
+<P>
+  <PRE>
+Specify the output units of the FITS data:
+</PRE>
+<P>
+  <PRE>
+        JY      jansky per beam
+        WU      Westerbork units (1 W.U. = 5 mJy)
+</PRE>
+<P>
+<A NAME=.ft.size><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042000000000000000>  <b>Parameter FT_SIZE</b></A></H2>
+<P>
+<em>Prompt:</em> FFT size<BR><em>Expected input:</em> Integer:  1 to 2 values
+<P>
+  <PRE>
+Specify the size of the Fourier transform in the horizontal and vertical
+directions.
+</PRE>
+<P>
+  <PRE>
+If the size in both direction is <= 17, a Direct Fourier Transform (DFT) will
+be made instead of the standard operation of interpolating onto a rectangular
+grid followed by a Fast Fourier Transform (FFT).
+</PRE>
+<P>
+  <PRE>
+The standard operation suffers from 'aliasing' artefacts associated with the
+periodic nature of the FFT. These artefacts are suppressed, to a level that is
+generally acceptable, through a very careful choice of the convolution function
+used in the interpolstion to a rectangular grid, but they cannot be avoided
+completely.
+</PRE>
+<P>
+  <PRE>
+By avoiding the interpolation altogether, the DFT method is free from these
+aliasing effects.
+</PRE>
+<P>
+<A NAME=.grid.size><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042100000000000000>  <b>Parameter GRID_SIZE</b></A></H2>
+<P>
+<em>Prompt:</em> Grid interval in l,m (arcsec)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the l and m grid steps in arcseconds for the map to be made.
+In most applications you may define GRID_SIZE as you please. NOTE however, that
+any number of maps that you want to combine into a single mosaic (FIDDLE MOSCOM
+option) must all share the same GRID_SIZE (as well as the same reference
+coordinates, parameters MAP_COORD and REF_COORD)
+</PRE> 
+      <em>See <A HREF="#.map.coord">MAP_COORD</A>,
+               <A HREF="#.ref.coord">REF_COORD</A> </em>
+<P>
+<A NAME=.ha.resolution><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042200000000000000>  <b>Parameter HA_RESOLUTION</b></A></H2>
+<P>
+<em>Prompt:</em> Hour-angle averaging interval (UT seconds)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the width in UT degrees of hour angle over which visibilities will be
+averaged (to reduce the noise per plotted point).
+</PRE>
+<P>
+  <PRE>
+Note:   Observations are taken at multiples of 10 UT seconds and it is
+        therefore convenient to specify this parameter in UT seconds as well.
+        The number you specify will be converted to a sidereal hour-angle
+        interval.
+</PRE>
+<P>
+<A NAME=.ifr.resolution><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042300000000000000>  <b>Parameter IFR_RESOLUTION</b></A></H2>
+<P>
+<em>Prompt:</em> Interferometer separation<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the vertical separation in grid points between interferometers
+</PRE>
+<P>
+<A NAME=.input.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042400000000000000>  <b>Parameter INPUT_FILE</b></A></H2>
+<P>
+<em>Prompt:</em> Input file name<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the file name (including extension) of the file to be converted.
+</PRE>
+<P>
+<A NAME=.input.labels><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042500000000000000>  <b>Parameter INPUT_LABELS</b></A></H2>
+<P>
+<em>Prompt:</em> Input tape labels<BR><em>Expected input:</em> Integer:  1 to 256 values
+<P>
+  <PRE>
+Specify the tape labels to be read. * specifies all labels on the tape.
+</PRE>
+<P>
+  <PRE>
+Remember that WMP-file images are identified by indices grp.obs.fld.chn.seq).
+Each of the selected tape labels will be stored in the WMP-file as a separate
+field (FLD) in the group (GRP) being created. The CHN, POL and TYP indices will
+reflect the nature of the input data, SEQ will be 0.
+</PRE>
+<P>
+  <PRE>
+Example:
+        INPUT_LABELS=3,6,8 will cause a new GRP to be created in which these
+labels will be stored under the image indices
+</PRE>
+<P>
+  <PRE>
+        <newgrp>. 0. <chn for label 3>. <pol for label 3>. <typ for label 3>. 0
+        <newgrp>. 1. <chn for label 6>. <pol for label 6>. <typ for label 6>. 0
+        <newgrp>. 2. <chn for label 8>. <pol for label 8>. <typ for label 8>. 0
+</PRE>
+<P>
+<A NAME=.lm.centre><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042600000000000000>  <b>Parameter LM_CENTRE</b></A></H2>
+<P>
+<em>Prompt:</em> Output map centre<BR><em>Expected input:</em> DoublePrecision:  1 to 2 values
+<P>
+  <PRE>
+Specify the centre of the output map in the l and m direction; in arcsec with
+respect to the mosaic reference position.
+</PRE>
+<P>
+  <PRE>
+If you specify an *, you will prompted for RA,DEC position
+</PRE>
+<P>
+<A NAME=.load.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042700000000000000>  <b>Parameter LOAD_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Load action/image type |<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify the type of foreign map and what to do with it:
+</PRE>
+<P>
+  <PRE>
+        WMP      read WMP format maps from contiguous binary file
+        UNLOAD   inverse of WMP: write WMP maps to contiguous binary file
+                  this option can also be used to load in an SAOIMAGE file
+                  (specify a data offset of 512)
+</PRE>
+<P>
+  <PRE>
+        NEWHOLOG read HOLOG file from the WSRT (this option, synonymous with
+                  WMP, was added to help the user)
+        OLDHOLOG read a Holog map in old IBM-coded format (this option used to
+                  be called HOLOG)
+</PRE>
+<P>
+  <PRE>
+        QUIT    quit LOADing
+</PRE>
+<P>
+<A NAME=.map.coord><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042800000000000000>  <b>Parameter MAP_COORD</b></A></H2>
+<P>
+<em>Prompt:</em> Map coordinate system|<BR><em>Expected input:</em> Character *12:  1 value
+<P>
+  <PRE>
+Specify the coordinate system for the map.
+</PRE>
+<P>
+  <PRE>
+There are two choices to be made: The first is whether the map is to be made in
+apparent coordinates for the epoch of the observation or in fixed-epoch
+coordinates. The latter are fixed for each instrument: B1950 for the WSRT,
+J2000 for the ATNF. The second choice is whether the 'reference position' for
+the map must coincide with the fringe-stopping centre or is to be specified by
+you.
+</PRE>
+<P>
+  <PRE>
+The reference position is the position at which the map plane is tangent to the
+celestial sphere; it defines the geometry of the map's (l,m) grid in terms of
+RA and DEC.
+</PRE>
+<P>
+  <PRE>
+The reference position is important for mosaic mapping: The FIDDLE/MOSCOM
+operation that combines mosaic subfields into a single large map will only work
+if all input maps have the same reference.
+</PRE>
+<P>
+  <PRE>
+For a single mosaic, the program by default uses the mosaic centre as the
+reference for all subfield maps. However, if you intend to combine multiple
+mosaics into a 'super-mosaic', only you can define the common reference centre
+that will be needed.
+</PRE>
+<P>
+  <PRE>
+You have the following options for your reply:
+</PRE>
+<P>
+  <PRE>
+   Reference position defined by the observation (i.e. coinciding with the
+    fringe stopping centre):
+</PRE>
+<P>
+  <PRE>
+        B1950_J2000   in epoch coordinates for the epoch defined by the
+                       instrument with which the observation was made:
+                        B1950 for the WSRT
+                        J2000 for the ATNF
+</PRE>
+<P>
+  <PRE>
+        APPARENT      in apparent coordinates at the time of observation
+</PRE>
+<P>
+  <PRE>
+   Reference position to be defined by the user through an additional parameter
+    REF_COORD:
+</PRE>
+<P>
+  <PRE>
+        REFER         in B1950_J2000 coordinates
+</PRE>
+<P>
+  <PRE>
+        AREFER        in APPARENT coordinates. Note that this will not work for
+</PRE>
+<P>
+<A NAME=.map.factors><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00042900000000000000>  <b>Parameter MAP_FACTORS</b></A></H2>
+<P>
+<em>Prompt:</em> Input-map multipliers<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the factors by which the input maps have to be multiplied.
+</PRE>
+<P>
+  <PRE>
+You may specify up to 8 factors which will be used as multipliers in the
+weighted summation the input maps you selected. If there are more maps to be
+summed than factors specified, the factors will be cyclically re-used.
+</PRE>
+<P>
+<A NAME=.map.level><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043000000000000000>  <b>Parameter MAP_LEVEL</b></A></H2>
+<P>
+<em>Prompt:</em> Polarisation threshold (W.U)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the minimum level in Wetsrebork Units that is still to be considered
+valid linear polarisation. Polarisation levels below this threshold will be set
+to zero in the output map(s).
+</PRE>
+<P>
+<A NAME=.map.polar><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043100000000000000>  <b>Parameter MAP_POLAR</b></A></H2>
+<P>
+<em>Prompt:</em> Select 1 to 4 output-map polarisation(s)|<BR><em>Expected input:</em> Character *4:  1 to 4 values
+<P>
+  <PRE>
+Specify up to four polarisations for the maps to make:
+</PRE>
+<P>
+  <PRE>
+        XX      XX only
+        XY      XY only
+        YX      YX only
+        YY      YY only
+</PRE>
+<P>
+  <PRE>
+        I       Stokes I
+        L       'line' Stokes I: Incomplete input data (e.g. no valid XX or YY)
+                 will be filled in aassuming that the field is unpolarised
+                 (Q=U=V=0)
+        Q       Stokes Q
+        U       Stokes U
+        V       Stokes V
+</PRE>
+<P>
+  <PRE>
+Each of the above may be suffixed with 'I' to indicate that visibilities must
+be pre-multiplied with sqrt(-1)
+</PRE>
+<P>
+<A NAME=.old.dattyp><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043200000000000000>  <b>Parameter OLD_DATTYP</b></A></H2>
+<P>
+<em>Prompt:</em> Old R-series data format<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify the old R-series data type:
+</PRE>
+<P>
+  <PRE>
+        0       local
+        1       VAX, D_FORMAT
+        2       VAX, G_FORMAT
+        3       ALLIANT
+        4       CONVEX
+        5       IEEE
+        6       DEC station
+        7       SUN station
+        8       HP  station
+</PRE>
+<P>
+<A NAME=.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043300000000000000>  <b>Parameter OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Action|<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify action to perform:
+</PRE>
+<P>
+  <PRE>
+  Primary operations:
+        MAKE      make map(s) from visibility data in .SCN file
+        FIDDLE    combine or change maps in .WMP file
+</PRE>
+<P>
+  <PRE>
+  FITS conversions:
+        W16FITS   write FITS tape/disk with 16 bits data
+        W32FITS   write FITS tape/disk with 32 bits data
+        WRLFITS   write FITS tape/disk with 32 bits float data
+        RFITS     read FITS tape/disk data
+</PRE>
+<P>
+  <PRE>
+  Miscellaneous:
+        SHOW      show/edit map data
+        QUIT      finish
+</PRE>
+<P>
+  <PRE>
+  Format conversions:
+        CVX       convert a map file from other machine's format to local
+                   machine's
+        NVS       convert a map file to newest version. Needs to be run only if
+                   indicated by program
+        FROM_OLD  convert from R-series format
+        TO_OLD    convert to R-series format
+</PRE>
+<P>
+<A NAME=.output><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043400000000000000>  <b>Parameter OUTPUT</b></A></H2>
+<P>
+<em>Expected input:</em> Character *8:  1 to 8 values
+<P>
+  <PRE>
+Specify one or more output types:
+</PRE>
+<P>
+  <PRE>
+   Standard image types for map-making:
+        MAP     Output (a) map(s)
+        AP      Output (an) antenna pattern(s)
+</PRE>
+<P>
+  <PRE>
+   Visibility-domain outputs, for diagnostics only:
+        COVER   Output the 'antenna-pattern' convolved visibilities
+</PRE>
+<P>
+  <PRE>
+        REAL    Output the real part of the convolved visibilities
+        IMAG    Output the imaginary part of the convolved visibilities
+</PRE>
+<P>
+  <PRE>
+        AMPL    Output the amplitude of the convolved visibilities
+        PHASE   Output the phase of the convolved visibilities
+</PRE>
+<P>
+<A NAME=.output.label><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043500000000000000>  <b>Parameter OUTPUT_LABEL</b></A></H2>
+<P>
+<em>Prompt:</em> Output label<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify the first output tape label. If this label already exists, it and all
+the subsequent labels will be overwritten.
+Specify * or 0 to write the new label behind all existing ones.
+</PRE>
+<P>
+<A NAME=.out.centre><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043600000000000000>  <b>Parameter OUT_CENTRE</b></A></H2>
+<P>
+<em>Prompt:</em> Output map centre<BR><em>Expected input:</em> Integer:  1 to 2 values
+<P>
+  <PRE>
+Specify the centre of the output map in the l and m direction in pixels with
+respect to the mosaic reference position.
+</PRE>
+<P>
+  <PRE>
+If you specify an *, you will be prompted for l,m and RA,DEC position
+</PRE>
+<P>
+<A NAME=.out.size><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043700000000000000>  <b>Parameter OUT_SIZE</b></A></H2>
+<P>
+<em>Prompt:</em> Output map size<BR><em>Expected input:</em> Integer:  1 to 2 values
+<P>
+  <PRE>
+Specify the size in grid points of the output map(s) in the horizontal and
+vertical directions.
+</PRE>
+<P>
+<A NAME=.qdatas><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043800000000000000>  <b>Parameter QDATAS</b></A></H2>
+<P>
+<em>Prompt:</em> Special data selection (Yes/No) ?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Maps are normally made directly from the .SCN-file visibilities. Answering YES
+here gives you access to some specials including
+</PRE>
+<P>
+  <PRE>
+        - making a map from model visibilities in the .SCN file;
+        - selecting visibilities from an annulus in the UV plane;
+        - clipping extreme amplitudes in an annulus in the UV plane;
+        - shifting the pointing centre to which the visibilities refer (and
+           consequently the centre of the map to be made from them).
+</PRE>
+<P>
+<A NAME=.radec.centre><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00043900000000000000>  <b>Parameter RADEC_CENTRE</b></A></H2>
+<P>
+<em>Prompt:</em> Output map centre: RA,DEC (decimal deg)<BR><em>Expected input:</em> DoublePrecision:  1 to 2 values
+<P>
+  <PRE>
+Specify the centre of the output map: RA and DEC in decimal degrees.
+</PRE>
+<P>
+<A NAME=.ref.coord><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044000000000000000>  <b>Parameter REF_COORD</b></A></H2>
+<P>
+<em>Prompt:</em> Map reference coordinates: RA,DEC (decimal deg)<BR><em>Expected input:</em> DoublePrecision:  1 to 2 values
+<P>
+  <PRE>
+Specify (in decimal degrees) the RA and DEC of the reference coordinates to use
+in producing the map. The coordinate system is B1950/J2000 or apparent as
+defined by your value for parameter MAP_COORD.
+</PRE>
+<P>
+<A NAME=.rotation.measure><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044100000000000000>  <b>Parameter ROTATION_MEASURE</b></A></H2>
+<P>
+<em>Prompt:</em> Rotation measure<BR><em>Expected input:</em> Real:  1 to 64 values
+<P>
+  <PRE>
+Specify one (or more) rotation measure(s) (RM). Pairs of input maps will be
+phase-rotated to the the frequency of the first input map and averaged:
+    THETAn = 2 * RM * ( (c/FRQn)**2 -  (c/FRQ1)**2 )
+    Qout = SUM( Wn * ( cos(THETAn)*Qn - sin(THETAn)*Un ) ) / SUM( Wn )
+    Uout = SUM( Wn * ( sin(THETAn)*Qn + cos(THETAn)*Un ) ) / SUM( Wn )
+A pair of Qout/Uout will be produced for each RM given. E.g. to get average Q/U
+maps for rotation measures from 0 to 5 with intervals of 0.5, specify
+ROTATION_MEASURE=0 TO 5 BY 0.5.
+</PRE>
+<P>
+<A NAME=.subtract><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044200000000000000>  <b>Parameter SUBTRACT</b></A></H2>
+<P>
+<em>Prompt:</em> Model subtraction (Yes/No) ?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Reply YES if you want to subtract a source model. You will then be prompted to
+provide details on the model you want to subtract.
+</PRE> 
+ <em>see the <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">NMODEL HANDLE</A> interface </em>
+<P>
+<A NAME=.sum.factors><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044300000000000000>  <b>Parameter SUM_FACTORS</b></A></H2>
+<P>
+<em>Prompt:</em> Summing multipliers<BR><em>Expected input:</em> Real:  1 to 8 values
+<P>
+  <PRE>
+Specify up to 8 weight factors by which the input maps have to be multiplied.
+If the number of weights you give is less than the number of maps to be
+combined, the weights will re-used in a cyclic fashion.
+</PRE>
+<P>
+  <PRE>
+Example:
+        1,-1 will average the first, third, ... maps in your WMP_SETS
+specification with the negated second, fourth ... maps.
+</PRE>
+<P>
+  <PRE>
+Note: When used together with the RSUM option, the weights will be used both
+for the Real and Imaginary map (they are real weights).
+</PRE>
+<P>
+<A NAME=.sum.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044400000000000000>  <b>Parameter SUM_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Weighing method<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify the type of weight to use in the averaging. In all cases the summation
+produces a weighted average map over all SETS_1, the weights depending on the
+method you select:
+</PRE>
+<P>
+  <PRE>
+        SUM     weight(i)= 1
+        NSUM    weight(i)= normalisation factor of map(i)
+        NSSUM   weight(i)= 1 / (<noise in map(i)>**2)
+</PRE>
+<P>
+  <PRE>
+        BSUM    weight(i)= bandwidth of map(i)
+        BNSUM   weight(i)= bandwidth * normalisation factor of map(i)
+</PRE>
+<P>
+  <PRE>
+        FSUM    weight(i)= factors to be specified by you.
+</PRE>
+<P>
+  <PRE>
+        QUIT    quit AVERaging
+</PRE>
+<P>
+<A NAME=.taper><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044500000000000000>  <b>Parameter TAPER</b></A></H2>
+<P>
+<em>Prompt:</em> Taper type<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+The taper is a function of baseline length used to de-emphasize the long
+baselines and consequently reduce the near-in sidelobes of the synthesized beam.
+</PRE>
+<P>
+  <PRE>
+You may specify the following functions, some of them to be supplemented later
+with a baseline-scale parameter TAPER_VALUE:
+</PRE> 
+ <em>see public parameter
+  <A HREF="../nmap_public_intfc/nmap_public_intfc.html#.taper.value">TAPER_VALUE</A> </em>
+<P>
+  <PRE>
+        GAUSS    exp -(<baseline>/TAPER_VALUE)**2
+                 standard WSRT beam: good compromise between near-in sidelobes,
+                  beam width and noise
+</PRE>
+<P>
+  <PRE>
+        LINEAR   max (0, 1-baseline/TAPER_VALUE)
+</PRE>
+<P>
+  <PRE>
+        OVERR    1 / baseline   (no scale)
+</PRE>
+<P>
+  <PRE>
+        RGAUSS   exp -(<baseline>/TAPER_VALUE)**2 / <baseline>
+                 broader beam, very low near-in sidelobes, poorer noise
+</PRE>
+<P>
+  <PRE>
+        NATURAL  no taper       (no scale)
+                 optimum signal/noise ratio, narrower beam with very strong
+                  near-in sidelobes
+</PRE>
+<P>
+  <PRE>
+NOTES: - Unless you have specified UNIFORM=NATURAL for the UV coverage mode, the
+        1/<baseline> density variation of measured visibility points is already
+        being accounted for, so OVERR and RGAUSS should not be chosen. LINEAR
+        does not combine very well with NATURAL either.
+</PRE> 
+ <em>cf. parameter <A HREF="../nmap_public_intfc/nmap_public_intfc.html#.uniform">UNIFORM</A> </em>
+<P>
+<A NAME=.user.comment><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044600000000000000>  <b>Parameter USER_COMMENT</b></A></H2>
+<P>
+<em>Prompt:</em> Comment to be included in map header(s) (<IMG ALIGN=BOTTOM ALT="" SRC="_26913_tex2html_wrap580.png"><BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Give, optionally, a descriptive comment for the maps.
+</PRE>
+<P>
+<A NAME=.user.data><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044700000000000000>  <b>Parameter USER_DATA</b></A></H2>
+<P>
+<em>Prompt:</em> Visibilities to use<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify the type of visibilities to use:
+</PRE>
+<P>
+  <PRE>
+        STANDARD  observed visibilities
+</PRE>
+<P>
+  <PRE>
+        MODEL     model visibilities (to be specified later with type=0
+sources)
+</PRE>
+<P>
+<A NAME=.use.noise><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044800000000000000>  <b>Parameter USE_NOISE</b></A></H2>
+<P>
+<em>Prompt:</em> Weigh with noise (Yes/No) ?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Specify if you want the noise of the individual maps to be used as a weight in
+the MOSCOM combination
+</PRE>
+<P>
+<A NAME=.uv.coordinates><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00044900000000000000>  <b>Parameter UV_COORDINATES</b></A></H2>
+<P>
+<em>Prompt:</em> UV coordinate system<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify the type of UV coordinates wanted for UV-plane type output
+</PRE> 
+ <em><A HREF="#.output">OUTPUT</A>: COVER, REAL, IMAG, AMPL, PHASE options </em>
+<P>
+  <PRE>
+        UV      standard UV coordinates: interferometer tracks are ellipses
+</PRE>
+<P>
+  <PRE>
+        BASHA   hour-angle (horizontal) and interferometer baseline (vertical)
+                 coordinates: interferometer tracks are horizontal lines;
+                 redundant baselines overlap
+</PRE>
+<P>
+  <PRE>
+        IFRHA   as BASHA, but vertical axis is the interferometer ordinal number
+                 in the sequence 01,02,...,0D,12,13,...,CD)
+</PRE>
+<P>
+<A NAME=.wgt.limit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00045000000000000000>  <b>Parameter WGT_LIMIT</b></A></H2>
+<P>
+<em>Prompt:</em> Relative weight limit<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specifies the relative weight as compared to the expected maximum weight of
+data points combined on one line, below which no output will be generated
+</PRE>
+<P>
+<A NAME=.wmp.node.1><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00045100000000000000>  <b>Parameter WMP_NODE_1</b></A></H2>
+<P>
+<em>Prompt:</em> First WMP node name<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the node name for the first Fiddle input set of images.
+</PRE>
+<P>
+<A NAME=.wmp.node.2><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00045200000000000000>  <b>Parameter WMP_NODE_2</b></A></H2>
+<P>
+<em>Prompt:</em> Second WMP node name<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the node name for the second Fiddle input set of images.
+</PRE>
+<P>
+  <PRE>
+Specify * if this is the same as the first node (NODE_1).
+</PRE>
+<P>
+<A NAME=.wmp.set.1><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00045300000000000000>  <b>Parameter WMP_SET_1</b></A></H2>
+<P>
+<em>Prompt:</em> First image set(s) to be used: grp.fld.chn.pol.typ.seq<BR><em>Expected input:</em> Character *32:  1 to 64 values
+<P>
+  <PRE>
+Specify the first image set(s) to be used.
+</PRE>
+<P>
+<A NAME=.wmp.set.2><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00045400000000000000>  <b>Parameter WMP_SET_2</b></A></H2>
+<P>
+<em>Prompt:</em> Second image set(s) to be used: grp.fld.chn.pol.typ.seq<BR><em>Expected input:</em> Character *32:  1 to 64 values
+<P>
+  <PRE>
+Specify the second image Set(s) to be used
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

@@ -1,0 +1,21 @@
+<TITLE>Description of AREA (NCLEAN)</TITLE>
+<H1>Program NCLEAN: private keyword AREA</H1> 
+
+<DT><EM>Prompt:</EM> Window area l, m, dl, dm
+<DT><EM>Expected input:</EM> Integer number, 4 values.<P>
+The CLEAN window is defined as the union of up to 32 rectangular areas (which 
+may arbitrarily overlap). For BEAM clean this is also the window within which 
+source responses will be subtracted. <P>
+You are being prompted for these areas one by one until you give a null reply 
+(&lt;CR&gt; only). An area is specified by four numbers: l, m, dl, dm, where <P>
+   l, m     l and m in grid points for the area centre; (l, m)=(0, 0) at the map 
+            centre, increasing toward the upper right (i.e. with decreasing RA 
+            and increasing DEC) 
+   dl, dm   width and height of the area in grid points  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nclean/nclean_keys.html">List of keywords</A> for NCLEAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nclean_descr/nclean_descr.html">program NCLEAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

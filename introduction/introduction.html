@@ -1,0 +1,435 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Introduction to <i>NEWSTAR </i> for new and prospective users </b> <em>Contributed by Johan Hamaker, november 1994  <P></em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=introduction.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=introduction.html#SECTION0002000000000000000>  <b>Preface </b></A>
+<UL> 
+<LI> <A NAME=tex2html3 HREF=introduction.html#SECTION0002100000000000000>  <b>Portability </b></A>
+<LI> <A NAME=tex2html4 HREF=introduction.html#SECTION0002200000000000000>  <b>Terminology</b></A>
+</UL> 
+<LI> <A NAME=tex2html5 HREF=introduction.html#SECTION0003000000000000000>  <b>NEWSTAR's basic processing paradigm </b></A>
+<UL> 
+<LI> <A NAME=tex2html6 HREF=introduction.html#SECTION0003100000000000000>  <b>Source and instrumental-error modeling </b></A>
+<LI> <A NAME=tex2html7 HREF=introduction.html#SECTION0003200000000000000>  <b>Outline of the reduction process in <i>NEWSTAR </i> </b></A>
+<LI> <A NAME=tex2html8 HREF=introduction.html#SECTION0003300000000000000>  <b>The scan (.SCN) file </b></A>
+<UL> 
+<LI> <A NAME=tex2html9 HREF=introduction.html#SECTION0003310000000000000>  <b>Error categories and the Selfcal paradigm </b></A>
+</UL> 
+<LI> <A NAME=tex2html10 HREF=introduction.html#SECTION0003400000000000000>  <b>The map (.WMP) file </b></A>
+<LI> <A NAME=tex2html11 HREF=introduction.html#SECTION0003500000000000000>  <b>The source-model (.MDL) file </b></A>
+<LI> <A NAME=tex2html12 HREF=introduction.html#SECTION0003600000000000000>  <b>Organisation of collections of data structures: Indices</b></A>
+</UL> 
+<LI> <A NAME=tex2html13 HREF=introduction.html#SECTION0004000000000000000>  <b>The <i>NEWSTAR </i> programs</b></A>
+<UL> 
+<LI> <A NAME=tex2html14 HREF=introduction.html#SECTION0004100000000000000>  <b>NSCAN</b></A>
+<LI> <A NAME=tex2html15 HREF=introduction.html#SECTION0004200000000000000>  <b>NCALIB</b></A>
+<LI> <A NAME=tex2html16 HREF=introduction.html#SECTION0004300000000000000>  <b>NMAP</b></A>
+<LI> <A NAME=tex2html17 HREF=introduction.html#SECTION0004400000000000000>  <b>NFLAG</b></A>
+<LI> <A NAME=tex2html18 HREF=introduction.html#SECTION0004500000000000000>  <b>NMODEL</b></A>
+<LI> <A NAME=tex2html19 HREF=introduction.html#SECTION0004600000000000000>  <b>NCLEAN</b></A>
+<LI> <A NAME=tex2html20 HREF=introduction.html#SECTION0004700000000000000>  <b>Other programs</b></A>
+</UL> 
+<LI> <A NAME=tex2html21 HREF=introduction.html#SECTION0005000000000000000>  <b>Salient features of the user interface </b></A>
+<UL> 
+<LI> <A NAME=tex2html22 HREF=introduction.html#SECTION0005100000000000000>  <b>Controlling program runs </b></A>
+<LI> <A NAME=tex2html23 HREF=introduction.html#SECTION0005200000000000000>  <b>On-line Help </b></A>
+<LI> <A NAME=tex2html24 HREF=introduction.html#SECTION0005300000000000000>  <b>Log files </b></A>
+</UL> 
+<LI> <A NAME=tex2html25 HREF=introduction.html#SECTION0006000000000000000>  <b>Interfacing with other astronomical reduction packages </b></A>
+<LI> <A NAME=tex2html26 HREF=introduction.html#SECTION0007000000000000000>  <b>Acknowledgements </b></A>
+</UL>
+<A NAME=.preface><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000>  <b>Preface </b></A></H1>
+<P>
+        <i>NEWSTAR </i> is an acronym for the '<b>N</b>etherlands <b>E</b>ast-<b>W</b>est <b>S</b>ynthesis <b>T</b>elescope <b>A</b>nalysis and <b>R</b>eduction'. It stands for a small collection of programs whose purpose is to process 'raw' visibility data from the WSRT into sky maps, source lists and the like that are ready for astronomical interpretation.
+<P>
+        Its functionality allows one to fully exploit the strong points of East-West systhesis arrays in general and the WSRT in particular: Wide-field mapping, and high dynamic range both in 'total-power' and polarisation observations. To achieve this, <i>NEWSTAR </i> contains a number of powerful and refined algorithms not known to exist in other systems. Their presence makes 
+<i>NEWSTAR </i> quite overwhelming for the uninitiated. This document is intended to provide a simple introduction of a tutorial type.
+<P>
+        The documentation generally refers to the WSRT as the source of observations. <i>NEWSTAR </i> also includes provisions for the processing of data from the Australian Telecope (ATNF) compact array (ATCA), but these are few and simple and we skip them here.
+<P>
+<A NAME=.portability><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0002100000000000000>  <b>Portability </b></A></H2>
+<P>
+        <i>NEWSTAR </i>'s primary maintenance is carried out by NFRA on Sun and HP systems. It is actively supported elsewhere for a DECstation and a DEC Alpha; it has been supported in the past for a Convex and is therefore likely to be readily portable to there. VAX support has been discontinued.
+<P>
+        For general operations, such as moving or deleting files, manipulating text files, <em>etc.</em> you must rely on your host system. Inasmuch as <i>NEWSTAR </i> now only runs in Unix environments, a generic knowledge of that environment should be sufficient, but also necessary.
+<P>
+<A NAME=.terminology><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0002200000000000000>  <b>Terminology</b></A></H2>
+<P>
+        A perceptive user may well notice that <i>NEWSTAR </i> programs are rather careless in their use of terminology. This is a heritage that we are to some extent stuck with: Automatic 'batch' procedures in several on-going large WSRT projects (<em>WENSS</em> and <em>WHISP</em>) rely on the present structure and parameter names of the user interface. We try to clarify ambiguities in the documentation and on-line Help, but the user must be wary that names do not always mean what they seem to suggest.
+<P>
+<A NAME=.basic><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>NEWSTAR's basic processing paradigm </b></A></H1>
+<P>
+<A NAME=.basic.functions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> The basic functionality and data files of <i>NEWSTAR </i> in a Selfcal application. 
+<A HREF="../fig/basic_functions.ps"><STRONG>FIGURE</STRONG></A> 
+ <i><BR><BR>Rectangles represent the data files, ovals the programs. The numbers refer to the description in the text. 
+<BR>See text for further explanation. </i>
+<P>
+<A NAME=.source.error.modeling><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>Source and instrumental-error modeling </b></A></H2>
+<P>
+        The most common aim of processing visibility data is to obtain a representation of the sources observed, with artefacts from the observing process adequately removed. Such artefacts arise both from the finite sampling of the data (primary and synthesised antenna beams) and from instrumental errors.
+<P>
+        If errors were absent, the problem would be 'simply' to deconvolve the known antenna pattern (synthesised beam) from the observed data. This is an ambiguous process: There is an infinite number of possible solutions. Acceptable ones are favoured by the <em>a priori</em> knowledge incorporated in radio-astronomy algorithms; in addition, human judgment is needed to control the reduction process.
+<P>
+        Instrumental errors complicate the problem. To first order they may be determined from <em>calibrator</em> sources observed before and/or after the source. This typically yields a <em>dynamic range</em> in the order of one in a few hundred.
+<P>
+        Much higher dynamic ranges can only be obtained through <em>self-calibration</em>. This is a generic name for processes in which a source model and a model of the instrumental errors are constructed simultaneously. Self-calibration relies on the fact that the signature of true sources in an observation is quite different from that imposed by instrumental errors. Algorithms have been invented that discriminate between the two quite well. The separation is not perfect, however, and even more than for source modeling alone, human judgment must keep the process on course.
+<P>
+<A NAME=.outline><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Outline of the reduction process in <i>NEWSTAR </i> </b></A></H2>
+<P>
+        <A HREF=" #.basic.functions">Figure</A> shows the fundamental functions and the primary data files with their most important contents. The connecting arrows show the data flow in the basic reduction process. We enumerate the steps here in order for a typical reduction process. In practice, the complexity of the observed field and/or the quality of the observation may give rise to a wide variety of situations; the same steps or only part of them may have to be combined in a different sequence. If you need really high dynamic range, take your time to become an expert...
+<P>
+        The basic reduction steps shown combined in <A HREF=" #.basic.functions">figure</A> are: 
+ <OL><LI>   Visibilities are read in from a data archive by NSCAN; calibrator observation(s) are included. 
+<LI>   The calibrator data are processed in NCALIB to find the instrumental errors. A source model is used as a reference; such models are available in 
+<i>NEWSTAR </i> for all calibrators routinely used by the WSRT. The errors found are stored as <em>corrections</em> in the calibrator observation. 
+<LI>   NCALIB is invoked to copy the corrections from the calibrator to the astronomical observation. This provides the 'first-order' error correction referred to <A HREF="#.source.error.modeling">above</A>. 
+<LI>   A map is made from the astronomical observation, using the corrections. At this point, reduction may be complete. If the quality of the map is inadequate, one must continue. 
+<LI>   NMODEL FIND and NCLEAN are used to construct a <em>source model</em> for the astronomical field; such a model is a list of components, each of which can be arbitrarily positioned and have a finite extent. (<em>I.e.</em>, they are much more general than conventional CLEAN components.) 
+<LI>   The positions and other parameters defining the source components may be improved through an NMODEL UPDATE. This procedure is unique to <i>NEWSTAR </i>. It refines the parameters estimated by NMODEL FIND for each source component by comparing its computed visibilities against the observed ones. 
+<LI>   A 'self-calibration' <em>selfcal</em> can now be done with NCALIB in the same way as was done for the calibrator in step 2 above. This will refine the correction parameters stored in the .SCN file. 
+<LI>   NFLAG may be used to flag as 'bad' those scans for which the Selfcal operation produced a poor result (either an error message or an excessive mean error in the solution). 
+<LI>   Form this point on, steps 3-8 can be repeated <em>ad libitum</em>. 
+ </OL>
+<P>
+        With a general picture of the reduction process in mind, we can take a look first at the data files and then at the programs involved.
+<P>
+<A NAME=.scn.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003300000000000000>  <b>The scan (.SCN) file </b></A></H2>
+<P>
+<A NAME=.SCNSUM><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P>
+        .SCN files hold all visibility data in <i>NEWSTAR </i>. The basic unit of data is the <em>scan</em>, an array of visibilities for one mosiac subfield, hour angle and frequency channel, with polarisation (XX, XY, ,YX, YY) and interferometer sequence number as its two dimensions. Series of scans that are contiguous in hour angle together form a <em>sector</em>. The organisation of the sectors in a .SCN file will be discussed <A HREF="#.SCNSUM.indices">below</A>.
+<P>
+        It is a fundamental tenet of <i>NEWSTAR </i> that visibility data are always stored as received from Westerbork. <em>Corrections</em> are stored separately as such, and only applied to the visibilities when the data are read in by a program. Thus, what changes during the history of a .SCN file is the correction tables, <em>not</em> the visibility data.
+<P>
+        An important mechanism for eliminating faulty data points is the use of <em>flags</em>. Since there are several different reasons for rejecting data, 8 different flag types are recognised. A <em>flag byte</em> is associated with each data point. Programs normally reject a data point if any one of these flags is set, but the user has the option ignore certain flag types.
+<P>
+        The <em>self-calibration</em> methods in <i>NEWSTAR </i> rely on comparing the observed visibility data with the visibilities of a <em>source model</em> to find the instrumental errors. To economise on the lengthy calculations necessary to generate the <em>model visibilities</em>, the latter may be saved in the .SCN file for reuse.
+<P>
+<A NAME=.selfcal><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H3><A NAME=SECTION0003310000000000000>  <b>Error categories and the Selfcal paradigm </b></A></H3>
+<P>
+<A NAME=.error.model><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<A HREF="../fig/error_model.ps"><STRONG>FIGURE</STRONG></A> 
+ <i>NEWSTAR's Selfcal error model. 
+<BR>The sums of all phase and gain errors that occur in the path between the source and the correlator differ per telescope and polarisation, i.e. per IF channel. Each IF channel contributes one and the same error to all interferometers in which it is connected. The correlator is assumed in first instance to be error-free; this is almost perfectly true for the WSRT in most observing modes. 
+<BR>See text for further explanation. </i>
+<P>
+        Errors, - and consequently corrections for them -, can be broken down in four categories, as shown schematically in <A HREF=" #.error.model">figure</A>:
+<P>
+ <UL><LI>   <em>Global:</em> Errors represented by a single parameter for the instrument as a whole: e.g. a clock error or refraction.
+<P>
+<LI>   <em>Telescope(-based):</em> Errors that occur <em>per telescope</em> and therefore affect all interferometers including that telescope in the same way: 
+e.g. tropospheric cloud effects and telescope position errors.
+<P>
+<LI>   <em>IF-based:</em> Errors that occur <em>per dipole/polarisation channel</em> 
+ and therefore affect all interferometers including that IF channel in the same way: e.g. elctronic gain and phase errors.
+<P>
+<LI>   <em>Interferometer(-based):</em> Errors that occur in the correlator and can therefore not be attributed to a telescope/polarisation channel: e.g. correlator zero offsets. In a well-designed correlator these errors can be very small and for the WSRT one can almost always ignore them. 
+ </UL>
+<P>
+        In the somewhat inaccurate terminology of <i>NEWSTAR </i> no dictinction is made between telescope- and IF-based errors; the two are jointly known as <em>telescope errors</em> as opposed to <em>interferometer errors</em>. The distinction between the two types of error is fundamental to the <em>Selfcal</em> methods which are used to separate instrumental errors from the true source visibilities. A basic understanding of the Selfcal paradigm is assumed throughout <i>NEWSTAR </i>.
+<P>
+        In addition to the Selfcal constraint, WSRT data are subject to the <em>Redundancy</em> constraint: Baselines of the same length (and the same orientation as they always have for the WSRT) must produce the same visibilities.
+<P>
+<A NAME=.wmp.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003400000000000000>  <b>The map (.WMP) file </b></A></H2>
+<P>
+        .WMP files are the containers for two-dimensional <em>images</em>: sky maps and antenna patterns. Each immage is an array of data points with horizontal and vertical positions <em>l, m</em> as coordinates. It represents a projection of the celestial sphere on a plane tangent in the field centre; the direction of the projection is <em>parallel to the polar axis</em>.
+<P>
+        The organisation of the images in a .WMP file will be discussed 
+<A HREF="#.indices">shortly</A>.
+<P>
+<A NAME=.mdl.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003500000000000000>  <b>The source-model (.MDL) file </b></A></H2>
+<P>
+        Unlike the .SCN and .WMP files that may contain a collection of sectors or images, the .MDL file harbours only a single <em>source model</em>. The concept of such a model is familiar from <em>CLEAN</em> as a list of point sources with a position and flux for each.
+<P>
+        The <i>NEWSTAR </i> source mode is more refined: It may also contain for each source an (elliptical-Gaussian) extent, its 4 Stokes parameters, its spectral index and its intrinsic rotation measure. Traditional CLEAN components are a degenerate case of this more general concept.
+<P>
+<A NAME=.indices><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<A NAME=.SCNSUM.indices><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003600000000000000>  <b>Organisation of collections of data structures: Indices</b></A></H2>
+<P>
+        We have seen that <i>NEWSTAR </i> data files are collections of data units: Let us first consider the .SCN file, where these units are the 
+<A HREF="#.scn.file">sectors</A>. Each such unit is self-describing, but we need additional information to understand its relation to other units, viz. what are its channel number and field number (for a mosaic observation). Moreover it is possible to store more than one observation in a scan file and we need a way of knowing which is which.
+<P>
+        The organisation in <i>NEWSTAR </i> data files is by means <em>hierarchical indexing</em>: Each unit is addressed through a <em>composite index</em>, consisting of a string of integers <em>'indices'</em> separated by dots, e.g.
+<P>
+  3.1.0.5
+<P>
+        For the .SCN file the indices are:
+<P>
+  &lt;group&gt;.&lt;observation&gt;.&lt;field&gt;.&lt;channel&gt;.&lt;sequence\ nr where
+<P>
+ <UL><LI>   &lt;group is a purely administrative index that allows one, e.g. to collect observations that are intrinsically unrelated in a single file, 
+e.g. a scientific observation with the calibrator observations to be used with it.
+<P>
+<LI>   &lt;observation&gt; is related to <em>labels</em> and <em>observations</em> in which WSRT data tapes are structured.
+<P>
+<LI>   &lt;field&gt; is a subfield number in a mosaic observation.
+<P>
+<LI>   &lt;channel&gt; is a frequency-channel number (also known as band number).
+<P>
+<LI>   &lt;sequence number&gt; is an extra index that allows for the existence of multiple data structures having all preceding indices the same, 
+ </UL>
+<P>
+        For the .WMP file the indices are:
+<P>
+  &lt;group&gt;.&lt;field&gt;.&lt;channel&gt;.&lt;polarisation&gt;.&lt;image type&gt;.&lt;sequence nr&gt; 
+where &lt;group&gt;, &lt;field&gt; and &lt;channel&gt; are the same as for the .SCN file; in addition we have
+<P>
+ <UL><LI>   &lt;polarisation&gt; represents either a WSRT dipole combination or a Stokes parameter.
+<P>
+<LI>   &lt;image type&gt; indicates either a map or an antenna pattern. 
+ </UL>  
+        A number of mechanisms exist in the user interface that allow you to select set(s) of data units, e.g. 'all sectors', 'all channels for fields 3 through 7', etc.
+<P>
+        In closing, we note that the indexing structure is purely administrative. The data units are entirely self-contained in terms of their data contents and associated headers. A sector, for example, can be copied from one .SCN file to another without any loss of the information necessary for its interpretation.
+<P>
+<A NAME=.programs><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000>  <b>The <i>NEWSTAR </i> programs</b></A></H1>
+<P>
+        <A HREF=" #.basic.functions">Figure</A> includes only the most basic functions of the most important programs. Each of the programs includes a considerable number of other <em>functions</em>: <i>NEWSTAR </i> is a small collection of large multifunctional programs rather than a large collection of small programs (like AIPS or GIPSY).
+<P>
+        We will briefly mention the most interesting functions in each of the programs, but ignore the <em>utility functions</em> which are part of most programs. These will, e.g.:
+<P>
+ <UL><LI>   list the contents of files;
+<P>
+<LI>   show headers and data blocks in detail and optionally edit them;
+<P>
+<LI>   convert files between number formats for different host systems;
+<P>
+<LI>   track version changes;
+<P>
+<LI>   write and/or read FITS tapes/files.
+<P>
+ </UL>
+<P>
+<A NAME=.nscan><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004100000000000000>  <b>NSCAN</b></A></H2>
+<P>
+        NSCAN is the program that handles .SCN files. Apart from utilities, its only operation is:
+<P>
+ <UL><LI>   LOADing data from an external medium (classical magtape, DAT or Exabyte tape, optical disk) into a .SCN file. 
+ </UL>
+<P>
+It is capable to read WSRT data in all existing formats including the old 'Leiden format'.
+<P>
+<A NAME=.ncalib><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004200000000000000>  <b>NCALIB</b></A></H2>
+<P>
+        NCALIB is the program that determines corrections from the visibilities in a .SCN file, optionally using a <A HREF="#.mdl.file">source model</A> as a reference. Its primary functions include:
+<P>
+ <UL><A NAME=.redun><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<LI>   REDUN: This is the Selfcal function of NEWSTAR. It includes several methods of estimating telescope errors from observed visibilities and (optionally) a source model, using the <A HREF="#.selfcal">Selfcal and Redundancy</A> constraints.
+<P>
+<LI>   POLAR: Determining deviations from the nominal dipole responses to polarised radiation from calibrator observations.
+<P>
+<LI>   SET: Function for reading corection parameters from external sources, such as
+<P>
+   <UL><LI> estimates of Faraday rotations calculated from ionosonde or chirp-sounder data;
+<P>
+  <LI> clock corrections from the International Earth Rotation Service (IERS, formerly the Bureau Internationale de l'Heure). 
+   </UL>  
+ </UL>
+<P>
+<A NAME=.nmap><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004300000000000000>  <b>NMAP</b></A></H2>
+<P>
+        NMAP is the program that handles .WMP files. Its primary functions include:
+<P>
+ <UL><LI>   MAKE: Its first and foremost function, <em>viz.</em> to Fourier-transform visibilities into sky maps with their assosiated antenna patterns.
+<P>
+<LI>   FIDDLE: A family of functions to modify maps or combine them into new ones in several useful ways, e.g.:
+<P>
+   <UL><LI> BEAM, DEBEAM: Apply/de-apply the primary-beam correction.
+<P>
+  <LI> POL, ANGLE: Convert a pair of Stokes Q and U maps into a pair representing the polarisation direction and magnitude.
+<P>
+  <LI> MOSCOM: Merge adjacent overlapping maps (e.g. mosaic subfields or adjacent full mosaics) into a single large map.
+<P>
+ </UL>  </UL>
+<P>
+<A NAME=.nflag><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004400000000000000>  <b>NFLAG</b></A></H2>
+<P>
+        NFLAG is the <em>only</em> program that changes flag settings. Its FLAG function is composed of a large number of subfunctions that set different flags on the basis of criteria that may be
+<P>
+ <UL><LI>   <em>deterministic,</em> i.e. comparing data's coordinate parameters against fixed limits (e.g. elevation, shadowing, short baselines);
+<P>
+<LI>   <em>data-derived,</em> i.e. comparing data values against a fixed limit (e.g. an upper limit for data considered to be free of interference);
+<P>
+<LI>   derived from <em>data statistics</em>, such as comparing the noise in a 
+<A HREF="#.redun">selfcal</A> solution against a fixed limit. 
+ </UL>
+<P>
+        NFLAG is still evolving. It is hoped that both NFRA and the <i>NEWSTAR </i> users will contribute new ideas and algorithms, to further the art of eliminating faulty data with a minimum of efforts as well as minimal accidental loss of healthy data.
+<P>
+<A NAME=.nmodel><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004500000000000000>  <b>NMODEL</b></A></H2>
+<P>
+        NMODEL is the program that handles source-model (.MDL) files. Its most vital function is FIND, <em>i.e.</em> finding source components of small extent and fitting elliptical Gaussians to them. This operation differs from CLEAN in two ways:
+<P>
+ <UL><LI>   Components are merely located; to subtract them, one must make a new map as in the major cycles of Cotton-Schwab CLEAN.
+<P>
+<LI>   Sources may be at fractional grid positions and extended, which allows for a much more accurate representation of sources of small size. 
+ </UL>
+<P>
+        NMODEL also harbours the <A HREF="#.outline">UPDATE function</A>, which fine-tunes the components of a model by comparing the model visibilities with the observed ones.
+<P>
+<A NAME=.nclean><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004600000000000000>  <b>NCLEAN</b></A></H2>
+<P>
+        NCLEAN is <i>NEWSTAR </i>'s CLEAN program. It's purpose is to create source models for thos source components that cannot be adequately represented by elliptical Gaussian's. It implements only the H&#246;gbom, Clark and Cotton-Schwab CLEAN algorithms.
+<P>
+<A NAME=.other.programs><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004700000000000000>  <b>Other programs</b></A></H2>
+<P>
+        <A HREF=" #.basic.functions">Figure</A> shows only the most vital programs. There are several others:
+<P>
+ <UL><LI>   NATNF loads data from the Australian Telescope (ATNF) into a .SCN file.
+<P>
+<LI>   NCOPY copies selected parts of a .SCN file into another .SCN file. (In this process one may change visibility values irreversibly through the application of selected corrections.)
+<P>
+<LI>   NPLOT can display or print a variety of plots as well as images in various representations.
+<P>
+<LI>   NGIDS is an adaptation of <em>GIPSY</em>'s display program GIDS. It primary function is to display images in various modes, but it can also be used to select faulty data in a display of visibilities (the <em>TVFLAG</em> function of AIPS).
+<P>
+<LI>   NGCALC is a program to analyse one-dimensional <em>cuts</em>, either through the visibility hypercube or through the associated hypercube of correction values. It can be used, e.g., to analyse the 'light curve' of a variable source or to fit a polynomial to a cut of visibilities against baseline. 
+ </UL>
+<P>
+<A NAME=.user.interface><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000>  <b>Salient features of the user interface </b></A></H1>
+<P>
+<H2><A NAME=SECTION0005100000000000000>  <b>Controlling program runs </b></A></H2>
+<P>
+        <i>NEWSTAR </i> programs communicate with the user through a uniform parameter interface. (Historically this subsystem is referred to as <em>DWARF</em>, but this name now serves only to cause confusion.) We briefly mention the features one normally uses in an interactive session. 
+ <DL COMPACT><DT><DD>   A program is started from the shell through the commands 
+   <UL><DT>
+<DD>       dwe &lt;program name&gt; or dwexe &lt;program name&gt; 
+   </UL>
+<P>
+<DT><DD>   Except for those parameters that are intrinsically of an interactive nature, a program collects all necessary parameter values before any real processing and/or writing to data files is done.
+<P>
+<DT><DD>   Programs can be aborted at any time through control-C. This is safe <em>except when modification of data files is in progress.</em> Where the latter is the case, one would risk corrupting those files.
+<P>
+<DT><DD>   Parameters to be specified by the user are known by their name (also known as the <em>keyword</em>.
+<P>
+<DT><DD>   When a program needs a parameter value, it will prompt on the terminal showing the keyword, a short text explaining what is being asked for, a list of options where applicable, and the default value if one is available.
+<P>
+<DT><DD>   The user's reply is immediately checked to the extent possible: For numeric values a range of validity may have been defined, options must match the list of valid names (unique abbreviations being allowed in most cases.
+<P>
+<DT><DD>   When you reply with an EOF character (control-D in Unix) or a hash sign (#), the program will backtrack over one or several prompts, allowing you to recover from mistakes without having to abort and restart the program.
+<P>
+ </DL>
+<P>
+<A NAME=.help><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005200000000000000>  <b>On-line Help </b></A></H2>
+<P>
+        On-line help in a running program is available in two modes: 
+ <UL><LI>   The <em>dumb-terminal mode</em>: When you type a '?' in reply to a prompt, the help text for the parameter will be shown on your terminal (window).
+<P>
+<LI>   You switch to <em>hypertext mode</em> by typing '??' in reply to a prompt; this mode then remains in effect until the program terminates. Help texts are displayed in the xmosaic window; the advantage is that you now have access to associated documentation through hypertext links. 
+ </UL>
+<P>
+<A NAME=.log.files><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005300000000000000>  <b>Log files </b></A></H2>
+<P>
+        Each program run produces a .LOG file in your current directory. These files are named
+<P>
+        &lt;prog&gt;&lt;timestamp&gt;A.LOG,
+<P>
+where &lt;prog&gt; is the first three characters of the program name and 
+&lt;timestamp&gt; is a string of 12 digits (yymmddhhmmss). The newest log for a program is also known under the name
+<P>
+        &lt;program&gt;.LOG 
+<BR>The log file contains a record of all the parameter values that were used in the program run, a copy of all messages and other output that appeared on the terminal and in some cases a lot more information.
+<P>
+        In many cases the best way to digest a log file is not to print it. Instead, take a quick look at it on your terminal to decide what information is most relevant; then use the Unix utility <em>grep</em> to extract it.
+<P>
+<A NAME=.interfacing><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0006000000000000000>  <b>Interfacing with other astronomical reduction packages </b></A></H1>
+<P>
+        The possibilities to exchange data between <i>NEWSTAR </i> and 'the rest of the world' are limited to the following:
+<P>
+ <UL><LI>   The sectors from a .SCN file can be exported in the UVFITS format that AIPS can read. The inverse operation is <em>not</em> provided for.
+<P>
+<LI>   Images can be written and read in 16- and 32-bit integer as well as 32-bit floating-point FITS formats. Other packages are likely to interface to at least one of these.
+<P>
+<LI>   Visibility data from ATNF/Miriad can be read.
+<P>
+<LI>   Interfaces between <i>NEWSTAR </i> and AIPS++ will probably be developed as a by-product of NFRA's active involvement in the latter project. The eventual conversion policy will be determined on the basis of the user's needs. 
+ </UL>
+<P>
+<H1><A NAME=SECTION0007000000000000000>  <b>Acknowledgements </b></A></H1>
+<P>
+        <i>NEWSTAR </i>'s history dates back to the pioneering work on Redundancy by J.E. Noordam in the early 1980s. W.N. Brouw systematised and expanded his work in subsequent years, in a suite of programs known as the 'R-series'. In 1990-1991, this series served as the prototype for an entirely new collection of programs that eventually became <i>NEWSTAR </i>. During this entire development, A.G.de Bruyn played an indispensable role as an active and stimulating user. 
+        Several users contributed to the documentation; they are acknowledged in the individual Document chapters. 
+        Incorporated in <i>NEWSTAR </i> are: 
+ <UL><LI>   The Dwingeloo-Westerbork Astronomical Reduction Facility (<em>DWARF</em>) user-parameter interface from NFRA.
+<P>
+<LI>   The Groningen Image Display Syetem (<em>GIDS</em>) display package from Groningen's GIPSY system.
+<P>
+<LI>   The <em>PGPLOT</em> public-domain screen-graphics package. 
+ </UL>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

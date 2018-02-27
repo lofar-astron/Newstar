@@ -1,0 +1,160 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>NCOPY programmmer's documentation</b>
+<P>
+<em>Contributed by JPH, 940208. <BR>Updates: 
+        JPH 941031      Clarify handling of APPLY/DEAPPLY masks before and after changes of October 1994. 
+<BR>JPH 941121      prefix underscores with slashes </em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=ncopy_progrmr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=ncopy_progrmr.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=ncopy_progrmr.html#SECTION0003000000000000000>  <b>NCOCPY: Copy sectors </b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=ncopy_progrmr.html#SECTION0003100000000000000>  <b>STH modifications </b></A>
+<LI> <A NAME=tex2html5 HREF=ncopy_progrmr.html#SECTION0003200000000000000>  <b>SCH modifications </b></A>
+<LI> <A NAME=tex2html6 HREF=ncopy_progrmr.html#SECTION0003300000000000000>  <b>NCOCPB: Make unique copy of a data structure </b></A>
+</UL> 
+<LI> <A NAME=tex2html7 HREF=ncopy_progrmr.html#SECTION0004000000000000000>  <b>Tests </b></A>
+<UL> 
+<LI> <A NAME=tex2html8 HREF=ncopy_progrmr.html#SECTION0004100000000000000> <b>Copying flags (9401..-940207) </b></A>
+<LI> <A NAME=tex2html9 HREF=ncopy_progrmr.html#SECTION0004200000000000000>  <b>Checklist overflow (de Bruijn, 940207) </b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        NCOPY Phase 2 is still a relatively straigthforward program. The structure follows standard Newstar practice, with a main dispatching routine NCOPY, initialisation and user-parameter input routines NCOINI and NCODAT, and routines NCO<IMG ALIGN=BOTTOM ALT="" SRC="_10272_tex2html_wrap192.png">xxx&gt; that do the actual work. Some parameter input may be done by the latter. 
+        There are currently two main options: 
+ <UL><LI>   COPY: To selectively copy (parts of) sectors. 
+<LI>   OVERVIEW: To display an overview of all sectors, one sector per line. 
+ </UL>
+<P>
+<H1><A NAME=SECTION0003000000000000000>  <b>NCOCPY: Copy sectors </b></A></H1>
+<P>
+.       For a number of variables and data structures, NCOCPY has an input and an output copy, which are distinguished by the prefixes I and O: IPLN <IMG ALIGN=BOTTOM ALT="" SRC="_10272_tex2html_wrap196.png"> OPLN, etc. This is in anticipation of their I and O values being different, as some already may be, line ISCN and OSCN. Pairs that are currently identical are linked by EQUIVALENCEs, <IMG ALIGN=BOTTOM ALT="" SRC="_10272_tex2html_wrap198.png"> INIFR and ONIFR. &quot;O&quot; variables that are not equivalenced must be explicitly assigned. 
+.       The basic logic of NCOPCPY is straightforward. NSCSTG is repeatedly called to read sectors. Each sector's HA range is checked against the user's range and first and last scan numbers to be copied, SCNFST and SCNLST, are established. The condition that the output need no more polarisations than present in the input is also checked. 
+.       ISTH is then copied to OSTH and written tentatively, with as many changes as possible already made; its address is saved for a later rewrite. Next, the IFR table is copied and the file address of the scans block established. 
+.       The WSRT headers are copied in an internal subroutine at label 2020. This routine consists of calls to: 
+ <UL><LI>   NSCSCR: read SCH; read raw uncorrected scan visibilities into 4-polarisation c/s and weight arrays, using STH and SCH dimension parameters such as PLN and NIFR.
+<P>
+<LI>   NSCSDW: write scan from these arrays, again using dimension parameters. 
+ </UL>  
+.       Modifications to the scan are made in between.
+<P>
+.       The model lists and visibilities are copied in an internal subroutine at label 2010.
+<P>
+.       Finally, the newly made sector is linked into the index structure. The code is patterned after that of NSCREG.
+<P>
+<H2><A NAME=SECTION0003100000000000000>  <b>STH modifications </b></A></H2>
+<P>
+        NCOCPY is responsible for the following OSTH fields that differ from their ISTH peers: 
+ <UL><LI>   HAB, SCN: reflect the user's HA selection. 
+<LI>   PLN: the number of polarisations in the output. 
+<LI>   NIFR: number of output interferometers (currently identical to input).
+<P>
+<LI>   SCNL: scan length (depends on NIFR, PLN).
+<P>
+<LI>   REDNS, ALGNS, OTHNS: zero the Y components if only XX data present.
+<P>
+<LI>   pointers to other data structures. 
+ </UL>
+<P>
+<H2><A NAME=SECTION0003200000000000000>  <b>SCH modifications </b></A></H2>
+<P>
+        NCOCPY is responsible for the following OSCH fields that differ from their ISCH peers: 
+ <UL><LI>   MAX: maximum of C/S values REDNS, ALGNS, OTHNS. 
+<LI>   OTHNS: zero the Y components if only XX data present. 
+ </UL>
+<P>
+<H2><A NAME=SECTION0003300000000000000>  <b>NCOCPB: Make unique copy of a data structure </b></A></H2>
+<P>
+        Several input data structures may be linked by more than one pointer, and each link might give rise to a separate copy. For copying such structures, NCOCPB must be used. It maintains a checklist of input file addresses of blocks it has already copied, with the corresponding output file addresses. The calling program is responsible for allocating a buffer for this list and initialising it through a special call to NCOCPB. Details of this and other variant calls are to be found in NCOCPB's header. 
+        Since there can(?) be no duplications of data structures between groups, the checklist is reinitialised for every new input group. 
+        The blocks that may have multiple references are: 
+ <UL><LI>   FDW for all sectors in a mosaic: 1 
+<LI>   OHW for all sectors in the same field: 128 fields 
+<LI>   SHW for all sectors at the same frequency: 8 frequencies. 
+<LI>   MDH for all sectors in the same field: 128 fields 
+ </UL>
+<P>
+<H1><A NAME=SECTION0004000000000000000>  <b>Tests </b></A></H1>
+<P>
+.       The following tests were made to check NCOPY: 
+ <UL><LI>   Copy sectors from the same input SCN file with various selection parameters. Check outputs with OVERVIEW and compare samples of headers and data with NCOPY SHOW. 
+<LI>   Copy one 4-polarisation input sector to three output sectors, selecting XYX, XY and X polarisations. Make 4 XX and 3 YY maps from the input amd output sectors and compare the map statistics through 
+. 
+        <i>sdiff -s -w 80 <IMG ALIGN=BOTTOM ALT="" SRC="_10272_tex2html_wrap192.png">log1&gt; <IMG ALIGN=BOTTOM ALT="" SRC="_10272_tex2html_wrap192.png">log2<IMG ALIGN=BOTTOM ALT="" SRC="_10272_tex2html_wrap206.png"> grep '-<IMG ALIGN=BOTTOM ALT="" SRC="_10272_tex2html_wrap208.png">'</i> 
+ </UL>
+<P>
+<H2><A NAME=SECTION0004100000000000000> <b>Copying flags (9401..-940207) </b></A></H2>
+<P>
+        Upon request of Ger de Bruijn, all input flags are also copied to the output. To this end, the calls to NSCSCR and NSCSCW have been changed to calls to NSCSCF and NSCSFW, respectively. These have an extra parameter in which the flag settings from the input are transferred to the output. 
+        The new entry points exist in the new version of NSCSCR and NSCSCW which are still being tested in JPH's shadow system. 
+        If desired, it is very simple to add code to suppress the copying of flags. 
+        Test: 
+        Use a 720-scan single-polarisation file. NFLAG, flag_optionDETERM, 
+ops_determPBAS, pbas_limits=0,200. This results in 18in a 270-scan single-polarisation file. flag_optionINSPECT, ops_inspectIFR gives an overview per interferometer. 
+        Copy the file with NCOPY and test the copy with NFLAG, flag_optionINSPECT, ops_inspectCOUNT, select_flagALL, sub_cubeNO. This gives the same result.
+<P>
+<H2><A NAME=SECTION0004200000000000000>  <b>Checklist overflow (de Bruijn, 940207) </b></A></H2>
+<P>
+Corrections: 
+ <UL><LI>   Do not use NCOCPB for STH addresses. Multiple references to STH can only occur due to a NSCAN REGROUP operation which is very rarely used. Multiple copies of an STH can not be prevented between COPY operations. The user is already responsible for avoiding those and now has the added responsibility of avoiding REGROUP duplications. 
+<LI>   Reinitialise checklist for each new input group. 
+<LI>   Souble checklist size to handle the largest predicted mosaic observation 
+ </UL>
+<P>
+Test: 
+        Copy a simple observation A to B, then B to C, and verify that overviews of B and C are identical.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

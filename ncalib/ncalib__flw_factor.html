@@ -1,0 +1,21 @@
+<TITLE>Description of FLW_FACTOR (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword FLW_FACTOR</H1> 
+
+<DT><EM>Prompt:</EM> Weight for points flagged with WGT flag
+<DT><EM>Default:</EM> 1.
+<DT><EM>Expected input:</EM> Real number.<P>
+The WGT flag directs NCALIB to multiply the data weight with an additional 
+weighing factor. <P>
+You may use this feature to reduce the weight of data affected by interference 
+without rejecting it completely. The effect of this in a Selfcal solution is 
+that it prevents the interference from bad interferometers to infect the 
+healthy ones. <P>
+A value of 1 will give all interferometers the weight they have in the .SCN 
+file.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

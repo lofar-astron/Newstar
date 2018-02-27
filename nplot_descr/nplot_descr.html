@@ -1,0 +1,130 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The Program NPLOT</b>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nplot_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nplot_descr.html#SECTION0002000000000000000> <b>Overview of NPLOT options</b></A>
+<LI> <A NAME=tex2html3 HREF=nplot_descr.html#SECTION0003000000000000000> <b>NPLOT output</b></A>
+<LI> <A NAME=tex2html4 HREF=nplot_descr.html#SECTION0004000000000000000> <b>Plotting a map from a WMP file</b></A>
+<LI> <A NAME=tex2html5 HREF=nplot_descr.html#SECTION0005000000000000000> <b>Plotting uv-data from a SCN-file</b></A>
+<UL> 
+<LI> <A NAME=tex2html6 HREF=nplot_descr.html#SECTION0005100000000000000> <b>NORMAL: interferometers vs time (HA)</b></A>
+<LI> <A NAME=tex2html7 HREF=nplot_descr.html#SECTION0005200000000000000> <b>PLUVO: frequency channels vs time (HA)</b></A>
+</UL>
+</UL>
+<A NAME=.options><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0002000000000000000> <b>Overview of NPLOT options</b></A></H1>
+<P>
+The program NPLOT has the following main options:
+<P>
+<UL><LI> <b>MAP:</b>        Plot map(s) of various types (from WMP-file)  
+<LI> <b>DATA:</b>       Plot uv-data from SCN-file  
+<LI> <b>MODEL:</b>      Plot uv-model from SCN-file   
+        (i.e. the uv-representation of a Selfcal model,   
+        calculated for the uv-coordinates of the uv-data in the SCN-file)  
+<LI> <b>TELESCOPE:</b>  Plot telescope errors  
+<LI> <b>RESIDUAL:</b>   Plot interferometer residuals  
+        (i.e. the residual scatter of redundant spacing data after a  
+        Redundancy solution, or the residual differences with the   
+        source model after a Selfcal solution.  
+<LI> <b>QUIT:</b>       Quit the program NPLOT  
+</UL>
+<P>
+<A NAME=.output><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0003000000000000000> <b>NPLOT output</b></A></H1>
+<P>
+After selecting an NPLOT option, the <b>PLOTTER</b> question is asked:
+<P>
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_11065_tex2html_wrap211.png"> <b>PLOTTER</b>  
+ (QMS,QMSP,REGIS,FREGIS,EPS,EPP,PSL,PSP,...)  
+ = PSP:  
+ <IMG ALIGN=BOTTOM ALT="" SRC="_11065_tex2html_wrap213.png">
+<P>
+Produces QMS formatted files, for which currenlty no printers are available<BR><tt>QMS    QMS laser printer in landscape orientation</tt><BR><tt>QMSP   QMS laser printer in portrait orientation</tt><BR>Produces output on VT terminal:<BR><tt>REGIS  graphics VT terminal (e.g. VT330)</tt><BR><tt>FREGIS (*) REGIS to file</tt><BR>Produces PostScript files on disk (which may fill up quickly!):<BR><tt>EPS    encapsulated PostScript for use in textprocessors etc</tt><BR><tt>EPP    EPS in portrait mode</tt><BR><tt>EAL    encapsulated PostScript A3 plotter landscape</tt><BR><tt>EAP    EPS A3 in portrait mode</tt><BR>Produces PostScript files, and prints them automatically (if you are lucky)<BR>on the New PostScript laser printer in the Dwingeloo computer room:<BR><tt>PSL    Postscript (do not use halftone: slow!)</tt><BR><tt>PSP    PostScript in portrait mode</tt><BR><tt>PAL    Postscript A3 (do not use halftone: slow!)</tt><BR><tt>PAP    PostScript A3 in portrait mode</tt><BR>Bit maps:<BR><tt>BIT1   (*) bitmap for 100 dpi</tt><BR><tt>BIT2   (*) bitmap for 200 dpi</tt><BR><tt>BIT3   (*) bitmap for 300 bpi</tt><BR>Produces a X11-plot on the Workstation (or X-terminal) screen.<BR><tt>X11    X11 terminal</tt><BR><tt>(*) = not implemented yet.</tt>
+<P>
+All plot file names start with the 3-4 letters of the selected option (e.g. EPS), followed by a unique combination of characters based on the time and the date. All plot files have the extension .PLT.
+<P>
+<A NAME=.map><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0004000000000000000> <b>Plotting a map from a WMP file</b></A></H1>
+<P>
+NPLOT option MAP can be used to make <b>contour plots</b> or <b>greyscale plots</b> of 2-dimensional pixel-arrays stored in a  WMP-file.  These may be maps, antenna-patterns, residuals etc, but also gridded uv-data (see the description of the program NMAP, and the WMP file).  They can also be displayed (and analysed) as a color image on the X11 screen with the program NGIDS.
+<P>
+*** Put new script here ****
+<P>
+The plot is now made, and sent to the laser plotter automatically if that has been specified. The program will then prompt the user for the next plot  to be specified.
+<P>
+**** Put new script here ****
+<P>
+It is also possible to make `ruled-surface' plots, halftone plots and plots in polar coordinates (gridded uv-data).
+<P>
+<A NAME=.data><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0005000000000000000> <b>Plotting uv-data from a SCN-file</b></A></H1>
+<P>
+<A NAME=.data.normal><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0005100000000000000> <b>NORMAL: interferometers vs time (HA)</b></A></H2>
+<P>
+**** Put new script here ****
+<P>
+The plot is now made, and sent to the laser plotter automatically if that has been specified. The program will then prompt the user for the next plot  to be specified.
+<P>
+**** Put new script here ****
+<P>
+<A NAME=.pluvo><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0005200000000000000> <b>PLUVO: frequency channels vs time (HA)</b></A></H2>
+<P>
+**** Put new script here ****
+<P>
+Etc...
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

@@ -1,0 +1,26 @@
+<TITLE>Description of PLOT_POSITIONS (NPLOT)</TITLE>
+<H1>Program NPLOT: private keyword PLOT_POSITIONS</H1> 
+
+<DT><EM>Prompt:</EM> NO, YES, NAMES; EDIT Mark source positions
+<DT><EM>Default:</EM> NO /ASK.
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify if you want model-source positions marked in your plot. The answers may 
+be: <P>
+        NO 
+        YES     position markers only 
+        MAMES   position markers annotated with their IDs from the model list <P>
+The marker symbol used is determined per source by its Type (which is the 
+suffix number in its ID). <P>
+        EDIT    invoke model-handling code to modify model-components' Types,  
+                 (FEDIT option), then return to this prompt. This path also 
+                 allows you to define additional annotations. 
+!\whichref{NMODEL HANDLE/EDIT}{nmodel_public_keys.} 
+!\whichref{parameter SOURCES}{} 
+!\whichref{parameter TEXT}{} 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nplot/nplot_keys.html">List of keywords</A> for NPLOT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nplot_descr/nplot_descr.html">program NPLOT</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

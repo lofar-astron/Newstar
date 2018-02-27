@@ -1,0 +1,55 @@
+<TITLE>Description of EXPRESSION (NGCALC)</TITLE>
+<H1>Program NGCALC: private keyword EXPRESSION</H1> 
+
+<DT><EM>Prompt:</EM> expression
+<DT><EM>Expected input:</EM> Character(80).<P>
+Specify the expression defining the new output cut. It is safest to enclose the 
+expression in double quotes. <P>
+Each data point in the output cut will be set to the value of your expression,  
+using the values of the corresponding data point in each of the input cuts in 
+the expression. Elements of an expression can be: <P>
+	References to input cuts of the form #&lt;number&gt; or ##&lt;number&gt; (see NOTE 
+	 below). You will be prompted later to identify one cut to be associated 
+	 with each of the numbers you use in the expression. For each output 
+	 point, a reference refers to the input point at the same hour angle. <P>
+	Real constants, e.g. 5, -1.23E-12 <P>
+	Symbolic constants 
+		PI [=3.14..], EE [=2.71..], CC [=light velocity in km/s],  
+		DRAD [=180/PI] <P>
+	Standard functions of real or complex argument (angles always in 
+	 degrees): 
+		SIN(x), COS(x), ASIN(x), ACOS(x), ATAN(x), ATAN(real, imag) 
+		EXP(x), EXP10(x), EXP2(x), LOG(x), LOG10(x), LOG2(x) 
+		ABS(X), SQRT(X( 
+		REAL(x), IMAG(x), AMPL(x), PHASE(x), IMUL(x) (mmultiply x by i) <P>
+	Standard functions of a real argument that will be performed separately 
+	 on the real and imaginary components of a complex argument 
+		FLOOR(x), CEIL(x), ROUND(x), INT(x), FRACT(x) <P>
+	Cut-data-point coordinates: 
+		RA [right-ascension], DEC [declination], HA [hour-angle],  
+		UT [univ.time], FQ [freq. in MHz], BL [baseline in m],  
+		UU [U in lambda], VV [V in lambda] <P>
+	Operators, in order of decreasing priority (results of logical and 
+	 relation expressions are 0. (False) or 1. (True)): <P>
+		unary +, - 
+		**, ^ (power) 
+		*, /, +, - 
+		&gt;=, &lt;=, =, &lt;, &gt;, &lt;&gt; (comparisons: if either value to be compared is 
+			   complex, absolute values are used in the comparison) 
+		&lt;&gt; (not)        &amp; (and)         ! (or) <P>
+Example: 
+	#1*(REAL(#1)&lt;0)+#2*(REAL(#2)&gt;0): for each hour angle, take the data 
+		value from cut #1 if it is &lt;0 and the data value from cut #2 if 
+		it is &gt;0, and add them to get the data point at the same hour 
+		angle in the output cut <P>
+NOTE: 
+	You may loop over sectors in the standard way. Each of the input 
+sectors in the expression will be incremented at the start of a new loop cycle. 
+You may, however, inhibit this incrementing by using a double '#', e.g. ##2. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngcalc/ngcalc_keys.html">List of keywords</A> for NGCALC
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ngcalc_descr/ngcalc_descr.html">program NGCALC</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

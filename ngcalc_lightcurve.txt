@@ -1,0 +1,112 @@
+I,Q,U,V,p,angle lightcurves using NEWSTAR program NGCALC
+
+
+Ger de Bruyn 15-juni-1994
+
+The program NGCALC can extract 1-dimensional (Visibility data versus
+time/HA) data from a SCN-file. These can then be processed to yield
+lightcurves of all Stokes parameters for a range of baselines.
+
+A 'typical' run would go as follows:
+
+1) exe ngcalc/ask
+
+The /ask qualifier is only required if you wish to subtract the STORED
+selfcal MDL from the selfcal'ed visibility data.
+
+Input:
+ - the name of the NGF file you wish to create
+ - select option EXTRACT
+ - specify the name of the SCN-file
+ - select the SETS
+ - select the type of information you want to process (e.g. DATA)
+ - select the polarizations (specify XYX if you wish to form all
+   Stokes parameters)
+ - select the INTERFEROMETERS (e.g. FM)
+
+This is a slow program! It takes about 20 minutes CPU (on an HP710)
+for the extraction of 12 hours of data (720 scans of 1 minute) on 40
+baselines on one frequncy channel for each of the four XX,XY,YX,YY
+correlations. This then creates 40x4 files or 'plots' as they are called in
+the program.
+
+These plots will have a six-digit number containing information on the
+baselines, polarizations and frequency channel.
+
+2) Use the option MERGE to merge different HA-sections
+
+If the 12 hour observations was cut into more than one part, each
+HA-sector will get a separate file. You can then merge these two or
+more HA-slots into one file, where the appropriate HA information is
+preserved.
+
+You can use a double-loop here. One loop might run over polarization
+and one loop over baselines; e.g. 4,...1, 69,....1 if you had
+XX,XY,YX,YY and baselines from 9A (a 0 in the fifth digit) through 0D
+(a 68 in the fifth digit)
+
+
+3) Use option CALC, SHIFT to shift the visibilities to the source you
+wish to study
+
+Use the position (l,m in arcseconds) as given in your MODEL. You may
+(have to) use a loop again.
+
+
+4) Use the option MERGE to average all baselines you wish to use
+
+After the shift operation the source should be in the phase centre. This
+means that the source signal is contained in the COS part of the visibility.
+You can check, using the plotting facilities, whether indeed the SIN signal
+is consistent with noise around zero.
+
+You may wish to loop here over the fourth, polarization, index (e.g.
+4,...1)
+
+
+5) Use the COMBINE option to form Stokes I,Q,U and V
+
+Examples: 
+Q = (#0-#1)/2, where #0 is the YY file and #1 is the XX file.
+V = -0.5*imul(#0+#1) where #0 is the XY file and #1 is the YX file
+
+
+6) If required, smooth the data using option CALC, SMOOTH
+
+
+7) You can use the PLOT option at the various stages to see whether the
+results look as 'expected'
+
+8) Use option MON to dump the interesting files in an ASCII file for
+further processing with SUPERMONGO. The mongo file will contain as its first
+column the HA.
+
+  
+
+-----------------------------------------------------------
+N.B. There are a number of things to watch out for when using NGCALC
+
+1) Files can be addressed with the full six-digit index or with a # whichever
+you find more convenient. Note, however, that when using the #'s you can
+NOT use loops. 
+
+2) There is some logic to the index numbering system but it takes a while to
+get use to it. 
+
+3) When trying to form the polarization angle 0.5*atan(U/Q) you run into 
+the problem that this angle as calculated will be within the range -45 to
++45 degrees, while of course the true polarization angle is defined 
+within boundaries -90 and +90 degrees
+
+4) Unfortunately, the delete option does not yet work. If you have made a
+new file with erroneous specifications you would ideally like to
+throw it away because you might forget that it is unusable. 
+
+5) When using the loop system all the plotfiles that will be
+tried in the looping must be present.
+
+E.g. if you have 40 FM baselines in the NGF file they are numbered 0,2,8,9,....68
+with some numbers not occurring (This number is the order in which the
+baselines exist in the SCN file). Hence, if you wish to loop over baselines
+then you could say 69,....1 but then the program will stop after it has 
+done the first baseline, because baseline ....1 does not exist.

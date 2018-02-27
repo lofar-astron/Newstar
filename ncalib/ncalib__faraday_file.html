@@ -1,0 +1,18 @@
+<TITLE>Description of FARADAY_FILE (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword FARADAY_FILE</H1> 
+
+<DT><EM>Prompt:</EM> Faraday-rotation data file
+<DT><EM>Expected input:</EM> Character(160).<P>
+Specify the name of a file with Faraday rotation data. The file must be an 
+ASCII file with lines <P>
+        &lt;hour angle in degrees&gt;, &lt;faraday rotation in degrees at 1GHz&gt; <P>
+The file will be used to calculate Faraday rotation values for each scan by 
+interpolation between the values in this file and scaling to the observing 
+frequency. The calculated values will be stored in the scans as corrections.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,1384 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Private parameters for program NFLAG</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nflag_private_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nflag_private_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=nflag_private_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=nflag_private_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=nflag_private_intfc.html#SECTION0003200000000000000>  <b>Parameter ABCS_LIMITS</b></A>
+<LI> <A NAME=tex2html6 HREF=nflag_private_intfc.html#SECTION0003300000000000000>  <b>Parameter CLIP_LIMIT</b></A>
+<LI> <A NAME=tex2html7 HREF=nflag_private_intfc.html#SECTION0003400000000000000>  <b>Parameter CLIP_LIMITS</b></A>
+<LI> <A NAME=tex2html8 HREF=nflag_private_intfc.html#SECTION0003500000000000000>  <b>Parameter DRY_SCANS</b></A>
+<LI> <A NAME=tex2html9 HREF=nflag_private_intfc.html#SECTION0003600000000000000>  <b>Parameter DT1_LIMIT</b></A>
+<LI> <A NAME=tex2html10 HREF=nflag_private_intfc.html#SECTION0003700000000000000>  <b>Parameter ELEVATION_LIMIT</b></A>
+<LI> <A NAME=tex2html11 HREF=nflag_private_intfc.html#SECTION0003800000000000000>  <b>Parameter FLAG_MODE</b></A>
+<LI> <A NAME=tex2html12 HREF=nflag_private_intfc.html#SECTION0003900000000000000>  <b>Parameter FLAG_OPTION</b></A>
+<LI> <A NAME=tex2html13 HREF=nflag_private_intfc.html#SECTION00031000000000000000>  <b>Parameter HA</b></A>
+<LI> <A NAME=tex2html14 HREF=nflag_private_intfc.html#SECTION00031100000000000000>  <b>Parameter INPUT_FILE</b></A>
+<LI> <A NAME=tex2html15 HREF=nflag_private_intfc.html#SECTION00031200000000000000>  <b>Parameter LIMIT</b></A>
+<LI> <A NAME=tex2html16 HREF=nflag_private_intfc.html#SECTION00031300000000000000>  <b>Parameter LIMITS</b></A>
+<LI> <A NAME=tex2html17 HREF=nflag_private_intfc.html#SECTION00031400000000000000>  <b>Parameter OPS_CLIPDATA</b></A>
+<LI> <A NAME=tex2html18 HREF=nflag_private_intfc.html#SECTION00031500000000000000>  <b>Parameter OPS_DETERM</b></A>
+<LI> <A NAME=tex2html19 HREF=nflag_private_intfc.html#SECTION00031600000000000000>  <b>Parameter OPS_FCOPY</b></A>
+<LI> <A NAME=tex2html20 HREF=nflag_private_intfc.html#SECTION00031700000000000000>  <b>Parameter OPS_FLIST</b></A>
+<LI> <A NAME=tex2html21 HREF=nflag_private_intfc.html#SECTION00031800000000000000>  <b>Parameter OPS_INSPECT</b></A>
+<LI> <A NAME=tex2html22 HREF=nflag_private_intfc.html#SECTION00031900000000000000>  <b>Parameter OPS_MANUAL</b></A>
+<LI> <A NAME=tex2html23 HREF=nflag_private_intfc.html#SECTION00032000000000000000>  <b>Parameter OPS_SCANS</b></A>
+<LI> <A NAME=tex2html24 HREF=nflag_private_intfc.html#SECTION00032100000000000000>  <b>Parameter OPS_STATIST</b></A>
+<LI> <A NAME=tex2html25 HREF=nflag_private_intfc.html#SECTION00032200000000000000>  <b>Parameter OPTION</b></A>
+<LI> <A NAME=tex2html26 HREF=nflag_private_intfc.html#SECTION00032300000000000000>  <b>Parameter OUTPUT_FILE</b></A>
+<LI> <A NAME=tex2html27 HREF=nflag_private_intfc.html#SECTION00032400000000000000>  <b>Parameter PBAS_LIMITS</b></A>
+<LI> <A NAME=tex2html28 HREF=nflag_private_intfc.html#SECTION00032500000000000000>  <b>Parameter PUT_EXPAND_CH</b></A>
+<LI> <A NAME=tex2html29 HREF=nflag_private_intfc.html#SECTION00032600000000000000>  <b>Parameter PUT_RANGE</b></A>
+<LI> <A NAME=tex2html30 HREF=nflag_private_intfc.html#SECTION00032700000000000000>  <b>Parameter SELECT_FLAG</b></A>
+<LI> <A NAME=tex2html31 HREF=nflag_private_intfc.html#SECTION00032800000000000000>  <b>Parameter SHADOW_DIAM</b></A>
+<LI> <A NAME=tex2html32 HREF=nflag_private_intfc.html#SECTION00032900000000000000>  <b>Parameter SUB_CUBE</b></A>
+<LI> <A NAME=tex2html33 HREF=nflag_private_intfc.html#SECTION00033000000000000000>  <b>Parameter TOH_LIMIT</b></A>
+<LI> <A NAME=tex2html34 HREF=nflag_private_intfc.html#SECTION00033100000000000000>  <b>Parameter USER_FLAG</b></A>
+<LI> <A NAME=tex2html35 HREF=nflag_private_intfc.html#SECTION00033200000000000000>  <b>Parameter USER_FLAGS</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the parameter interface of the program NFLAG. The program also uses a number of public interfaces; references to these are also <A HREF="#.public">listed</A>.
+<P>
+        The remainder of the document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<em>See also:</em> 
+<UL><LI> <A HREF="../introduction/introduction.html#.user.interface">DWARF</A> user interface 
+<LI> <A HREF="../flfnode_public_intfc/flfnode_public_intfc.html">FLFNODE</A> public keywords 
+<LI> <A HREF="../mdlnode_public_intfc/mdlnode_public_intfc.html">MDLNODE</A> public keywords 
+<LI> <A HREF="../ngen_public_intfc/ngen_public_intfc.html">NGEN</A> public keywords 
+<LI> <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">NMODEL</A> public keywords 
+<LI> <A HREF="../nshow_public_intfc/nshow_public_intfc.html">NSHOW</A> public keywords 
+<LI> <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html">SCNNODE</A> public keywords 
+<LI> <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html">SCNSETS</A> public keywords 
+<LI> <A HREF="../select_public_intfc/select_public_intfc.html">SELECT</A> public keywords 
+</UL>
+<P>
+<A NAME=.abcs.limits><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter ABCS_LIMITS</b></A></H2>
+<P>
+  <em>Prompt:</em> Acceptance range for ABS(cos), ABS(sin)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+    <PRE>
+        An ENTIRE scan will be flagged if for any valid data point in it
+the modulus of either the real (cos) or imaginary (sin) part falls outside the
+acceptance range.
+</PRE>
+<P>
+  <PRE>
+This option allows you to reject scans containing interference peaks, or 'bad'
+data (i.e. abnormally low amplitudes).
+</PRE>
+<P>
+  <PRE>
+NOTES:
+</PRE>
+<P>
+  <PRE>
+     The new setting of the target flag in each scan or data point will
+      OVERRIDE the current one rather than being ORed into it.
+</PRE>
+<P>
+  <PRE>
+     The flags used in selecting valid scans are defined by parameter ?
+SELECT_FLAGS; the default is ALL.
+</PRE> 
+               <em>see parameters <A HREF="#.dry.scans">DRY_SCANS</A>,
+                <A HREF="#.select.flag">SELECT_FLAG</A> </em>
+  <PRE>
+NB: When new thresholds are given, all Scans in the specified data cube are
+(un-)flagged accordingly, including the Scans that were flagged already.
+</PRE>
+<P>
+<A NAME=.clip.limit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter CLIP_LIMIT</b></A></H2>
+<P>
+<em>Prompt:</em> Clip threshold (W.U.)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+        Specify the threshold value (W.U.) for the clipping criterion
+selected.
+</PRE>
+<P>
+  <PRE>
+The default value shown is three times the rms value calculated in a 'trial
+run' through the first <N> valid (see Note below) scans in the
+primary/secondary data cube. This is intended to be an educated guess at a
+sensible 3-sigma threshold for your operation, but you must make your own
+assessment of the probable suitability of this value.
+</PRE>
+<P>
+  <PRE>
+Notes:
+     The new setting of the target flag in each scan or data point will
+      OVERRIDE the current one rather than being ORed into it.
+</PRE>
+<P>
+  <PRE>
+     The number <N> of dry-run scans is defined by the parameter DRY_SCANS; the
+      default is 25.
+</PRE>
+<P>
+  <PRE>
+     The flags used in selecting valid scans are defined by parameter ?
+SELECT_FLAGS; the default is ALL.
+</PRE> 
+               <em>see parameters <A HREF="#.dry.scans">DRY_SCANS</A>,
+                <A HREF="#.select.flag">SELECT_FLAG</A> </em>
+<P>
+<A NAME=.clip.limits><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter CLIP_LIMITS</b></A></H2>
+<P>
+<em>Prompt:</em> Clip limits<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+        Specify the range within which the test value will be accepted.
+For values outside the range the flag will be set, for those within the range
+it will be cleared.
+</PRE>
+<P>
+  <PRE>
+The default value shown is three times the rms value calculated in a 'trial
+run' through the first <N> valid (see Note below) scans in the
+primary/secondary data cube. This is intended to be an educated guess at a
+sensible 3-sigma threshold for your operation, but you must make your own
+assessment of the probable suitability of this value.
+</PRE>
+<P>
+  <PRE>
+Notes:
+     The new setting of the target flag in each scan or data point will
+      OVERRIDE the current one rather than being ORed into it.
+</PRE>
+<P>
+  <PRE>
+     The number <N> of dry-run scans is defined by the parameter DRY_SCANS; the
+      default is 25.
+</PRE>
+<P>
+  <PRE>
+     The flags used in selecting valid scans are defined by parameter ?
+SELECT_FLAGS; the default is ALL.
+</PRE> 
+               <em>see parameters <A HREF="#.dry.scans">DRY_SCANS</A>,
+                <A HREF="#.select.flag">SELECT_FLAG</A> </em>
+<P>
+<A NAME=.dry.scans><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter DRY_SCANS</b></A></H2>
+<P>
+<em>Prompt:</em> Number of scans to use in trial runs<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+'Clipping' operations need (a) threshold value(s) that is (are) related to the
+magnitude of the data at hand.
+</PRE>
+<P>
+  <PRE>
+The program determines a 'rasonable' default for such cases by performing a
+'trial run' on the first of the scans in the data cube selected. You may
+specify their number here. The trial run evaluates the clipping criterion but
+does NOT modify the .SCN file.  For data with reasonably stationary statistics,
+the default number should be adequate. A larger number obviously will take more
+time to process. If you specify a very large number, the trial run will include
+the entire data cube selected.
+</PRE>
+<P>
+<A NAME=.dt1.limit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003600000000000000>  <b>Parameter DT1_LIMIT</b></A></H2>
+<P>
+<em>Prompt:</em> Discontinuity threshold (W.U. per 10 sec)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+        The DT1 option looks for 'un-physical jumps' in time in the
+cosine and sine values of the uv-data. The actual difference (in W.U.) between
+successive time-samples is divided by the time that separates them, in units of
+the integration time (e.g. 60 sec). The flag is set if this value exceeds the
+threshold.
+</PRE>
+<P>
+<A NAME=.elevation.limit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003700000000000000>  <b>Parameter ELEVATION_LIMIT</b></A></H2>
+<P>
+<em>Prompt:</em> Elevation lower limit (deg)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+        Specify the lower limit for acceptable elevations. All points
+corresponding to lower elevations are rejected. The default flag-type is SHADOW.
+</PRE>
+<P>
+<A NAME=.flag.mode><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003800000000000000>  <b>Parameter FLAG_MODE</b></A></H2>
+<P>
+<em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        You may select one of the options at a time.
+ The logical ones, such as CORR/NOCORR will take effect immediately. For the
+others, you will be prompted for (a) new value(s).  The values shown below as
+defaults are the ones with which NFLAG starts up.
+</PRE>
+<P>
+  <PRE>
+   Redefinition of the primary data cube:
+</PRE>
+<P>
+  <PRE>
+        HYPER:    Change the primary data cube by selecting new polarisation,
+                   interferometer and hour-angle ranges.
+        SECTORS:  As HYPER but including a change of the SCN_SECTORS selection.
+        NODE:     Completely new primary data cube (i.e. including new .SCN
+                   file)
+</PRE>
+<P>
+  <PRE>
+   Data-correction modes. Shown in parentheses is NFLAG's initial setting:
+</PRE>
+<P>
+  <PRE>
+        CORR/NOCORR (=NOCORR):
+                Reading mode for visibility data: without/with corrections
+                 applied and ignoring/acknowledging flags.
+                 (NOCORR mode will be ignored in those cases for which the use
+                 of uncorrected data would be pointless, e.g. ARESID, RRESID).
+</PRE>
+<P>
+  <PRE>
+        UFLAG (=ALL):
+                Default flag types to be acknowledged when reading data in
+                 CORR mode.
+</PRE>
+<P>
+  <PRE>
+   Run modes:
+</PRE>
+<P>
+  <PRE>
+        SHOW/NOSHOW (=SHOW):
+                After each flagging operation, show/don't show a summary of the
+                 new flag settings for the data cube and flag types selected
+for
+                 that operation.
+                Note that in either mode the affected flags will be counted
+                 anyway, so you can use INSPECT afterwards to show summatries
+                 from various perspectives
+</PRE>
+<P>
+  <PRE>
+        DRYRUN/NODRYRUN (=DRYRUN):
+                For any operation that would change flags in the .SCN file,
+                 do/don't do a 'trial run' first, - e.g. to get a feeling for
+                 sensible default values for clip limits etc.
+                 (For NODRYRUN safe default values will be chosen for such
+                 limits so that nothing will happen until the user sets his own
+                 values.)
+</PRE>
+<P>
+  <PRE>
+        NOTRACE/TRACE (=NOTRACE):
+                Dont't/do trace the flagging operations through messages on the
+                 terminal. TRACE is likely to produce a lot of output and
+                 intended for debugging purposes only.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        QUIT:    Go back to FLAG_OPTION.
+</PRE>
+<P>
+<A NAME=.flag.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003900000000000000>  <b>Parameter FLAG_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Type of flagging operation|<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Specify the type of flagging operation to be performed:
+</PRE>
+<P>
+  <PRE>
+   Selective flagging on the basis of data/coordinate/statistics values:
+</PRE>
+<P>
+  <PRE>
+        CLIPDATA  Flag data points according to a data-derived criterion
+                   (amplitudes, selfcal residuals, etc.)
+        DETERM    Flag data points on the basis of their coordinates (position,
+                   elevation, etc.)
+</PRE>
+<P>
+  <PRE>
+   Deterministic clearing, setting and copying of flags:
+</PRE>
+<P>
+  <PRE>
+        CLEAR     Clear flags from scan headers and data (see also MANUAL)
+        MANUAL    Manual flagging operations (includes CLEAR flags).
+</PRE> 
+  <PRE>
+        HASCANS   Operations on the scan-header flags. These affect ENTIRE
+                   scans, and in doing so IGNORE the interferometers (parameter
+                   IFRS) and polarisations (parameter SELECT_XYX) selections
+                   that you defined for your primary/secondary data cubes.
+        FCOPY     Copy flags from one place in the hypercube to another.
+</PRE>
+<P>
+  <PRE>
+   Operation on the flag list in core:
+</PRE>
+<P>
+  <PRE>
+        FLIST     Operations on the internal flag list
+                   (including reading-from/writing-to a .FLF file).
+</PRE>
+<P>
+  <PRE>
+   Define operating environment:
+</PRE>
+<P>
+  <PRE>
+        MODE      Go to FLAG_MODE parameter to change 'environment' parameter
+                   values. This includes re-definition of the primary data
+cube.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT   Go to the flag-INSPECTion group of operations.
+        STATIST   Go to the data-STATISTICS group of operations.
+</PRE>
+<P>
+  <PRE>
+        QUIT      Return to primary OPTION.
+</PRE>
+<P>
+<A NAME=.ha><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031000000000000000>  <b>Parameter HA</b></A></H2>
+<P>
+<em>Prompt:</em> hour angle range to process (deg)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+        Specify the start and end of the HA-range to be processed. If
+only one value is given, the end value will be the same.
+</PRE>
+<P>
+<A NAME=.input.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031100000000000000>  <b>Parameter INPUT_FILE</b></A></H2>
+<P>
+<em>Prompt:</em> Input .FLF file name (including extension)<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+        Specify the full name of the input binary-flags file. The
+recommended filename extension is .FLF.
+</PRE>
+<P>
+<A NAME=.limit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031200000000000000>  <b>Parameter LIMIT</b></A></H2>
+<P>
+<em>Prompt:</em> Flagging threshold<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+        Specify the limit threshold value for the (un)flag criterion
+selected. The units (e.g. W.U.) are those appropriate for the criterion.
+</PRE>
+<P>
+<A NAME=.limits><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031300000000000000>  <b>Parameter LIMITS</b></A></H2>
+<P>
+<em>Prompt:</em> flagging limits<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+        Specify the LOWER and UPPER limiting values for the (un-)flag
+criterion. The unit (e.g. W.U.) depends on the criterion under consideration.
+</PRE>
+<P>
+<A NAME=.ops.clipdata><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031400000000000000>  <b>Parameter OPS_CLIPDATA</b></A></H2>
+<P>
+<em>Prompt:</em> elect data-thresholding criterion |<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Remember that only the primary data cube is affected.
+</PRE>
+<P>
+  <PRE>
+The following operations flag individual data points, according to a flagging
+criterion that is derived from the visibilities themselves. You will be
+prompted for an upper limit. For each visibility point exceeding the limit the
+flag will be set if it exceeds the limit, for the others it will be cleared:
+Current flags are NOT preserved.
+</PRE>
+<P>
+  <PRE>
+The flag type is CLIP, unless you have defined your own type through the
+USER_FLAGS parameter.
+</PRE>
+<P>
+  <PRE>
+   Flagging on straight data values exceeding the threshold. These criteria are
+   intended for use with CORRECTED data (Parameter FLAG_MODE=CORR).
+</PRE>
+<P>
+  <PRE>
+        AMPL    Threshold applies to absolute value
+        COS     Threshold applies to real (cosine) part.
+        SIN     Threshold applies to imaginary (sine) part.
+</PRE>
+<P>
+  <PRE>
+   Flagging on Selfcal/Redundancy residuals. You will be prompted to specify
+the
+   Selfcal source model used in the latest NCALIB SEFCAL/REDUN run.
+   (NOTE that the residuals here are VECTOR differences between observation
+    and source model; this definition is different from that used by NPLOT.)
+</PRE>
+<P>
+  <PRE>
+        ARESID  Threshold applies to the magnitude of the residual
+        RRESID  Threshold is the absolute difference of the residual's
+magnitude
+                 from the average magnitude of all residuals in the scan for
+the
+                 same baseline. (In short: This flags outliers in sets of
+                 redundant baselines.)
+                NOTE: This operation can be performed even on uncalibrated
+data,
+                 provided a source model is available.
+</PRE>
+<P>
+  <PRE>
+   Flagging on polarisation-related criteria:
+</PRE>
+<P>
+  <PRE>
+        QXY     Threshold applies to the magnitude of the difference between XX
+                 and YY visibilities per interferometer (i.e. magnitude of
+                 Stokes Q for parallel dipoles).
+        UXY     Threshold applies to ABS(XY-YX) per interferometer
+                 (i.e. ABS(U) if the dipoles are parallel).
+        VXY     Threshold applies to ABS(j(XY+YX)) per interferometer
+                 (i.e. ABS(V) if the dipoles are parallel).
+</PRE>
+<P>
+  <PRE>
+                For unpolarised sources, this criterion should be as effective
+                 as ARESID above.
+</PRE>
+<P>
+  <PRE>
+   Flagging on discontinuities in time. The flags raised here serve only as an
+   ALERT that there is a 'jump' in the data; you will have to decide yourself
+   what to do about the problem.
+</PRE>
+<P>
+  <PRE>
+        DT1     Threshold is the difference in amplitude of a data point with
+                 its counterpart in the preceding scan.
+</PRE>
+<P>
+  <PRE>
+  Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT Make detour into the (flag) INSPECTion section of the program
+        STATIST Make detour into the (data) STATISTics section of the program
+        MODE    Make detour into the environment MODE-control section of the
+                 program
+        CLEAR   Go to the CLEAR-flags operation.
+        QUIT    Return to FLAG_OPTION.
+</PRE>
+<P>
+<A NAME=.ops.determ><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031500000000000000>  <b>Parameter OPS_DETERM</b></A></H2>
+<P>
+<em>Prompt:</em> Select coordinate criterion |<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Remember that only the primary data cube is affected.
+</PRE>
+<P>
+  <PRE>
+   Flagging of data points on the basis of their coordinates. The flag type is
+   SHADOW, unless you have selected your own type (parameter FLAG_MODE).
+</PRE>
+<P>
+  <PRE>
+        SHAD      In each scan, flag all data that are affected by 'shadowing',
+                   i.e. all interferometers in which the aperture of either
+                   telecope is partly blocked by another telescope in the line
+                   of sight.
+</PRE>
+<P>
+  <PRE>
+        PBAS      Flag all data for which the length of the projected baseline
+                   is within a range (for which you will be prompted). This is
+a
+                   way to eliminate short baselines susceptible to
+interference,
+                   without losing more data than necessary.
+</PRE>
+<P>
+  <PRE>
+        ELEVATION Flag all uv-data that have been taken at elevations below a
+                   limit (for which you will be prompted).
+</PRE>
+<P>
+  <PRE>
+        REDUN     Flag all redundant baselines.
+        NONRED    Flag all non-redundant baselines.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT Make detour into the (flag) INSPECTion section of the program
+        STATIST Make detour into the (data) STATISTics section of the program
+        MODE    Make detour into the enviornment MODE-control section of the
+                 program
+        CLEAR   Go to the CLEAR-flags operation.
+        QUIT    Return to FLAG_OPTION.
+</PRE>
+<P>
+<A NAME=.ops.fcopy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031600000000000000>  <b>Parameter OPS_FCOPY</b></A></H2>
+<P>
+<em>Prompt:</em> Flag-copy operation<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        FCOPY propagates flags of the selected type from individual
+interferometers to groups of interferometers that have something in common with
+the flagged ones.
+</PRE>
+<P>
+  <PRE>
+Flags are looked for in the entire primary data cube, but changes affect only
+the primary/secondary cube. Make sure that you understand which of the 8 flag
+types are affected
+</PRE>
+<P>
+  <PRE>
+   Operations that modify flags on individual data points:
+</PRE>
+<P>
+  <PRE>
+        TOTEL  Copy flags from interferometers to telescopes: For each scan
+                selected, flag all data that share a dipole (X or Y channel of
+                a telescope) with any interferometer for which the flag
+                selected is set.
+</PRE>
+<P>
+  <PRE>
+        TOPOL  Copy flags to all polarisations: For each scan selected, flag
+all
+                polarisations of all telescope pairs for which the flag
+selected
+                is already set for at least one of them. (This is a sort of
+                mini-PUT).
+</PRE>
+<P>
+  <PRE>
+   Operations that affect ENTIRE scans. NOTE that these IGNORE ANY SELECTIONS
+   you have defined for interferometers (parameter IFRS) and/or polarisations
+   (parameter SELECT_XYX).
+</PRE> 
+               <em>see the dictinction between 
+               data and header flags </em>
+<P>
+  <PRE>
+        TOHEAD  For each flag selected, set the scan-header flag if it is set
+                 for more than a given number (paremeter TOH_LIMIT) of data
+                 points.
+                This invalidates the entire scan. The operation is reversible
+                 (parameter OPS_MANUAL = CLHEAD); the individual data flags
+                 are not affected.
+</PRE> 
+                       <em>See parameters <A HREF="#.toh.limit">TOH_LIMIT</A>,
+                       <A HREF="#.ops.manual">OPS_MANUAL</A> </em>
+<P>
+  <PRE>
+        TODATA  Transfer flags of the type selected from the header of each
+scan
+                 to all the scan's data, deleting them in the headers.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT Make detour into the (flag) INSPECTion section of the program
+        STATIST Make detour into the (data) STATISTics section of the program
+        MODE    Make detour into the enviornment MODE-control section of the
+                 program
+        CLEAR   Go to the CLEAR-flags operation.
+        QUIT    Return to FLAG_OPTION.
+</PRE>
+<P>
+<A NAME=.ops.flist><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031700000000000000>  <b>Parameter OPS_FLIST</b></A></H2>
+<P>
+<em>Prompt:</em> Flag-list operation|<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Specify operations on the internal flag list: The entries in
+this list represent flagging instructions. Each entry contains a flag type, and
+ranges for the secondary data cube (i.e. hour angle, polarisation,
+interferometer and channel ranges) to which it applies.
+</PRE>
+<P>
+  <PRE>
+   Flagging operations involving the internal flag list:
+</PRE>
+<P>
+  <PRE>
+        DELETE  Clear the entire list.
+</PRE>
+<P>
+  <PRE>
+        GET     Collect flags of specified type(s) from the specified primary
+                 data cube, translate them into flaqg-list entries and merge
+                 them into the list.
+                The default flag type is ALL, but it can be changed (parameter
+                 FLAG_MODE).
+</PRE> 
+                       <em>see paremeter FLAG_MODE</em>
+<P>
+  <PRE>
+        PUT     Use he entries in the internal flag list to set flags for
+                 selected visibilities or scans.
+                If an entry in the list results in setting the flags on all
+data
+                 points in a scan, the corresponding scan-header flag is set
+                 instead for efficiency reasons.
+</PRE>
+<P>
+  <PRE>
+   Transfer of the flag list to/from an external file. Two types of file may be
+   used:
+</PRE>
+<P>
+  <PRE>
+      The .FLF file is in a compact binary format that is efficient in both
+      operating speed and disk-space. It is accessed through:
+        LOAD    Merge contents of a .FLF file into the internal flag list
+        UNLOAD  Write the internal flag list to a new .FLF file
+</PRE>
+<P>
+  <PRE>
+     The list can also be stored in an ASCII file which you can inspect and
+edit
+     as you please. ASCII files are bulky and take much more time to process.
+     They are accessed through:
+        READ    Merge contents of an ASCII flag-list file into the internal
+flag
+                 list
+        WRITE   Write the internal flag list to a new ASCII flag-list file
+</PRE>
+<P>
+  <PRE>
+   Inspection:
+</PRE>
+<P>
+  <PRE>
+        HEADER  Show the contents of the flag-list header.
+        LIST    Show the contents of the flag-list (can be long).
+</PRE> 
+  <PRE>
+        LCOUNT  Count the flags in the flag list (NOT in the data).
+                 These can be INSPECTed in various one-dimensional projections.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT Make detour into the (flag) INSPECTion section of the program
+        STATIST Make detour into the (data) STATISTics section of the program
+        MODE    Make detour into the environment MODE-control section of the
+                 program
+        CLEAR   Go to the CLEAR-flags operation.
+        QUIT    Go back to what you were doing before.
+</PRE>
+<P>
+<A NAME=.ops.inspect><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031800000000000000>  <b>Parameter OPS_INSPECT</b></A></H2>
+<P>
+<em>Prompt:</em> &quot;-<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Count and inspect flags in the primary data cube. A complete reply consists of
+one of the primary options plus a modifier suffix.
+</PRE>
+<P>
+  <PRE>
+   Count flags (no modifier):
+</PRE>
+<P>
+  <PRE>
+        COUNT   Count the flags of all types that are set, for subsequent
+                 inspection.
+                You may define a secondary data cube for this operation
+                By default, flags of all types are counted; you may change this
+                 (parameter FLAG_MODE).
+</PRE>
+<P>
+  <PRE>
+   Show the flag counts in various data-cube dimensions (<mod> stands for one
+of
+   the optional modifiers listed below):
+</PRE>
+<P>
+  <PRE>
+        FTYP_<mod>  Show the counts per flag-type (data and headers).
+        TEL_<mod>   Show the counts per telescope.
+        IFR_<mod>   Show the counts per interferometer.
+        HA_<mod>    Show the counts per hour-angle (total over all
+                     interferometers and polarisations).
+</PRE>
+<P>
+  <PRE>
+     Modifiers: You may limit the display of counts to a sub-set through one of
+     the following modifiers (prefixed with an underscore, e.g. TEL_SHAD, or
+     HA_XX). The display will be equivalent to that for a secondary cube
+     covering the same selection.
+</PRE>
+<P>
+  <PRE>
+        X, Y            XX alone, YY alone
+        XY, YX          only XX and YY, only XY and YX
+        MAN, CLIP, NOIS, ADD, SHAD, U3, U2, U1, OLD
+                        for one flag type
+        <interferometer designation>
+                        for a (group of) interferometer(s), e.g. FTYP_9A, HA_8*
+        <telescope>
+                        for a (group of) telescope(s), e.g. FTYP_8
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        STATIST Make detour into the (data) STATISTics section of the program
+        MODE    Make detour into the enviornment MODE-control section of the
+                 program
+        QUIT    Back out from INSPECT: Return to what you were doing before.
+</PRE>
+<P>
+<A NAME=.ops.manual><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031900000000000000>  <b>Parameter OPS_MANUAL</b></A></H2>
+<P>
+<em>Prompt:</em> Manual-flagging operation|<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Specify one of the manual flagging operations. Remember that
+only the selected primary/secondary data cube is affected. Make sure that you
+understand which of the 8 flag types are affected.
+</PRE>
+<P>
+  <PRE>
+   Clear flags. You will be prompted for the flag-type(s) to be cleared:
+   BEWARE! Much work can be undone with careless clearing
+</PRE>
+<P>
+  <PRE>
+        CLEAR   Clear all flags of the specified type(s) in both the
+                 scan headers and the uv data of the selected cube.
+</PRE> 
+  <PRE>
+        CLDAT   Clear flags on the visibilities only (i.e. leave scan headers
+                 alone).
+        CLHEAD  Clear flags in the scan headers only.
+</PRE>
+<P>
+  <PRE>
+   Set flags:
+</PRE>
+<P>
+  <PRE>
+        UVDATA  Set flags of the specified type(s) in the individual
+                 visibilities, for selected interferometer(s) within the
+primary
+                 data cube.
+                Default flag type is MANUAL, but can be overridden (parameter
+                 FLAG_MODE).
+        HARANGE Set flags of the specified type(s) on the individual
+                 visibilities, for selected interferometer(s) within the
+primary
+                 data cube.
+                Default flag type is MANUAL, but can be overridden (parameter
+                 FLAG_MODE).
+                You will be repeatedly prompted for an hour-angle range.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT Make detour into the (flag) INSPECTion section of the program
+        STATIST Make detour into the (data) STATISTics section of the program
+        MODE    Make detour into the enviornment MODE-control section of the
+                 program
+        CLEAR   Go to the CLEAR-flags operation.
+        QUIT    Return to FLAG_OPTION prompt.
+</PRE>
+<P>
+<A NAME=.ops.scans><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032000000000000000>  <b>Parameter OPS_SCANS</b></A></H2>
+<P>
+<em>Prompt:</em> elect scan-statistics flagging criterion |<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        The operations available here flag scan headers and thereby
+affect ENTIRE scans; in doing so they IGNORE ANY SELECTIONS you have defined
+for interferometers (parameter IFRS) and/or polarisations (parameter
+SELECT_XYX). Apart from this, only those scans that overlap with the primary
+data cube are affected.
+</PRE>
+<P>
+  <PRE>
+For each of the options an appropriate flag is selected, as noted below. If you
+have defined your own selection through the USER_FLAGS parameter, that
+selection will override NFLAG's defaults.
+</PRE> 
+                       <em>see <A HREF="#.flag.mode">FLAG_MODE</A> </em>
+<P>
+               <em>see the dictinction between
+               data and header flags </em>
+<P>
+  <PRE>
+   Flagging the scans that you select.
+</PRE>
+<P>
+  <PRE>
+        SCANS   Flag scans manually; you will be given the option to select a
+                 secondary data cube for this operation.
+</PRE>
+<P>
+  <PRE>
+   Flagging on data statistics. The default flag type is CLIP.
+</PRE>
+<P>
+  <PRE>
+        MAXABCS Flag all scans in which the modulus of either the real (cosine)
+                 or imaginary (sine) part of any visibility falls outside a
+                 range to be specified.
+</PRE>
+<P>
+  <PRE>
+   Flagging on noise statistics. The default flag type is NOISE.
+</PRE>
+<P>
+  <PRE>
+        ANOISE  Flag all scans in which any of the four noise values (X/Y
+                 gain/phase) recorded in the latest NCALIB ALIGN or SELFCAL
+                 operation exceeds a threshold (yet to be prompted for).
+</PRE>
+<P>
+  <PRE>
+        XAN,YAN As ANOISE, but checking only the X resp. Y noise values.
+</PRE>
+<P>
+  <PRE>
+        RNOISE  Flag all scans in which any of the four noise values (X/Y
+                 gain/phase) recorded in the latest NCALIB REDUN operation
+                 exceeds a threshold (yet to be prompted for).
+</PRE>
+<P>
+  <PRE>
+        XRN,YRN As RNOISE, but checking only the X resp. Y noise values.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT Make detour into the (flag) INSPECTion section of the program
+        STATIST Make detour into the (data) STATISTics section of the program
+        MODE    Make detour into the enviornment MODE-control section of the
+                 program
+        CLEAR   Go to the CLEAR-flags operation.
+        QUIT    Return to FLAG_OPTION.
+</PRE>
+<P>
+<A NAME=.ops.statist><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032100000000000000>  <b>Parameter OPS_STATIST</b></A></H2>
+<P>
+<em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Accumulate statistics from data and/or scan headers over the
+primary or secondary data cube and display it.
+</PRE>
+<P>
+  <PRE>
+   Accumulate:
+        ACC     Accumulate statistics from data and scan headers, excluding
+data
+                 points/headers that are flagged.
+                You may select a secondary data cube for this purpose
+(parameter
+                 XXX).
+</PRE>
+<P>
+  <PRE>
+   Inspect the results of accumulation:
+</PRE>
+<P>
+  <PRE>
+        SCANS   Show the collected scan-header statistics.
+        UVDAT   Show the collected visibility statistics.
+        <name>  Show the statistics of the named 'accumulation group' (use
+                 GROUPS and EXPLAIN above to see what choices you have).
+</PRE>
+<P>
+  <PRE>
+   These options will produce a Table with the following columns:
+</PRE>
+<P>
+  <PRE>
+        <name>  The name of the quantity for which statistics have been
+                 calculated.
+        mean    Its average value
+        rms     Its rms magnitude
+        rmsms   Its rms deviation w.r.t. the mean.
+        rmsvar  The rms difference, between pairs of successively processed
+                 values.
+        wtot    Total weight. Usually it indicates the total nr of samples.
+        minval  Its minimum value.
+        maxval  Its maximum value.
+        <unit>  The units in which the above values (except wtot) are
+expressed.
+</PRE>
+<P>
+  <PRE>
+   Get some extra help:
+</PRE>
+<P>
+  <PRE>
+        GROUPS  Show the names of the currently defined 'accumulation groups'
+        EXPLAIN Show explanation of statistical quantities.
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+</PRE>
+<P>
+  <PRE>
+        INSPECT Make detour into the (flag) INSPECTion section of the program
+        MODE    Make detour into the enviornment MODE-control section of the
+                 program
+        QUIT    Go back to what you were doing before.
+</PRE>
+<P>
+<A NAME=.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032200000000000000>  <b>Parameter OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> NFLAG main branch<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Specify the nature of the operation you want to perform:
+</PRE>
+<P>
+  <PRE>
+        FLAG:    Set, clear and/or browse data flags in a .SCN file
+                  and/or browse its data statistics
+</PRE>
+<P>
+  <PRE>
+        SHOW:    Show/edit data and header information in .SCN file. This
+option
+                  is a clone of the SHOW option in NSCAN and is available here
+                  for convenience.
+</PRE>
+<P>
+  <PRE>
+        QUIT:    Terminate NFLAG
+</PRE>
+<P>
+<A NAME=.output.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032300000000000000>  <b>Parameter OUTPUT_FILE</b></A></H2>
+<P>
+<em>Prompt:</em> Output .FLF file name (including extension)<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+        Specify the full name for the output binary-flags file. The
+recommended filename extension is .FLF.
+</PRE>
+<P>
+<A NAME=.pbas.limits><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032400000000000000>  <b>Parameter PBAS_LIMITS</b></A></H2>
+<P>
+<em>Prompt:</em> Projected-baseline range to be flagged (m)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+        Specify the range of lengths of PROJECTED baseline to be
+flagged. The default flag-type is SHADOW.
+</PRE>
+<P>
+  <PRE>
+Short baselines are more sensitive to interference. In flagging them wholesale,
+however, one also loses visibility data representing extended source structure;
+a more selective procedure is to be preferred.
+</PRE>
+<P>
+  <PRE>
+Another application of this parameter is to force a uv coverage that is more
+nearly circular in the PROJECTED uv plane, and hence produces a more circularly
+symmetric antenna pattern. To this end, set the lower limit less than or equal
+to
+</PRE>
+<P>
+  <PRE>
+        <longest baseline> * sin DEC
+</PRE>
+<P>
+  <PRE>
+Instead of permanently modifying the .SCN file in this way, one may use the
+NMAP parameters CWEIGHT_TYPE and CWEIGHT_VALUE to achieve a similar effect.
+</PRE> 
+               <em>see NMAP public paremeter
+                <A HREF="../nmap_public_keys/nmap_public_keys.html#.cweight.type">CWEIGHT_TYPE</A> </em>
+<P>
+  <PRE>
+Examples:
+        PBAS_LIMITS = 0, 288
+</PRE>
+<P>
+  <PRE>
+   causes all projected baselines up to 288 m (inclusive) to be flagged.
+</PRE>
+<P>
+  <PRE>
+   For a source at a declination of 30 deg,
+</PRE>
+<P>
+  <PRE>
+        PBAS_LIMITS = 1500, 10000
+</PRE>
+<P>
+  <PRE>
+   will flag projected baselines longer than 1500 m.
+</PRE>
+<P>
+<A NAME=.put.expand.ch><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032500000000000000>  <b>Parameter PUT_EXPAND_CH</b></A></H2>
+<P>
+<em>Prompt:</em> PUT expansion half-width in channel numbers<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+        PUT performs flagging commands from the internal flag list on
+your primary data cube. Each command consists of a flag/unflag mask plus ranges
+in the frequency-
+channel, interferometer, polarisation and hour-angle 'dimensions' of the TARGET
+points to which it must be applied.
+</PRE>
+<P>
+  <PRE>
+You have activated PUT's option to EXPAND, within the limits of the primary
+data cube, the operation over a 4-dimensional volume of data around each target
+point. You may now select the number of channels on either side of a target
+channel over which you want to expand the flagging.  Example:
+        If you reply 2, a total of 5 channels centered on each target channel
+will be flagged: two above and two below the target.
+</PRE>
+<P>
+<A NAME=.put.range><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032600000000000000>  <b>Parameter PUT_RANGE</b></A></H2>
+<P>
+<em>Expected input:</em> Character *8:  1 to 4 values
+<P>
+  <PRE>
+        PUT performs flagging commands from the internal flag list on
+your primary data cube. Each command consists of a flag/unflag mask plus ranges
+in the frequency-
+channel, interferometer, polarisation and hour-angle 'dimensions' of the TARGET
+points to which it must be applied.
+</PRE>
+<P>
+  <PRE>
+PUT has the capability to EXPAND, within the limits of the primary data cube,
+the operation over a 4-dimensional volume of data around each target point.
+The extension volume is specified through RANGES along the channel, hour-angle,
+interferometer and polarisation axes in this order. Except for interferometers,
+a range is formulated in terms of units of sequential position rather than
+physical coordinates. It can be one of the foloowing:
+</PRE>
+<P>
+  <PRE>
+   .            do not extend along this axis
+   *            extend to all positions along this axis
+   <n> or <n>C  extend over <n>/2-1 positions on either side (incrementing <n>
+                 if it is even)
+   <n>L         extend over <n>-1 positions to the 'left' (i.e. toward lower
+                 coordinates)
+   <n>R         extend over <n>-1 fields to the 'right' (i.e. toward higher
+                 coordinates)
+</PRE>
+<P>
+  <PRE>
+   The following special notations can also be used in each dimension:
+</PRE>
+<P>
+  <PRE>
+        <n>=0   suppress flagging altogether (length of the nextension cube is
+                 zero)
+        <n>=1   identical to . (length of extension cube is 1: no extension)
+   The following shorthand can be used for the entire reply:
+</PRE>
+<P>
+  <PRE>
+        *       short for 1,1,1,1 or .,.,., (You may do better to avoid this
+                 form because this use of a wildcard character is anomalous.)
+</PRE>
+<P>
+  <PRE>
+?  The interferometer range works on telescope basis, i.e. the given range is ?
+  valid for both receptors (e.g. 0Y and AX).
+</PRE>
+<P>
+  <PRE>
+Example:
+        If a particular ineterferometer is flagged in one of frequency
+channels,
+                PUT_RANGE= *,.,.,.
+ will propagate the flag to all channels for that interferometer
+</PRE>
+<P>
+<A NAME=.select.flag><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032700000000000000>  <b>Parameter SELECT_FLAG</b></A></H2>
+<P>
+<em>Prompt:</em> Flag type(s) to use in data selection|<BR><em>Expected input:</em> Character *16:  1 to 16 values
+<P>
+  <PRE>
+        Some operations test flags in selecting data. By default, NFLAG
+selects the test flags appropriate to each operation; only those data are
+accepted for which these flags are CLEAR.
+</PRE>
+<P>
+  <PRE>
+You may define here an alternative (set of) flag type(s) to be used in ALL
+subsequent testing operations; you may select more than one, separated by
+commas. Reply NONE to revert to the default settings.
+</PRE>
+<P>
+  <PRE>
+   ALL or *     test all flag types
+   MAN          test the flag type for the MANUAL class of operations
+   CLIP         test the flag type for the CLIP class of operations
+   NOISE        test the flag type for the NOISE class of operations
+   ADD          test the flag type for the ADDITIVE class of operations
+   SHAD         test the flag type for the SHADOW class of operations
+   U1, U2, U3   'user' flag types, i.e. types you may use as you please
+   NONE         revert to NFLAG's default types per operation
+</PRE>
+<P>
+  <PRE>
+   OLD          the flag type for the 'OLD' class (i.e. flagged before
+                 930609, and converted with NVS option)
+                 NB: OLD uses the same flag-bit as MAN
+</PRE>
+<P>
+<A NAME=.shadow.diam><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032800000000000000>  <b>Parameter SHADOW_DIAM</b></A></H2>
+<P>
+<em>Prompt:</em> Telescope shadowing diameter (metres)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+        Specify the diameter (m) of the telescopes.
+</PRE>
+<P>
+  <PRE>
+A telescope is 'shadowed' as soon as part of its aperture gets blocked by the
+presence of another telecope in its line of sight. This condition occurs when
+the projected baseline between the two telecopes becomes less than the
+telescope diameter D (25 m for the WSRT). If you want to retain as much as
+possible of your data, you may specify a somewhat smaller number (e.g. 0.8 D)
+to take into account the fact that the edge of the aperture is only weakly
+illuminated.
+</PRE>
+<P>
+  <PRE>
+For the hour-angles at which a telescope is shadowed, all intreferometers are
+flagged of which it is a part. The default flag-type is SHADOW.
+</PRE>
+<P>
+  <PRE>
+  ? Another flag may be selected through the FLAG_MODE parameter.
+</PRE>
+<P>
+<A NAME=.sub.cube><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032900000000000000>  <b>Parameter SUB_CUBE</b></A></H2>
+<P>
+<em>Prompt:</em> Type of secondary data cube<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        You may define a 'secondary cube' that includes only part of the
+primary data cube. The current flagging operation will affect only the cross
+section of the primary and secondary cubes.
+</PRE>
+<P>
+  <PRE>
+Unlike the primary cube (which can only be redefined through the FLAG_MODE
+parameter), the secondary cube definition applies only to the current operation
+and will evaporate when it completes.
+</PRE>
+<P>
+  <PRE>
+Specify here how you want to define the secondary cube. You may give ONE option
+at a time; the prompt will reappear until you reply with NO.
+</PRE>
+<P>
+  <PRE>
+        YES  Polarisations, interferometers and hour-angle range.
+        IFR  Interferometers
+        POL  Polarisations
+        HA   Hour-angle range
+        NO   Accept the current settings
+</PRE>
+<P>
+<A NAME=.toh.limit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033000000000000000>  <b>Parameter TOH_LIMIT</b></A></H2>
+<P>
+<em>Prompt:</em> Maximum number of data flags to tolerate per scan<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+        NFLAG will check in each scan the number of points for which the
+flag type selected is set. If that number exceeds this value you define here,
+the entire scan will be flagged. This will subsequently result in faster
+processing
+(because individualdata points need not be tested) at the expense of the loss
+of some healthy data.
+</PRE>
+<P>
+  <PRE>
+The operation of setting header flags is reversible: The individual data flags
+are retained so you can restore the present condition by clearing the header
+flags.
+</PRE>
+<P>
+<A NAME=.user.flag><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033100000000000000>  <b>Parameter USER_FLAG</b></A></H2>
+<P>
+<em>Prompt:</em> default flag type(s)<BR><em>Expected input:</em> Character *16:  1 to 16 values
+<P>
+  <PRE>
+        Specify the default flag type(s) for flagging operations.
+</PRE>
+<P>
+  <PRE>
+    NONE:      no flag type specified (i.e. use default types)
+    ALL or *   all flag types (not very useful)
+    MAN        flag type for the MANUAL class of operations
+    CLIP       flag type for the CLIP class of operations
+    NOISE      flag type for the NOISE class of operations
+    ADD        flag type for the ADDITIVE class of operations
+    SHAD       flag type for the SHADOW class of operations
+    U1, U2, U3 'user' flag types, i.e. types you may use as you please
+</PRE>
+<P>
+  <PRE>
+Note:   Flags U1, U2, U3 can be used to experiment with some flagging operation
+        without affecting the flag type that is 'officially' associated
+        with the same operation.
+</PRE>
+<P>
+  <PRE>
+    OLD        use the flag type for the 'OLD' class (i.e. flagged before
+                930609, and converted with NVS option)
+                NB: OLD uses the same flag-bit as MAN
+</PRE>
+<P>
+<A NAME=.user.flags><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033200000000000000>  <b>Parameter USER_FLAGS</b></A></H2>
+<P>
+<em>Prompt:</em> Select flag type(s) for ALL flagging operations|<BR><em>Expected input:</em> Character *16:  1 to 16 values
+<P>
+  <PRE>
+        Each flagging operation changes a specific flag type by default.
+You may define here an alternative (set of) flag type(s) to be used in ALL
+subsequent flagging operations. Reply NONE to revert to the default settings.
+</PRE>
+<P>
+  <PRE>
+The purpose is to allow you to do experimental flagging with one of the USER
+flags without messing up the flagging that you have already done.
+</PRE>
+<P>
+  <PRE>
+        OLD     use the flag type for the 'OLD' class (i.e. flagged before
+                 930609, and converted with NVS option)
+                 NB: OLD uses the same flag-bit as MAN
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

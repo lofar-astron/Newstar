@@ -1,0 +1,162 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Capturing <i>NEWSTAR </i> program runs for repeated execution </b>
+<P>
+<P><em>Contributed by Johan Hamaker, November 1995  <P></em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=record_replay.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=record_replay.html#SECTION0002000000000000000>  <b>Introduction </b></A>
+<LI> <A NAME=tex2html3 HREF=record_replay.html#SECTION0003000000000000000>  <b>The batch recording method </b></A>
+<LI> <A NAME=tex2html4 HREF=record_replay.html#SECTION0004000000000000000>  <b>Creating a batch file </b></A>
+<LI> <A NAME=tex2html5 HREF=record_replay.html#SECTION0005000000000000000>  <b>Replaying a batch file </b></A>
+<LI> <A NAME=tex2html6 HREF=record_replay.html#SECTION0006000000000000000>  <b>Renumbering a batch file </b></A>
+</UL>
+<A NAME=.intro><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000>  <b>Introduction </b></A></H1>
+<P>
+        The <i>NEWSTAR </i> mechanism for repetitive execution programs with a minimum of user interaction is through the definition of default parameter values in a process symbol table.
+<P>
+        While attractive in concept, this approach is rather difficult to handle in practice for several reasons: 
+ <UL><LI>   There is a variety of mechanims involved and invoking the right one in each particular situation requires a thorough understanding of the entire parameter system.
+<P>
+<LI>   The symbol-table utilities dws[pecify] and dwv[iew] present the parameters in an arbitrary order, including (often a great number of) them that are irrelevant for the program run to be controlled.
+<P>
+<LI>   If a parameter is to be prompted for more than once during the program run, the successive values must be stored in the symbol table as successive value sets (separated by colons) for that parameter. 
+ </UL>  
+ These two effects combined make it difficult to keep track of the parameter set for a program run, in particular when a saved parameter set must be modified in detail to cover a slightly different situation. In practice, batch scripting has so far remained something of a black art mastered only by a few specialists.
+<P>
+<A NAME=.batch><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>The batch recording method </b></A></H1>
+<P>
+        The idea of the batch recording method is very simple: The parameter values from a manually executed program run are saved an ASCII file rather than the symbol table. They are recorded precisely in the order in which they are actually obtained and with the literal values as typed in by the user, as in the following simple example for NSCAN:
+<P>
+    <PRE>
+        OPTION = sh 
+          INPUT_SCN_NODE = ** 
+          INPUT_SCN_NODE = f 
+            FILE_ACTION = #  
+          INPUT_SCN_NODE = t 
+            FILE_ACTION = layout 
+            FILE_ACTION = ov 
+              OVERVIEW = obs 
+            FILE_ACTION = q 
+          INPUT_SCN_NODE =  
+        OPTION =  
+</PRE>
+<P>
+        For an identical re-execution of the program run, one may use this file as input. One may also edit it, however, to correct errors or instruct the program to prompt for those parameters that the user wants to control. For example, the above file could be edited to become:
+<P>
+    <PRE>
+        OPTION = SHOW  !    1  
+          INPUT_SCN_NODE = **  !    2 
+          INPUT_SCN_NODE = /ASK  !    3 
+            FILE_ACTION = LAYOUT  !    4 
+            FILE_ACTION = OVERVIEW  !    5 
+              OVERVIEW = OBS  !    6
+            FILE_ACTION = QUIT  !    7 
+          INPUT_SCN_NODE = ""  !    8 
+        OPTION = QUIT  !    9
+</PRE>
+<P>
+        There are several important advantages over the use of the symbol table:
+ <UL><LI>   The parameters appear in the batch file precisely in the order in which they will be used.
+<P>
+<LI>   Indentation may be used as shown above to represent the 'parameter hierarchy' and the way the program branches back after completion of a request, making it easy to follow the program's execution while reading the batch file.
+<P>
+<LI>   Comments may be appended to parameter values to facilitate the tracing of errors.
+ </UL>
+<P>
+        The method is implemented in three new commands:
+ <UL><LI>     dwrec &lt;program&gt;.&lt;ext&gt; to record a run of &lt;prorgam&gt; in a
+                file &lt;program&gt;.&lt;ext&gt;;
+<P>
+<LI>     dwrep &lt;program&gt;.&lt;ext&gt; to replay the file.
+<P>
+<LI>     dwren &lt;program&gt;.&lt;ext&gt; to [re]number the lines by appending a
+                comment to each line in the file, as shown above, for debugging
+                purposes
+ </UL>
+<P>
+<A NAME=.create><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0004000000000000000>  <b>Creating a batch file </b></A></H1>
+<P>
+        To create a batch file, use the command
+<P>
+  dwrec &lt;program&gt;.&lt;extension&gt;
+<P>
+The program will be excuted in the normal way, the only difference being that a batch file is created containing lines of the form
+<P>
+  &lt;paremeter&gt; = &lt;value&gt;  !  &lt;line number&gt;
+<P>
+        The user's replies are stored litterally; this is unlike in the <i>NEWSTAR </i> log files, where the value shown is the one actually used after interpretation of the user's reply by the parameter system.
+<P>
+        Parameters to be prompted for in later replays of the batch file must be given the value /ASK. This may be done by editing the file, but it is also possible to instruct the system to set thids special value at recording time, by appending the string !? to the reply. As an example, we show the complete run that would create the second example of the <A HREF="#.batch">preceding section</A>.
+<P>
+<em>put script here</em><A NAME=.replay><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0005000000000000000>  <b>Replaying a batch file </b></A></H1>
+<P>
+        The command to replay a batch file is
+<P>
+  dwrep &lt;program&gt;.&lt;extension&gt;
+<P>
+The program will run in nthe normal way, taking inputs from the batch file and prompting the user only where the value /ASK is specified.
+<P>
+<A NAME=.renumber><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0006000000000000000>  <b>Renumbering a batch file </b></A></H1>
+<P>
+        To renumber the lines, e.g. after manual addition of lines, use the command
+<P>
+  dwren &lt;program&gt;.&lt;extension&gt;
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

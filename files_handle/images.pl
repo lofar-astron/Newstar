@@ -1,0 +1,11 @@
+# LaTeX2HTML 0.5.3 (Wed Jan 26 1994)
+# Associate image original text (scrambled) with physical files.
+
+$key = q/{tabular}<<151>>ll<<151>><<152>>bfint<<152>>;html_special_mark_amp;singleindexvalueatthislevel<<153>>bf<<367>><<367>>$ast$<<368>><<368>><<153>>;html_special_mark_amp;wildcard:allpossibleindexvaluesatthislevel<<154>>bfint-<<154>>;html_special_mark_amp;allindexvaluesatthislevel,startingat`int'<<155>>bfint1-int2[:int3]<<155>>;html_special_mark_amp;indexvalues`int1'through`int2'bystep`int3'(dflt=1)<<156>>bfint1:int3<<156>>;html_special_mark_amp;interpretedasint1-<<369>><<369>>$ast$<<370>><<370>>:int3<<157>>bfomitted<<157>>;html_special_mark_amp;inthemiddle:interpretedas<<371>><<371>>$.ast$<<372>><<372>>(<<373>><<373>>$..equiv.ast.$<<374>><<374>>)<<158>>bfomitted<<158>>;html_special_mark_amp;atthe:interpretedas<<375>><<375>>$.ast$<<376>><<376>>(<<377>><<377>>$..2equivast.ast.2.ast.ast.ast$<<378>><<378>>){tabular}/;
+$cached_env_img{$key} ='<IMG ALIGN=BOTTOM ALT="" SRC="_12969_tabular150.xbm">'; 
+$key = q/{tabular}<<150>>ll<<150>><<151>>bfint<<151>>;html_special_mark_amp;singleindexvalueatthislevel<<152>>bf<<364>><<364>>$ast$<<365>><<365>><<152>>;html_special_mark_amp;wildcard:allpossibleindexvaluesatthislevel<<153>>bfint-<<153>>;html_special_mark_amp;allindexvaluesatthislevel,startingat`int'<<154>>bfint1-int2[:int3]<<154>>;html_special_mark_amp;indexvalues`int1'through`int2'bystep`int3'(dflt=1)<<155>>bfint1:int3<<155>>;html_special_mark_amp;interpretedasint1-<<366>><<366>>$ast$<<367>><<367>>:int3<<156>>bfomitted<<156>>;html_special_mark_amp;inthemiddle:interpretedas<<368>><<368>>$.ast$<<369>><<369>>(<<370>><<370>>$..equiv.ast.$<<371>><<371>>)<<157>>bfomitted<<157>>;html_special_mark_amp;atthe:interpretedas<<372>><<372>>$.ast$<<373>><<373>>(<<374>><<374>>$..2equivast.ast.2.ast.ast.ast$<<375>><<375>>){tabular}/;
+$cached_env_img{$key} ='<IMG ALIGN=BOTTOM ALT="" SRC="_7567_tabular149.xbm">'; 
+$key = q/{}$ast${}/;
+$cached_env_img{$key} ='<IMG ALIGN=BOTTOM ALT="" SRC="_7567_tex2html_wrap362.xbm">'; 
+
+1;

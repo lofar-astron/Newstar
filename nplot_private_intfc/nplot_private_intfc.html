@@ -1,0 +1,850 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Private parameters for program NPLOT</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nplot_private_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nplot_private_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=nplot_private_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=nplot_private_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=nplot_private_intfc.html#SECTION0003200000000000000>  <b>Parameter ANGLE_WMP_SET</b></A>
+<LI> <A NAME=tex2html6 HREF=nplot_private_intfc.html#SECTION0003300000000000000>  <b>Parameter ANNOTATION</b></A>
+<LI> <A NAME=tex2html7 HREF=nplot_private_intfc.html#SECTION0003400000000000000>  <b>Parameter AREA</b></A>
+<LI> <A NAME=tex2html8 HREF=nplot_private_intfc.html#SECTION0003500000000000000>  <b>Parameter COORD</b></A>
+<LI> <A NAME=tex2html9 HREF=nplot_private_intfc.html#SECTION0003600000000000000>  <b>Parameter COORD_PREC</b></A>
+<LI> <A NAME=tex2html10 HREF=nplot_private_intfc.html#SECTION0003700000000000000>  <b>Parameter COORD_TYPE</b></A>
+<LI> <A NAME=tex2html11 HREF=nplot_private_intfc.html#SECTION0003800000000000000>  <b>Parameter DATA_TYPE</b></A>
+<LI> <A NAME=tex2html12 HREF=nplot_private_intfc.html#SECTION0003900000000000000>  <b>Parameter DATA_TYPES</b></A>
+<LI> <A NAME=tex2html13 HREF=nplot_private_intfc.html#SECTION00031000000000000000>  <b>Parameter DOT_CONT</b></A>
+<LI> <A NAME=tex2html14 HREF=nplot_private_intfc.html#SECTION00031100000000000000>  <b>Parameter FULL_CONT</b></A>
+<LI> <A NAME=tex2html15 HREF=nplot_private_intfc.html#SECTION00031200000000000000>  <b>Parameter HALFTONE</b></A>
+<LI> <A NAME=tex2html16 HREF=nplot_private_intfc.html#SECTION00031300000000000000>  <b>Parameter HA_INTEGRATION</b></A>
+<LI> <A NAME=tex2html17 HREF=nplot_private_intfc.html#SECTION00031400000000000000>  <b>Parameter HA_MODE</b></A>
+<LI> <A NAME=tex2html18 HREF=nplot_private_intfc.html#SECTION00031500000000000000>  <b>Parameter HA_SCALE</b></A>
+<LI> <A NAME=tex2html19 HREF=nplot_private_intfc.html#SECTION00031600000000000000>  <b>Parameter IFR_MODE</b></A>
+<LI> <A NAME=tex2html20 HREF=nplot_private_intfc.html#SECTION00031700000000000000>  <b>Parameter IF_MODE</b></A>
+<LI> <A NAME=tex2html21 HREF=nplot_private_intfc.html#SECTION00031800000000000000>  <b>Parameter OPTION</b></A>
+<LI> <A NAME=tex2html22 HREF=nplot_private_intfc.html#SECTION00031900000000000000>  <b>Parameter PLOTS_PER_PAGE</b></A>
+<LI> <A NAME=tex2html23 HREF=nplot_private_intfc.html#SECTION00032000000000000000>  <b>Parameter PLOT_HEADING</b></A>
+<LI> <A NAME=tex2html24 HREF=nplot_private_intfc.html#SECTION00032100000000000000>  <b>Parameter PLOT_POSITIONS</b></A>
+<LI> <A NAME=tex2html25 HREF=nplot_private_intfc.html#SECTION00032200000000000000>  <b>Parameter PLOT_TYPE</b></A>
+<LI> <A NAME=tex2html26 HREF=nplot_private_intfc.html#SECTION00032300000000000000>  <b>Parameter POL_RANGE</b></A>
+<LI> <A NAME=tex2html27 HREF=nplot_private_intfc.html#SECTION00032400000000000000>  <b>Parameter POL_SCALE</b></A>
+<LI> <A NAME=tex2html28 HREF=nplot_private_intfc.html#SECTION00032500000000000000>  <b>Parameter POL_TYPE</b></A>
+<LI> <A NAME=tex2html29 HREF=nplot_private_intfc.html#SECTION00032600000000000000>  <b>Parameter RANGE</b></A>
+<LI> <A NAME=tex2html30 HREF=nplot_private_intfc.html#SECTION00032700000000000000>  <b>Parameter RULE_RANGE</b></A>
+<LI> <A NAME=tex2html31 HREF=nplot_private_intfc.html#SECTION00032800000000000000>  <b>Parameter RULE_SCALE</b></A>
+<LI> <A NAME=tex2html32 HREF=nplot_private_intfc.html#SECTION00032900000000000000>  <b>Parameter SCALE_AMPL</b></A>
+<LI> <A NAME=tex2html33 HREF=nplot_private_intfc.html#SECTION00033000000000000000>  <b>Parameter SCALE_PHASE</b></A>
+<LI> <A NAME=tex2html34 HREF=nplot_private_intfc.html#SECTION00033100000000000000>  <b>Parameter SIZE</b></A>
+<LI> <A NAME=tex2html35 HREF=nplot_private_intfc.html#SECTION00033200000000000000>  <b>Parameter SOURCES</b></A>
+<LI> <A NAME=tex2html36 HREF=nplot_private_intfc.html#SECTION00033300000000000000>  <b>Parameter TEXT</b></A>
+<LI> <A NAME=tex2html37 HREF=nplot_private_intfc.html#SECTION00033400000000000000>  <b>Parameter TRANSFORM</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the parameter interface of the program NPLOT. The program also uses a number of public interfaces; references to these are also <A HREF="#.public">listed</A>. 
+show parameters that 
+        The remainder of the document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<em>See also:</em> 
+<UL><LI> <A HREF="../introduction/introduction.html#.user.interface">DWARF</A> user interface 
+<LI> <A HREF="../mdlnode_public_intfc/mdlnode_public_intfc.html">MDLNODE</A> public keywords 
+<LI> <A HREF="../ngen_public_intfc/ngen_public_intfc.html">NGEN</A> public keywords 
+<LI> <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">NMODEL</A> public keywords 
+<LI> <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html">SCNNODE</A> public keywords 
+<LI> <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html">SCNSETS</A> public keywords 
+<LI> <A HREF="../select_public_intfc/select_public_intfc.html">SELECT</A> public keywords 
+<LI> <A HREF="../wmpnode_public_intfc/wmpnode_public_intfc.html">WMPNODE</A> public keywords 
+<LI> <A HREF="../wmpsets_public_intfc/wmpsets_public_intfc.html">WMPSETS</A> public keywords 
+</UL>
+<P>
+<A NAME=.angle.wmp.set><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter ANGLE_WMP_SET</b></A></H2>
+<P>
+  <em>Prompt:</em> ONE position-angle map: grp.fld.chn.pol.0.seq<BR><em>Expected input:</em> Character *32:  1 value
+<P>
+    <PRE>
+Select a .WMP-file image holding polarisation position angles. If the image you
+specify contains anything else, your plot will be garbage.
+</PRE>
+<P>
+  <PRE>
+The .WMP-file indices are:
+</PRE>
+<P>
+  <PRE>
+        group.field.channel.polarisation.type(=0).sequence_number
+</PRE>
+<P>
+<A NAME=.annotation><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter ANNOTATION</b></A></H2>
+<P>
+<em>Prompt:</em> Annotation text, up to 80 characters in double quotes<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+This text will be displayed on all plots for this NPLOT run until you change it
+</PRE>
+<P>
+<A NAME=.area><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter AREA</b></A></H2>
+<P>
+<em>Prompt:</em> Area centre (l,m) and width (dl,dm) in grid units<BR><em>Expected input:</em> Integer:  1 to 4 values
+<P>
+  <PRE>
+Specify an area of a map:
+</PRE>
+<P>
+  <PRE>
+        l,m     grid coordinates of area centre: 0,0 is the map centre,
+                 increasing to the upper right (i.e. with DEcreasing
+                 right ascension and INcreasing declination)
+</PRE>
+<P>
+  <PRE>
+        dl,dm   area width and height
+</PRE>
+<P>
+<A NAME=.coord><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter COORD</b></A></H2>
+<P>
+<em>Prompt:</em> Axis annotation style<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Select ONE style of axis annotations:
+</PRE>
+<P>
+  <PRE>
+        NONE     no annotation (only pixel coordinates)
+</PRE>
+<P>
+  <PRE>
+   Relative quasi-Cartesian coordinates:
+</PRE>
+<P>
+  <PRE>
+        LM       l, m in arcsec with respect to map centre
+                  (or annotation for UV-plane plots)
+        DLM      l, m in arcsec with respect to centre of plot
+                  (or annotation for UV-plane plots)
+</PRE>
+<P>
+  <PRE>
+   Equatorial coordinates:
+</PRE>
+<P>
+  <PRE>
+        DEGREE   right ascension and declination in decimal degrees
+        RADEC    right ascension (hhmmss) and declination (ddmmss)
+        DDEGREE  relative right ascension and declination in decimal degrees
+                  w.r.t.  centre of plot
+        DRADEC   relative right ascension (hhmmss) and declination (ddmmss)
+                  w.r.t. centre of plot
+</PRE>
+<P>
+  <PRE>
+These annotations will be printed along the left and bottom sides of the plot.
+</PRE>
+<P>
+  <PRE>
+By default, (l,m) pixel-coordinates are shown along the top and right axes side
+irrespective of what you select. You may suppress these, by prefixing any of
+the above options with an O for 'Only'.
+</PRE>
+<P>
+  <PRE>
+Example:
+        ONONE will suppress all annotations.
+</PRE>
+<P>
+<A NAME=.coord.prec><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003600000000000000>  <b>Parameter COORD_PREC</b></A></H2>
+<P>
+<em>Prompt:</em> Number of steps for coordinate contouring near pole<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify the number of steps across the map to use in defining the
+coordinate grid for contouring of coordinates near the pole.
+</PRE>
+<P>
+<A NAME=.coord.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003700000000000000>  <b>Parameter COORD_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> Coordinate grid style<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Select the style for plotting coordinate grid lines:
+</PRE>
+<P>
+  <PRE>
+   TICK          give along plot edges only
+   DOTTED        dotted grid
+   FULL          full-drawn grid
+</PRE>
+<P>
+<A NAME=.data.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003800000000000000>  <b>Parameter DATA_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> data types to plot<BR><em>Expected input:</em> Character *16:  1 value
+<P>
+  <PRE>
+Specify the data type(s) to be plotted.
+</PRE>
+<P>
+  <PRE>
+   DATA or *    plot the data as given in the map
+   SLOPE        plot the horizontal slope of the data (This option is still
+                 experimental)
+</PRE>
+<P>
+<A NAME=.data.types><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003900000000000000>  <b>Parameter DATA_TYPES</b></A></H2>
+<P>
+<em>Prompt:</em> Visibility component to plot<BR><em>Expected input:</em> Character *16:  1 to 6 values
+<P>
+  <PRE>
+Specify the visibility component to be plotted.
+</PRE>
+<P>
+  <PRE>
+        The quantity plotted depends on the data selected.  For TEL or INTERF
+and for redund. RES       :       gain-1(%
+                  ampl (WU), phase(deg For Selfcal RES with external model:
+</PRE>
+<P>
+  <PRE>
+   Standard representations of complex data:
+</PRE>
+<P>
+  <PRE>
+                        Model           Resid           Int.model
+        AMPLITUDE
+        PHASE
+        COSINE
+        SINE
+</PRE>
+<P>
+  <PRE>
+        AGAIN   Re log(data/model) * 100 = gain in %
+        PGAIN   Im log(data/model) * 180/pi = phase in deg
+</PRE>
+<P>
+  <PRE>
+   Old WSRT 'PLOTAP' formats:
+</PRE>
+<P>
+  <PRE>
+        AP         amplitude/phase plots, one pair per page
+        CS         cosine/sine plots, one pair per page
+</PRE>
+<P>
+<em>Expected input:</em> Real *16:  1 to 6 values
+<P>
+<A NAME=.dot.cont><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031000000000000000>  <b>Parameter DOT_CONT</b></A></H2>
+<P>
+<em>Prompt:</em> Dotted-contour levels<BR><em>Expected input:</em> Real:  1 to 32 values
+<P>
+  <PRE>
+Specify up to 32 values of the contours to be drawn as dotted lines.
+</PRE>
+<P>
+<A NAME=.full.cont><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031100000000000000>  <b>Parameter FULL_CONT</b></A></H2>
+<P>
+<em>Prompt:</em> Full-contour levels<BR><em>Expected input:</em> Real:  1 to 32 values
+<P>
+  <PRE>
+Specify up to 32 values of the contours to be drawn as full lines.
+</PRE>
+<P>
+<A NAME=.halftone><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031200000000000000>  <b>Parameter HALFTONE</b></A></H2>
+<P>
+<em>Prompt:</em> Halftone transfer function<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+At this point, data values have been normalised to lie within the interval
+[0,1]. Halftones are represented by the same interval: 0=white, 1=black. You
+are now to define the transfer function F for mapping data values onto
+halftones:
+</PRE>
+<P>
+  <PRE>
+        halftone = F (normalised data value)
+</PRE>
+<P>
+  <PRE>
+   Continuous functions:
+</PRE>
+<P>
+  <PRE>
+        CONTINUE  a quadratic function (you will be prompted for the
+                   coefficients)
+        NONE      direct mapping: halftone level = normalised data value
+</PRE>
+<P>
+  <PRE>
+   Discontinuous functions:
+</PRE>
+<P>
+  <PRE>
+        STEP      F is a staircase function; halftone shades are generated by a
+                   stochastic algorithm
+        PATTERN   as STEP, but halftone shades are represented by a set of
+                   fixed patterns
+</PRE>
+<P>
+  <PRE>
+In selecting a method, bear in mind that the human eye is quite sensitive to
+density variations in light shades while very poorly perceiving the same
+variations in the dark shades; in other words, its response to density
+variations is quasi-logarithmic.
+</PRE>
+<P>
+  <PRE>
+To compensate for this, a quasi-exponential transfer function is suitable. The
+best approximation to this available here is a steeply quadratic function (i.e.
+specify CONTINUE here and consult the on-line help for the TRANSFORM parameter).
+</PRE>
+<P>
+  <PRE>
+You may judge the quality of your transfer function from the grey-scale wedge
+that will appear side by side with your plot.
+</PRE>
+<P>
+<A NAME=.ha.integration><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031300000000000000>  <b>Parameter HA_INTEGRATION</b></A></H2>
+<P>
+<em>Prompt:</em> Integration time (sec)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the time interval over which you want to integrate (if possible) before
+calibrating. The value you specify will be rounded down to a multiple of the
+hour-angle interval between successive scans.
+</PRE>
+<P>
+  <PRE>
+'*' and '0' mean do not integrate, i.e. calibrate per scan.
+</PRE>
+<P>
+  <PRE>
+The largest value allowed is 3600 (= 1 hour).
+</PRE>
+<P>
+<A NAME=.ha.mode><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031400000000000000>  <b>Parameter HA_MODE</b></A></H2>
+<P>
+<em>Prompt:</em> Special HA plot coordinates<BR><em>Expected input:</em> Character *10:  1 value
+<P>
+  <PRE>
+This parameter selects a coordinate conversion for the vertical (HA) plot
+coordinate in plots of .SCN-file entities.
+</PRE>
+<P>
+  <PRE>
+    ST          Sidereal time i.s.o. HA. This is useful for plotting a series of
+                 observations (e.g. calibrators-object-calibrators) in a time
+                 sequence, e.g. to survey interference. Vertical coordinate is
+                 ST in degrees
+</PRE>
+<P>
+  <PRE>
+    SEQUENCE    Pseudo sidereal time: Sidereal time is forced into an ascending
+                 sequence: When the start ST for a sector is less than that of
+                 the one just plotted, it is changed to make the new sector
+                 follow the previous one contiguously. Within each sector,
+                 vertical scale size is that of HA or ST, but the sectors are
+                 displaced in ST. Sectors are plotted in order of their index.
+                This mode is useful to stuff a lot of information into a single
+                 plot, e.g. to check for interference, but the plot may become
+                 too confusing.
+</PRE>
+<P>
+  <PRE>
+    I<xxx>      The prefix I indicates that you want to integrate scans; you
+                 will be prompted for the HA interval over which to integrate.
+                 As currently implemented, this mode is effective only for plots
+                 that have HA or (pseudo)ST as vertical coordinate. The plot
+                 scale for this coordinate will not be affected.
+</PRE>
+<P>
+  <PRE>
+NPLOT will set plotting mode according to your reply and return to the OPTION
+prompt. The mode will remain in force until you change it or NPLOT exits.
+</PRE>
+<P>
+<A NAME=.ha.scale><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031500000000000000>  <b>Parameter HA_SCALE</b></A></H2>
+<P>
+<em>Prompt:</em> HA plot scale (degree/cm)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the hour-angle scale in degree/cm.
+</PRE>
+<P>
+<A NAME=.ifr.mode><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031600000000000000>  <b>Parameter IFR_MODE</b></A></H2>
+<P>
+<em>Prompt:</em> Select data cross-section<BR><em>Expected input:</em> Character *16:  1 value
+<P>
+  <PRE>
+Specify the cross section through the visibility data cube to be plotted:
+        Consider the interferometers arranged in an upper-triangular matrix:
+</PRE>
+<P>
+  <PRE>
+                00 01 02 ... 0B 0C 0D
+                   11 12 ... 1B 1C 1D
+                      22 ... 2B 2C 2D
+                             :  :  :
+                             BB BC BD
+                                CC CD
+                                   DD
+</PRE>
+<P>
+  <PRE>
+Then the possible plotting modes are
+</PRE>
+<P>
+  <PRE>
+    visibilities as function of hour angle per interferometer:
+</PRE>
+<P>
+  <PRE>
+        NORMAL  interferometer order in the matrix is row by row
+</PRE>
+<P>
+  <PRE>
+        INVERT  interferometer order in the matrix is column by column  .
+        SORT    interferometers in order of ascending baseline
+</PRE>
+<P>
+  <PRE>
+    other cross sections of the hour-angle/interferometer/channel cube:
+</PRE>
+<P>
+  <PRE>
+        SPECTRAL visibilities as function of spectral channel and hour angle,
+                  per interferometer (the WSRT 'PLUVO' format)
+</PRE>
+<P>
+  <PRE>
+        BAND    visibilities as function of channel and interferometer,
+                 interferometer order as for NORMAL
+</PRE>
+<P>
+<A NAME=.if.mode><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031700000000000000>  <b>Parameter IF_MODE</b></A></H2>
+<P>
+<em>Prompt:</em> Parameter to plot<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify action to perform:
+</PRE>
+<P>
+  <PRE>
+   Telescope parameters:
+</PRE>
+<P>
+  <PRE>
+        TPON          total power data (noise source off)
+        TPOFF         total power data (noise source on)
+        TSYS          system temperatures
+        ISYS          system temperatures (X+Y)
+        GAIN          IF gains
+</PRE>
+<P>
+  <PRE>
+   Interferometer parameters:
+</PRE>
+<P>
+  <PRE>
+        GNCAL         gain correction method
+        TSYSI         constant system temperature
+        TNOISI        constant noise source temperature
+        RGAINI        constant receiver gain
+</PRE>
+<P>
+<A NAME=.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031800000000000000>  <b>Parameter OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Type of data to plot|<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify type of data to plot:
+</PRE>
+<P>
+  <PRE>
+   .WMP-file data:
+</PRE>
+<P>
+  <PRE>
+        MAP              image(s) from .WMP file
+</PRE>
+<P>
+  <PRE>
+   .SCN-file visibilities:
+        DATA             observed visibilities
+        MODEL            model visibilities
+        RESIDUAL         visibility residuals (after correction of all known
+                          errors and division by the visibilities of a source
+                          model (yet to be specified)
+                                (sets I=1, QUV=0)
+</PRE>
+<P>
+  <PRE>
+   .SCN-file correction parameters:
+</PRE>
+<P>
+  <PRE>
+        TELESCOPE        telescope phase/gain corrections
+        INTERFEROMETER   interferometer phase/gain corrections (i.e. all
+                          corrections combined per interferometer)
+</PRE> 
+  <PRE>
+        IFDATA           IF-data: total powers, system temperatures etc.
+</PRE>
+<P>
+  <PRE>
+   Plotting versus sidereal time i.s.o. hour angle:
+</PRE>
+<P>
+  <PRE>
+        SPECIAL          will prompt for a special mode
+</PRE>
+<P>
+  <PRE>
+        QUIT             terminate NPLOT
+</PRE>
+<P>
+<A NAME=.plots.per.page><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031900000000000000>  <b>Parameter PLOTS_PER_PAGE</b></A></H2>
+<P>
+<em>Prompt:</em> Number of plots per page in hor. and vert. directions<BR><em>Expected input:</em> Integer:  1 to 2 values
+<P>
+  <PRE>
+Specify number of plots to be plotted on one page.
+</PRE>
+<P>
+<A NAME=.plot.heading><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032000000000000000>  <b>Parameter PLOT_HEADING</b></A></H2>
+<P>
+<em>Prompt:</em> Plot heading (Yes/No) ?<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify if you want to have a MAP plot with or without the heading.
+</PRE>
+<P>
+<A NAME=.plot.positions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032100000000000000>  <b>Parameter PLOT_POSITIONS</b></A></H2>
+<P>
+<em>Prompt:</em> Mark source positions<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify if you want model-source positions marked in your plot. The answers may
+be:
+</PRE>
+<P>
+  <PRE>
+        NO
+        YES     position markers only
+        MAMES   position markers annotated with their IDs from the model list
+</PRE>
+<P>
+  <PRE>
+The marker symbol used is determined per source by its Type (which is the
+suffix number in its ID).
+</PRE>
+<P>
+  <PRE>
+        EDIT    invoke model-handling code to modify model-components' Types,
+                 (FEDIT option), then return to this prompt. This path also
+                 allows you to define additional annotations.
+</PRE> 
+NMODEL HANDLE/EDIT
+parameter SOURCES
+parameter TEXT
+<P>
+<A NAME=.plot.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032200000000000000>  <b>Parameter PLOT_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> Data representation(s)<BR><em>Expected input:</em> Character *16:  1 to 4 values
+<P>
+  <PRE>
+Specify the (combination of) data representations:
+</PRE>
+<P>
+  <PRE>
+        CONTOUR      Contour plot
+        HALFTONE     Halftone plot
+        *            Equivalent to CONTOUR,HALFTONE
+        RULED        Ruled-surface
+</PRE>
+<P>
+  <PRE>
+        POLARISATION Pseudo-vectors of linear polarisation. This requires two
+                      input maps, one holding polarisation strengths
+                      sqrt(Q*Q+U*U) and the other position angles atan(U/Q)/2.
+</PRE> 
+               <em>Such maps are prepared with
+                NMAP FIDDLE xxx </em>
+<P>
+<A NAME=.pol.range><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032300000000000000>  <b>Parameter POL_RANGE</b></A></H2>
+<P>
+<em>Prompt:</em> Polarised-flux limits (W.U.)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+No polarisation pseudo-vector will be drown if the intensity of linear
+polarisation is below the lower limit (and therefore mainly noise); above the
+upper limit it will be truncated to that limit.
+</PRE>
+<P>
+  <PRE>
+Please specify the limits in Westerbork Units.
+</PRE>
+<P>
+<A NAME=.pol.scale><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032400000000000000>  <b>Parameter POL_SCALE</b></A></H2>
+<P>
+<em>Prompt:</em> Polarisation pseudo-vector length scale W.U./cm<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the polarisation pseudo-vector length scale in Westerbork Units /cm.
+</PRE>
+<P>
+<A NAME=.pol.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032500000000000000>  <b>Parameter POL_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> Polarisation representation<BR><em>Expected input:</em> Character *16:  1 value
+<P>
+  <PRE>
+Specify if polarisation (POL) or magnetic field (MAG) should be plotted
+</PRE>
+<P>
+<A NAME=.range><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032600000000000000>  <b>Parameter RANGE</b></A></H2>
+<P>
+<em>Prompt:</em> Halftone saturation limits<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the range of values to be covered by the full range of halftone shades.
+</PRE>
+<P>
+  <PRE>
+The first value is the minimum to be represented by 'white', the second value
+the to be represented by 'black'.
+</PRE>
+<P>
+  <PRE>
+NOTES:
+        Values outside this range will always be white. (If you think this is a
+bad idea, please submit a Bug Report.)
+        It is not possible to invert the scale by specifying a maximum<minimum.
+</PRE>
+<P>
+<A NAME=.rule.range><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032700000000000000>  <b>Parameter RULE_RANGE</b></A></H2>
+<P>
+<em>Prompt:</em> Ruled-surface intensity range (W.U.)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the intensity limits in Westerbork Units for the ruled surface plot.
+Values outside the limits will be truncated.
+</PRE>
+<P>
+<A NAME=.rule.scale><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032800000000000000>  <b>Parameter RULE_SCALE</b></A></H2>
+<P>
+<em>Prompt:</em> Ruled-surface height scale (W.U./cm)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the ruled-surface height scale in Westerbork Units /cm.
+</PRE>
+<P>
+<A NAME=.scale.ampl><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032900000000000000>  <b>Parameter SCALE_AMPL</b></A></H2>
+<P>
+<em>Prompt:</em> Magnitude scale (W.U./mm or <em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the magnitude scale:
+</PRE>
+<P>
+  <PRE>
+  in Westerbork Units /mm       for source/model visibilities and visibility
+                                 residuals
+  in percent/mm                 for telescope corrections
+</PRE>
+<P>
+  <PRE>
+amplitude noises recorded in the sector headers selected. For other DATA_TYPEs
+it is a value that is likely to give reasonable output.
+</PRE>
+<P>
+<em>Expected input:</em> Real:  1 value
+<P>
+<A NAME=.scale.phase><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033000000000000000>  <b>Parameter SCALE_PHASE</b></A></H2>
+<P>
+<em>Prompt:</em> Phase scale (W.U./mm or deg/mm)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the phase scale:
+</PRE>
+<P>
+  <PRE>
+  in Westerbork Units /mm  for residuals
+  in degrees/mm            for source/model visibilities; for telescope
+                            corrections.
+</PRE>
+<P>
+  <PRE>
+The default is a value that is likely to give reasonable output.
+</PRE>
+<P>
+<A NAME=.size><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033100000000000000>  <b>Parameter SIZE</b></A></H2>
+<P>
+<em>Prompt:</em> Plot scaling factors (horizontal, vertical)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+At this point, the plot has been dimensioned to fit on a single plotter page or
+terminal screen, but will not necessarily fill it. You may blow it up in either
+or both dimensions with the factors you specify here.
+</PRE>
+<P>
+  <PRE>
+If necessary, the blown-up plot will be distributed over more tham one page.
+</PRE>
+<P>
+<A NAME=.sources><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033200000000000000>  <b>Parameter SOURCES</b></A></H2>
+<P>
+<em>Prompt:</em> Source pair for annotation<BR><em>Expected input:</em> Character *10:  1 to 2 values
+<P>
+  <PRE>
+Give the names of two sources that you have selected for plotting. A connecting
+line will be drawn between them. You will be prompted for an annotation, which
+defaults to the separation in degrees.
+</PRE>
+<P>
+<A NAME=.text><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033300000000000000>  <b>Parameter TEXT</b></A></H2>
+<P>
+<em>Prompt:</em> Annotation for source pair<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+The annotation (max 80 characters) for the source pair just selected
+</PRE>
+<P>
+<A NAME=.transform><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033400000000000000>  <b>Parameter TRANSFORM</b></A></H2>
+<P>
+<em>Prompt:</em> Grey-scale transfer coefficients:|-<BR><em>Expected input:</em> Real:  1 to 3 values
+<P>
+  <PRE>
+Specify the range coefficients for the CONTINUOUS quadratic transfer function
+that you selected.
+</PRE> 
+               <em>parameter <A HREF="#.halftone">HALFTONE</A> </em>
+<P>
+  <PRE>
+Remember that the data at this point have been normalised to the range [0,1].
+You may specify 5 values, of which the first three are REQUIRED:
+</PRE>
+<P>
+  <PRE>
+        m,M     Range of normalised data values to be represented by the full
+                 halftone range. Values outside this range will be truncated.
+        a,b,c   The 0-th through 2nd-order coefficients in the transfer
+                 quadratic.
+</PRE>
+<P>
+  <PRE>
+The result will be ('ndv' = normalised data value):
+</PRE>
+<P>
+  <PRE>
+        ndv < m:         OUT = 0                         (white)
+        m < ndv < M:     OUT = a + b*IN + c*IN*IN        (grey scale)
+        ndv > M:         OUT = 1                         (black)
+</PRE>
+<P>
+  <PRE>
+You may break the IN range up into partial ranges by specifying multiple sets
+of m,M,a,b,c separated by semicolons, or specifying the sets one by one as the
+prompt is repeated. Input will be considered complete when you give no new
+reply.
+</PRE>
+<P>
+  <PRE>
+Examples:
+        standard linear, halftone=ndv:  0,1, 0,1
+        ndv distance from .5:           0,.5, 1,-2; .5,1, -1,2
+        four grey levels:               0,.25,0; .25,.5,.25; .5,.75,.5; .75,1,1
+        an approximation to an exp
+         that seeks to match the
+         quasi-logarithic response
+         of the human eye:              0,1, 0,.1,.9
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

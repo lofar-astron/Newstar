@@ -1,0 +1,51 @@
+<TITLE>Description of VZERO_OPTION (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword VZERO_OPTION</H1> 
+
+<DT><EM>Prompt:</EM> VZERO action CALC, COPY, MANUAL; SCAN, APPLY, ASK; QUIT
+<DT><EM>Expected input:</EM> Character(8).<P>
+This branch of NCALIB implements methods to define the unknown X-Y phase-zero 
+difference ('PZD') in the parallel-dipole configuration. <P>
+Correction values may be saved in an arbitrary selection of target sectors,  
+selected by the SCN_&lt;xxx&gt; parameters. The new corrections are OTH telescope 
+phases which will be ADDED to any existing ones in each of the sectors you 
+specify for output. <P>
+In determining the corrections, the program uses a collection of input sectors,  
+which may coincide with the target sectors or be selected by the USE_SCN_ 
+parameters (for the COPY option). It is assumed that the source for these is a 
+calibrator with significant Stokes U and 'negligibly' small Stokes V. If this 
+condition is not fulfilled, the result will be meaningless. <P>
+The PZD is a phase value that is ADDED to the existing OTH phase correction of 
+the X channels. For this reason, you must be cautious to <P>
+
+<DT>        - avoid more than one COPY to the same target data and 
+
+<DT>        - avoid ruining a calibrator observation by doing an APPLY on it. (If 
+           you should do this by accident, use MANUAL to restore the observation 
+           to its previous state.) <P>
+Specify action to perform: <P>
+   Actions recommended for routine use: <P>
+        CALC    calculate PZD from the selected node and sectors (SCN_ 
+                 parameters) and display it with its mean error. Use this option 
+                 to check if a calibrator observation is suitable for 
+                 determining the PZD. <P>
+        COPY    as APPLY, but use X-Y phase-difference value derived from 
+                 a calibrator observation (USE_SCN_&lt;xxx&gt; parameters). Use this 
+                 option to set the correction for your observations <P>
+        MANUAL  manually input phase-difference value <P>
+   Other actions: <P>
+        SCAN    as CALC, but per individual scan <P>
+        APPLY   as CALC, then apply the correction to the sectors selected 
+                 (SCN_&lt;xxx&gt; parameters). 
+                NOTE that once you have performed this operation, a CALC or COPY 
+                 operation on the same input data will yield PZD=0, so these 
+                 data can no longer be used to calibrate another observation. <P>
+        ASK     as APPLY, but display and ask for confirmation before modifying 
+                 the existing values <P>
+        QUIT    exit from VZERO  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,649 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>SHOWing and EDITing data-file contents in <i>NEWSTAR </i></b>  
+<BR><BR><i>Contributed by Wim Brouw, December 1993 <BR>Revised/adapted by Johan Hamaker, June 1994 </i>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=show_edit.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=show_edit.html#SECTION0002000000000000000>  <b>Introduction</b></A>
+<LI> <A NAME=tex2html3 HREF=show_edit.html#SECTION0003000000000000000> <b>SHOW and EDIT</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=show_edit.html#SECTION0003100000000000000>  <b>Displaying data values in different formats </b></A>
+<LI> <A NAME=tex2html5 HREF=show_edit.html#SECTION0003200000000000000>  <b>Displaying parts of arrays</b></A>
+<LI> <A NAME=tex2html6 HREF=show_edit.html#SECTION0003300000000000000>  <b>Displaying information about data fields</b></A>
+</UL> 
+<LI> <A NAME=tex2html7 HREF=show_edit.html#SECTION0004000000000000000>  <b>Modifying data values </b></A>
+<LI> <A NAME=tex2html8 HREF=show_edit.html#SECTION0005000000000000000>  <b>Secondary blocks and substructures</b></A>
+<UL> 
+<LI> <A NAME=tex2html9 HREF=show_edit.html#SECTION0005100000000000000>  <b>Navigating secondary blocks</b></A>
+<LI> <A NAME=tex2html10 HREF=show_edit.html#SECTION0005200000000000000>  <b>Displaying/editing a substructure</b></A>
+</UL> 
+<LI> <A NAME=tex2html11 HREF=show_edit.html#SECTION0006000000000000000>  <b>Advanced options</b></A>
+<UL> 
+<LI> <A NAME=tex2html12 HREF=show_edit.html#SECTION0006100000000000000>  <b>Linked lists</b></A>
+<LI> <A NAME=tex2html13 HREF=show_edit.html#SECTION0006200000000000000>  <b>Data arrays</b></A>
+<LI> <A NAME=tex2html14 HREF=show_edit.html#SECTION0006300000000000000>  <b>Absolute and relative file addresses</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Introduction</b></A></H1>
+<P>
+        The programs NSCAN, NFLAG, NMAP and NGCALC have a SHOW option, with an EDIT sub-option.  This EDIT sub-option can be used to examine and change any field in the SCN, WMP and NGF files.  
+        The EDIT option can show and/or edit the contents of <i>NEWSTAR </i> files. All values ('fields'), with the exception of values determining the structure of the file, may be edited individually (or in groups) by hand.  This is laborious, <em>but at least it is possible!</em>  
+        The different files contain a variety of blocks (e.g.  STH - sector header; MPH - map header).  In addition to manipulating these fields, <i>NEWSTAR </i> programs know how to present their names and values in an intelligible form to the user, and conversely how to interpret the user's editing instructions.  
+        After starting EDIT, the message:  
+        **** Editing STH **** (or MPH or ....)
+<P>
+will appear, indicating the actual block available for editing at this instant.
+<P>
+<H1><A NAME=SECTION0003000000000000000> <b>SHOW and EDIT</b></A></H1>
+<P>
+        <b>SHOW</b> gives a formatted display of the contents of the entire &quot;current&quot; block (i.e.  the block currently accessed through a navigating command such as <b>CONTINUE</b> or <b>NEXT</b>.  To display individual fields in the block one uses the <b>EDIT</b> option.  Once in edit mode, one may both display and modify fileds.  
+        The <i>display</i> commands for an individual field consist of the field name, optionally followed by a colon and qualifying information.  The various types of qualifier will be discussed below.  A display command becomes an <b>EDIT</b> command when followed by a comma plus one or more new values.  
+    <PRE> 
+ *** Editing STH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap645.png"> 
+  <PRE> 
+ RA             0.06725881318561733
+</PRE>
+<P>
+Note that <A HREF="#.pointers">pointer values</A> can not be shown this
+way.
+<P>
+<A NAME=.show.format><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>Displaying data values in different formats </b></A></H2>
+<P>
+        Appending a format specifier to the colon overrides the default format
+in which a value is displayed.  Some of the possible formats are:
+<P>
+<P><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tabular127.png"><P>
+<P>
+    <PRE> 
+ *** Editing STH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap653.png"> 
+  <PRE> 
+ RA                        01:36:51
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap655.png"> 
+  <PRE> 
+ RA                   01:36:51.1615
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap657.png"> 
+  <PRE> 
+ RA                        3fb137d4 
+</PRE>
+<P>
+        The full list of available formats, including fieldsize indicators,
+exists only in the form of a table in the program source file
+wnctxt_x.for.
+<P>
+<H2><A NAME=SECTION0003200000000000000>  <b>Displaying parts of arrays</b></A></H2>
+<P>
+        Elements of array fields can be selected by appending the start index
+and the number of elements to the field name, as follows: 
+        - &lt;name&gt;[(&lt;offset&gt;)][,/&lt;number&gt;] 
+will show the value of &lt;name&gt;.  If an offset is given for a
+multi-valued &lt;name&gt;, the display will start at this value; if
+/&lt;number&gt; is given, only that many values will be shown. 
+Examples are given <A HREF="#.edit">below</A>.  Remember that <b>indices start at
+0!</b>.
+<P>
+<A NAME=.show.meta><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003300000000000000>  <b>Displaying information about data fields</b></A></H2>
+<P>
+<P><IMG ALIGN=BOTTOM ALT="" SRC="_16745_tabular148.png"><P>
+<P>
+Examples:
+<P>
+    <PRE> 
+ *** Editing STH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap661.png"> 
+  <PRE> 
+ Known names: 
+              LINK,      XJ, , ;     0,     2,     1,     4
+              LEN,       SI, , ;     8,     1,     1,     2
+              VER,       SI, , ;    10,     1,     1,     2
+              FIELD,     AL, , ;    28,     1,     0,    12
+                         .
+                         .
+
+              RA,   DAF12.7, , ;    40,     1,     0,     8
+              DEC,  DAF12.7, , ;    48,     1,     0,     8
+              RTP,    E12.4, , ;   124,    14,     0,     4
+              NIFR,      SJ, , ;   180,     1,     1,     4
+              IFRP,      XJ, ,   P:IFRT;   184,     1,     1,     4
+              NFD,       SJ, , ;   188,     1,     1,     4
+              FDP,       XJ, ,    P:FDW;   192,     1,     1,     4
+              NOH,       SJ, , ;   196,     1,     1,     4
+                        .
+                        .
+
+</PRE>
+<P>
+The entries in this table are:
+<P>
+<P><IMG ALIGN=BOTTOM ALT="" SRC="_16745_tabular156.png"><P>
+<P>
+<A NAME=.edit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000>  <b>Modifying data values </b></A></H1>
+<P>
+        Most values in a data file can be edited.  The field descriptors
+outlined above for <b>SHOW</b> are also valid for <b>EDIT</b>.  Edit commands are
+charaterised by the presence of a <b>comma</b> following the field descriptor:
+<P>
+&lt;name&gt;[&lt;(offset)&gt;][&lt;/number&gt;], &lt;value&gt; [,&lt;value&gt;...]
+<P>
+will change the value(s) at the given field. Examples:
+<P>
+    <PRE> 
+ *** Editing STH *** 
+</PRE> 
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap675.png"> 
+  <PRE> 
+ RTP          12.0000     143.9919     287.9837     431.9756     575.9674
+             719.9592     863.9511    1007.9429    1151.9348    1295.9266
+            1367.9257    1439.9176    2663.8491    2735.8452
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap677.png">
+<P>
+		<i>Note that names are not case-sensitive!</i>  
+  <PRE> 
+ RTP           1.0000       2.0000
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap679.png"> 
+  <PRE> 
+ RTP           0.0000     143.9919       1.0000       2.0000     575.9674
+             719.9592     863.9511    1007.9429    1151.9348    1295.9266
+            1367.9257    1439.9176    2663.8491    2735.8452
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap681.png"> 
+  <PRE> 
+ RTP         287.9837     431.9756     575.9674     719.9592     863.9511
+            1007.9429    1151.9348    1295.9266    1367.9257    1439.9176
+            2663.8491    2735.8452
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap683.png"> 
+  <PRE> Edit of field LINK not allowed 
+ LINK        0007ec60     00000098 
+</PRE>
+<P>
+        The last example demonstrates that certain fields cannot be changed
+because the integrity of the file depends on them.  This restriction may be
+overridden by appending '<b>==</b>' to the field descriptor:
+<P>
+    <PRE> 
+ *** Editing STH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap685.png"> 
+  <PRE> 
+ LINK        00000001
+</PRE>
+<P>
+        The value given is interpreted with the default format descriptor
+displayed by the <A HREF="#.show.meta">name command</A>).  A different format can
+be used by giving a 
+<A HREF="#.show.format">format specifier</A>.
+<P>
+        For integers, the radix specifiers <tt>%X</tt> (hexadecimal), <tt>%D</tt>(decimal) and <tt>%O</tt> (octal) can also be used.  Values given as
+<P>
+        hh:[[mm][:[ss][.ttt]] or <BR>dd.[mm].[ss][.ttt]]
+<P>
+will be translated to degrees and saved in the appropriate F, 
+R or D format;
+<P>
+<A NAME=.pointers><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000>  <b>Secondary blocks and substructures</b></A></H1>
+<P>
+        The header blocks directly accessible through <b>SHOW/EDIT</b> contain
+pointers to other blocks.  When their value is listed, :P is appended,
+meaning that the value is the address of a block on disk in the corresponding
+format format.
+<P>
+        Certain fields in a block are arrays not of single values but of
+sub-blocks of some type; an example are the interferometer entries in the OHW
+block.  When such a field is listed, :S is appended, meaning that this
+is an array of subblocks.
+<P>
+        All secondary-block and substructure types known to the system 
+(i.e.  not only those associated with the current block) are displayed by the
+<b>::</b> command:
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap689.png"> 
+  <PRE> 
+ Known P: types: STH, FDW, OHW, SCW, SHW, FDX, GFH, IFRT, MDH, MDD, SGH, MDL,
+SCH 
+        IFRC, B, I, J, E, D, X, Y, S:SET, S:SRC, S:BCOR, S:MOZP, S:IFR, IFH
+</PRE>
+<P>
+		<i>: indicates a sub-structure. The use of the data types <em>B,
+I</em> etc. is explained <A HREF="#.data.arrays">elsewhere</A>. </i>
+<P>
+<H2><A NAME=SECTION0005100000000000000>  <b>Navigating secondary blocks</b></A></H2>
+<P>
+        Specifying the name of a pointer will steer the editing process to the
+block pointed at: 
+  <PRE> 
+ *** Editing STH *** 
+</PRE> 
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap707.png"> 
+  <PRE> 
+ *** Editing STH *** 
+</PRE>
+<P>
+		<i>So nothing happened: There is no MDD block attached to this STH
+block.</i>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap709.png"> 
+  <PRE> 
+ Edit data: IFRP, XJ, , P:IFRT; 184, 1, 1, 4 
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap711.png"> 
+  <PRE> 
+ *** Editing IFRT *** 
+</PRE>
+<P>
+		<i>This time we succeeded!</i>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap713.png"> 
+  <PRE> 
+ Known names: 
+              IFR,       XI, , ;     0,    88,     0,     2
+</PRE>
+<P>
+		<i>The IFR block is just an array of hex integers</i>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap715.png"> 
+  <PRE> 
+ IFR             0a09         0b0a         0d0c         0b09         0100 
+                 0201         0302         0403         0504         0605
+                   .
+                   .
+
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap717.png"> 
+  <PRE> 
+ *** Editing STH *** 
+</PRE>
+<P>
+		<i>A null reply returns us to the parent block</i>
+<P>
+<H2><A NAME=SECTION0005200000000000000>  <b>Displaying/editing a substructure</b></A></H2>
+<P>
+        An array of substructures can be shown in its entirety by: 
+        &lt;name&gt;* 
+Example: 
+    <PRE> 
+ *** Editing SHW *** 
+</PRE> 
+ <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap741.png"> 
+  <PRE> 
+ INFNR          16667      WTEL               0      OTEL              13
+ RBAS            2736      NIH             2040
+
+ INFNR          16665      WTEL               0      OTEL              12
+ RBAS            2664      NIH             2047
+                 .
+                 .
+
+ *** Editing SHW *** 
+</PRE>
+<P>
+		<i>Note that the current block is still SHW.</i>
+<P>
+A single sub-structure can be shown and edited by:
+<P>
+        &lt;name&gt;[(&lt;index&gt;)]
+<P>
+Example:
+<P>
+    <PRE> 
+ *** Editing SHW *** 
+</PRE> 
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap743.png"> 
+  <PRE> 
+ *** Editing S:IFR *** 
+</PRE>  
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap745.png"> 
+  <PRE> 
+ INFNR          16667      WTEL               0      OTEL              13
+ RBAS            2736      NIH             9120
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap747.png"> 
+  <PRE> 
+ *** Editing SHW *** 
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap749.png"> 
+  <PRE> 
+ *** Editing S:IFR *** 
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap751.png"> 
+  <PRE> 
+ INFNR          17689      WTEL               2      OTEL              12
+ RBAS            2376      NIH             9465
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap753.png"> 
+  <PRE> 
+ *** Editing SHW *** 
+</PRE>
+<P>
+<H1><A NAME=SECTION0006000000000000000>  <b>Advanced options</b></A></H1>
+<P>
+        The options described here are available for system programmers. 
+They assume a proper understanding of the architecture of Newstar data files
+and of the mechanisms (.dsc and .def files) through which it is defined.  No
+attempt will be made here to help the reader on these points... 
+        The syntax of the advanced options is less intuitively clear than what
+has been described above and its expressive power is limited. 
+In using it, the user will have to feel his way around, but he can safely do so
+as long as he doesnot rashly attempt to change any values.
+<P>
+<H2><A NAME=SECTION0006100000000000000>  <b>Linked lists</b></A></H2>
+<P>
+        Link pointers in linked lists are similar to other pointers, except
+that the type of the target block is not known a priori.  It must therefore be
+specified: 
+        &lt;name&gt;[(&lt;index&gt;)]::&lt;target block type&gt; 
+For example:
+<P>
+    <PRE> 
+ *** Editing STH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap765.png"> 
+  <PRE> 
+ *** Editing GFH *** 
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap767.png"> 
+  <PRE> 
+ ID              .SCN      LEN              512      VER                1
+ CDAT     21-Sep-1993      CTIM           17:23      RDAT     13-Jun-1994 
+ RTIM           16:16      RCNT              50      NAME           A271A
+ DATTP              7
+ LINK        00006550     00500e08 
+ ALHD        00006550     00500e08 
+ NLINK              4      ALLEN              4
+ LINKG       00000200     008069c8 :P 
+ LHD         00000200     008069c8 :P 
+ NLINKG             2      LLEN               2      IDMDL              0
+ ID1                0      ID2                0      USER               0
+
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap769.png">
+<P>
+		<i>Return to STH</i>  
+  <PRE> 
+ *** Editing STH *** 
+</PRE>
+<P>
+<A NAME=.data.arrays><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0006200000000000000>  <b>Data arrays</b></A></H2>
+<P>
+        Some pointers point to &quot;naked&quot; arrays of data structures.  An example
+is MDD in the STH which points to the array of complex model visibilities:
+<P>
+    <PRE> 
+ *** Editing STH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap787.png">
+<P>
+		<i>We try to display the array in complex format ...</i>  
+  <PRE> 
+ MDD         006179c8     00000000 :P 
+</PRE>
+<P>
+		<i>but the system does not understand us!</i>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap789.png"> 
+  <PRE> 
+ *** Editing MDD *** 
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap791.png"> 
+  <PRE> 
+ MDD                -540.55+72.69I                0.00+0.00I
+                        0.00+0.00I                0.00+0.00I
+                    -540.50+72.76I                0.00+0.00I
+                        0.00+0.00I                0.00+0.00I
+                        .
+                        .
+
+</PRE>
+<P>
+		<i>This works, but it is not clear how we could select specific elements
+for display.</i>
+<P>
+        There are also data arrays whose address is defined implicitly by the
+fact that they contiguously follow a header block.  An example is the
+scan-visibilities block headed by the SCN header.  To access such data in the
+absence of a pointer, one must use a 
+<A HREF="#.abs.rel.address">byte offset</A>. 
+For this we need the length of the header, which we can easily find.  The
+technique is demonstrated below is a somewhat different context, <i>viz.</i>
+that of finding an SCH which is not directly pointed at.
+<P>
+    <PRE> 
+ *** Editing STH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap793.png"> 
+  <PRE> 
+ SCNL            1552
+</PRE>
+<P>
+		<i><BR>This is the length of an SCH plus the data.</i>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap795.png"> 
+  <PRE> 
+ *** Editing SCH *** 
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap797.png"> 
+  <PRE> 
+ HA       -90.1250124 deg  MAX         1294.000 W.U. SCAL        0.000000 
+ REDNS          0.000        0.000        0.000        0.000 W.U.
+                .
+                .
+
+</PRE>
+<P>
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap799.png">
+<P>
+		<i>Move to the next SCH. We can use multiples of SCNL to get to any of
+the SCHs.</i>  
+  <PRE> 
+ *** Editing SCH *** 
+</PRE>  
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_12943_tex2html_wrap768.png"> <b>EDIT</b> 
+ (Edit: name [(offset)][/length][:format] , val [, ...]) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_16745_tex2html_wrap801.png"> 
+  <PRE> 
+ HA       -89.8743278 deg  MAX         1349.000 W.U. SCAL        0.000000 
+ REDNS          0.000        0.000        0.000        0.000 W.U.
+ ALGNS          0.000        0.000        0.000        0.000 W.U.
+                .
+                .
+
+</PRE>
+<P>
+<A NAME=.abs.rel.address><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0006300000000000000>  <b>Absolute and relative file addresses</b></A></H2>
+<P>
+        Absolute <em>file addresses</em> (i.e.  byte offsets in the file) can be
+used instead of field names.
+<P>
+        Relative addresses are byte offset relative to the start of the current
+block.  They are specified in the form
+<P>
+        .&lt;offset&gt;
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

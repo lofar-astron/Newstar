@@ -1,0 +1,34 @@
+<TITLE>Description of SCN_NODE (SCNNODE)</TITLE>
+<H1>Description of general keyword SCN_NODE</H1>
+
+<DT><EM>Prompt:</EM> .SCN file name
+<DT><EM>Expected input:</EM> Character(80).<P>
+ Specify the file name (no extension). <P>
+You may enter <P>
+	[&lt;directory&gt;/]** <P>
+to get a list of .SCN files in your current or another directory; then enter <P>
+	#&lt;n&gt; <P>
+to select the &lt;n&gt;'th file from that list. 
+"! 
+!---------------------------------------------------------------------------- 
+!       Ref: 
+! 
+KEYWORD=INPUT_SCN_NODE 
+	DATA_TYP=C 
+	IO=I 
+	LENGTH=80 
+	SWITCHES=LOOP, NULL_VALUES, WILD_CARDS 
+	SEARCH=L, P 
+	PROMPT="Input .SCN file name  Specify the file name (no extension). <P>
+You may enter <P>
+	[&lt;directory&gt;/]** <P>
+to get a list of .SCN files in your current or another directory; then enter <P>
+	#&lt;n&gt; <P>
+to select the &lt;n&gt;'th file from that list. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../scnnode/scnnode_comm.html">List of general keywords</A> for SCNNODE
+<LI>Description of the <A HREF="../scn_descr/scn_descr.html">SCN file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

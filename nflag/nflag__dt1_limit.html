@@ -1,0 +1,17 @@
+<TITLE>Description of DT1_LIMIT (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword DT1_LIMIT</H1> 
+
+<DT><EM>Prompt:</EM> Discontinuity threshold (W.U. per 10 sec)
+<DT><EM>Expected input:</EM> Real number.<P>
+ The DT1 option looks for 'un-physical jumps' in time in the 
+cosine and sine values of the uv-data. The actual difference (in W.U.) between 
+successive time-samples is divided by the time that separates them, in units of 
+the integration time (e.g. 60 sec). The flag is set if this value exceeds the 
+threshold. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

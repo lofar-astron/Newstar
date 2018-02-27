@@ -1,0 +1,48 @@
+<TITLE>Description of MODEL_OPTION (NMODEL)</TITLE>
+<H1>Description of general keyword MODEL_OPTION</H1>
+
+<DT><EM>Prompt:</EM> Model-list action| READ, WRITE, INTERN; CLEAR, ADD, MODIFY, SHOW; QUIT
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify the action to be taken on the internal model list: <P>
+   Transfers between the internal list and an external file: <P>
+        READ   Read the components from a .MDL file on disk into the 
+                program's model list. The default filename is the name of 
+                the calibrator belonging to the most recently read sector,  
+                derived from the fieldname and the frequency. .MDL files are 
+                first searched for in the current directory or the directory 
+                defined by parameter DATAB. If this fails, the file is looked 
+                for in the directory defined by parameter MODELB and finally by 
+                that defined by the Unix environment variable MODELB. <P>
+               NOTE that reading is INCREMENTAL, so if you read the same 
+                .MDL file twice, you will get every component doubled... <P>
+        WRITE  Write the program's model list to a .MDL file. <P>
+        INTERN This does not affect the list, but selects 
+                the model stored in the scan-file(s). Selecting INTERN is 
+                equivalent to setting DE_APPLY=MODEL. 
+                You may use this internal model in combination with 
+                components in the program's model list. 
+!!                      To be sorted out... <P>
+   Modification and display of the internal list: <P>
+        CLEAR  Empty the program's model list and optionally its reference 
+                coordinates. <P>
+        ADD    Manual input of sources to add the list <P>
+        MODIFY Enter a submenu with options to modify the model list: 
+
+<DT>                  - by deleting sources from the list; 
+
+<DT>                  - by editing entries manually; 
+
+<DT>                  - by sorting (for subsequent display) the list: you will be 
+                     prompted for a definition of the sort order; 
+
+<DT>                  - by calibrating. 
+!!                      What?? How?? <P>
+        SHOW   Show the program's model list, you will be prompted for details. <P>
+. 
+        QUIT   Exit from model-handling.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_comm.html">List of general keywords</A> for NMODEL
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

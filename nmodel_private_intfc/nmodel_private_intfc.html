@@ -1,0 +1,441 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Private parameters for program NMODEL</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nmodel_private_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nmodel_private_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=nmodel_private_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=nmodel_private_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=nmodel_private_intfc.html#SECTION0003200000000000000>  <b>Parameter ACTION</b></A>
+<LI> <A NAME=tex2html6 HREF=nmodel_private_intfc.html#SECTION0003300000000000000>  <b>Parameter AREA</b></A>
+<LI> <A NAME=tex2html7 HREF=nmodel_private_intfc.html#SECTION0003400000000000000>  <b>Parameter CALIBRATORS</b></A>
+<LI> <A NAME=tex2html8 HREF=nmodel_private_intfc.html#SECTION0003500000000000000>  <b>Parameter CONVERT_TO</b></A>
+<LI> <A NAME=tex2html9 HREF=nmodel_private_intfc.html#SECTION0003600000000000000>  <b>Parameter FIND_TYPE</b></A>
+<LI> <A NAME=tex2html10 HREF=nmodel_private_intfc.html#SECTION0003700000000000000>  <b>Parameter GIDS_SOURCES</b></A>
+<LI> <A NAME=tex2html11 HREF=nmodel_private_intfc.html#SECTION0003800000000000000>  <b>Parameter ID_START</b></A>
+<LI> <A NAME=tex2html12 HREF=nmodel_private_intfc.html#SECTION0003900000000000000>  <b>Parameter MAP_LIMIT</b></A>
+<LI> <A NAME=tex2html13 HREF=nmodel_private_intfc.html#SECTION00031000000000000000>  <b>Parameter MAX_NUMBER</b></A>
+<LI> <A NAME=tex2html14 HREF=nmodel_private_intfc.html#SECTION00031100000000000000>  <b>Parameter OLD_FILE</b></A>
+<LI> <A NAME=tex2html15 HREF=nmodel_private_intfc.html#SECTION00031200000000000000>  <b>Parameter REFERENCE_DATA</b></A>
+<LI> <A NAME=tex2html16 HREF=nmodel_private_intfc.html#SECTION00031300000000000000>  <b>Parameter REFERENCE_FREQ</b></A>
+<LI> <A NAME=tex2html17 HREF=nmodel_private_intfc.html#SECTION00031400000000000000>  <b>Parameter REF_SCN_NODE</b></A>
+<LI> <A NAME=tex2html18 HREF=nmodel_private_intfc.html#SECTION00031500000000000000>  <b>Parameter REF_SCN_SET</b></A>
+<LI> <A NAME=tex2html19 HREF=nmodel_private_intfc.html#SECTION00031600000000000000>  <b>Parameter UPDATE_CLUSTER</b></A>
+<LI> <A NAME=tex2html20 HREF=nmodel_private_intfc.html#SECTION00031700000000000000>  <b>Parameter UPDATE_MODE</b></A>
+<LI> <A NAME=tex2html21 HREF=nmodel_private_intfc.html#SECTION00031800000000000000>  <b>Parameter UPDATE_TYPE</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the parameter interface of the program NMODEL. The program also uses a number of public interfaces; references to these are also <A HREF="#.public">listed</A>. 
+show parameters that 
+        The remainder of the document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<em>See also:</em> 
+<UL><LI> <A HREF="../introduction/introduction.html#.user.interface">DWARF</A> user interface 
+<LI> <A HREF="../mdlnode_public_intfc/mdlnode_public_intfc.html">MDLNODE</A> public keywords 
+<LI> <A HREF="../ngen_public_intfc/ngen_public_intfc.html">NGEN</A> public keywords 
+<LI> <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">NMODEL</A> public keywords 
+<LI> <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html">SCNNODE</A> public keywords 
+<LI> <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html">SCNSETS</A> public keywords 
+<LI> <A HREF="../select_public_intfc/select_public_intfc.html">SELECT</A> public keywords 
+<LI> <A HREF="../wmpnode_public_intfc/wmpnode_public_intfc.html">WMPNODE</A> public keywords 
+<LI> <A HREF="../wmpsets_public_intfc/wmpsets_public_intfc.html">WMPSETS</A> public keywords 
+</UL>
+<P>
+<A NAME=.action><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter ACTION</b></A></H2>
+<P>
+  <em>Prompt:</em> Action<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+    <PRE>
+        Specify action to perform:
+</PRE>
+<P>
+  <PRE>
+   General:
+</PRE>
+<P>
+  <PRE>
+        HELP      show some explanation on model lists
+        HANDLE    select general model-handling branch
+</PRE>
+<P>
+  <PRE>
+   Model construction:
+</PRE>
+<P>
+  <PRE>
+        FIND    find sources in map (.WMP file)
+        UPDATE  update sources by comparison with visibilities (.SCN file)
+</PRE>
+<P>
+  <PRE>
+   Transfer of model to/from .SCN file:
+</PRE>
+<P>
+  <PRE>
+        SAVE      save model data in .SCN file
+        GET       get model from .SCN file
+</PRE>
+<P>
+  <PRE>
+   Wholescale conversions of model list:
+</PRE>
+<P>
+  <PRE>
+        CONVERT   Convert model list from epoch to epoch or coordinate to
+                   coordinate with conversion of l,m coordinates and intensities
+                   if necessary
+        EDIT      Change model-list overall parameters without conversion of
+                   coordinates and intensity (except possible field rotation if
+                   converting from apparant <-> epoch)
+        REDIT     Change reference coordinates and frequency. Intensities will
+                   be corrected for spectral index only.
+        FEDIT     As REDIT, but intensities will also be corrected for the
+                   effect of different beams at different frequencies
+</PRE> 
+  <PRE>
+        BEAM      Correct sources for attenuation by primary beam
+        DEBEAM    Apply primary-beam attenuation to sources
+</PRE>
+<P>
+  <PRE>
+   Utilities:
+</PRE>
+<P>
+  <PRE>
+        FROM_OLD  convert old format source list (use B1950 or Apparent by
+                   preference)
+        TO_OLD    convert to old format source list
+        NVS       make new version of model file if necessary
+        CVXL      convert formats between machines
+</PRE>
+<P>
+  <PRE>
+        QUIT    finish
+</PRE>
+<P>
+<A NAME=.area><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter AREA</b></A></H2>
+<P>
+<em>Prompt:</em> Map area: l,m, dl,dm<BR><em>Expected input:</em> Integer:  1 to 4 values
+<P>
+  <PRE>
+Specify the map area to be selected:
+</PRE>
+<P>
+  <PRE>
+        l, m    position in grid spacings of centre of area
+                0,0 is the map centre, increaing toward the upper right (i.e.
+                 with DEcreasing RA and INcreasing DEC)
+</PRE>
+<P>
+  <PRE>
+        dl, dm  horizontal and vertical area sizes
+</PRE>
+<P>
+<A NAME=.calibrators><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter CALIBRATORS</b></A></H2>
+<P>
+<em>Prompt:</em> List of sources or *<BR><em>Expected input:</em> Integer:  1 to 128 values
+<P>
+  <PRE>
+Specify up to 128 numbers of sources in the model list that you want to use as
+calibrators.
+</PRE>
+<P>
+<A NAME=.convert.to><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter CONVERT_TO</b></A></H2>
+<P>
+<em>Prompt:</em> Target coordinate system<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify the coordinate system for the output model-list.
+</PRE>
+<P>
+  <PRE>
+If you are CONVERTing, the output model list's coordinates and intensities will
+reflect the new type, frequency, instrument and central coordinates.
+</PRE>
+<P>
+  <PRE>
+If you are EDITing, the new data will be copied only, but the coordinates will
+be rotated to the new Pole if you are converting between apparent and epoch.
+</PRE>
+<P>
+<A NAME=.find.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003600000000000000>  <b>Parameter FIND_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> Finding mode<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify how to select candidate sources:
+</PRE>
+<P>
+  <PRE>
+        POS     Select sources with highest positive brightness
+        ABS     Select sources with highest absolute brightness
+        MANUAL  Select sources manually with the cursor on a GIDS screen.
+                 Sources are selected by pushing MB1; MB3 will finish;
+                 MB2 will not calculate position, but put grid point as clean
+                 source
+</PRE>
+<P>
+<A NAME=.gids.sources><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003700000000000000>  <b>Parameter GIDS_SOURCES</b></A></H2>
+<P>
+<em>Prompt:</em> Select sources on GIDS display (Yes/No)?&quot;<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Specify if you want to point at sources on the GIDS display for the current map
+</PRE>
+<P>
+<A NAME=.id.start><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003800000000000000>  <b>Parameter ID_START</b></A></H2>
+<P>
+<em>Prompt:</em> Start identification number<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify the start of the ID number to be used in the source list.
+</PRE>
+<P>
+<A NAME=.map.limit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003900000000000000>  <b>Parameter MAP_LIMIT</b></A></H2>
+<P>
+<em>Prompt:</em> Lower relative intensity limit<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the lowest limit with respect to the maximum in the map that will be
+considered a valid source
+</PRE>
+<P>
+<A NAME=.max.number><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031000000000000000>  <b>Parameter MAX_NUMBER</b></A></H2>
+<P>
+<em>Prompt:</em> Maximum number of sources to add<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify the maximum number of sources that will be found.
+</PRE>
+<P>
+<A NAME=.old.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031100000000000000>  <b>Parameter OLD_FILE</b></A></H2>
+<P>
+<em>Prompt:</em> old model filename<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the filename (includinhg extension) the an old-format RMODEL file to be
+read or written.
+</PRE>
+<P>
+<A NAME=.reference.data><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031200000000000000>  <b>Parameter REFERENCE_DATA</b></A></H2>
+<P>
+<em>Prompt:</em> RA, DEC, Freq, rot.,instr.<BR><em>Expected input:</em> DoublePrecision:  1 to 5 values
+<P>
+  <PRE>
+Specify
+</PRE>
+<P>
+  <PRE>
+        RA, DEC (decimal degrees)
+        precession rotation angle (degrees)
+        spectral-index reference frequency (MHz)
+        instrument code (0=WSRT; 1=ATCA)
+</PRE>
+<P>
+  <PRE>
+for the new reference source list position.
+</PRE>
+<P>
+<A NAME=.reference.freq><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031300000000000000>  <b>Parameter REFERENCE_FREQ</b></A></H2>
+<P>
+<em>Prompt:</em> Reference frequency (MHz)<BR><em>Expected input:</em> DoublePrecision:  1 value
+<P>
+  <PRE>
+Specify the spectral index reference frequency (MHz).
+</PRE>
+<P>
+<A NAME=.ref.scn.node><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031400000000000000>  <b>Parameter REF_SCN_NODE</b></A></H2>
+<P>
+<em>Prompt:</em> File name<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the node name with the model overall coordinates to use.
+</PRE>
+<P>
+  <PRE>
+Instead of a file name you may reply with a '*'. You will then be prompted for
+'manual' inpout of data, unless you are CONVRTing between apparent and epoch
+coordinates.
+</PRE>
+<P>
+<A NAME=.ref.scn.set><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031500000000000000>  <b>Parameter REF_SCN_SET</b></A></H2>
+<P>
+<em>Prompt:</em> ONE sector for reference coordinates: grp.obs.fld.chn.seq<BR><em>Expected input:</em> Character *32:  1 to 64 values
+<P>
+  <PRE>
+Specify ONE .SCN-file sector from which the reference coordinates (RA, DEC,
+frequency) are to be taken.
+</PRE>
+<P>
+  <PRE>
+grp.obs.fld.chn.seq = group.obs.field.channel.sequence_number
+</PRE>
+<P>
+<A NAME=.update.cluster><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031600000000000000>  <b>Parameter UPDATE_CLUSTER</b></A></H2>
+<P>
+<em>Prompt:</em> Update cluster size in arcsec (l,m)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the cluster size for update in arcsec in the l and m direction.
+</PRE>
+<P>
+<A NAME=.update.mode><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031700000000000000>  <b>Parameter UPDATE_MODE</b></A></H2>
+<P>
+<em>Prompt:</em> Update type<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify how the update process should proceed:
+</PRE>
+<P>
+  <PRE>
+        SEPARATE        each source to be updated is looked at separately,
+                         and they are fiddled to cater for close sources
+</PRE>
+<P>
+  <PRE>
+        CLUSTER         sources are clustered to bypass closeness problems
+</PRE>
+<P>
+  <PRE>
+        COMBINED        all sources solved in one go, with sub-clustering
+</PRE>
+<P>
+  <PRE>
+        CONSTRAINED     use constraints and clustering. The standard
+                         constraint used is to fix all variables for all
+                         but the lowest intensity source
+</PRE>
+<P>
+  <PRE>
+        L<type>         Loop up to 20 cycles till convergence:
+                         Note that the loop option does not always
+                         work, and is very slow. Preferably use for a
+                         small number of well separated sources/clusters.
+</PRE>
+<P>
+<A NAME=.update.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031800000000000000>  <b>Parameter UPDATE_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> Update mode<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify the parameters to be redetermined per source in the update process.
+</PRE>
+<P>
+  <PRE>
+   Position and flux:
+        I       Intensity only
+        LM      Position only
+        ILM     Intensity and position
+        SILM    Intensity, spectral index and position (requires a multichannel
+                 observation with <bandwidth per channel>/<frequency> greater
+                 than ..)
+</PRE>
+<P>
+  <PRE>
+   Source size:
+        EXTEND  Intensity and size parameters for elliptic-Gaussian model
+                 (major/minor axes, position angle)
+</PRE>
+<P>
+  <PRE>
+   Source polarisation:
+        QUV     Stokes Q/I, U/I, V/I
+        PESTIM  Estimate the total linear polarisation, and store it as Stokes
+                 Q. NOTE that this improper use of the model list is not
+                 recorded, so you it is your responsibility to interpret this
+                 kluge correctly.
+</PRE>
+<P>
+  <PRE>
+NOTES:
+        1. All sources in the model are taken into account in determining the
+residual visibilities on which the update fit is performed. However, no updates
+are attempted for sources of type other than 0 nor for CLEAN components.
+        If you want to protect one or more sources from being updated, you can
+do so by temporarily changing their type (OPTION=MODIFY, MODIFY_OPTION=FEDIT,
+see the Help text there).
+</PRE>
+<P>
+  <PRE>
+        2. It is recommended that you use a set of interferometers that gives a
+uniform baseline coverage, e.g. by selecting fixed-movable (FM) interferometers
+only.
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

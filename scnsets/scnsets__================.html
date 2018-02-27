@@ -1,0 +1,31 @@
+<TITLE>Description of ================ (SCNSETS)</TITLE>
+<H1>Description of general keyword ================</H1>
+
+<DT><EM>Prompt:</EM> OBS, ALTOBS, FLD, CHN, SCT Detail level for overview
+<DT><EM>Default:</EM> OBS.
+<DT><EM>Expected input:</EM> Character(10).<P>
+ Specify the level for the overview. <P>
+To get a quick overview of the entire file, use <P>
+	OBS     Shows a summary per observation (2nd index) listing the type of 
+		 observation, the fieldname, the sequence number ('Volgnummer'),  
+		 project number and UT date and time and the breakdown in 
+		 numbers of fields, channels and sectors and polarisations <P>
+To get more other details (frequency, bandwidth, HA range, number of scans and 
+number of interferometers),  use <P>
+	ALTOBS  for one line per observation 
+	FLD     for one line per field in all observations 
+	CHN     for one line per channel in all fields in all observations 
+	SCT     for one line per sector in all channels in all fields in all 
+		 observations <P>
+NOTE: Depending on what is in your file, the volume of output in the latter 
+three modes may be quite large. If you are not interested in the difference 
+(e.g. in hour angle) between sectors, do not use SCT; if you are not interested 
+in the differences (e.g. in frequency) between channels, do not use CHN. <P>
+There is presently no mechanism to select only specific groups or observations 
+for display. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../scnsets/scnsets_comm.html">List of general keywords</A> for SCNSETS
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

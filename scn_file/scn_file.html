@@ -1,0 +1,350 @@
+<HEAD>
+<TITLE> The .SCN file </TITLE>
+</HEAD>
+<BODY><P>
+<P>
+<H1> The .SCN file </H1>
+<P><b></b><P>
+<b>Visibilities and associated data: The .SCN-file </b>
+<P>
+<P><em>Contributed by Johan Hamaker, November 1994  <P></em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=scn_file.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=scn_file.html#SECTION0002000000000000000>  <b>Overview of .SCN file contents</b></A>
+<LI> <A NAME=tex2html3 HREF=scn_file.html#SECTION0003000000000000000>  <b>The visibility hypercube and its dimensions </b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=scn_file.html#SECTION0003100000000000000>  <b>.SCN-file hierarchy and indexing </b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=scn_file.html#SECTION0003110000000000000>  <b>The scan</b></A>
+<LI> <A NAME=tex2html6 HREF=scn_file.html#SECTION0003120000000000000>  <b>The sector</b></A>
+<LI> <A NAME=tex2html7 HREF=scn_file.html#SECTION0003130000000000000>  <b>The indexing levels </b></A>
+</UL> 
+<LI> <A NAME=tex2html8 HREF=scn_file.html#SECTION0003200000000000000>  <b>How index values are allocated</b></A>
+<LI> <A NAME=tex2html9 HREF=scn_file.html#SECTION0003300000000000000>  <b>The sector header </b></A>
+<LI> <A NAME=tex2html10 HREF=scn_file.html#SECTION0003400000000000000>  <b>The scan header </b></A>
+</UL> 
+<LI> <A NAME=tex2html11 HREF=scn_file.html#SECTION0004000000000000000>  <b>Operations on .SCN files in general</b></A>
+<UL> 
+<LI> <A NAME=tex2html12 HREF=scn_file.html#SECTION0004100000000000000>  <b>Creation </b></A>
+<LI> <A NAME=tex2html13 HREF=scn_file.html#SECTION0004200000000000000>  <b>Inspection </b></A>
+<UL> 
+<LI> <A NAME=tex2html14 HREF=scn_file.html#SECTION0004210000000000000>  <b>Editing </b></A>
+</UL> 
+<LI> <A NAME=tex2html15 HREF=scn_file.html#SECTION0004300000000000000>  <b>Export </b></A>
+<LI> <A NAME=tex2html16 HREF=scn_file.html#SECTION0004400000000000000>  <b>Reorganising sectors </b></A>
+<LI> <A NAME=tex2html17 HREF=scn_file.html#SECTION0004500000000000000>  <b>Deleting sectors </b></A>
+</UL> 
+<LI> <A NAME=tex2html18 HREF=scn_file.html#SECTION0005000000000000000>  <b>Operation on corrections in a .SCN file</b></A>
+<UL> 
+<LI> <A NAME=tex2html19 HREF=scn_file.html#SECTION0005100000000000000>  <b>Gain/phase corrections</b></A>
+<LI> <A NAME=tex2html20 HREF=scn_file.html#SECTION0005200000000000000>  <b>Polarisation corrections </b></A>
+<LI> <A NAME=tex2html21 HREF=scn_file.html#SECTION0005300000000000000>  <b>Controlling the application of corrections </b></A>
+</UL> 
+<LI> <A NAME=tex2html22 HREF=scn_file.html#SECTION0006000000000000000>  <b>Operations on model visibilities </b></A>
+</UL>
+<A NAME=.scn.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview of .SCN file contents</b></A></H1>
+<P>
+<A NAME=.SCNSUM><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P>
+        .SCN files hold all visibility data in <i>NEWSTAR </i>. The basic unit of data is the <em>scan</em>, an array of visibilities for one mosiac subfield, hour angle and frequency channel, with polarisation (XX, XY, ,YX, YY) and interferometer sequence number as its two dimensions. Series of scans that are contiguous in hour angle together form a <em>sector</em>. The organisation of the sectors in a .SCN file will be discussed <A HREF="#.SCNSUM.indices">below</A>.
+<P>
+        It is a fundamental tenet of <i>NEWSTAR </i> that visibility data are always stored as received from Westerbork. <em>Corrections</em> are stored separately as such, and only applied to the visibilities when the data are read in by a program. Thus, what changes during the history of a .SCN file is the correction tables, <em>not</em> the visibility data.
+<P>
+        An important mechanism for eliminating faulty data points is the use of <em>flags</em>. Since there are several different reasons for rejecting data, 8 different flag types are recognised. A <em>flag byte</em> is associated with each data point. Programs normally reject a data point if any one of these flags is set, but the user has the option ignore certain flag types.
+<P>
+        The <em>self-calibration</em> methods in <i>NEWSTAR </i> rely on comparing the observed visibility data with the visibilities of a <em>source model</em> to find the instrumental errors. To economise on the lengthy calculations necessary to generate the <em>model visibilities</em>, the latter may be saved in the .SCN file for reuse.
+<P>
+<A NAME=.hypercube><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0003000000000000000>  <b>The visibility hypercube and its dimensions </b></A></H1>
+<P>
+<A NAME=.scn.hierarchy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> The scan and sector structures in a .SCN-file with the indexing hierarchy in which they are embedded. 
+<A HREF="../fig/scn_hierarchy.ps"><STRONG>FIGURE</STRONG></A> 
+  <i><BR>See text for further explanation. </i>
+<P>
+        Visibilities in a synthesis observation are functions of a series of coordinate parameters. One may conceptually arrange them in a <em>hypercube</em> whose coordinate axes correspond to these parameters; alternatively, this hypercube may be visualised as a hierarchy in which each level corresponds to one of the parameters.
+<P>
+        The organisational model used in the .SCN file is a hyprid, in which the lowest levels form a compact array, which is embedded in a hierarchical <em>index structure</em> for the remaining levels. The order of the parameters in this arrangement is in principle quite arbitratry. <i>NEWSTAR </i>'s choice was motivated by considerations of efficiency in both storage space and sorting for the most important processes. The order is, from the bottom upwards:
+<P>
+ <UL><LI>   <em>Polarisation:</em> Each telescope contains 2 orthogonal dipoles named <em>X</em> and <em>Y</em>. Depending on the observing mode, there may be 4 (<em>XX, XY, YX, YY</em>), 2 (<em>XX, YY</em>) or 1 (<em>XX</em>) polarisation.
+<P>
+<LI>   <em>Interferometer:</em> The WSRT consisting of 14 telescopes, the number of interferometers formed between the elements can be 91 at most. Depending upon the availability of telescopes and the observing modes, the actual number (NIFR) is usually somewhat smaller. In the .SCN file, the interferometers are sorted in order of ascending baseline and assigned a sequence number from 0 to NIFR-1.
+<P>
+<LI>   <em>Hour Angle:</em> The hour angle for the middle of the integration interval to which the data pertain. Hour angles are referred to as such. The integration interval is a multiple of 10 UT seconds and is defined by the user when he reads in the data.
+<P>
+<LI>   <em>Frequency Channel:</em> For observations in several (NCHN) simultaneous frequency bands, these bands are numbered from 1 through NCHN. In a single observation, the bands are not necessarily equally wide and equidistant. By convention, the sum of all bands is called the <em>continuum channel</em> and assigned channel number 0.
+<P>
+<LI>   <em>Mosaic Subfield</em> or <em>Pointing Centre:</em> In a mosaic observation, subfields are repeatedly observed in a fixed sequence. The fields are assigned a sequence number starting at 0. By convention, field 0 is at the mosaic centre.
+<P>
+<LI>   <em>Observation:</em> An observation is a 'container' holding all the data that were read from a single WSRT observation <em>label</em> in a single run of NSCAN.load.
+<P>
+<LI>   <em>Group:</em> A group is likewise a container holding all observations loaded in a single NSCAN.load run.  
+ </UL>
+<P>
+        It is customary to loosely refer to the levels of this hierarchy as the <em>dimensions</em> of a six-dimensional <em>data (hyper)cube</em>. One should bear in mind, however, that the same 'dimension' may be of different magnitude in different 'sub-cubes' of this hypercube or, in other words, that the 'cube' is not regularly filled.
+<P>
+<A NAME=.hierarchy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0003100000000000000>  <b>.SCN-file hierarchy and indexing </b></A></H2>
+<P>
+        An overview of the .SCN-file hierarchy is shown in  
+<A HREF=" #.scn.hierarchy">figure</A>. The levels correspond to those discussed  
+<A HREF="#.hypercube">above</A>. We shall discuss them from the bottom up.
+<P>
+        It is worth noting that the scan and sector headers combined contain all the information necessary to process the data. A sector may be divorced from the .SCN file without impairing its ability to be processed. The index blocks in the levels on top contain no 'scientific' information. Their only purpose is to organise the sectors.
+<P>
+<A NAME=.scan><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H3><A NAME=SECTION0003110000000000000>  <b>The scan</b></A></H3>
+<P>
+        The <em>scan</em> is the fundamental agggregate of data in a .SCN file. It is a two-dimensional array of visibilities for a single integration interval, with polarisation and interferometer as its dimensions.
+<P>
+        Associated with this block of data is a <em>scan header</em>. It contains descriptive data such as frequency and position parameters. In addition, it holds tables of those gain and phase corrections that may change from scan to scan, as well as data and correction statistics that are a measure of the data's quality. The contents are listed in the <A HREF="../src/nscan/sch.dsc"><b>definion file</b></A>.
+<P>
+<A NAME=.sector><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H3><A NAME=SECTION0003120000000000000>  <b>The sector</b></A></H3>
+<P>
+        A sequence of scans that is contiguous in hour angle is grouped together in a <em>sector</em>. The sector's contents are described in a <em>sector header</em>. Like the scan header, it contains descriptive data, corrections parameters that may be assumed to be constant for the time period covered by the sector and data/correction statistics for all the sector's scans combined. The contents are listed in the <A HREF="../src/nscan/sth.dsc"><b>definion file</b></A>.
+<P>
+<A NAME=.levels><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<A NAME=.SCNSUM.indices><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H3><A NAME=SECTION0003130000000000000>  <b>The indexing levels </b></A></H3>
+<P>
+        The <A HREF="../file_indexing/file_indexing.html">index structure</A> in which the sectors are organised follows the levels listed <A HREF="#.hypercube">above</A>. The  
+&lt;sequence number&gt; is an extra index that allows one to have more than one sector for which the first four indices are identical. A complete  
+.SCN-sector designation reads:  
+ <DL COMPACT><DT>
+<DD> &lt;group&gt;.&lt;observation&gt;.&lt;field&gt;.&lt;channel&gt;.&lt;sequence number&gt;
+<P>
+ </DL>
+<P>
+<A NAME=.mosaic.sectors><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Sectors in the uv plane. 
+<A HREF="../fig/mosaic_sectors.ps"><STRONG>FIGURE</STRONG></A> 
+ <i><BR>Left: For a standard observation the scans for a single observation and channel are contiguous and can be lumped together in a single sector. <BR>Right: In a mosaic observation the cuts for a given field are interleaved with cuts for other fields, so each cut is stored in a sector of its own. 
+<BR>The sector numbers shown are just by way of example. </i>
+<P>
+        One particularly important application of this possibility is in the organisation of the non-contiguous scans in a mosaic observation. In such an observation, the scans are not contiguous and therefore each 'hour-angle cut' forms a sector of its own (<A HREF=" #.mosaic.sectors">figure</A>).
+<P>
+<A NAME=.index.define><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0003200000000000000>  <b>How index values are allocated</b></A></H2>
+<P>
+<A NAME=.scn.indices><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> The allocation of the sector indices for a .SCN file. 
+<A HREF="../fig/scn_indices.ps"><STRONG>FIGURE</STRONG></A> 
+ <i><BR>- Every run of the NSCAN <em>LOAD</em> function creates a new <em>group</em>. 
+<BR>- Every (tape of optical-disk) label specified as input for such a run is stored in a new <em>observation</em>. 
+<BR>- The <em>field</em> and <em>channel</em> numbers are copied from the input. 
+<BR>- For a standard observation, the sequence number is 0. For a mosaic observation, the successive cuts for the same field and channel are given successive <em>sequence</em> numbers. </i>
+<P>
+        The method by which NSCAN allocates sector numbers is schematically shown in <A HREF=" #.scn.indices">figure</A>. The only control the user has is over the allocation of groups: Every NSCAN.load operation creates a new group, and the user defines which WSRT labels will be stored in that group.
+<P>
+<H2><A NAME=SECTION0003300000000000000>  <b>The sector header </b></A></H2>
+<P>
+        The sector header contains parametric data tha are constant throughout the sector. The most important groups are the following:  
+ <UL><LI>   Coordinates:  
+   <UL><LI>   right ascension (RA) and declination (DEC), both apparent and epoch;  
+  <LI>   start hour-angle (HAB) and increment between scans (HAI);  
+  <LI>   LSR frequency, frequency-channel number (CHN);  
+  <LI>   mosaic-subfield number (PTS);  
+  <LI>   telescope positions (RTP).  
+   </UL>
+<P>
+<LI>   Sector composition: Number of scans (SCN), number of  
+        polarisations (PLN), bandwidth (BAND), interferometer list  
+        (IFRP).
+<P>
+<LI>   Corrections: dipole errors.
+<P>
+<LI>   Noise statistics reported by the most recent  
+        <A HREF="../introduction/introduction.html#.selfcal">selfcal</A> extraction of corrections from  
+        the visibilities.
+<P>
+<LI>   Administrative information: length of a scan header plus data (SCNL).  
+ </UL>  For more details see the <A HREF="../src/nscan/sth.dsc">definition</A> file.
+<P>
+<H2><A NAME=SECTION0003400000000000000>  <b>The scan header </b></A></H2>
+<P>
+        The scan header contains the parametric data that apply specifically to one scan:  
+ <UL><LI>   Coordinate: Hour angle  
+<LI>   Corrections:  
+   <UL><LI>   Gain and phase corrections per  
+          <A HREF="../introduction/introduction.html#.SCNSUM">telescope</A>;  
+  <LI>   <A HREF="../introduction/introduction.html#.selfcal">global</A> corrections that may vary with  
+          hour angle: tropospheric and ionospheric refraction, extinction,  
+          Faraday rotation, clock;  
+   </UL>   
+<LI>   Noise statistics reported in the most recent  
+        <A HREF="../introduction/introduction.html#.selfcal">selfcal</A> extraction of corrections from  
+        the visibilities.  
+ </UL>  For more details see the <A HREF="../src/nscan/sch.dsc">definition</A> file.
+<P>
+<A NAME=.operations><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0004000000000000000>  <b>Operations on .SCN files in general</b></A></H1>
+<P>
+<A NAME=.creation><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004100000000000000>  <b>Creation </b></A></H2>
+<P>
+ <UL><LI>   From WSRT observations files: <A HREF="../nscan_descr/nscan_descr.html">NSCAN LOAD</A>.  
+<LI>   From ATCA (Australia Telescope Compact Array) files: NATNF  
+        LOAD.  
+<LI>   From old (R-series) SCN-files: <A HREF="../nscan_descr/nscan_descr.html">NSCAN FROM_OLD</A>.  
+<LI>   Simulated uv-data: NSIMUL.  
+ </UL>
+<P>
+<A NAME=.inspect><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004200000000000000>  <b>Inspection </b></A></H2>
+<P>
+Displays in tabular form:  
+ <UL><LI>   Summary of contents: <A HREF="../nscan_descr/nscan_descr.html">NSCAN SHOW</A>.  
+<LI>   Summary of one sector or scan header at a time: <A HREF="../nscan_descr/nscan_descr.html">NSCAN SHOW CONT           [CONT]</A>.  
+<LI>   Complete sector or scan header, one at a time: <A HREF="../nscan_descr/nscan_descr.html">NSCAN SHOW CONT           [CONT] SHOW</A>.  
+<LI>   Visibilities, weights, flags for one scan at a time: <A HREF="../nscan_descr/nscan_descr.html">NSCAN SHOW           CONT CONT DATA/WEIGHTS</A>.  
+<LI>   Telescope gain/phase corrections averaged over a range of scans:  
+        <A HREF="../ncalib_descr/ncalib_descr.html">NCALIB SHOW</A>  
+<LI>   Telescope dipole corrections averaged over a range of scans:  
+        <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR SHOW</A>  
+ </UL>
+<P>
+Graphic displays:  
+ <UL><LI>   Object or model visibilities vs. hour angle: NPLOT  
+        DATA/MODEL  
+<LI>   Object or model visibilities in the Cartesian UV plane:  
+        <A HREF="../nmap_descr/nmap_descr.html">NMAP..</A>  
+<LI>   Gain/phase corrections vs. hour angle: NPLOT  
+        TELESCOPE.  
+<LI>   Redundancy/Selfcal residuals: NPLOT RESIDUAL  
+ </UL>
+<P>
+        Additional possibilities for extracting. manipulating and displaying a variety of items from the .SCN file are available in  
+<A HREF="../ngcalc_descr/ngcalc_descr.html">NGCALC</A>.
+<P>
+<A NAME=.edit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H3><A NAME=SECTION0004210000000000000>  <b>Editing </b></A></H3>
+<P>
+        Almost every value (observation parameters, corrections, etc) in the SCN-file headers may be edited manually through <A HREF="../nscan_descr/nscan_descr.html">NSCAN SHOW EDIT</A>. The effect of changing a value may range from trivial to catastrophic. If you run into a situation that you think can only be remedied by manual editing, you do better to contact the <A HREF="../people/people.html"><i>NEWSTAR </i> group</A> first.
+<P>
+<A NAME=.export><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004300000000000000>  <b>Export </b></A></H2>
+<P>
+ <UL><LI>   In UVFITS format (AIPS): <A HREF="../nscan_descr/nscan_descr.html">NSCAN UVFITS</A>  
+<LI>   Inspect a UVFITS file: <A HREF="../nscan_descr/nscan_descr.html">NSCAN PFITS</A>  
+ </UL>
+<P>
+<A NAME=.reorganise><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004400000000000000>  <b>Reorganising sectors </b></A></H2>
+<P>
+        You may want to reorganise the indexing of your sectors. This can be done to some extent through the <A HREF="../nscan_descr/nscan_descr.html">NSCAN REGROUP</A> function.
+<P>
+<A NAME=.delete><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0004500000000000000>  <b>Deleting sectors </b></A></H2>
+<P>
+        The most important reason why one would want to delete sectors is to reclaim disk space. It would be fairly simple to provide a DELETE command that would make sectors invisible, but this would not free any space.
+<P>
+        An equivalent result can be achieved, however: Use  
+<A HREF="../ncopy_descr/ncopy_descr.html">NCOPY</A> to copy those sectors that you want to keep to a new .SCN file, then delete the old file.
+<P>
+.  
+<A NAME=.corrections><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0005000000000000000>  <b>Operation on corrections in a .SCN file</b></A></H1>
+<P>
+        Operations on corrections generally fall into either of two categories:  
+ <UL><LI>   Those that affect the gain/phase of individual dipole/interferometer  
+        hannels. This encompasses all corrections, except
+<P>
+<LI>   Those dealing with polarisation. These are 'special' in that they  
+        produce an effect of 'mixing' or 'crosstalk' between channels that would  
+        ideally be independent.  
+ </UL>
+<P>
+<A NAME=.gain.phase><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0005100000000000000>  <b>Gain/phase corrections</b></A></H2>
+<P>
+ <UL><LI>   Zero, manual set: <A HREF="../ncalib_descr/ncalib_descr.html">NCALIB SET ZERO/MANUAL</A>  
+<LI>   Selfcal model fit: <A HREF="../ncalib_redun/ncalib_redun.html">NCALIB REDUN</A>  
+<LI>   Shift the reference value of telescope phases: <A HREF="../ncalib_redun/ncalib_redun.html">NCALIB           RENORM</A>  
+<LI>   Copy average corrections from one selection of scans to another one:  
+        <A HREF="../ncalib_descr/ncalib_descr.html">NCALIB SET COPY/CCOPY/LINE</A>  
+ </UL>
+<P>
+<A NAME=.polarisation><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0005200000000000000>  <b>Polarisation corrections </b></A></H2>
+<P>
+Dipole errors:  
+ <UL><LI>   Zero, manual set: <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR ZERO/MANUAL</A>  
+<LI>   Estimation: <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR CALC</A>  
+<LI>   Copy average corrections from one selection of scans to another one:  
+        <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR COPY</A>  
+ </UL>   
+Phase-zero difference:  
+ <UL><LI>   Manual set: <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR VZERO MANUAL</A>  
+<LI>   Estimation: <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR VZERO CALC</A>  
+<LI>   Copy average corrections from one selection of scans to another one:  
+        <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR VZERO COPY</A>  
+ </UL>
+<P>
+<A NAME=.apply><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H2><A NAME=SECTION0005300000000000000>  <b>Controlling the application of corrections </b></A></H2>
+<P>
+        Corrections are selectively applied to the visibilities whenever the data is read into memory to be processed. By default, all available corrections are selected. The user has the option to make his own selection. To this end, start your program with the /ASK switch:  
+ <DL COMPACT><DT>
+<DD>   dwe &lt;program&gt; /ASK
+<P>
+ </DL>  This will result in a long series of prompts. Simply type a &lt;CR&gt; to all, except those for the APPLY, DE_APPLY and FLAG parameters. More information can be found in the <A HREF="../introduction/introduction.html#.help">on-line help</A> texts.
+<P>
+        (We acknowledge that the appearance of many irrelevant prompts in this situation is unsatisfactory. We hope to correct this situation in the future.)
+<P>
+<A NAME=.model><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+<H1><A NAME=SECTION0006000000000000000>  <b>Operations on model visibilities </b></A></H1>
+<P>
+ <UL><LI>   Inserting/modifying the internal model: Use the <A HREF="../nmodel_handle/nmodel_handle.html">model           HANDLE</A> interface in NMODEL, NCALIB or NMAP.  
+<LI>   Deleting the indernal model: There is no operation to do this. See the  
+        <A HREF="../nmodel_handle/nmodel_handle.html">model HANDLE</A> document for a workaround.  
+ </UL>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

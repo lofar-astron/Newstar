@@ -1,0 +1,21 @@
+<TITLE>Description of RESTORE_BEAM (NCLEAN)</TITLE>
+<H1>Program NCLEAN: private keyword RESTORE_BEAM</H1> 
+
+<DT><EM>Prompt:</EM> dl, dm arcsec, pa deg
+<DT><EM>Expected input:</EM> Real number, 3 values.<P>
+Specify the restore beam width: <P>
+   dl      width of beam in arcsec (full-halfwidth) <P>
+   dm      width of beam in arcsec (full-halfwidth) <P>
+   pa      position angle of skewed beam in degrees (anti-clockwise; 
+            0 deg is horizontally to the right (+l direction) <P>
+The default beam is a two-dimensional Gaussian truncated at a level of .xx 
+relative to the maxiumum. If an antenna pattern for your map is available, the 
+l, m beam widths are derived from it; else a rule-of-thumb formula is used: <P>
+        half-width = 12 arcsec * 1400/frequency(MHz)  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nclean/nclean_keys.html">List of keywords</A> for NCLEAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nclean_descr/nclean_descr.html">program NCLEAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,20 @@
+<TITLE>Description of ROTATION_MEASURE (NMAP)</TITLE>
+<H1>Program NMAP: private keyword ROTATION_MEASURE</H1> 
+
+<DT><EM>Prompt:</EM> Rotation measure
+<DT><EM>Expected input:</EM> Real number, 512 values.<P>
+Specify one (or more) rotation measure(s) (RM). Pairs of input maps will be 
+phase-rotated to the the frequency of the first input map and averaged: <P>
+    THETAn = 2 * RM * ( (c/FRQn)**2 -  (c/FRQ1)**2 ) <P>
+    Qout = SUM( Wn * ( cos(THETAn)*Qn - sin(THETAn)*Un ) ) / SUM( Wn ) 
+    Uout = SUM( Wn * ( sin(THETAn)*Qn + cos(THETAn)*Un ) ) / SUM( Wn ) <P>
+A pair of Qout/Uout will be produced for each RM given. E.g. to get average Q/U 
+maps for rotation measures from 0 to 5 with intervals of 0.5, specify 
+ROTATION_MEASURE=0 TO 5 BY 0.5. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

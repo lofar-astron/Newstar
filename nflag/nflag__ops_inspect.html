@@ -1,0 +1,47 @@
+<TITLE>Description of OPS_INSPECT (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_INSPECT</H1> 
+
+<DT><EM>Prompt:</EM>  "Projection (COUNT, FTYP, TEL, IFR, HA) with optional '_' plus|-range modifier (X, Y, XY, YX, MAN, CLIP, NOISE, ADD, SHAD, U3, U2, U1, OLD)|-OR navigation control (STATIST, MODE)" 
+<DT><EM>Expected input:</EM> Character(24).<P>
+Count and inspect flags in the primary data cube. A complete reply consists of 
+one of the primary options plus a modifier suffix. <P>
+   Count flags (no modifier!): <P>
+        COUNT   Count the flags of all types that are set, for subsequent 
+                 inspection. 
+                You may define a secondary data cube for this operation 
+                By default, flags of all types are counted; you may change this 
+                 (parameter FLAG_MODE). <P>
+   Show the flag counts in various data-cube dimensions (&lt;mod&gt; stands for one 
+of 
+   the optional modifiers listed below): <P>
+        FTYP_&lt;mod&gt;  Show the counts per flag-type (data and headers). 
+        TEL_&lt;mod&gt;   Show the counts per telescope. 
+        IFR_&lt;mod&gt;   Show the counts per interferometer. 
+        HA_&lt;mod&gt;    Show the counts per hour-angle (total over all 
+                     interferometers and polarisations). 
+!!      CHAN_&lt;mod&gt;  Show the counts per frequency channel. <P>
+     Modifiers: You may limit the display of counts to a sub-set through one of 
+     the following modifiers (prefixed with an underscore, e.g. TEL_SHAD, or 
+     HA_XX). The display will be equivalent to that for a secondary cube 
+     covering the same selection. <P>
+        X, Y            XX alone, YY alone 
+        XY, YX          only XX and YY, only XY and YX 
+        MAN, CLIP, NOIS, ADD, SHAD, U3, U2, U1, OLD 
+                        for one flag type 
+        &lt;interferometer designation&gt; 
+                        for a (group of) interferometer(s), e.g. FTYP_9A, HA_8* 
+        &lt;telescope&gt; 
+                        for a (group of) telescope(s), e.g. FTYP_8 
+!!                      Implemented?? <P>
+   Navigation: <P>
+        STATIST Make detour into the (data) STATISTics section of the program 
+        MODE    Make detour into the enviornment MODE-control section of the 
+                 program 
+        QUIT    Back out from INSPECT: Return to what you were doing before.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

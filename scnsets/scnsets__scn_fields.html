@@ -1,0 +1,25 @@
+<TITLE>Description of SCN_FIELDS (SCNSETS)</TITLE>
+<H1>Description of general keyword SCN_FIELDS</H1>
+
+<DT><EM>Prompt:</EM>  3rd index: fields
+<DT><EM>Expected input:</EM> Character(32).<P>
+ Give the 'field' index-range (fld) of a sector-Set specification 
+							(grp.obs.fld.chn.seq) <P>
+The standard use of multiple fields in a .SCN file observation is for the 
+different pointing centres (fields) in a mosaic observation. <P>
+Possible answers ([]=optional): <P>
+	0               take first (or only) field 
+	n1              take field nr n1 (n1=0, 1, 2, 3, ....) 
+	n1-n2[:n3]      loop over fields n1 through n2 [step n3] 
+	*               loop over all fields in the observation (wildcard) 
+	n1-[*][:n3]     loop over all fields in the observation,  
+			 starting with n1 [step n3] <P>
+NB: The associated SCN_LOOPS keyword allows even more looping over index 
+values. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../scnsets/scnsets_comm.html">List of general keywords</A> for SCNSETS
+<LI>Description of the <A HREF="../scn_descr/scn_descr.html">SCN file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

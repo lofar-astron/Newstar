@@ -1,0 +1,312 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Public parameter group NSHOW</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nshow_public_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nshow_public_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=nshow_public_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=nshow_public_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=nshow_public_intfc.html#SECTION0003200000000000000>  <b>Parameter EDIT</b></A>
+<LI> <A NAME=tex2html6 HREF=nshow_public_intfc.html#SECTION0003300000000000000>  <b>Parameter FILE_ACTION</b></A>
+<LI> <A NAME=tex2html7 HREF=nshow_public_intfc.html#SECTION0003400000000000000>  <b>Parameter MAP_ACTION</b></A>
+<LI> <A NAME=tex2html8 HREF=nshow_public_intfc.html#SECTION0003500000000000000>  <b>Parameter SCAN_ACTION</b></A>
+<LI> <A NAME=tex2html9 HREF=nshow_public_intfc.html#SECTION0003600000000000000>  <b>Parameter SECTOR_ACTION</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the public parameter group NSHOW, (part of) which is included in several <i>NEWSTAR </i> programs.
+<P>
+        The 
+document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+        Please note that the generic prompt and help texts defined for these parameters are frequently superseded in the actual applications by alternative texts that are more appropriate to the situation at hand. Unfortunately, the present architecture of <i>NEWSTAR </i> precludes the inclusion of such texts in the documentation system, so the only opportunity to read that information is during program execution (in your terminal window!).
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<A NAME=.edit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter EDIT</b></A></H2>
+<P>
+  <em>Prompt:</em> Edit: name [offset][/length][:format] , val [,...] (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *80:  1 to 16 values
+<P>
+    <PRE>
+The preceding sequence of parameter values that you provided defines one header
+or data structure being processed. The EDIT parameter now allows you show
+and/or edit the values of individual (goups of) fields in this structure. All
+fields may be modified, except for the pointers that define the structure of
+the file.
+</PRE>
+<P>
+  <PRE>
+NOTE: Although EDITing may be used to patch up a file, it is really intended
+only for debugging/testing purposes
+        Newstar programs provide a number of manual-input operations that cover
+all situations expected in normal practice. In the rare cases that a file is
+systematically corrupted in a curable way (e.g. because of an error in the WSRT
+on-line program), the preferred course is to have an ad-hoc extension made to a
+Newstar program to process the damaged file(s).
+</PRE>
+<P>
+  <PRE>
+The following operations are available:
+</PRE>
+<P>
+  <PRE>
+   *                 show values of all fields in the structure
+   :                 show format information for all fields in the structure
+   <name>            show value(s) of field <name> in the structure
+   <name>:           show format information for field <name> in the structure
+   <name>,<value>,.. write <valye> in filed <name> in the structure
+</PRE>
+<P>
+  <PRE>
+   Instead of <name> you may specify a hex number (absolute address in the file)
+   or a hex number preceded by a '.' (address in the file relative to the origin
+   of the current structure)
+</PRE>
+<P>
+  <PRE>
+Values are assumed to be in format of printout. Radix can be changed by
+prefixing with %
+hh:[mm[:ss[.ttt]]] or dd.mm.[ss.ttt]
+</PRE>
+<P>
+  <PRE>
+'name' can be followed by (offset) to start at position offset in multi-valued
+list; and/or /number to limit number of values in same
+</PRE>
+<P>
+  <PRE>
+A full name specification can be followed with either:
+   :format               to change printing and reading format. (format can be
+                        e.g. {USX}{BIJ}  {ED}[n[.m]] {EC|DC}[n[.m]]
+   ::type[(off)][/n]     where type specifies a header type (e.g. STH) to format
+                        the indicated disk area as this type
+                        Single letter types are dummy header types for simple
+                        formats
+  ::                    gives all known header types
+</PRE> 
+ <em>see the <A HREF="../show_edit/show_edit.html">SHOW/EDIT</A> manual for a more elaborate
+  description</em>
+<P>
+<A NAME=.file.action><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter FILE_ACTION</b></A></H2>
+<P>
+<em>Prompt:</em> file-header action (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify interaction with the file header:
+</PRE>
+<P>
+  <PRE>
+   Summarise contents of the file:
+        LAYOUT    show counts of groups, fields and channels in the file
+        OVERVIEW  give overview of all sector headers
+</PRE>
+<P>
+  <PRE>
+   Details of the file header:
+        SHOW:     display the file header in full
+        EDIT:     edit fields in the file header
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+        CONT      go down one level, to interact with Sector headers
+        QUIT      exit from SHOW/EDIT option
+</PRE>
+<P>
+<A NAME=.map.action><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter MAP_ACTION</b></A></H2>
+<P>
+<em>Prompt:</em> image-header action (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify interaction with image header:
+</PRE>
+<P>
+  <PRE>
+   Show details of the image header:
+        SHOW    Display the entire image header
+        EDIT    Edit fields in the image header
+</PRE>
+<P>
+  <PRE>
+   Show details associated with the current image:
+        JOB     Job summary sheet (if available)
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+        NEXT    Proceed to the header for the next image selected
+        CONT    Pescend into the scans of this image
+        QUIT    Return to the file-header level
+</PRE>
+<P>
+<A NAME=.scan.action><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter SCAN_ACTION</b></A></H2>
+<P>
+<em>Prompt:</em> Scan action, one of |- (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify interaction with the scan's header or data:
+</PRE>
+<P>
+  <PRE>
+   Details of the scan header and associated tables:
+</PRE>
+<P>
+  <PRE>
+        SHOW    Show entire header for selected scan
+        EDIT    Edit fields in the scan header
+        IFR     Show table of interferometer corrections
+</PRE>
+<P>
+  <PRE>
+   Navigation. The hour angle/scan you select remains in force until you select
+   a new one or QUIT. Initial selection is the first scan in this sector. For a
+   non-existent hour-angle, the nearest existing one is selected instead.
+</PRE>
+<P>
+  <PRE>
+        nn.nn   Select scan at hour angle nearest to this value
+        >, <    Select the next (>) or preceding (<) scan
+        >n, <n  Select the n-th next (>) or preceding (<) scan
+        Q[uit]  Return to sector-header level
+</PRE>
+<P>
+  <PRE>
+Mode switches. The values you select remain in force until you change them or
+QUIT.
+</PRE>
+<P>
+  <PRE>
+   Data-stream selection; the initial setting is XX.
+        XX/XY/YX/YY
+                Select polarisation
+        TP      Select Total Power mode (noise source on/off)
+        GN      Select Gain correction mode
+</PRE>
+<P>
+  <PRE>
+   Correction mode. Visibility data will be displayed accordingly. Initial
+   setting is UNCOR.
+</PRE>
+<P>
+  <PRE>
+        UNCOR   Display 'raw' data
+        COR     Display the data corrected as specified by the APPLY
+                and DE_APPLY parameters. These parameters are normally set
+                automatically for you. (This may result in the program
+                requesting additional information.)
+</PRE> 
+ <em>see the parameter description for <A HREF="../ngen/ngen.html#.apply">APPLY</A> and
+ <A HREF="../ngen/ngen.html#.de.apply">DE_APPLY</A> </em>
+<P>
+  <PRE>
+Data display for the selected scan and polarisation:
+</PRE>
+<P>
+  <PRE>
+        D[ata]   Complex visibilities (real and imaginary parts)
+        A[mpl]   Visibilities represented as amplitude and phase
+        W[eight] Weights and flags associated with the visibilities
+</PRE>
+<P>
+  <PRE>
+Miscellaneous functions:\.
+        T[el]   Calculate and show an estimate (based on a point source model)
+                for the telescope gains/phases. In those rare cases where NCALIB
+                REDUN fails to correctly resolve 180-deg phase ambiguities, you
+                may use the phases displayed here as initial values for the
+                corrections, through the NCALIB SET MANUAL option.
+</PRE> 
+ <em>see the NCALIB <A HREF="../ncalib/ncalib.html#.set">SET MANUAL</A> parameter description</em>
+<P>
+<A NAME=.sector.action><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003600000000000000>  <b>Parameter SECTOR_ACTION</b></A></H2>
+<P>
+<em>Prompt:</em> Sector-header action | (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify interaction with this sector header:
+</PRE>
+<P>
+  <PRE>
+   Show details of the sector header:
+        SHOW    show entire sector header
+        EDIT    edit fields (values) in the Sector header by name
+</PRE>
+<P>
+  <PRE>
+   Show details associated with the current sector:
+        NAME    index 'name' of the current Sector (if #nr specified)
+        IFRS    the interferometer table
+        IFH:    header of 'IF' data (Total Powers etc)
+        FLAGS:  show the nr of flags per interferometer that are set in the
+                 current Sector
+</PRE>
+<P>
+  <PRE>
+   Navigation:
+        NEXT:   proceed to the header for the next sector selected
+        CONT:   descend into the scans of this sector
+        QUIT:   return to the file-header level
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

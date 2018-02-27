@@ -1,0 +1,46 @@
+<TITLE>Description of UPDATE_TYPE (NMODEL)</TITLE>
+<H1>Program NMODEL: private keyword UPDATE_TYPE</H1> 
+
+<DT><EM>Prompt:</EM> Update mode I, LM, ILM, SILM; EXTEND; QUV, PESTIMATE;|X00, X01, X02, X03 ; QUIT
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify the parameters to be redetermined per source in the update process. <P>
+   Position and flux: 
+        I       Intensity only 
+        LM      Position only 
+        ILM     Intensity and position 
+        SILM    Intensity, spectral index and position (requires a multichannel 
+                 observation with &lt;bandwidth per channel&gt;/&lt;frequency&gt; greater 
+                 than ..) 
+!                       ?? <P>
+   Source size: 
+        EXTEND  Intensity and size parameters for elliptic-Gaussian model 
+                 (major/minor axes, position angle) <P>
+   Source polarisation: 
+        QUV     Stokes Q/I, U/I, V/I 
+        PESTIM  Estimate the total linear polarisation, and store it as Stokes 
+                 Q. NOTE that this improper use of the model list is not 
+                 recorded, so you it is your responsibility to interpret this 
+                 kluge correctly. <P>
+   Specially programmed updates -- ask AGdB about details 
+<DT><STRONG>	X00</STRONG> Type extra 0 
+<DT><STRONG>	X01</STRONG> Type extra 1 
+<DT><STRONG>	X02</STRONG> Type extra 2 
+<DT><STRONG>	X03</STRONG> Type extra 3 <P>
+NOTES: 
+        1. All sources in the model are taken into account in determining the 
+residual visibilities on which the update fit is performed. However, no updates 
+are attempted for sources of type other than 0 nor for CLEAN components. <P>
+        If you want to protect one or more sources from being updated, you can 
+do so by temporarily changing their type (OPTION=MODIFY, MODIFY_OPTION=FEDIT,  
+see the Help text there). 
+!               \whichref{}{} <P>
+        2. It is recommended that you use a set of interferometers that gives a 
+uniform baseline coverage, e.g. by selecting fixed-movable (FM) interferometers 
+only.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_keys.html">List of keywords</A> for NMODEL
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmodel_descr/nmodel_descr.html">program NMODEL</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

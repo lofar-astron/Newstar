@@ -1,0 +1,33 @@
+<TITLE>Description of REF_SCN_NODE (NMODEL)</TITLE>
+<H1>Program NMODEL: private keyword REF_SCN_NODE</H1> 
+
+<DT><EM>Prompt:</EM> File name
+<DT><EM>Expected input:</EM> Character(80).<P>
+Specify the node name with the model overall coordinates to use. <P>
+Instead of a file name you may reply with a '*'. You will then be prompted for 
+'manual' inpout of data, unless you are CONVRTing between apparent and epoch 
+coordinates. 
+!!                      ??? 
+!!. 
+!!Note that the node name can be preceded with dev:[dir..] (or /dev/dir... if 
+!!Unix). The specified dev and/or directories will become the default 
+!!database for all node related names. Atstart of program the default is the 
+!!current directory. The database specified should be an existing directory. 
+!!. 
+!!By placing part of the node name in parentheses (), the string defined 
+!!in such a way can in subsequent node questions be referenced with a #. 
+!!Hence the following inputs will translate as: 
+!!. 
+!!  ngc1204.21cm.long                   ngc1204.21cm.long 
+!!  [dwl.ger.ngc1204]ngc1204.90cm.short [dwl.ger.ngc1204]ngc1204.90cm.short 
+!!  (ngc1204.21cm.)long                 [dwl.ger.ngc1204]ngc1204.21cm.long 
+!!  a.#long                             [dwl.ger.ngc1204]a.ngc1204.21cm.long 
+!!              Is this of any use? If so, why specifically here? 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_keys.html">List of keywords</A> for NMODEL
+<LI>Description of the <A HREF="../scn_descr/scn_descr.html">SCN file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmodel_descr/nmodel_descr.html">program NMODEL</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

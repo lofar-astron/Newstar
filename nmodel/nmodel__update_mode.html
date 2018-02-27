@@ -1,0 +1,24 @@
+<TITLE>Description of UPDATE_MODE (NMODEL)</TITLE>
+<H1>Program NMODEL: private keyword UPDATE_MODE</H1> 
+
+<DT><EM>Prompt:</EM> Update type SEPARATE; CLUSTER, LCLUSTER; COMBINED, LCOMBINED;|CONSTRAINED, LCONSTRAINED; QUIT
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify how the update process should proceed: <P>
+        SEPARATE        each source to be updated is looked at separately,  
+                         and they are fiddled to cater for close sources <P>
+        CLUSTER         sources are clustered to bypass closeness problems <P>
+        COMBINED        all sources solved in one go, with sub-clustering <P>
+        CONSTRAINED     use constraints and clustering. The standard 
+                         constraint used is to fix all variables for all 
+                         but the lowest intensity source <P>
+        L&lt;type&gt;         Loop up to 20 cycles till convergence: 
+                         Note that the loop option does not always 
+                         work, and is very slow. Preferably use for a 
+                         small number of well separated sources/clusters.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_keys.html">List of keywords</A> for NMODEL
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmodel_descr/nmodel_descr.html">program NMODEL</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

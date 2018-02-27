@@ -1,0 +1,23 @@
+<TITLE>Description of CHANNELS (NSCAN)</TITLE>
+<H1>Program NSCAN: private keyword CHANNELS</H1> 
+
+<DT><EM>Prompt:</EM> frequency channel number(s)
+<DT><EM>Expected input:</EM> Integer number, 512 values.<P>
+Select the frequency channels/bands to be included. NOTE that the WSRT 
+continuum channel (i.e. the sum of all channels) always has number 0 <P>
+   '*' selects all channels <P>
+   '&lt;begin&gt; TO &lt;end&gt;&gt; BY &lt;step&gt;' selects channels &lt;begin&gt;, &lt;begin&gt;+&lt;step&gt;, ... 
+        up to &lt;end&gt;. The 'BY &lt;step&gt;' part may be omitted. 
+   BEWARE: The notation &lt;begin&gt;-&lt;end&gt;:&lt;step&gt; will be interpreted as an 
+        expression and give incorrect results <P>
+Each of the selected channels will be stored in the .SCN file as a separate 
+'channel' (chn) under the current 'group', 'observation' and 'field' 
+grp.obs.fld. (Remember that .SCN file 'sectors' are identified by indices 
+grp.obs.fld.chn.seq).  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nscan/nscan_keys.html">List of keywords</A> for NSCAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nscan_descr/nscan_descr.html">program NSCAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

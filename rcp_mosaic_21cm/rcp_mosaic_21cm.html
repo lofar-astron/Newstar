@@ -1,0 +1,155 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Processing recipe: Mosaicing at 21 cm</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=rcp_mosaic_21cm.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=rcp_mosaic_21cm.html#SECTION0002000000000000000> <b>Scope of the recipe</b></A>
+<LI> <A NAME=tex2html3 HREF=rcp_mosaic_21cm.html#SECTION0003000000000000000> <b>Introduction and background</b></A>
+<LI> <A NAME=tex2html4 HREF=rcp_mosaic_21cm.html#SECTION0004000000000000000> <b>Summary of the recipe</b></A>
+</UL>
+Author: T. Ghosh
+<P>
+<A NAME=.scope><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000> <b>Scope of the recipe</b></A></H1>
+<P>
+This recipe suggests a way for making a 21-cm continuum mosaic map. In this example, a particular field was chosen where there were many previously-known radio sources within the region to be mapped. Hence, we knew that there was sufficient flux-density for almost all of the pointing centres to allow  us to run <i>selfcal</i>. If the user is not sure of having enough SNR for this, a modified version can be used.  Hence, consider this recipe as just a starting point, and <i>add salt to your taste</i>.
+<P>
+<A NAME=.intro><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000> <b>Introduction and background</b></A></H1>
+<P>
+In the mosaic mode of observation, during one 12-hour period the telescopes, along with the fringe-stopping and the delay-tracking centres, cycle through a grid of pointings a number of times. In Fig 003.1, we used a 13 x 5 grid of these so called, <i>pointing centres</i>. There were about 21 cuts (or spokes), each containing two scans of 10-s duration for each pointing centre. The total 40-MHz bandwidth at 21 cm is usually divided into eight 5-MHz channels (although these are not contiguous). Hence, the data file had the following set indices (see also Ch 3.):  <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap231.png">
+<P>
+For a particular pointing centre, the reduction methodology is very much the same as that in Recipe 004. <b>However, all the maps are to be made using a common reference point (NMAP-option REFERENCE)</b>. Usually, for a large number of pointing centres, book-keeping etc. could be quite difficult. Here, all the advantages of the Automatic Batch Processing facility (ABP, Appendix D) can be very easily exploited. In the  following section we detail all the steps, indicating the pre-ABP, the ABP, and the post ABP stages, Stage I, II and III respectively, that were used to generate the map in Fig 003.1. These three stages also coincide with the <em>calibration using a different source</em>, the <em>Selfcal-Model formation loop for all the pointing centres</em>, and the <em>mosaicing</em> stages.
+<P>
+<A NAME=.summary><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000> <b>Summary of the recipe</b></A></H1>
+<P>
+<b>STAGE I:</b>
+<P>
+<OL><LI> <b>Load your data:</b> Source data from tape or optical disk (NSCAN). See also Recipe ``Reading data in Dwingeloo''. Also read the data from observations of a calibration source, (e.g. 3C147 in the case of Fig 003.1) made just before or after the <em>source field</em>. 
+<LI> <b>Inspect the data file and flag bad points mentioned on the WSRT green sheet :</b> (NSCAN, option SHOW etc). 
+<LI> <b>Calculate antenna-based phase and gain correction factors for the Calibrator data:</b> (NCALIB, option REDUNDANCY, suboption SELFCAL, using a model file obtained from AGB ) 
+<LI> <b>Copy the corrections to the source data:</b> (NCALIB, option SET, suboption COPY) 
+</OL>
+<P>
+<b>STAGE II:</b>
+<P>
+This stage could be batch processed (APPENDIX D). In the following, we first write a name for each task, which briefly describes the function of the step too. Within the bracket, we mention the programme to be used, and comment on a few important input parameters. Depending upon the flux density of the strongest source in the map of a particular pointing centre, the Stage is stopped at various <b>Exit points</b>.
+<P>
+For each pointing centre:
+<P>
+<OL><LI> <b>Raw:</b> (NMAP, make a <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap233.png"> pixel raw map of real size <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap245.png"> ) 
+<LI> <b>Find1:</b> (NMODEL, find model components down to a suitable limit e.g. 6 w.u. here) 
+</OL>
+<P>
+<b>Exit point 1:</b> If the flux density of the strongest component, <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap237.png"> is less than limit 1 (12 w.u., here) - STOP - Proceed to next pointing centre.
+<P>
+<OL><LI> <b>Upd1:</b> (NMODEL, Update the model list, delete sources weaker than a certain limit after updating, e.g. 6 w.u) 
+<LI> <b>Upd2:</b> (NMODEL, Second iteration of the above) 
+<LI> <b>Self1:</b> (NCALIB, self-calibrate ONLY the PHASE of the data using model, Upd2) 
+<LI> <b>Sub1:</b> (NMAP, make <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap245.png"> map after subtracting model, Upd2) 
+</OL>
+<P>
+<b>Exit point 2:</b> If <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap241.png">  limit 2 (20 w.u. here) - STOP - Proceed to next pointing centre.
+<P>
+<OL><LI> <b>Find2:</b> (NMODEL, find model components from map, Sub1 down to a suitable limit e.g. 5 w.u. here and add to the model, Upd2) 
+<LI> <b>Upd3:</b> (NMODEL, update the model list, Find2 and  delete sources weaker than a certain limit e.g. 5 w.u here) 
+<LI> <b>Upd4:</b> (NMODEL, second iteration of the above) 
+<LI> <b>Self2:</b> (NCALIB, self-calibrate the data using model, Upd4) 
+<LI> <b>Del1:</b> (NSCAN, delete scans with selfcal-amplitude and/or phase noise <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap249.png">) 
+<LI> <b>Sub2:</b> (NMAP, make <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap245.png">  map after subtracting model, Upd4) 
+</OL>
+<P>
+<b>Exit point 3:</b> If <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap247.png">  limit 3 (40 w.u. here) - STOP - Proceed to next pointing centre.
+<P>
+<OL><LI> <b>Find3:</b> (NMODEL, find model components from map, Sub2 down to a suitable limit e.g. 2.5 w.u. here and add to the model, Upd4) 
+<LI> <b>Upd5:</b> (NMODEL, update the model list, Find3 and delete soucres weaker than a certain limit e.g. 2.5 w.u here) 
+<LI> <b>Upd6:</b> (NMODEL, second iteration of the above) 
+<LI> <b>Self3:</b> (NCALIB, self-calibrate the data using model, Upd6) 
+<LI> <b>Del2:</b> (NSCAN, delete scans with selfcal-amplitude and/or phase noise <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap249.png">) 
+<LI> <b>Sub3:</b> (NMAP, make <IMG ALIGN=BOTTOM ALT="" SRC="_12039_tex2html_wrap245.png"> map after subtracting model, Upd6) 
+</OL>
+<P>
+<b>End of stage II</b>
+<P>
+At this point, for all the pointing centres, one should have a good model list, and a residual map. The common model components in the overlapping region can be checked for positional agreement. These can be cross-checked against any source within the region whose accurate position is known from the literature. Usually, agreements within 1 arcsec was achieved at this stage, which was already 1/10 th of the synthesised beam.
+<P>
+Depending upon the quality of the maps, they can be grouped into four classes.
+<P>
+<b>A.</b> Good maps, where noise is already at the theoretical limit, though there may still be residual sources, and their grating rings and sidelobes.
+<P>
+<b>B.</b> Maps containing grating rings from sources beyond the mapped region.
+<P>
+<b>C.</b> Maps with bad scans.
+<P>
+<b>D.</b> Maps with amplitude or/and Phase calibration problems.
+<P>
+For Class B maps, make larger low-resolution maps and try to include the strong (offending) source in the model list, and then start again at the beginning of Stage I (retaining the 'outside sources', though).
+<P>
+For Class C maps, search out the bad data (no easy-solution, sorry), delete it, and start again.
+<P>
+For Class D maps, there may be spurious sources in the model-list. Plot them, (NPLOT) and try to locate suspects, delete these, and continue (refer to sec..... if this doesn't help).
+<P>
+<b>STAGE III:</b>
+<P>
+Once all the maps are of Class A-quality, do the following:
+<P>
+<OL><LI> <b>Mkbeam :</b> (NMAP. Make beams for all the pointing centres) 
+<LI> <b>Clean :</b> (NCLEAN, option UVC. Clean the entire map with the number of components = 100, Gain = 0.1 and a Cycle-Depth value of 0.35) 
+<LI> <b>Restore :</b> (NCLEAN, option UREST. Restore both the model and the clean components) 
+<LI> <b>Extract :</b> (NMAP, option FIDDLE, suboption EXTRACT. Write out a smaller section of this map into one set index of a common map file that will be the input for the MOSAIC combination, here, inner 700 x 700 pixels of each pointing centre were used) 
+<LI> <b>Mosaic :</b> (NMAP, option FIDDLE, suboption MOSC. This part of the programme corrects the input maps for primary beam attenuation and then averages them with proper weightage) 
+<LI> <b>Ready to serve:</b> (NPLOT, NGIDS, write out FITS image and take it to AIPS ..... use the garnish of your choice) 
+</OL>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

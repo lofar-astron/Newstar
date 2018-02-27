@@ -1,0 +1,20 @@
+<TITLE>Description of CWEIGHT_VALUE (NMAP)</TITLE>
+<H1>Description of general keyword CWEIGHT_VALUE</H1>
+
+<DT><EM>Prompt:</EM> Circular-weight width (metres)
+<DT><EM>Default:</EM> 2548..
+<DT><EM>Expected input:</EM> Real number; min.value: 10.000000.<P>
+Specify the width for your circular weight function. <P>
+If you have selected a gaussian for the circular_weight function 
+(CWEIGHT_TYPE=GAUSS), the value you specify here will be the projected baseline 
+radius for which the weight is 1/e times its value in the origin. The default 
+value makes the weight equal to 1/4 at a projected baseline of 3000 m. <P>
+If you have selected a triangular weight function (CWEIGHT_TYPE=LINEAR), the 
+value you specify here is the projected baseline at which the weight reaches 
+zero. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_comm.html">List of general keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

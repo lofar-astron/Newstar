@@ -1,0 +1,36 @@
+<TITLE>Description of CALC_TYPE (NGCALC)</TITLE>
+<H1>Program NGCALC: private keyword CALC_TYPE</H1> 
+
+<DT><EM>Prompt:</EM> AVER, SMOOTH, POLY, CPOLY, DPOLY, SHIFT, NULL, QUIT calculation type
+<DT><EM>Default:</EM> QUIT.
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify the action to be performed on individual cut(s). <P>
+	AVER    average cut and report results <P>
+    The following actions will create a new cut for each input cut with the same 
+    index numbers except for a new SEQ number. <P>
+	SMOOTH  create new cut(s) by smoothing cut data with a triangular 
+		 function (whose halfwidth you will specify) <P>
+	POLY    fit N+1 coefficients of an Nth-order polynomial 
+		   P= c0 +c1*HA +c2*HA**2 +... +cN*HA**N 
+		through cut data and create new cut(s) from the residuals <P>
+	CPOLY   as POLY, but fitting only N selected coefficients of an 
+		 Mth-order polynomial. M&gt;N; the missing coefficients are held 
+		 at 0. (This method can be used, e.g., to fit a polynomial for 
+		 which you know a priori that it must be even.) <P>
+	DPOLY   subtract values of a polynomial (yet to be specified) from cut 
+		 data and create new cut(s) from the results <P>
+	SHIFT   create new cuts with visibility values transformed to a 
+		 different sky position <P>
+	NULL    create new cuts with data points in an HA range (yet to be 
+		 selected) deleted <P>
+	QUIT    leave CALC <P>
+Note:   All calculations are done with complex numbers. To use e.g. only 
+	amplitude, convert it first with an expression= AMPL(#..) in 
+	a COMBINE action. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngcalc/ngcalc_keys.html">List of keywords</A> for NGCALC
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ngcalc_descr/ngcalc_descr.html">program NGCALC</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

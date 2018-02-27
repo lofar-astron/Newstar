@@ -1,0 +1,50 @@
+<TITLE>Description of value derived from (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword value derived from</H1> 
+
+<DT><EM>Prompt:</EM> SET action| QUIT; COPY, CCOPY, ICOPY, LINE; ZERO, MANUAL, INIT, RENORM;| -EXT, REF, IREF, FAR, IFR, MIFR; SHIFT, CLK, OTHER
+<DT><EM>Expected input:</EM> Character(8).<P>
+Specify action to perform to alter correction values. <P>
+   Note: POLARISATION corrections are NOT included here. They must be handled 
+    sparately through the POLAR main option. <P>
+These option write correction values in (a) set(s) of target sectors (selected 
+by the SCN_&lt;xxx&gt; parameters). These corrections are copied/calulated from 
+corrections /data in the same file or another one (USE_SCN_&lt;xxx&gt; parameters). 
+The calculations will use all source sectors you specify to obtain a single set 
+of corrections. Unless stated otherwise below, the new values will be ADDED to 
+the existing ones in each of the target sectors. <P>
+   Transfer of corrections from a reference source: <P>
+        COPY    copy all corrections from somewhere else 
+                 (all corrections in the input set(s) are averaged) 
+        CCOPY   copy corrections from surrounding (in time) observations 
+                 in the input sets with the same frequency channel 
+                 (corrections for the two input sets are averaged). 
+        ICOPY   copy all MIFR corrections from somewhere else 
+                 (all corrections in the input set(s) are averaged) 
+        LINE    copy all corrections from corresponding continuum channel <P>
+   Initialisation: <P>
+        ZERO    zero corrections 
+        MANUAL  copy input values into the OTH telescope corrections for 
+                 selected scans 
+        INIT    make an initial estimate of telescope corrections and shift the 
+                 present values accordingly 
+        RENORM  renormalise telescope corrections <P>
+   Manual-input actions. Each option represents a correction type for which 
+   your values will be requested. <P>
+
+<DT>   - For the following actions, your values will OVERWRITE the existing ones: <P>
+        EXT     set extinction in selected scans 
+        REF     set refraction in selected scans 
+        IREF    set ionospheric refraction in selected scans 
+        FAR     set Faraday rotation in selected scans 
+        IFR     set additive interferometer corrections in selected scans 
+        MIFR    set multiplicative interferometer corrections in selected scans 
+        CLK     set clock correction in selected scans 
+        SHIFT   set (de-apply!) coordinate shift in selected sectors <P>
+        QUIT    exit SET  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

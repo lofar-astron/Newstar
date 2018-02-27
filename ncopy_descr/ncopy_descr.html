@@ -1,0 +1,97 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The Program NCOPY</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=ncopy_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=ncopy_descr.html#SECTION0002000000000000000> <b>General</b></A>
+<LI> <A NAME=tex2html3 HREF=ncopy_descr.html#SECTION0003000000000000000> <b>NCOPY options and keywords</b></A>
+<LI> <A NAME=tex2html4 HREF=ncopy_descr.html#SECTION0004000000000000000> <b>Possible later extensions</b></A>
+</UL>
+<H1><A NAME=SECTION0002000000000000000> <b>General</b></A></H1>
+<P>
+        NCOPY is a program to selectively copy data from an input to an output SCN file. Its basic use is to condense SCN files by 
+<UL><LI>   selecting only those sectors, scans and polarisations that one wants to retain; 
+<LI>   eliminating &quot;holes&quot; in a file that are no longer used. 
+</UL> As an ancillary function, NCOPY can produce overviews of all sectors in a SCN file.
+<P>
+<H1><A NAME=SECTION0003000000000000000> <b>NCOPY options and keywords</b></A></H1>
+<P>
+<UL><LI>   OVERVIEW: Produce on terminal and in the log file a listing of all sectors in a file. In addition to the layout (as for NFLAG SHOW) and file size, the following is shown for each sector: 
+                <i>g.o.f.c.s</i> and absolute sector numbers; 
+                field name and WSRT observation number; 
+                frequency and bandwidth; 
+                hour-range and number of scans; 
+                numbers of interferometers and polarisations; 
+                technical information for testing/debugging purposes (subject to change).
+<P>
+The information relevant to the user is crammed into the width of a terminal window.
+<P>
+<LI>   COPY: Copy sectors. The following additional information is requested once for every time the COPY option is selected:
+<P>
+INPUT_SCAN<BR>OUTPUT_SCAN<BR>INPUT_SECTORS<BR>HA_RANGE<BR>POLARISATION <BR>Data will be appended to the output file. If the latter does not exist, a new file is created and its creation reported.
+<P>
+        A new output group is created for every input group, the remaining indices, o.f.c.s, being taken from the input. 
+</UL>
+<P>
+<H1><A NAME=SECTION0004000000000000000> <b>Possible later extensions</b></A></H1>
+<P>
+        As future options, to be realised only upon user demand, we consider: 
+<UL><LI>   integration of data over hour-angle intervals; 
+<LI>   selection of interferometers; 
+<LI>   definition of output sector numbers by the user and (partial) correction of the deficiencies noted above;
+<P>
+<LI>   permanent application of corrections to the stored data as foreseen in the original Newstar design.
+<P>
+</UL>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

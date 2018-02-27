@@ -1,0 +1,48 @@
+<TITLE>Description of EDIT (NSHOW)</TITLE>
+<H1>Description of general keyword EDIT</H1>
+
+<DT><EM>Prompt:</EM> Edit: name [offset][/length][:format] , val [, ...]
+<DT><EM>Expected input:</EM> Character(80), 16 values.<P>
+The preceding sequence of parameter values that you provided defines one header 
+or data structure being processed. The EDIT parameter now allows you show 
+and/or edit the values of individual (goups of) fields in this structure. All 
+fields may be modified, except for the pointers that define the structure of 
+the file. <P>
+NOTE: Although EDITing may be used to patch up a file, it is really intended 
+only for debugging/testing purposes! 
+        Newstar programs provide a number of manual-input operations that cover 
+all situations expected in normal practice. In the rare cases that a file is 
+systematically corrupted in a curable way (e.g. because of an error in the WSRT 
+on-line program), the preferred course is to have an ad-hoc extension made to a 
+Newstar program to process the damaged file(s). <P>
+The following operations are available: <P>
+   *                 show values of all fields in the structure 
+   :                 show format information for all fields in the structure 
+   &lt;name&gt;            show value(s) of field &lt;name&gt; in the structure 
+   &lt;name&gt;:           show format information for field &lt;name&gt; in the structure 
+   &lt;name&gt;, &lt;value&gt;, .. write &lt;valye&gt; in filed &lt;name&gt; in the structure <P>
+   Instead of &lt;name&gt; you may specify a hex number (absolute address in the file) 
+   or a hex number preceded by a '.' (address in the file relative to the origin 
+   of the current structure) <P>
+. 
+Values are assumed to be in format of printout. Radix can be changed by 
+prefixing with %X, %B, %O or %D. Angles are in degrees, but can be given as 
+hh:[mm[:ss[.ttt]]] or dd.mm.[ss.ttt] <P>
+'name' can be followed by (offset) to start at position offset in multi-valued 
+list; and/or /number to limit number of values in same <P>
+A full name specification can be followed with either: 
+   :format               to change printing and reading format. (format can be 
+                        e.g. {USX}{BIJ}  {ED}[n[.m]] {EC|DC}[n[.m]] 
+   ::type[(off)][/n]     where type specifies a header type (e.g. STH) to format 
+                        the indicated disk area as this type 
+                        Single letter types are dummy header types for simple 
+                        formats 
+  ::                    gives all known header types 
+! {\em see the \textref{SHOW/EDIT}{show_edit} manual for a more elaborate 
+! \ description} 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nshow/nshow_comm.html">List of general keywords</A> for NSHOW
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

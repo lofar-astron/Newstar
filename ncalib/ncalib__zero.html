@@ -1,0 +1,35 @@
+<TITLE>Description of ZERO (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword ZERO</H1> 
+
+<DT><EM>Prompt:</EM> Corrections (plural) to be zeroed | ALL, NONE; RED, ALG, OTH; IFR, MIFR; EXT, REF, IREF, FAR, CLK, SHIFT;| -NOGAIN, NOPHASE|
+<DT><EM>Default:</EM> NONE.
+<DT><EM>Expected input:</EM> Character(8), 12 values.<P>
+Specify any number of corrections you want to zero: <P>
+   Generic: 
+        ALL or * All corrections 
+        NONE     None of the corrections: Return to previous prompt <P>
+   Telescope gains and phases: 
+        RED      Redundancy telescope corrections 
+        ALG      Align telescope corrections 
+        OTH      'Other' telescope gain/phase corrections <P>
+   Interferometer gains and phases: 
+        IFR      Additive interferometer corrections 
+        MIFR     Multiplicative interferometer corrections <P>
+   Corrections for the instrument as a whole: 
+        EXT      Extinction correction 
+        REF      Refraction correction 
+        IREF     Ionospheric refraction correction 
+        FAR      Faraday rotation 
+        CLK      Clock correction 
+        SHIFT    Coordinate shifts (de-apply!) <P>
+You may restrict the above to phase-only or gain-only by appending AT THE END 
+of your reply either of: <P>
+        NOGAIN   Zero only phases 
+        NOPHASE  Zero only gain <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,29 @@
+<TITLE>Description of BEAM_DESCR (NMODEL)</TITLE>
+<H1>Description of general keyword BEAM_DESCR</H1>
+
+<DT><EM>Prompt:</EM> Beam descriptors
+<DT><EM>Default:</EM> 0, 0, 1, 6, 1, 1, 4, 4 /NOASK.
+<DT><EM>Expected input:</EM> Integer number, 32 values.<P>
+Describe the primary beam for an instrument other than the WSRT or the ATCA. 
+Here you specify the formula to be used; later you will be asked for values for 
+the coefficients. <P>
+Each instrument (up to 8) is decribed by four numbers, with (in order) the 
+following meaning: <P>
+
+<DT>  - the value of the * in BEAM_FREQ_* and BEAM_FACTOR_* to use <P>
+
+<DT>  - the type of formula: 
+        0= cos(factor*freq(MHz)*angle(degree))**6; 
+        1= 1/(1+fac1*(freq(GHz)*angle(arcmin))**2+fac2*...); 
+        2= 1+fac1*(freq(GHz)*angel(arcmin))**2+fac2*...) <P>
+
+<DT>  - the number of factors per frequency range in BEAM_FACTOR_* <P>
+
+<DT>  - the number of frequency ranges specified in BEAM_FREQ_* <P>
+Instruments are: first WSRT, second ATCA  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_comm.html">List of general keywords</A> for NMODEL
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

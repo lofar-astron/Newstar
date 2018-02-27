@@ -1,0 +1,211 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The MDL-file (model components)</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=mdl_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=mdl_descr.html#SECTION0002000000000000000> <b>Inspecting the list of model components</b></A>
+<LI> <A NAME=tex2html3 HREF=mdl_descr.html#SECTION0003000000000000000> <b>Source component parameters</b></A>
+<LI> <A NAME=tex2html4 HREF=mdl_descr.html#SECTION0004000000000000000> <b>Overview of model `handling' options.</b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=mdl_descr.html#SECTION0004100000000000000> <b>Calibration</b></A>
+<LI> <A NAME=tex2html6 HREF=mdl_descr.html#SECTION0004200000000000000> <b>Sorting</b></A>
+<LI> <A NAME=tex2html7 HREF=mdl_descr.html#SECTION0004300000000000000> <b>Editing</b></A>
+</UL> 
+<LI> <A NAME=tex2html8 HREF=mdl_descr.html#SECTION0005000000000000000> <b>Conversion to a uv-model for the .SCN file</b></A>
+</UL>
+A <i>NEWSTAR </i> MDL file contains a collection of source model components. This may be a mixture of multi-parameter components and ordinary CLEAN components. The former are much more versatile, and represent one of the main differences between <i>NEWSTAR </i> and other uv-data reduction packages.
+<P>
+<A NAME=mdl.descr.example><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000> <b>Inspecting the list of model components</b></A></H1>
+<P>
+******* Insert new script here ******
+<P>
+The above model is in `local mode', which means that no reference position or reference frequency is known. This information may be taken from a SCN-file (use NMODEL option CONVERT), and stored with the model in the MDL file. The model then looks like this:
+<P>
+******* Insert new script here ******
+<P>
+The coordinates may als be viewed in RA and DEC:
+<P>
+******* Insert new script here ******
+<P>
+Note that not all source parameters (see below) are visible here. They may be inspected in the log-file whenever the model has been used.
+<P>
+<A NAME=mdl.descr.param><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000> <b>Source component parameters</b></A></H1>
+<P>
+The source components in a <i>NEWSTAR </i> model have the following parameters:
+<P>
+<UL><LI> <b>I:</b>           total flux in W.U. (even when extended or polarised) 
+<LI> <b>l, m:</b>        offset from the reference point (map centre) in arcsec 
+<LI> <b>ID:</b>          identification number (1,2,3,...) in the list. 
+<LI> <b>Q, U, V:</b>     Stokes Q, U, V in percent (of I) 
+<LI> <b>long, short, PA:</b>  long and short axes (full halfwidth in arcsec) of an elliptic gaussian extended source, and the position angle of the long axis (degrees North thru East). 
+<LI> <b>si:</b>          spectral index (<IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap262.png">). Only used if reference frequency is known. 
+<LI> <b>rm:</b>          Faraday rotation measure (<IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap264.png">). Only used if reference frequency is known. 
+<LI> <b>flags:</b>  (e.g. a `proper' source (0) or a CLEAN component (1))  
+</UL>
+<P>
+NB: CLEAN components:  <BR>- Are not corrected for beam smearing in SELFCAL.  <BR>- Are confined to map grid postions, which may result in poor subtraction.  <BR>- Their positions cannot be &quot;updated&quot; automatically after SELFCAL.  <BR>Therefore, use ``proper sources'' for strong point sources,  and CLEAN components for weak extended sources (but only if necessary).
+<P>
+<A NAME=mdl.descr.handle><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000> <b>Overview of model `handling' options.</b></A></H1>
+<P>
+In various <i>NEWSTAR </i> programs (NMODEL, NCALIB, NMAP etc) the user is able to  <b>handle</b> the list of model components in various ways.  The keyword often used is <b>MODEL_OPTION</b>:
+<P>
+<UL><LI> <b>READ/WRITE:</b>         Read/write from/to an external MDL file 
+<LI> <b>CLEAR:</b>              Clear the source component list,  
+                                while resetting reference coordinates 
+<LI> <b>ZERO:</b>               Empty the source component list,  
+                                but keep the coordinates of the field centre 
+                                and frequency. 
+<LI> <b>SHOW/LIST:</b>          Show source list on terminal screen,  
+                                or both terminal and LOG-file. 
+                                See example above. 
+<LI> <b>RSHOW/RLIST:</b>        Show source list in RA/DEC coordinates 
+                                See example above. 
+<LI> <b>TOT:</b>                Show source list statistics (for a specified 
+                                range of sources). The result looks like:
+<P>
+		<BR><tt>Sources at epoch 1950 at 05:38:43.51, 49.49.42.8, 1417.248 MHz</tt>
+<P>
+		<BR><tt>10 sources (0 deleted) with 4453.700 W.U. (Max= 1900.000, Min= 2.200)</tt><BR><LI> <b>ADD:</b>                Add sources to the list by hand. 
+<LI> <b>CALIB:</b>              Convert the source list by scaling intensities 
+                                and/or moving l,m positions. 
+<LI> <b>EDIT:</b>               Edit the sources in the list  
+                                (an amplitude of zero will delete the source) 
+<LI> <b>FEDIT:</b>              Edit a `field' (parameter) for a range of sources 
+<LI> <b>MERGE:</b>              Combine sources components that have  
+                                the same position 
+<LI> <b>SORT:</b>               Sort the source list in decreasing amplitude  
+                                (sorting will always precede a write) 
+<LI> <b>FSORT:</b>              Sort on a specified `field' (parameter) 
+                                in the source list 
+<LI> <b>DEL:</b>                Delete sources 
+<LI> <b>DNCLOW:</b>             Delete non-CLEAN components with low amplitudes 
+<LI> <b>DCLOW:</b>              Delete CLEAN components with low amplitudes 
+<LI> <b>DAREA:</b>              Delete sources in specified area 
+</UL>
+<P>
+In many cases, the user may specify sources in the list upon which some `handling' options is to act. The specification may be in the form of a <b>SOURCE_LIST</b> of id-numbers, separated by comma's (e.g. 3,6,7,2,34). If the user answers with  <i><CR></i>, a <b>SOURCE_RANGE</b> is asked, i.e. the first and last id-number of a contiguous sublist:
+<P>
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap274.png"> <b>SOURCE_LIST</b> 
+ (Source number list) 
+ = <IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap272.png">: 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap278.png"> 
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap274.png"> <b>SOURCE_RANGE</b> 
+ (Source number range) 
+ = "": 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap280.png">
+<P>
+		<i><IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap272.png"> means all sources</i>
+<P>
+<A NAME=mdl.descr.handle-calib><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004100000000000000> <b>Calibration</b></A></H2>
+<P>
+If the flux or position of one of the sources in the list is known, it may be used as a calibrator. In the example, all 10 fluxes of the example model used above are multiplied by a factor (2000/1900), to make the flux of the first one equal to 2000 W.U. At the same time, all positions are shifted.
+<P>
+******* Insert new script here ******
+<P>
+<A NAME=mdl.descr.handle-sort><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004200000000000000> <b>Sorting</b></A></H2>
+<P>
+The source components may be sorted in many different ways. The option  SORT orders all components in order of decreasing flux. <i>This operation is performed before each WRITE, so that the components in an MDL file are always sorted this way!</i>.
+<P>
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap274.png"> <b>MODEL_OPTION</b> 
+ (READ,WRITE,CLEAR,ZERO,SHOW, <IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap284.png">) 
+ = QUIT:  
+ <IMG ALIGN=BOTTOM ALT="" SRC="_7881_tex2html_wrap286.png">
+<P>
+FSORT allows the sorting on a range of criteria. In this example, the soorces are sorted in the order of decreasing m-coordinate:
+<P>
+****** Insert new script here *****
+<P>
+Other possibilities are:  <BR>- I:  amplitude  <BR>- L,M:  l or m  <BR>- LM,ML:  l and m, or m and l  <BR>- ID:  identification  <BR>- Q,U,V:  Q or U or V  <BR>- SI,RM:  spectral index or rotation measure  <BR>- LA,SA,PA: long or short axis, position angle  <BR>- BITS:  bits (i.e. if source is extended or has polarisation)  <BR>- TYP:  source type (0 is the standard)  <BR>- CC:  clean component  <BR>- TP2:  reserved  <BR>- DIST:  distance to a specified centre  <BR>- POL:  polarised intensity
+<P>
+<A NAME=mdl.descr.handle-edit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004300000000000000> <b>Editing</b></A></H2>
+<P>
+Model components may be edited in various ways, using `handling' options CLEAR, ZERO, ADD, MERGE, DEL, DNCLOW, DCLOW (see the overview above). The handling options EDIT and FEDIT allow specific parameters (`fields') to be edited separately. EDIT acts on a specified source, and FEDIT acts on a range of sources. The possibilities are:
+<P>
+ <BR>- I:  amplitude  <BR>- L,M:  l or m  <BR>- ID:  identification  <BR>- Q,U,V:  Q or U or V  <BR>- SI,RM:  spectral index or rotation measure  <BR>- LA,SA,PA: long or short axis, position angle  <BR>- BITS:  bits (i.e. if source is extended or has polarisation)  <BR>- TYP:  source type (0 is the standard)  <BR>- CC:  clean component  <BR>- TP2:  reserved
+<P>
+<A NAME=mdl.descr.uvmodel><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000> <b>Conversion to a uv-model for the .SCN file</b></A></H1>
+<P>
+The calculation of uv-model data (for comparison with uv-data in NCALIB)i s time consuming. Therefore, a calculated uv-model is saved in the .SCN file for which it is calculated, together with the source list used. In all programs that use the model data it can be specified how the model calculation should be done, and if the calculation should be saved. The relevant question is MODEL_ACTION, which expects a list of three answers. The first one can be one of:
+<P>
+<UL><LI>   <b>merge:</b>     
+        replace the model saved in the SCN node with the one 
+                     specified by the user. However, first compare these two 
+                     lists, and only add the difference to the saved model data. 
+                     I.e. make the calculation as short as possible if the new 
+                     list differs only slightly from the saved one. 
+<LI>   <b>add:</b>       
+                replace the saved model with the sum of the saved one and 
+                     the one specified by the user. The model calculated on the 
+                     basis of the user specified list is added to the saved 
+                     data. 
+<LI>   <b>new:</b> 
+                replace the saved model by the model specified by the user, 
+                     and calculate a completely new set of model data 
+<LI>   <b>temporary:</b> 
+                do not use any data in the SCN node, or write anything, but 
+                     use the data based on the list specified by the user 
+<LI>   <b>increment:</b>         
+        use the saved model data, and add to it the model data 
+                    based on the user specified list, but do not save anything 
+</UL>
+<P>
+The second answer can be BAND or NOBAND, and specifies if in the model calculation source data should be corrected for bandsmearing to match the actual data better.  The third answer can be TIME or NOTIME to indicate the use of integration time smearing.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

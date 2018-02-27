@@ -1,0 +1,22 @@
+<TITLE>Description of MWEIGHT_TYPE (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword MWEIGHT_TYPE</H1> 
+
+<DT><EM>Prompt:</EM> Type of weight function| STEP, ISTEP; GAUSSIAN, IGAUSSIAN; TRIANGLE, ITRIANGLE
+<DT><EM>Expected input:</EM> Character(10).<P>
+MWEIGHT_TYPE and MWEIGHT_DATA allow you to weigh baselines according to their 
+lengths, in order to take advantage of source characteristics that are a priori 
+known. The defaults for these parameters give all baselines the same weight. <P>
+This parameter selects the form of the weighting function; its position and 
+half-width will be defined by MWEIGHT_DATA. The following shapes can be chosen: <P>
+   STEP          a step function: 1 out to some radius, 0 beyond 
+   GAUSSIAN      a Gaussian 
+   TRIANGLE      a triangular function: linearly decreasing from 1 to 0 <P>
+   Each of these can be prefixed with an 'I' to invert it, i.e. ISTEP means 
+    '1 minus STEP'  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

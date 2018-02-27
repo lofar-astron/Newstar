@@ -1,0 +1,144 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Private parameters for program NFILT</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nfilt_private_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nfilt_private_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=nfilt_private_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=nfilt_private_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=nfilt_private_intfc.html#SECTION0003200000000000000>  <b>Parameter FREQ_SELECT</b></A>
+<LI> <A NAME=tex2html6 HREF=nfilt_private_intfc.html#SECTION0003300000000000000>  <b>Parameter OPTION</b></A>
+<LI> <A NAME=tex2html7 HREF=nfilt_private_intfc.html#SECTION0003400000000000000>  <b>Parameter POLY_DEGREE</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the parameter interface of the program NFLAG. The program also uses a number of public interfaces; references to these are also <A HREF="#.public">listed</A>. 
+show parameters that 
+        The remainder of the document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<em>See also:</em> 
+<UL><LI> <A HREF="../introduction/introduction.html#.user.interface">DWARF</A> user interface 
+<LI> <A HREF="../mdlnode_public_intfc/mdlnode_public_intfc.html">MDLNODE</A> public keywords 
+<LI> <A HREF="../ngen_public_intfc/ngen_public_intfc.html">NGEN</A> public keywords 
+<LI> <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">NMODEL</A> public keywords 
+<LI> <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html">SCNNODE</A> public keywords 
+<LI> <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html">SCNSETS</A> public keywords 
+<LI> <A HREF="../select_public_intfc/select_public_intfc.html">SELECT</A> public keywords 
+</UL>
+<P>
+<A NAME=.freq.select><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter FREQ_SELECT</b></A></H2>
+<P>
+  <em>Prompt:</em> Pairs of frequency (MHz) to select solution domain<BR><em>Expected input:</em> Real:  1 to 16 values
+<P>
+    <PRE>
+        The actual solution of the continuum radiation will be based on a
+subset of the input channels. The channels selected will be based on
+pairs of frequencies, indicating a range.
+E.g. 325,327,330,332 will use channels with frequnecies in the ranges
+325-327 and 330-332 MHz.
+</PRE>
+<P>
+  <PRE>
+        * indicates all channels.
+</PRE>
+<P>
+  <PRE>
+Note that the corrections are saved for all selected input frequency sets.
+</PRE>
+<P>
+<A NAME=.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Action<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify the action to be performed by the program NFILT:
+</PRE>
+<P>
+  <PRE>
+  CONTINUUM     make a UV-based estimate of the continuum in line data. The
+                 algoritm used fits a polynomial to the sine and cosine
+                 components of the residual corrected data, and stores it as
+                 additive interferometer data. Second order effects could
+                 necessitate an iteration for the cross-polarised channels to
+                 properly cater for polarisation correctioons and Faraday
+                 rotation.
+                Although the program will handle any combination of input sets,
+                 fastest operation is attained if loops are used to select the
+                 fields.
+</PRE>
+<P>
+  <PRE>
+  QUIT:         leave the program NSCAN
+</PRE>
+<P>
+<A NAME=.poly.degree><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter POLY_DEGREE</b></A></H2>
+<P>
+<em>Prompt:</em> Polynomial degree<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify the degree of the polynomial to solve for: 0=constant; 1=slope
+etc.
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

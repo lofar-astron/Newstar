@@ -1,0 +1,31 @@
+<TITLE>Description of DATA_TYPES (NPLOT)</TITLE>
+<H1>Program NPLOT: private keyword DATA_TYPES</H1> 
+
+<DT><EM>Prompt:</EM> Visibility component to plot AMPLITUDE, PHASE; AGAIN, PGAIN; COSINE, SINE;  AP, CS
+<DT><EM>Default:</EM> AMPLITUDE.
+<DT><EM>Expected input:</EM> Character(16), 6 values.<P>
+Specify the visibility component to be plotted. <P>
+        The quantity plotted depends on the data selected.  For TEL or INTERF 
+and for redund. RES       :       gain-1(%), phase(deg) For DATA: 
+                  ampl (WU), phase(deg For Selfcal RES with external model: <P>
+. 
+   Standard representations of complex data: <P>
+                        Model           Resid           Int.model 
+        AMPLITUDE 
+        PHASE 
+        COSINE 
+        SINE <P>
+   Instrumental gain/phase for DATA_TYPE=RES: 
+        AGAIN   Re log(data/model) * 100 = gain in % 
+        PGAIN   Im log(data/model) * 180/pi = phase in deg <P>
+   Old WSRT 'PLOTAP' formats: <P>
+        AP         amplitude/phase plots, one pair per page 
+        CS         cosine/sine plots, one pair per page <P>
+ 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nplot/nplot_keys.html">List of keywords</A> for NPLOT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nplot_descr/nplot_descr.html">program NPLOT</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

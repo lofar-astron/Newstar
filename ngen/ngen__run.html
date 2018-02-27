@@ -1,0 +1,41 @@
+<TITLE>Description of RUN (NGEN)</TITLE>
+<H1>Description of general keyword RUN</H1>
+
+<DT><EM>Prompt:</EM> Exectute program after parameter setup (YES/NO)?
+<DT><EM>Default:</EM> YES /NOASK.
+<DT><EM>Expected input:</EM> Logical.<P>
+Specify the run mode of the NEWSTAR program: 
+        YES:   The NEWSTAR program will run normally 
+        NO:    The NEWSTAR program will prompt the user for all parameters 
+(keywords), but will then terminate. This mode should be used in conjunction 
+with the '/save' option, in which all the specified keyword values will be 
+saved in a .SAV file for later use (e.g. batch processing). <P>
+The /save option is invoked by starting the program in the following way: 
+        dwe 'program'[$'stream']/save (e.g. dwe ncalib$3/save). The saved 
+keyword values are used by running the program again: 
+        dwe 'program'[$'stream'] (e.g. dwe ncalib$3) <P>
+NB: An alternative approach is to use the '/norun' option: 
+        dwe 'program'[$'stream']/norun (e.g. dwe ncalib'$3'/norun) <P>
+This keyword is part of NGEN, i.e. it is a NEWSTAR 'environment keyword', which 
+is available to all NEWSTAR programs. The switch /NOASK indicates that it is 
+'hidden', i.e. the user is not prompted for it, but the default value is used. <P>
+Its value may be modified (for a given $stream) in several ways: 
+        Permanently for all programs and streams during current login: 
+                change the default value: dws[pecify] 'NGEN$0' 
+        Permanently for all programs in certain stream during current login: 
+                change the default value: dws[pecify] NGEN['$stream'] 
+        Permanently for certain program in all streams during current login: 
+                change the default value: dws[pecify] 'program$0' 
+        Permanently for certain program in certain stream during current login: 
+                change the default value: dws[pecify] program['$stream'] <P>
+Note: use automatic saving in LOGOUT to pass on values beyond current login 
+        Incidentally for a certain incarnation of program[$stream]: 
+                run as: dwe program['$stream']/ASK=value 
+        Incidentally for all hidden values: 
+                run a NEWSTAR program as: dwe program['$stream']/ASK <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngen/ngen_comm.html">List of general keywords</A> for NGEN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

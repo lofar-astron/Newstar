@@ -1,0 +1,23 @@
+<TITLE>Description of CWEIGHT_TYPE (NMAP)</TITLE>
+<H1>Description of general keyword CWEIGHT_TYPE</H1>
+
+<DT><EM>Prompt:</EM> GAUSS, LINEAR, NATURAL Circular weight type
+<DT><EM>Expected input:</EM> Character(8).<P>
+ON TOP of the standard taper function which is circular in the equatorial UV 
+plane, you nay specify a taper that is circular in the projected UV plane (i.e. 
+the plane as seen from the field centre). You can select one out of the 
+following functions: <P>
+	GAUSS   exp -(&lt;projected baseline&gt;/CWEIGHT_VALUE)**2 <P>
+	LINEAR  max (0, 1-&lt;projected baseline&gt;/CWEIGHT_VALUE) <P>
+	NATURAL unity weight everywhere, i.e. no circular taper <P>
+NOTE that the circular weighing does not replace the standard tapering, but is 
+applied as an EXTRA weight function. This is probably not what you want; you 
+may eliminate the normal tapering by specifying TAPER=NATURAL and 
+UNIFORM=STANDARD to take into account the radial density dependence of measured 
+visibilities. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_comm.html">List of general keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

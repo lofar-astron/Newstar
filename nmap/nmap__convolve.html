@@ -1,0 +1,41 @@
+<TITLE>Description of CONVOLVE (NMAP)</TITLE>
+<H1>Program NMAP: private keyword CONVOLVE</H1> 
+
+<DT><EM>Prompt:</EM> GAUSS, BOX, P4ROL, P6ROL, EXPSINC Convolution type
+<DT><EM>Expected input:</EM> Character(8).<P>
+This is the interpolation function to be used in horizontally and vertically 
+interpolating the observed visibilities onto the rectangular grid to be used in 
+the Fast Fourier Transform. <P>
+The choice of function determines the detailed aliasing properties of the 
+map(s). NMAP chooses appropriate horizontal and vertical width parameters for 
+each. You may specify one of the following functions: <P>
+   Gaussian-based: <P>
+        EXPSINC Sinc*exp on 6*6 grid points: An 'approximation' to the ideal 
+                 sinc (=sin(x)/x) function. This is the function selected as the 
+                 default for map-making after extensive experience with all of 
+                 the options available here. <P>
+        GAUSS   Gaussian type over 4*4 grid points: The function used in the 
+                 first years of WSRT operations; it was later replaced by the 
+                 prolate spheroids. The expense in computing time is the same as 
+                 for P4ROL. <P>
+   Prolate spheroids: These function minimise the 'power' (= the integral of the 
+    intensity squared) 'aliased in' from sources outside the map <P>
+        P4ROL   Prolate spheroidal function with 4*4 grid points. 
+        P6ROL   Prolate spheroidal function with 6*6 grid points: By using more 
+                 points in the interpolation, this function pushes the aliasing 
+                 down considerably, - at the expense of a factor two or more in 
+                 computing time for the interpolation <P>
+All the above functions may also be used in constructing a UV-plane for display 
+(UV_COORDINATES=UV). <P>
+For plotting visibilities versus baseline or interferometer 
+(UV_COORDINATES=BASHA or IFRHA), they are of little use, and the default one 
+would normally select is <P>
+        BOX     Shift to nearest grid point. 
+! {\em see parameter \textref{UV\_COORDINATES}{.uv.coordinates} } 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

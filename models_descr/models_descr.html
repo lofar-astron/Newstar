@@ -1,0 +1,216 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Models in Newstar</b>
+<P>
+<i>(contributed by W.N. Brouw 931011, edited by J.P. Hamaker 940411) </i>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=models_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=models_descr.html#SECTION0002000000000000000> <b>General</b></A>
+<LI> <A NAME=tex2html3 HREF=models_descr.html#SECTION0003000000000000000> <b>Model header</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=models_descr.html#SECTION0003100000000000000>  <b>Conversions between coordinate types</b></A>
+</UL> 
+<LI> <A NAME=tex2html5 HREF=models_descr.html#SECTION0004000000000000000>  <b>Source components</b></A>
+<LI> <A NAME=tex2html6 HREF=models_descr.html#SECTION0005000000000000000>  <b>Merging model lists</b></A>
+<LI> <A NAME=tex2html7 HREF=models_descr.html#SECTION0006000000000000000>  <b>Conversion of a model to visibilities</b></A>
+<UL> 
+<LI> <A NAME=tex2html8 HREF=models_descr.html#SECTION0006100000000000000>  <b>Instrumental polarisation</b></A>
+</UL> 
+<LI> <A NAME=tex2html9 HREF=models_descr.html#SECTION0007000000000000000>  <b>Primary beam model</b></A>
+<LI> <A NAME=tex2html10 HREF=models_descr.html#SECTION0008000000000000000>  <b>Updating a model</b></A>
+</UL>
+<A NAME=.general><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000> <b>General</b></A></H1>
+<P>
+        Source models in Newstar are in principle meant to belong to a certain observation, although models can be converted from/to belonging to other observations.
+<P>
+<A NAME=.model.header><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>    
+<H1><A NAME=SECTION0003000000000000000> <b>Model header</b></A></H1>
+<P>
+        Each model has a header.  In this header the following information is stored:
+<P>
+<UL><LI>   <em>TYPE</em> 
+        of coordinates used. This can be: 
+        <UL><LI>    
+                <em>local:</em> 
+                no information is available about the observation to which the model pertains.  Whenever the model is used in connection with an observation, it will be assumed that the model header data are identical to the corresponding data in the observation.  
+                <LI> 
+                 <em>apparent</em> : 
+                it is assumed that all coordinates are apparent. 
+                <LI> 
+                 <em>epoch</em> : 
+                it is assumed that all coordinates belong to B1950 or J2000 
+        </UL>
+<P>
+<LI>   <em>EPOCH:</em> 1950 or 2000 (if <em>TYPE</em> =  <em>epoch</em> )
+<P>
+<LI>   <em>RA, DEC:</em>  <A NAME=.ref.coord><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>  
+        the reference right-ascension and declination ( <em>apparent</em>  or 
+ <em>epoch</em> ) to which the <A HREF="#.lm"><em>l,m</em></A> coordinates of the <A HREF=".source.components">source</A>  components refer.  It is assumed that this is also the centre of the primary beam of the individual telescopes.
+<P>
+<LI>   <em>FREQ:</em> 
+        the frequency ...
+<P>
+<LI>   <em>INST:</em> 
+        the instrument used in the observation. 
+</UL>
+<P>
+<A NAME=.coord.conversions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>Conversions between coordinate types</b></A></H2>
+<P>
+        If the model list was made through the <b>ADD</b> and <b>EDIT</b> options of <A HREF="nmodel_descr">NMODEL</A> , the type will be  <em>local</em> .  If it is generated through 
+<A HREF="../nclean_descr/nclean_descr.html">NCLEAN</A> or the <b>FIND</b> option of <A HREF="nmodel_descr">NMODEL</A> , the type and other data are taken from the corresponding map.
+<P>
+        A  <em>local</em>  list can be converted to an  <em>apparent</em>  or  <em>epoch</em>  type though the <b>CONVERT</b> or <b>EDIT</b> options of <A HREF="nmodel_descr">NMODEL</A> .  In this case the reference data provided (either from a scan header or manually) will be copied into the model header.
+<P>
+        An  <em>apparent</em>  or  <em>epoch</em>  list can be converted to  <em>local</em>  in the same way.
+<P>
+        An  <em>apparent</em>  or  <em>epoch</em>  list can be converted to another 
+ <em>apparent</em>  or  <em>epoch</em>  list with the <A HREF="nmodel_descr">NMODEL</A>  <b>EDIT</b> or <b>CONVERT</b> options.  For <b>EDIT</b>, the new reference data from the user will replace the existing <A HREF=".model.header">header</A>  data, without changing the actual <A HREF=".source.components">source</A>  components.  <b>CONVERT</b> will also convert the existing <A HREF=".source.components">source</A>  and 
+<A HREF=".model.header">header</A>  data to the new coordinates, i.e.  the new source list will be for the new RA, DEC, FREQ, INST, using the model components' spectral index, rotation measure, primary beam and sky position.
+<P>
+        An  <em>apparent</em>  or  <em>epoch</em>  list can be converted to an  <em>epoch</em>  or 
+ <em>apparent</em>  list by <A HREF="nmodel_descr">NMODEL</A>  <b>EDIT</b> or <b>CONVERT</b>.  For <b>EDIT</b>, the new values will replace the old <A HREF=".model.header">header</A>  data, and only the change in direction to the North Pole ('phi') will be applied to the individual sources.  If <b>CONVERT</b>, only a reference scan can be used, and the 
+<A HREF=".source.components">source</A>  components will be shifted, rotated, beamed, spectrally indexed etc.  to the new coordinates.
+<P>
+<A NAME=.source.components><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000>  <b>Source components</b></A></H1>
+<P>
+        Each source in the source model has the following information: 
+<UL><LI>   <em>INTENSITY:</em> 
+        intensity (STOKES <IMG ALIGN=BOTTOM ALT="" SRC="_8020_tex2html_wrap413.png">, in general in Westerbork Units) of the source.  This value is always posaitive.
+<P>
+<LI>   <em>L, M:</em>     <A NAME=.lm><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P>
+        the <em>l</em> and <em>m</em> coordinate on the sky for an E-W interferometer pointed at the  
+<A HREF="#.ref.coord">reference coordinates</A>  in the model header; <em>l</em> and <em>m</em> are thus given as offsets to the header position.
+<P>
+<LI>   <em>Q,U,V:</em> 
+        Stokes polarisation parameters as percentages of Stokes <em>I</em>
+<P>
+<LI>   <em>SI:</em> 
+        spectral index of the source
+<P>
+<LI>   <em>RM:</em> 
+        the rotation measure of the source
+<P>
+<LI>   <em>extension:</em> 
+        extension parameters of the source modeled as a two-dimensional Gaussian: length major axis, minor axis, position angle major axis.  For a point source, both axes have length 0.
+<P>
+<LI>   <em>source type:</em>      <A NAME=.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+        a number to be used to select particular sources only for certain operations.  In general only type 0 will be used in the programs (e.g.  self-calibration, updates, subtractions), but sometimes type = 1 are used (in a different way, e.g.  in 
+<A HREF="../nmodel_descr/nmodel_descr.html#.update">UPDATE</A> they will not be updated, but subtracted from the observations before updating starts).  Other types are not used at present.  The user can manually set them (NMODEL 
+<A HREF="../nmodel_descr/nmodel_descr.html#.edit">EDIT</A>) to e.g.  temporarily 'delete' them from his model.
+<P>
+<LI>   <em>ID:</em> 
+        a simple sequence number for easily keeping track of sources across sorting and updates etc.
+<P>
+<LI>   <em>MODE:</em> 
+        this is a bit mask with bits to indicate that the source is: 
+        <UL><LI>   <em>clean component:</em> 
+        the source has been found by <A HREF="../nclean_descr/nclean_descr.html">NCLEAN</A> and is constrained to lie on a map grid point and to be a point source.
+<P>
+        <LI>   <em>beamed:</em>   <A NAME=.beamed><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>   
+        the source intensity has been corrected for the primary beam of the instrument.  
+        </UL> 
+</UL>
+<P>
+        Whenever <A HREF="../nmodel_descr/nmodel_descr.html">NMODEL</A> <b>CONVERT</b> is used, the above data will be adjusted to reflect the new <A HREF=".model.header">header</A>  data.  Note that a <em>beamed</em> source will remain unchanged if the frequency and/or instrument is changed but no spectral index is available.
+<P>
+        All of the above information can be changed by the <A HREF="nmodel_descr">NMODEL</A>  HANDLE <b>EDIT</b> and <b>FEDIT</b> options.
+<P>
+        The <em>beam</em> mode can be changed (and the intensity changed) by the <A HREF="nmodel_descr">NMODEL</A>  <b>[DE]BEAM</b> options.  This operation will only be applied to sources for which it is appropriate.
+<P>
+<A NAME=.merge.lists><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000>  <b>Merging model lists</b></A></H1>
+<P>
+        Models can be combined with the <A HREF="nmodel_descr">NMODEL</A>  <b>xxx</b> option, provided either
+<P>
+<UL><LI> one of the types is  <em>local</em>  (in which case the other type will be assumed to be the correct one); or
+<P>
+<LI> both type are either  <em>apparent</em>  or  <em>epoch</em> .  </UL>
+<P>
+        The two models will be automatically converted and merged into a single model with one of the <A HREF=".model.header">header</A> s being used.
+<P>
+<A NAME=.model.to.vis><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0006000000000000000>  <b>Conversion of a model to visibilities</b></A></H1>
+<P>
+        Conversion of a model to visibilities always occurs in the context of a particular scan in a <A HREF="../scn_descr/scn_descr.html">SCN file</A>.  In this process, the model is automatically converted from the model-<A HREF=".model.header">header</A>  coordinates to those in the <A HREF="../scn_descr/scn_descr.html">scan header</A>.
+<P>
+        In this process, <A HREF="#.beamed"><em>beamed</em></A> <A HREF=".source.components">source</A>  components will be de-beamed before being used; <em>de-beamed</em> components will first be <em>beamed</em> for the header coordinates, then <em>de-beamed</em> for the scan coordinates).  In addition non-clean components will be <em>smeared</em> for the appropriate bandwidth and integration time.
+<P>
+        The user can suppress the smearing and the beaming operations (<A HREF="nmodel_descr">NMODEL</A>  <b>MODEL_ACTION</b> keyword).  He has no control over the other conversions (spectral index, different position etc.).
+<P>
+<A NAME=.instr.pol><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0006100000000000000>  <b>Instrumental polarisation</b></A></H2>
+<P>
+        In addition to the corrections discussed so far, <em>position-dependent</em> instrumental polarisation (somewhat unfortunately often referred to as <em>cross polarisation</em>) should be corrected for in the calculation of model visibilities.  It is understood in principle how this must be done, but the implementation has been suspended until proper measured parameyters become available.
+<P>
+<A NAME=.primary.beam><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0007000000000000000>  <b>Primary beam model</b></A></H1>
+<P>
+        The primary beam for the <em>WSRT</em> is currently modeled as a circularly symmetric <IMG ALIGN=BOTTOM ALT="" SRC="_8020_tex2html_wrap415.png"> function.  Pointing measurements show that this is a good approximation out to the first null.  If positions further out were to be included, it would probably be better to model the beam as a J0 (Bessel) function or as an <IMG ALIGN=BOTTOM ALT="" SRC="_8020_tex2html_wrap417.png">.
+<P>
+        For the ATCA the beam is given as an inverse polynomial, which is correct to the first side-lobe (except for non-symmetry around the legs).
+<P>
+<A NAME=.update><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0008000000000000000>  <b>Updating a model</b></A></H1>
+<P>
+        The <A HREF="nmodel_descr">NMODEL</A>  <b>UPDATE</b>, <b>XUPDATE</b> and <b>SUPDATE</b> options try to match a givel source model the data as well as possible to an observation in a .SCN file.The update process extracts its information from residuals of the observed visibilities after all model components of <A HREF="#.type">types</A> 0 and 1 have been subtracted.  Updating is a process of fine-tuning the parameters of the model components and is therefore not applicable to clean components.
+<P>
+        To make the process not too slow, each <A HREF=".source.components">source</A>  component is fitted separately, special care being taken that components close together do not unduly influence each other's updates.  For the process to work it is necessary that observation(s) span as large an HA range as possible; otherwise the exact distance between to closely-spaced components is difficult to determine.
+<P>
+        The fitting process is linear, and uses both the real and imaginary parts of the visibilities.  Since the equations used are linearized, more than one iteration is in general needed for the process to converge.  In the equations no account is taken of secondary effects (e.g.  a shift in <em>l,m</em> will lead to different amplitudes due to primary beam and frequency dependencies).  It is assumed that these effects will also iterate out.  In those cases where this does not happen, it probably would not have happened if they were taken into account; due to dependencies between equations.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

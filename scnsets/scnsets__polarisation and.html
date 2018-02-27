@@ -1,0 +1,64 @@
+<TITLE>Description of polarisation and (SCNSETS)</TITLE>
+<H1>Description of general keyword polarisation and</H1>
+
+<DT><EM>Prompt:</EM> Loop specifications: |-
+nr of cycles, index increment (grp.obs.fld.chn.seq) per cycle |
+<DT><EM>Default:</EM> "" /ASK.
+<DT><EM>Expected input:</EM> Character(32), 16 values.<P>
+ Quick reminders: =============== 
+
+<DT>   - L gives you a quick summary of the groups in your .SCN file 
+
+<DT>   - O gives you access to more detailed overviews in various levels of detail 
+
+<DT>   - #&lt;n&gt; is a synonym for the grp.obs.fld.chn.seq index that is sometimes 
+	convenient to use. # ('absolute') sector numbers are shown in most 
+	displays that show sector indices. 
+
+<DT>   - A loop is specified by the number of cycles and the index increment per 
+	cycle. Loops may be nested. <P>
+The loop concept in full: ======================== 
+	A loop specifies repeated execution of your operation. It is defined by 
+the number of cycles and the increment per cycle for the sector indices: <P>
+	&lt;n_cycle&gt;, &lt;grp_incr&gt;.&lt;obs_incr&gt;.&lt;fld_incr&gt;.&lt;chn_incr&gt;.&lt;seq_incr&gt; <P>
+Later you will define, through the SCN_SETS parameter, the sector set to be 
+processed in the first cycle. 
+   Example: 
+	SCN_LOOPS= 3, 0.0.2.1.0 
+	SCN_SETS= 2.*.0-2.3.0, 2.*.1. 
+   requests your operation to be executed three times, with sector sets 
+	2.*.0-2.3.0     (SCN_SETS value) 
+	2.*.2-4.4.0     (SCN_SETS + 1*increment) 
+	2.*.4-6.5.0     (SCN_SETS + 2*increment) <P>
+In the increment value, 0s and trailing dots may be omitted. Negative 
+increments are permitted. <P>
+Loops may be nested by giving more than one cycles-increment pair; in this case 
+the rightmost loop is executed inside the loop to its left. 
+   Example: 
+	SCN_LOOPS= 2, .1, 2, ..1 
+	SCN_SETS= 0.0.0.*.0 
+   results in your operation being performed on the following sequence of 
+   sectors: 
+	0.0.0.*.0 
+	0.0.1.*.0 
+	0.1.0.*.0 
+	0.1.1.*.0 <P>
+Some fine points: ================ 
+	Loops are a useful shorthand for specifying complicated repetitions of 
+the same operation on different sector sets. As the examples above demonstrate,  
+using SCN_LOOPS can save a lot of typing, in particular if the number of cycles 
+is large. <P>
+	Note that each cycle of a loop starts the requested operation anew. To 
+understand what this means, consider two ways to process all fields of a 
+16-field mosaic observation: <P>
+	SCN_LOOPS=&lt;no input&gt;                    SCN_LOOPS=16, ..1 
+	SCN_SETS=grp.obs.*                      SCN_SETS=grp.obs.0 <P>
+The left specification requests a single pass thorugh the operation using all 
+fields as input. The right specification requests 16 passes successively using 
+fields 0, 1, 2, ... as input. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../scnsets/scnsets_comm.html">List of general keywords</A> for SCNSETS
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

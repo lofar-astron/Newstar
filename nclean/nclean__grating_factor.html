@@ -1,0 +1,20 @@
+<TITLE>Description of GRATING_FACTOR (NCLEAN)</TITLE>
+<H1>Program NCLEAN: private keyword GRATING_FACTOR</H1> 
+
+<DT><EM>Prompt:</EM> Grating factor
+<DT><EM>Default:</EM> 1. /ASK.
+<DT><EM>Expected input:</EM> Real number; min.value: 0.000000.<P>
+In the minor cycles of UVCOVER, DATA and COMPON clean, the maximum error made 
+in only subtracting part of the antenna pattern is estimated by &lt;number of 
+sources&gt; times &lt;ypical sidelobe level in antenna pattern&gt; times GRATING_FACTOR. <P>
+You may lower this latter factor if you are not worried about the effects of 
+far-out sidelobes on the minor-cycle cleaning process. A lower value will allow 
+more source components to be collected in minor cycles before a major cycle 
+must be started. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nclean/nclean_keys.html">List of keywords</A> for NCLEAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nclean_descr/nclean_descr.html">program NCLEAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

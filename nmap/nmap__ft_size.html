@@ -1,0 +1,25 @@
+<TITLE>Description of FT_SIZE (NMAP)</TITLE>
+<H1>Program NMAP: private keyword FT_SIZE</H1> 
+
+<DT><EM>Prompt:</EM> FFT size
+<DT><EM>Expected input:</EM> Integer number, 2 values; min.value: 4.000000; max.value: 8192.000000.<P>
+Specify the size of the Fourier transform in the horizontal and vertical 
+directions. Note that for 8k*8k maps the number of points/beam should 
+not be too close to 2 to stay within map size. <P>
+If the size in both direction is &lt;= 17, a Direct Fourier Transform (DFT) will 
+be made instead of the standard operation of interpolating onto a rectangular 
+grid followed by a Fast Fourier Transform (FFT). <P>
+The standard operation suffers from 'aliasing' artefacts associated with the 
+periodic nature of the FFT. These artefacts are suppressed, to a level that is 
+generally acceptable, through a very careful choice of the convolution function 
+used in the interpolstion to a rectangular grid, but they cannot be avoided 
+completely. <P>
+By avoiding the interpolation altogether, the DFT method is free from these 
+aliasing effects. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

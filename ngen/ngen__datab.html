@@ -1,0 +1,47 @@
+<TITLE>Description of DATAB (NGEN)</TITLE>
+<H1>Description of general keyword DATAB</H1>
+
+<DT><EM>Prompt:</EM> default directory name
+<DT><EM>Default:</EM> "" /NOASK.
+<DT><EM>Expected input:</EM> Character(80).<P>
+Directory names can be very long. In order to avoid having to type them fully 
+each time, the user may store it in the keyword DATAB (the name has historic 
+roots). From then on, node names (in the same $stream) are automatically 
+preceded by the contents of DATAB. <P>
+NB: On Unix systems, the value of DATAB has to end with a slash (eg ./) <P>
+If you set DATAB to "*", the DATAB keyword will be ignored completely (it will 
+not be changed if you use a directory name in the specification of a set etc.) <P>
+NB: In general, however, it is recommended to keep all files of a reduction 
+project in a single directory. In that case, no explicit directory name will be 
+needed in any case, if you run from this directory. <P>
+Example: if node name is preceded by a directory name: 
+        ../../wnb/wsrt/data/myproject/mynode the value of DATAB (for the 
+current $stream) will be: 
+        ../../wnb/wsrt/data/myproject/ Subsequently, typing 'othernode' will 
+produce the node name: 
+        ../../wnb/wsrt/data/myproject/othernode NB: IF THE NEWSTAR PROGRAM 
+CANNOT FIND A FILE (NODE), WHILE IT IS CLEARLY PRESENT IN THE CURRENT 
+DIRECTORY, CHECK THE VALUE OF DATAB!! <P>
+This keyword is part of NGEN, i.e. it is a NEWSTAR 'environment keyword', which 
+is available to all NEWSTAR programs. The switch /NOASK indicates that it is 
+'hidden', i.e. the user is not prompted for it, but the default value is used. <P>
+Its value may be modified (for a given $stream) in several ways: 
+        Permanently for all programs and streams during current login: 
+                change the default value: dws[pecify] 'NGEN$0' 
+        Permanently for all programs in certain stream during current login: 
+                change the default value: dws[pecify] NGEN['$stream'] 
+        Permanently for certain program in all streams during current login: 
+                change the default value: dws[pecify] 'program$0' 
+        Permanently for certain program in certain stream during current login: 
+                change the default value: dws[pecify] program['$stream'] <P>
+Note: use automatic saving in LOGOUT to pass on values beyond current login 
+        Incidentally for a certain incarnation of program[$stream]: 
+                run as: dwe program['$stream']/DATAB='"value"' 
+        Incidentally for all hidden values: 
+                run a NEWSTAR program as: dwe program['$stream']/ASK <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngen/ngen_comm.html">List of general keywords</A> for NGEN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

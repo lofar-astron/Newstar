@@ -1,0 +1,43 @@
+<TITLE>Description of OPTION (NCLEAN)</TITLE>
+<H1>Program NCLEAN: private keyword OPTION</H1> 
+
+<DT><EM>Prompt:</EM> BEAM, UVCOVER, DATA, UREST; COMPON, HISTO; QUIT Operation wanted
+<DT><EM>Expected input:</EM> Character(24).<P>
+CLEANing: <P>
+   BEAM         Hogbom clean: Use the map and the beam to clean. This 
+                 method is inaccurate away from the map centre due to the 
+                 aliasing associated with visibility gridding. <P>
+   UVCOVER      Standard Clark Clean: Find and provisionally subtract sources 
+                 in some map areas first (minor cycles), then properly subtract 
+                 the sources found (major cycle). The number of minor cycles 
+                 between major cycles is determined by the program; the user can 
+                 steer this through a few control parameters. 
+                The method suffers from the same limitations as BEAM, but is 
+                 faster for cleaning extended sources. <P>
+   DATA         Cotton-Schwab Clean: Find sources as in UVCOVER, but perform 
+                 the major cycle on the original SCN-file visibilities, making a 
+                 new map from the residuals as input for the next major cycle. 
+                 This method rigorously avoids the aliasing limitations of BEAM 
+                 and UVCOVER, at the price of being very much slower. <P>
+   UREST        Use a clean component list and a map to restore the clean 
+                 components in the map. <P>
+For exploring the data before committing more serious work: <P>
+   HISTO        Produce only a histogram of selected areas in the map and/or 
+                 antenna pattern <P>
+   COMPON       Execute minor cycles as for UVCOVER, but omit the following 
+                 major cycle. The result is a source model and a map in which 
+                 these sources are provisionally subtracted in selected areas. 
+                It is the fastest of the four CLEAN variants but produces an 
+                 inaccurate residual map. 
+                This option may be used to quickly get a feel for the 
+                 minor-cycle control of UVCOVER and DATA Clean, or to make an 
+                 initial data model for NCALIB SELFCAL or NMODEL UPDATE. <P>
+Other options: <P>
+   QUIT          Terminate NCLEAN. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nclean/nclean_keys.html">List of keywords</A> for NCLEAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nclean_descr/nclean_descr.html">program NCLEAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

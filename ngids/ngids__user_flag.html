@@ -1,0 +1,28 @@
+<TITLE>Description of USER_FLAG (NGIDS)</TITLE>
+<H1>Program NGIDS: private keyword USER_FLAG</H1> 
+
+<DT><EM>Prompt:</EM> NONE, ALL; MAN, OLD, CLIP, NOISE, ADD, SHAD, U1, U2, U3 Flags to use
+<DT><EM>Expected input:</EM> Character(16), 16 values.<P>
+Each of the flagging modes (parameter OPTION, options FLAG, DOFLAG, CLIPFLAG) 
+uses a specific flag type by default. You may define here one ore more flags to 
+use instead. The use foreseen for this option is to experiment using one of 
+'user' flags without getting the experimental settings tangled up with settings 
+already in existence. 
+!               {\em see parameter \textref{OPTION}{.option} } <P>
+   NONE         revert to default types per flagging mode 
+   ALL or *     use all flag types (not a very sensible idea) <P>
+   MAN          use the flag type for the MANUAL class of operations 
+   CLIP         use the flag type for the CLIP class of operations 
+   NOISE        use the flag type for the NOISE class of operations 
+   SHAD         use the flag type for the SHADOW class of operations 
+   ADD          use the flag type for the ADDITIVE class of operations <P>
+   U1           use a separate flag for some user-defined operations 
+   U2           use a separate flag for some user-defined operations 
+   U3           use a separate flag for some user-defined operations 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngids/ngids_keys.html">List of keywords</A> for NGIDS
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ngids_descr/ngids_descr.html">program NGIDS</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

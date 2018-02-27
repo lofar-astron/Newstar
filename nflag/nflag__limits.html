@@ -1,0 +1,40 @@
+<TITLE>Description of LIMITS (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword LIMITS</H1> 
+
+<DT><EM>Prompt:</EM> flagging limits
+<DT><EM>Expected input:</EM> Real number, 2 values.<P>
+ Specify the LOWER and UPPER limiting values for the (un-)flag 
+criterion. The unit (e.g. W.U.) depends on the criterion under consideration. <P>
+! 
+!  Get flag limits 
+!       Ref:    NFLOPS 
+! 
+KEYWORD=ABCS_LIMITS 
+        DATA_TYP=R 
+        IO=I 
+        NVALUES=2 
+        SWITCHES=LOOP, VECTOR, NULL_VALUES 
+        SEARCH=L, P 
+        PROMPT="Acceptance range for ABS(cos), ABS(sin)  An ENTIRE scan will be flagged if for any valid data point in it 
+the modulus of either the real (cos) or imaginary (sin) part falls outside the 
+acceptance range. <P>
+This option allows you to reject scans containing interference peaks, or 'bad' 
+data (i.e. abnormally low amplitudes). <P>
+NOTES: <P>
+     The new setting of the target flag in each scan or data point will 
+      OVERRIDE the current one rather than being ORed into it. <P>
+     The flags used in selecting valid scans are defined by parameter ? 
+SELECT_FLAGS; the default is ALL. 
+!               {\em see parameters \textref{DRY_SCANS}{.dry.scans},  
+!                \textref{SELECT_FLAG}{.select.flag} } 
+! 
+!!              rms, 3-sigma is not the right thing here - clarify 
+NB: When new thresholds are given, all Scans in the specified data cube are 
+(un-)flagged accordingly, including the Scans that were flagged already.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

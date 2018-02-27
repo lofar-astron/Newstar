@@ -1,0 +1,30 @@
+<TITLE>Description of SELECT_FLAG (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword SELECT_FLAG</H1> 
+
+<DT><EM>Prompt:</EM> Flag type(s) to use in data selection| NONE, ALL, MAN, CLIP, NOISE, ADD, SHAD , U1, U2, U3; [OLD]
+<DT><EM>Expected input:</EM> Character(16), 16 values.<P>
+ Some operations test flags in selecting data. By default, NFLAG 
+selects the test flags appropriate to each operation; only those data are 
+accepted for which these flags are CLEAR. <P>
+You may define here an alternative (set of) flag type(s) to be used in ALL 
+subsequent testing operations; you may select more than one, separated by 
+commas. Reply NONE to revert to the default settings. <P>
+   ALL or *     test all flag types 
+   MAN          test the flag type for the MANUAL class of operations 
+   CLIP         test the flag type for the CLIP class of operations 
+   NOISE        test the flag type for the NOISE class of operations 
+   ADD          test the flag type for the ADDITIVE class of operations 
+   SHAD         test the flag type for the SHADOW class of operations 
+   U1, U2, U3   'user' flag types, i.e. types you may use as you please 
+   NONE         revert to NFLAG's default types per operation <P>
+   OLD          the flag type for the 'OLD' class (i.e. flagged before 
+                 930609, and converted with NVS option) 
+                 NB: OLD uses the same flag-bit as MAN 
+!!              I suppose this can now be removed. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

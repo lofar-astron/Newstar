@@ -1,0 +1,28 @@
+<TITLE>Description of ALIGN_OPTION (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword ALIGN_OPTION</H1> 
+
+<DT><EM>Prompt:</EM> Type of Selfcal desired SELFCAL, ALIGN
+<DT><EM>Expected input:</EM> Character(8).<P>
+Selfcal is the generic name for all methods that use a source model in 
+combination with your visibilities to estimate the telecope gain/phase 
+corrections. Since you have selected a model, NCALIB assumes that you want to 
+use it, by doing a Selfcal. (If you had not, it would propose a REDUNdancy-only 
+solution.) <P>
+The alternative you have here is to use the source model to recover the unknown 
+position shift that scans suffer when they are processed with the  redundancy 
+constraints only (REDUN solution). In this operation the source model is only 
+used as a position reference. The telescope phases are shifted by an amount 
+that is a linear function of position along the array; the telescope gains do 
+not change at all. <P>
+To summarise, the choices you have are: <P>
+   SELFCAL       use the model to constrain in position a redundancy solution 
+                  that will be made now 
+   ALIGN         use the model to constrain a redundancy solution that was made 
+                  earlier  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

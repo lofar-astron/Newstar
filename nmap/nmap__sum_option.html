@@ -1,0 +1,22 @@
+<TITLE>Description of SUM_OPTION (NMAP)</TITLE>
+<H1>Program NMAP: private keyword SUM_OPTION</H1> 
+
+<DT><EM>Prompt:</EM> SUM, NSUM, NSSUM, BSUM, BNSUM, FSUM; QUIT Weighing method
+<DT><EM>Expected input:</EM> Character(8).<P>
+Specify the type of weight to use in the averaging. In all cases the summation 
+produces a weighted average map over all SETS_1, the weights depending on the 
+method you select: <P>
+        SUM     weight(i)= 1 
+        NSUM    weight(i)= normalisation factor of map(i) 
+        NSSUM   weight(i)= 1 / (&lt;noise in map(i)&gt;**2) <P>
+        BSUM    weight(i)= bandwidth of map(i) 
+        BNSUM   weight(i)= bandwidth * normalisation factor of map(i) <P>
+        FSUM    weight(i)= factors to be specified by you. <P>
+        QUIT    quit AVERaging <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

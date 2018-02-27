@@ -1,0 +1,27 @@
+<TITLE>Description of PLOT_TYPE (NGIDS)</TITLE>
+<H1>Program NGIDS: private keyword PLOT_TYPE</H1> 
+
+<DT><EM>Prompt:</EM> IFRS, BASE, CHAN
+<DT><EM>Expected input:</EM> Character(16).<P>
+In displaying visibilities, you can choose between three two-dimensional cross 
+sections: <P>
+   IFRS   Hour angle (horizontal) versus interferometer (vertical), one picture 
+	   per frequency channel. Interferometers in the order 
+		.... <P>
+   BASE   As IFRS, but interferometers in order of increasing baseline, - and of 
+	   increasing East telecope number within sets of redundant baselines. <P>
+   CHAN   Hour angle (horizontal) versus frequency channel (vertical), one 
+	   picture per interferometer. <P>
+NOTE: 
+	You select the channels to be displayed through the SCN_SETS parameter,  
+in the form &lt;grp&gt;.&lt;obs&gt;.&lt;fld&gt;.&lt;CHN&gt;. You have the liberty to select SCN_SETS 
+with channels for more than one &lt;grp&gt;.&lt;obs&gt;.&lt;fld&gt;. You may think of some good 
+use of this option (e.g. displaying the same channel for all fields in a 
+mosaic). 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngids/ngids_keys.html">List of keywords</A> for NGIDS
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ngids_descr/ngids_descr.html">program NGIDS</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

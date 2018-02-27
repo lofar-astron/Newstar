@@ -1,0 +1,33 @@
+<TITLE>Description of TAPER (NMAP)</TITLE>
+<H1>Program NMAP: private keyword TAPER</H1> 
+
+<DT><EM>Prompt:</EM> GAUSS, LINEAR, OVERR, RGAUSS, NATURAL Taper type
+<DT><EM>Expected input:</EM> Character(8).<P>
+The taper is a function of baseline length used to de-emphasize the long 
+baselines and consequently reduce the near-in sidelobes of the synthesized beam. <P>
+You may specify the following functions, some of them to be supplemented later 
+with a baseline-scale parameter TAPER_VALUE: <P>
+! {\em see public parameter 
+!  \textref{TAPER_VALUE}{nmap_public_intfc.taper.value} } <P>
+        GAUSS    exp -(&lt;baseline&gt;/TAPER_VALUE)**2 
+                 standard WSRT beam: good compromise between near-in sidelobes,  
+                  beam width and noise <P>
+        LINEAR   max (0, 1-baseline/TAPER_VALUE) <P>
+        OVERR    1 / baseline   (no scale) <P>
+        RGAUSS   exp -(&lt;baseline&gt;/TAPER_VALUE)**2 / &lt;baseline&gt; 
+                 broader beam, very low near-in sidelobes, poorer noise <P>
+        NATURAL  no taper       (no scale) 
+                 optimum signal/noise ratio, narrower beam with very strong 
+                  near-in sidelobes <P>
+NOTES: - Unless you have specified UNIFORM=NATURAL for the UV coverage mode, the 
+        1/&lt;baseline&gt; density variation of measured visibility points is already 
+        being accounted for, so OVERR and RGAUSS should not be chosen. LINEAR 
+        does not combine very well with NATURAL either. <P>
+! {\em cf. parameter \textref{UNIFORM}{nmap_public_intfc.uniform} } 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

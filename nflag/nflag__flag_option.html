@@ -1,0 +1,41 @@
+<TITLE>Description of FLAG_OPTION (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword FLAG_OPTION</H1> 
+
+<DT><EM>Prompt:</EM> Type of flagging operation| CLIPDATA, DETERM; CLEAR, MANUAL, HASCANS, FCOPY;|-FLIST; MODE; INSPECT, STATIST, QUIT 
+<DT><EM>Default:</EM> INSPECT.
+<DT><EM>Expected input:</EM> Character(24).<P>
+ Specify the type of flagging operation to be performed: <P>
+   Selective flagging on the basis of data/coordinate/statistics values: <P>
+        CLIPDATA  Flag data points according to a data-derived criterion 
+                   (amplitudes, selfcal residuals, etc.) 
+        DETERM    Flag data points on the basis of their coordinates (position,  
+                   elevation, etc.) <P>
+   Deterministic clearing, setting and copying of flags: <P>
+        CLEAR     Clear flags from scan headers and data (see also MANUAL) 
+        MANUAL    Manual flagging operations (includes CLEAR flags). 
+!!                      What is this about MANUAL vs CLEAR? 
+        HASCANS   Operations on the scan-header flags. These affect ENTIRE 
+                   scans, and in doing so IGNORE the interferometers (parameter 
+                   IFRS) and polarisations (parameter SELECT_XYX) selections 
+                   that you defined for your primary/secondary data cubes. 
+        FCOPY     Copy flags from one place in the hypercube to another. 
+!!                      From somewhere into the hypercube? 
+!!                      From the hypercube to somewhere else? <P>
+   Operation on the flag list in core: <P>
+        FLIST     Operations on the internal flag list 
+                   (including reading-from/writing-to a .FLF file). <P>
+   Define operating environment: <P>
+        MODE      Go to FLAG_MODE parameter to change 'environment' parameter 
+                   values. This includes re-definition of the primary data 
+cube. <P>
+   Navigation: <P>
+        INSPECT   Go to the flag-INSPECTion group of operations. 
+        STATIST   Go to the data-STATISTICS group of operations. <P>
+        QUIT      Return to primary OPTION.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

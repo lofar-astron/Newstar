@@ -1,0 +1,57 @@
+<TITLE>Description of WMP_SETS (WMPSETS)</TITLE>
+<H1>Description of general keyword WMP_SETS</H1>
+
+<DT><EM>Prompt:</EM> Images to process:  grp.fld.chn.pol.typ.seq |
+<DT><EM>Expected input:</EM> Character(32), 64 values.<P>
+	A NEWSTAR .WMP file contains maps and antenna patterns for one or more 
+objects. The basic unit of data is the two-dimensional IMAGE representing 
+either a MAP of a piece of sky or the synthesised ANTENNA PATTERN. Images are 
+addressed through an IMAGE INDEX which is a string of six integers separated by 
+dots: <P>
+			grp.fld.chn.pol.typ.seq <P>
+   A GROUP is basically an administrative unit, allowing the user to subdivide 
+    his data, e.g. per object. <P>
+   The FIELD and CHANNEL are the field and channel numbers of the observation(s) 
+    in the .SCN file from which the image was made. These numbers are defined by 
+    the way the observation was made and should be indentical for 
+    all observations involved (which could, e.g., be several 12-hour mosaic 
+    observations with different baseline sets.). <P>
+   POL is a code indicating the polarisation. The code distinguishes the 
+    four components of a full polarisation represntation: <P>
+		0, 1, 2, 3 =  XX.XY.YX.YY or 
+		0, 1, 2, 3 =  I, Q, U, V <P>
+    but it is your responsibility to remember which of the two representations 
+    applies. <P>
+   TYP codes the type of image: 0 for a map, 1 for an antenna pattern. <P>
+   The image SEQ uence number distinguishes images for which all five of 
+    the preceding indices are identical. It is used in particular to distinguish 
+    residual maps in a CLEAN sequence. It is your responsibility to know what 
+    the different SEQ values represent. <P>
+Index values start at zero. (Remember that for the CHN index 0 is the continuum 
+channel.) <P>
+You may select SETS of images for processing through [ranges of] values for the 
+five indices, e.g. <P>
+		2.3-5:2.*.1-7.* <P>
+The WILDCARD value '*' means 'all'. Each index may also be specified as a 
+RANGE: &lt;first&gt;-&lt;last&gt;[&lt;:increment&gt;]. Indices omitted are assumed to be '*',  
+i.e.  ....1.0  means *.*.*.*.1.0. For wildcards at the end the dots may also be 
+omitted, i.e. 1.0 means 1.0.*.*.*.* <P>
+The notation 3-5:2 stands for 'from 3 through 5 in steps of 2'. The step must 
+be positive; if it is omitted, it is taken to be 1 (as in '1-7' above). <P>
+Multiple image SETS may be specified, separated by comma's: &lt;Set1&gt;, &lt;Set2&gt;, ... 
+The associated WMP_LOOPS keyword allows even more looping over index values. <P>
+IF YOU WANT TO BE REMINDED OF WHAT IMAGES ARE IN YOUR FILE: 
+	Type O or L in response to this prompt to get an Overview or Layout 
+	of your .WMP file. <P>
+IF YOU DO NOT YET FEEL COMFORTABLE WITH THESE CONCEPTS MORE HELP IS PROVIDED: 
+	Type '@' or '&gt;' to be prompted for each of the 6 indices separately,  
+	with more specific explanation per index. <P>
+IF YOU GET BORED WITH 6-NUMBER INDICES: 
+	Absolute Cut nrs '#&lt;n&gt;' can be used as an alternative. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../wmpsets/wmpsets_comm.html">List of general keywords</A> for WMPSETS
+<LI>Description of the <A HREF="../wmp_descr/wmp_descr.html">WMP file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

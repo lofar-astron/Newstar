@@ -1,0 +1,21 @@
+<TITLE>Description of CSUM_FACTORS (NMAP)</TITLE>
+<H1>Program NMAP: private keyword CSUM_FACTORS</H1> 
+
+<DT><EM>Prompt:</EM> Summing multipliers
+<DT><EM>Expected input:</EM> Real number, 16 values.<P>
+Specify up to 8 complex weight factors by which the input maps have to be 
+multiplied. For each factor the real part should be given first, the imaginary 
+next. So 1, 0, 0, -1  means add the real part of the first map-pair to the 
+imagingary part of the second map-pair: <P>
+    (1+0*i)*(map1r + i*map1i) + (0-1*i)*(map2r + i*map2i) <P>
+If the number of weights you give is less than the number of maps  to be 
+combined, the weights will re-used in a cyclic fashion. Example: 
+        1, 1, -1, -1 will average the first, third, ... pairs in your WMP_SETS 
+specification with the negated second, fourth ... pairs. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

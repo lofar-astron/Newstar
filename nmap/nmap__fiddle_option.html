@@ -1,0 +1,44 @@
+<TITLE>Description of FIDDLE_OPTION (NMAP)</TITLE>
+<H1>Program NMAP: private keyword FIDDLE_OPTION</H1> 
+
+<DT><EM>Prompt:</EM> Fiddle action| BEAM, DEBEAM, FACTOR; EXTRACT, COPY, LOAD;|-ADD, AVER, POL, ANGLE; SUM, CSUM, RSUM, MOSCOM; QUIT
+<DT><EM>Expected input:</EM> Character(8).<P>
+Specify action to perform. <P>
+   In-place modifications: Modify data of (an) input image(s): <P>
+        BEAM    correct map for primary beam attenuation so it will represent 
+                 the 'true' sky 
+        DEBEAM  apply primary beam attenuation to map so it will reprsent the 
+                 product of the 'true' sky and the primary beam 
+        FACTOR  multiply image with a constant factor <P>
+   Unary operations: Create 1 new image from each input image: <P>
+        EXTRACT extract an area from (a) image(s) 
+        COPY    copy image(s) 
+        LOAD    read or write (an) image(s) in a foreign format (e.g. Holog) <P>
+   Binary combinations: make (a) new output image(s) from (a) pair(s) of input 
+   images: <P>
+        ADD     weighted sum of two images: F1*image1 + F2*image2 
+        AVER    weighted average of two images: 
+                        (F1*image1 + F2*image2) / [abs(F1) + abs(F2)] 
+        POL     degree of linear polarisation from Q and U maps: 
+                        sqrt (Qmap**2 + Umap**2)] 
+        ANGLE   polarisation orientation (radians) from Q and U maps: 
+                        0.5*atan (Umap / Qmap) <P>
+   Combinations of more than two images: <P>
+        SUM     weighted summation of (a) set(s) of images in a single .WMP file 
+                 (you will be prompted to select the weighing method) 
+        CSUM    weighted summation of pairs of images. You will be prompted 
+                 for (a) set(s) of "real" images and (a) set(s) of 
+                 "imaginary" images and complex weighting factors. 
+        RSUM    idem, but the complex weighting factors will be calculated 
+                 based on a specified rotation measure. 
+        MOSCOM  'mosaic combine': merge a set of maps (generally for different 
+                 field centres) into one output map <P>
+   Miscellaneous: <P>
+        QUIT    Return to OPTIONS level  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

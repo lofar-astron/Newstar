@@ -1,0 +1,41 @@
+<TITLE>Description of MAP_COORD (NMAP)</TITLE>
+<H1>Program NMAP: private keyword MAP_COORD</H1> 
+
+<DT><EM>Prompt:</EM> Map coordinate system|  B1950_J2000, APPARENT; REFERENCE, AREFERENCE
+<DT><EM>Expected input:</EM> Character(12).<P>
+Specify the coordinate system for the map. <P>
+There are two choices to be made: The first is whether the map is to be made in 
+apparent coordinates for the epoch of the observation or in fixed-epoch 
+coordinates. The latter are fixed for each instrument: B1950 for the WSRT,  
+J2000 for the ATNF. The second choice is whether the 'reference position' for 
+the map must coincide with the fringe-stopping centre or is to be specified by 
+you. <P>
+The reference position is the position at which the map plane is tangent to the 
+celestial sphere; it defines the geometry of the map's (l, m) grid in terms of 
+RA and DEC. <P>
+The reference position is important for mosaic mapping: The FIDDLE/MOSCOM 
+operation that combines mosaic subfields into a single large map will only work 
+if all input maps have the same reference. <P>
+For a single mosaic, the program by default uses the mosaic centre as the 
+reference for all subfield maps. However, if you intend to combine multiple 
+mosaics into a 'super-mosaic', only you can define the common reference centre 
+that will be needed. <P>
+You have the following options for your reply: <P>
+   Reference position defined by the observation (i.e. coinciding with the 
+    fringe stopping centre): <P>
+        B1950_J2000   in epoch coordinates for the epoch defined by the 
+                       instrument with which the observation was made: 
+                        B1950 for the WSRT 
+                        J2000 for the ATNF <P>
+        APPARENT      in apparent coordinates at the time of observation <P>
+   Reference position to be defined by the user through an additional parameter 
+    REF_COORD: <P>
+        REFER         in B1950_J2000 coordinates <P>
+        AREFER        in APPARENT coordinates. Note that this will not work for 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

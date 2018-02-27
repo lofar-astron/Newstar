@@ -1,0 +1,244 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>NEWSTAR documentation overview</b>
+<P>
+        <b>NOTE CAREFULLY: <em>Most of the documentation is not up-to-date in its details. Referencesthat <b>are</b> are shown in boldface. The others are left in place because theydo provide useful general information.</b></em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=hb_contents.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=hb_contents.html#SECTION0002000000000000000> <b>Introduction</b></A>
+<LI> <A NAME=tex2html3 HREF=hb_contents.html#SECTION0003000000000000000> <b>Data files</b></A>
+<LI> <A NAME=tex2html4 HREF=hb_contents.html#SECTION0004000000000000000> <b>Source models</b></A>
+<LI> <A NAME=tex2html5 HREF=hb_contents.html#SECTION0005000000000000000> <b>NEWSTAR Programs</b></A>
+<LI> <A NAME=tex2html6 HREF=hb_contents.html#SECTION0006000000000000000> <b>Bulk data: Batch processing</b></A>
+<LI> <A NAME=tex2html7 HREF=hb_contents.html#SECTION0007000000000000000> <b>Processing recipes</b></A>
+<LI> <A NAME=tex2html8 HREF=hb_contents.html#SECTION0008000000000000000> <b>Miscellaneous information</b></A>
+<LI> <A NAME=tex2html9 HREF=hb_contents.html#SECTION0009000000000000000> <b>Programmers' documentation</b></A>
+</UL>
+<H1><A NAME=SECTION0002000000000000000> <b>Introduction</b></A></H1>
+<P>
+<UL><LI>      <A HREF="../introduction/introduction.html"><b>Introduction</b></A> to Newstar for new and 
+        prospective users 
+<LI>      <A HREF="../make_model/make_model.html"><b>Source models</b></A> and their construction.  
+<LI>      <A HREF="../models_descr/models_descr.html">Models in Newstar</A>  
+<LI>      <A HREF="../introduction/introduction.html#.basic.functions"><b>Overview diagram</b></A> of programs 
+                and data files 
+</UL>
+<P>
+<H1><A NAME=SECTION0003000000000000000> <b>Data files</b></A></H1>
+<P>
+<UL><LI>      <A HREF="../file_indexing/file_indexing.html"><b>Indexing</b></A> and navigation 
+<LI>      Visibilities: The <A HREF="../scn_file/scn_file.html"><b>.SCN file</b></A> 
+  <UL><LI>    Data-structure definitions: 
+          <A HREF="../src/nscan/sth.dsc"><b>sector</b></A> header; 
+          <A HREF="../src/nscan/sch.dsc"><b>scan</b></A> header; 
+  </UL> 
+<LI>      Images: The <A HREF="../wmp_descr/wmp_descr.html">.WMP file</A> 
+  <UL><LI>    Data-structure definitions: 
+          <A HREF="../src/nmap/mph.dsc"><b>map</b></A> header 
+  </UL> 
+<LI>      Source model: The <A HREF="../mdl_descr/mdl_descr.html">.MDL file</A> 
+  <UL><LI>    Data-structure definitions: 
+  </UL> 
+<LI>      Low-level <A HREF="../show_edit/show_edit.html"><b>inspection/editing</b></A> of .SCN and .WMP 
+        files 
+<LI>      See also: The <A HREF="#.wsrt.tape"><b>WSRT tape</b></A> format. 
+</UL>
+<P>
+<H1><A NAME=SECTION0004000000000000000> <b>Source models</b></A></H1>
+<P>
+<UL><LI>      The <A HREF="../mdl_descr/mdl_descr.html">.MDL file</A> 
+<LI>      <A HREF="../make_model/make_model.html">Model-making</A>  
+<LI>     <A HREF="../models_descr/models_descr.html">Models in Newstar</A> 
+<LI>      <A HREF="../src/doc/txt/calibr_models.txt"><b>Calibrator models</b></A> <i>in Dutch</i> 
+</UL>
+<P>
+<H1><A NAME=SECTION0005000000000000000> <b>NEWSTAR Programs</b></A></H1>
+<P>
+<UL><LI>      <A HREF="../introduction/introduction.html#.programs"><b>Overview</b></A> of functionality 
+<LI>      The parameter interface: 
+  <UL><LI>    <A HREF="../introduction/introduction.html#.user.interface"><b>General</b></A> features common to all 
+        programs 
+  <LI>    <A HREF="../common_descr/common_descr.html">Advanced</A> common features 
+  </UL> 
+<LI>      NATNF: Descriptions of 
+        <A HREF="../natnf_private_intfc/natnf_private_intfc.html"><b>parameters</b></A>;  
+<LI>      NCALIB: Descriptions of <A HREF="../ncalib_descr/ncalib_descr.html">program</A> and 
+        <A HREF="../ncalib_private_intfc/ncalib_private_intfc.html"><b>parameters</b></A>;  
+  <UL><LI>    <A HREF="../ncalib_redun/ncalib_redun.html">Redundancy, Align and Selfcal</A>; 
+        <A HREF="../ncalib_polar/ncalib_polar.html">Polarisation</A>; 
+        <A HREF="../ncalib_descr/ncalib_descr.html">Utilities</A> 
+  </UL> 
+<LI>      NCLEAN: Descriptions of <A HREF="../nclean_descr/nclean_descr.html"><b>program</b></A> and 
+        <A HREF="../nclean_private_intfc/nclean_private_intfc.html"><b>parameters</b></A>; 
+        <A HREF="../nclean_descr/nclean_descr.html#.nclean.interface"><b>interface</b></A> diagram 
+<LI>      NCOPY: Descriptions of <A HREF="../ncopy_descr/ncopy_descr.html">program</A> and 
+        <A HREF="../ncopy_private_intfc/ncopy_private_intfc.html"><b>parameters</b></A>;  
+<LI>      NFLAG: Descriptions of <A HREF="../nflag_descr/nflag_descr.html">program</A> and 
+        <A HREF="../nflag_private_intfc/nflag_private_intfc.html"><b>parameters</b></A>;  
+<LI>      NGCALC: Descriptions of <A HREF="../ngcalc_descr/ngcalc_descr.html">program</A> and 
+        <A HREF="../ngcalc_private_intfc/ngcalc_private_intfc.html"><b>parameters</b></A>; 
+        <A HREF="../ngcalc_descr/ngcalc_descr.html#.ngcalc.interface"><b>interface</b></A> diagram 
+  <UL><LI>            <A HREF="../src/doc/txt/ngcalc_lightcurve.txt">Application example</A> 
+  </UL> 
+<LI>      NGIDS: Descriptions of <A HREF="../ngids_descr/ngids_descr.html">program</A> and 
+        <A HREF="../ngids_private_intfc/ngids_private_intfc.html"><b>parameters</b></A>;  
+<LI>      NMAP: Descriptions of <A HREF="../nmap_descr/nmap_descr.html">program</A> and 
+        <A HREF="../nmap_private_intfc/nmap_private_intfc.html"><b>parameters</b></A>; 
+        interface diagrams: 
+                <A HREF="../nmap_descr/nmap_descr.html#.nmap.make"><b>map-making</b></A>, with 
+                <A HREF="../nmap_descr/nmap_descr.html#.nmap.make.q"><b>hidden details</b></A> 
+  <UL><LI>    Use of <A HREF="../src/doc/txt/models_and_maps.txt">models in map-making</A>;  
+  </UL> 
+<LI>      NMODEL: Descriptions of  
+        <A HREF="../nmodel_private_intfc/nmodel_private_intfc.html"><b>parameters</b></A>; 
+        interface diagrams: 
+                        <A HREF="../nmodel_descr/nmodel_descr.html#.nmodel.interface"><b>general</b></A>, 
+                        <A HREF="../nmodel_descr/nmodel_descr.html#.nmodel.interface"><b>modelhandling</b></A>, 
+                        <A HREF="../nmodel_descr/nmodel_descr.html#.nmodel.convert"><b>modelconversions</b></A> 
+<LI>      NPLOT: Descriptions of <A HREF="../nplot_descr/nplot_descr.html">program</A> and 
+        <A HREF="../nplot_private_intfc/nplot_private_intfc.html"><b>parameters</b></A>;  
+<LI>      NSCAN: Descriptions of <A HREF="../nscan_descr/nscan_descr.html">program</A> and 
+        <A HREF="../nscan_private_intfc/nscan_private_intfc.html"><b>parameters</b></A>;  
+<LI>      Descriptions of<em>public</em> parameters, shared by more than oneprogram: 
+  <UL><LI>    .SCN-file access: 
+                <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html"><b>file</b></A>, 
+                <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html"><b>sector</b></A> and 
+                <A HREF="../select_public_intfc/select_public_intfc.html"><b>hour-angle, interferometer,                          polarisation</b></A> selection 
+    <UL><LI>  <A HREF="../unit_public_intfc/unit_public_intfc.html"><b>Magtape/disk</b></A> selection 
+    </UL> 
+  <LI>    .WMP-file access: <A HREF="../wmpnode_public_intfc/wmpnode_public_intfc.html"><b>file</b></A> and 
+        <A HREF="../wmpsets_public_intfc/wmpsets_public_intfc.html"><b>image</b></A> selection 
+  <LI>    .MDL-file access: <A HREF="../mdlnode_public_intfc/mdlnode_public_intfc.html"><b>file</b></A> selection 
+  <LI>    Model <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">manipulation</A>; 
+        <A HREF="../nmodel_descr/nmodel_descr.html#.nmodel.handle"><b>diagram</b></A> 
+  <LI>    Mapping parameters: <A HREF="../nmap_public_intfc/nmap_public_intfc.html"><b>NMAP</b></A> group 
+  <LI>    <A HREF="../plotter_public_intfc/plotter_public_intfc.html"><b>Plot-device</b></A> selection 
+  <LI>    <A HREF="../flfnode_public_intfc/flfnode_public_intfc.html"><b>.FLF file</b></A> and 
+        <A HREF="../ngfsets_public_intfc/ngfsets_public_intfc.html"><b>.NGF sector</b></A> selection 
+  <LI>    Low-level <A HREF="../nshow_public_intfc/nshow_public_intfc.html"><b>inspection/editing</b></A> of 
+        .SCN and .WMP files 
+  <LI>    Advanced control of <A HREF="../ngen_public_intfc/ngen_public_intfc.html"><b>hidden parameters</b></A> 
+  </UL> 
+</UL>
+<P>
+<H1><A NAME=SECTION0006000000000000000> <b>Bulk data: Batch processing</b></A></H1>
+<P>
+<UL><LI>      <A HREF="../record_replay/record_replay.html"><b>Recording/replaying</b></A> program runs 
+<LI>      <A HREF="../src/doc/txt/batch.txt">Batch processing</A> in NEWSTAR 
+  <UL><LI>    <A HREF="../src/doc/txt/more_on_batch.txt">Hints</A> 
+  </UL> 
+</UL>
+<P>
+<H1><A NAME=SECTION0007000000000000000> <b>Processing recipes</b></A></H1>
+<P>
+<UL><LI>      <A HREF="../rcp_continuum_21cm/rcp_continuum_21cm.html">21cm-continuum</A> observation 
+<LI>      <A HREF="../rcp_mosaic_21cm/rcp_mosaic_21cm.html">21cm-mosaic</A> observation 
+<LI>      <A HREF="../rcp_line_21cm/rcp_line_21cm.html">21cm-line</A> observation 
+<LI>      <A HREF="../rcp_linear_polarisation/rcp_linear_polarisation.html">Linear-polarisation</A> obdervation 
+<LI>      <A HREF="../src/doc/txt/ngcalc_lightcurve.txt"><b>Lightcurves</b></A> using NGCALC 
+</UL>
+<P>
+<H1><A NAME=SECTION0008000000000000000> <b>Miscellaneous information</b></A></H1>
+<P>
+<UL><LI>      <A HREF="../wsrt_fact_sheet/wsrt_fact_sheet.html"><b>WSRT</b></A> fact sheet 
+<LI>      <A HREF="../src/doc/txt/spefu_type_categ.txt"><b>Category codes</b></A> in the WSRT 
+        Observation Header (OH) 
+</UL>
+<P>
+<H1><A NAME=SECTION0009000000000000000> <b>Programmers' documentation</b></A></H1>
+<P>
+<UL><LI>      Style guides: 
+  <UL><LI>    <A HREF="../doc_guide/doc_guide.html"><b>Document-writing</b></A>; 
+        <A HREF="../src/doc/txt/psc_guide.txt"><b>parameter definition</b></A> 
+  </UL> 
+<LI>      Programming techniques: 
+  <UL><LI>    Dynamic setting of parameter prompts: <A HREF="../src/doc/txt/wndpoh.txt"><b>WNDPOH</b></A> 
+  <LI>    <A HREF="../src/doc/txt/control_c.txt"><b>control-C handling</b></A> 
+  <LI>    <A HREF="../src/doc/txt/debug_efficiently.txt"><b>dbx debugging on SUN workstations</b></A> 
+  <LI>    <A HREF="../src/doc/txt/obscure_bugs.txt"><b>Obscure bugs</b></A> in Newstar programs 
+  <LI>    <A HREF="../show_edit/show_edit.html"><b>Inspection/editing of /.SCN/.WMP files</b></A> 
+  </UL> 
+<LI>      Program/subsystem documentation: 
+  <UL><LI>    <A HREF="../ncopy_progrmr/ncopy_progrmr.html"><b>NCOPY</b></A> 
+  <LI>    <A HREF="../src/doc/txt/ncalib_vzero.txt"><b>NCALIB VZERO</b></A> algorithm 
+  <LI>    <A HREF="../src/doc/txt/wntinc.txt"><b>Table-definition compiler</b></A> 
+  <LI>    <A HREF="../src/doc/txt/xmosaic_restart.txt"><b>Hypertext browser</b></A> restart protocol 
+  <LI>    Accessing <A HREF="../src/doc/txt/qube.txt"><b>.SCN data in various sort orders</b></A> 
+  <LI>    <A HREF="../src/doc/bin/lsq.ps"><b>Least-squares package</b></A> 
+  </UL> 
+<LI>      System maintenance: 
+  <UL><LI>    <A HREF="../src/doc/txt/bug_reports.txt">Bug reporting</A> (<em>in Dutch</em>) 
+  <LI>    <A HREF="../doc_guide/doc_guide.html"><b>Documentation</b></A> organisation; 
+        diagrams: 
+                <A HREF="../doc_guide/doc_guide.html#.doc.sources.and.hyper"><b>hypertext system</b></A>, 
+                <A HREF="../doc_guide/doc_guide.html#.doc.sources.and.print"><b>printable system</b></A>, 
+  <LI>    <A HREF="../src/doc/bin/alpha_portability.ps"><b>DEC Alpha portability</b></A>; 
+        <A HREF="../src/doc/bin/alpha_32_64.ps"><b>32/64 bit issues</b></A> 
+  <LI>    <A HREF="../src/doc/txt/ppd_buffer.txt"><b>PPD buffer size</b></A> adjustment <em>(in Dutch)</em> 
+  <LI>    NFRA <A HREF="../nfra_config_management/nfra_config_management.html">Configuration management</A> 
+  <LI>    Newstar <A HREF="../elsewhere_inst_maint/elsewhere_inst_maint.html">maintenance outside NFRA</A> 
+  </UL> 
+<A NAME=.wsrt.tape><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<LI>      The WSRT tape format: 
+  <UL><LI>      File descriptor (<A HREF="../src/nscan/fdw.dsc"><b>FD</b></A>); 
+          observation header (<A HREF="../src/nscan/ohw.dsc"><b>OH</b></A>); 
+          system calibration block (<A HREF="../src/nscan/scw.dsc"><b>SC</b></A>); 
+          set header (<A HREF="../src/nscan/shw.dsc"><b>SH</b></A>); 
+          interferometer header (<A HREF="../src/nscan/ihw.dsc"><b>IH</b></A>). 
+  <LI>      <A HREF="../src/doc/txt/spefu_type_categ.txt"><b>Category codes</b></A> in the 
+           Observation Header (OH) 
+  </UL> 
+</UL>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

@@ -1,0 +1,252 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Public parameter group NMAP</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nmap_public_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nmap_public_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<UL> 
+<LI> <A NAME=tex2html3 HREF=nmap_public_intfc.html#SECTION0002100000000000000>  <b>Parameter CWEIGHT_TYPE</b></A>
+<LI> <A NAME=tex2html4 HREF=nmap_public_intfc.html#SECTION0002200000000000000>  <b>Parameter CWEIGHT_VALUE</b></A>
+<LI> <A NAME=tex2html5 HREF=nmap_public_intfc.html#SECTION0002300000000000000>  <b>Parameter MEMORY_USE</b></A>
+<LI> <A NAME=tex2html6 HREF=nmap_public_intfc.html#SECTION0002400000000000000>  <b>Parameter QMAPS</b></A>
+<LI> <A NAME=tex2html7 HREF=nmap_public_intfc.html#SECTION0002500000000000000>  <b>Parameter TAPER_VALUE</b></A>
+<LI> <A NAME=tex2html8 HREF=nmap_public_intfc.html#SECTION0002600000000000000>  <b>Parameter UNIFORM</b></A>
+<LI> <A NAME=tex2html9 HREF=nmap_public_intfc.html#SECTION0002700000000000000>  <b>Parameter UV_AREA</b></A>
+</UL>
+</UL>
+<A NAME=.overview><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the public parameter group NMAP.This group is a subset of the map-making control parameters, viz. thoseparameters that are also used by NCLEAN in its 
+<A HREF="../nclean_descr/nclean_descr.html#.data.clean">"dataclean"</A> operation.
+<P>
+        The accompanying diagrams are to be found in the document describingNMAP's <A HREF="../nmap_private_intfc/nmap_private_intfc.html">private parameters</A>. This document contiansonly the descriptions of the individual parameters in alphabetical order. Thesecenter on the Help texts, which have been designed to guide the user to theproper choice at each junction, even if his knowledge of the overall workingsof the program is only superficial.
+<P>
+        The prompt and help texts defined for these parameters are those for NMAP. In the data-clean application, these may be overridden by texts more appropriate there. Unfortunately, the present architecture of 
+<i>NEWSTAR </i> precludes the inclusion of such texts in the documentation system, so the only opportunity to read that information is during program execution (in your terminal window!).
+<P>
+<A NAME=.nmap.make.q><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Overview of the optional detailed-question sequences of the map-making interface. This diagram expands the <em>QMAPS</em> and <em>QDATAS</em> stubs in 
+<A HREF="../fig/nmap_make_q.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i><A HREF=" #.nmap.make">figure</A>. </i>
+<P>
+        <A HREF=" #.nmap.make.q">Figure</A> gives a schematic overview of this part of NMAP'sparameter interface. (The companion diagram to which the figure refers is irrelevant in the present context, but you may find it in the description of NMAP's  <A HREF="../nmap_private_intfc/nmap_private_intfc.html#.nmap.make">private interface</A>.)
+<P>
+<A NAME=.cweight.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0002100000000000000>  <b>Parameter CWEIGHT_TYPE</b></A></H2>
+<P>
+  <em>Prompt:</em> Circular weight type (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+    <PRE>
+ON TOP of the standard taper function which is circular in the equatorial UV
+plane, you nay specify a taper that is circular in the projected UV plane (i.e.
+the plane as seen from the field centre). You can select one out of the
+following functions:
+</PRE>
+<P>
+  <PRE>
+        GAUSS   exp -(<projected baseline>/CWEIGHT_VALUE)**2
+</PRE>
+<P>
+  <PRE>
+        LINEAR  max (0, 1-<projected baseline>/CWEIGHT_VALUE)
+</PRE>
+<P>
+  <PRE>
+        NATURAL unity weight everywhere, i.e. no circular taper
+</PRE>
+<P>
+  <PRE>
+NOTE that the circular weighing does not replace the standard tapering, but is
+applied as an EXTRA weight function. This is probably not what you want; you
+may eliminate the normal tapering by specifying TAPER=NATURAL and
+UNIFORM=STANDARD to take into account the radial density dependence of measured
+visibilities.
+</PRE>
+<P>
+<A NAME=.cweight.value><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002200000000000000>  <b>Parameter CWEIGHT_VALUE</b></A></H2>
+<P>
+<em>Prompt:</em> Circular-weight width (metres) (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the width for your circular weight function.
+</PRE>
+<P>
+  <PRE>
+If you have selected a gaussian for the circular_weight function
+(CWEIGHT_TYPE=GAUSS), the value you specify here will be the projected baseline
+radius for which the weight is 1/e times its value in the origin. The default
+value makes the weight equal to 1/4 at a projected baseline of 3000 m.
+</PRE>
+<P>
+  <PRE>
+If you have selected a triangular weight function (CWEIGHT_TYPE=LINEAR), the
+value you specify here is the projected baseline at which the weight reaches
+zero.
+</PRE>
+<P>
+<A NAME=.memory.use><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002300000000000000>  <b>Parameter MEMORY_USE</b></A></H2>
+<P>
+<em>Prompt:</em> Work memory size (<em>may vary per application</em>)<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify an approximate value for the work memory size to be used in the
+transform (bytes).
+</PRE>
+<P>
+<A NAME=.qmaps><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002400000000000000>  <b>Parameter QMAPS</b></A></H2>
+<P>
+<em>Prompt:</em> UV taper/convolution details? (<em>may vary per application</em>)<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+The standard defaults used for the taper and convolution functions in the
+map-making process will produce maps of excellent quality for normal
+applications at an acceptable expense of computing resources.
+</PRE>
+<P>
+  <PRE>
+There may be particular situations, however, where a non-standard taper and/or
+convolution function is more suitable. Answer YES if you want to make your own
+selection out of the possible options.
+</PRE>
+<P>
+<A NAME=.taper.value><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002500000000000000>  <b>Parameter TAPER_VALUE</b></A></H2>
+<P>
+<em>Prompt:</em> Taper half-width (metres) (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the baseline in metres of the taper function at which the taper
+function will fall to 1/e of its central value.
+</PRE>
+<P>
+  <PRE>
+The default is defined such that the taper function you selected has a value of
+1/4 for a baseline length of 3000 m.
+</PRE>
+<P>
+<A NAME=.uniform><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002600000000000000>  <b>Parameter UNIFORM</b></A></H2>
+<P>
+<em>Prompt:</em> Measure function for UV coverage (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify the way the UV coverage should be determined:
+</PRE>
+<P>
+  <PRE>
+        STANDARD: Weigh each observed point with the track length it covers in
+                   the UV plane, and average sets of redundant baselines. This
+                   method accounts properly for the fact that the density of
+                   measured points is inversely proportional to the baseline,
+                   for the multiplicity of redundant baselines and for
+                   variations in integration times.
+</PRE>
+<P>
+  <PRE>
+        FULL:     Weigh each point according to the actual UV point density. In
+                   this case care is also taken of all local UV plane density
+                   enhancements, e.g. because there is overlap between
+                   observations.
+</PRE>
+<P>
+  <PRE>
+        NATURAL:  Take each individual measured point separately, without
+                   weighing for the UV track covered by it. This option gives
+                   the maximum possible signal/noise ratio in your map, but it
+                   generally weighs the short baselines much too heavily which
+                   results in a very fat synthesized beam.
+</PRE>
+<P>
+  <PRE>
+Of these options, FULL gives the cleanest synthesized beam, but it is slower
+because it necessitates an extra read pass over the .SCN-file data.
+</PRE>
+<P>
+<A NAME=.uv.area><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002700000000000000>  <b>Parameter UV_AREA</b></A></H2>
+<P>
+<em>Prompt:</em> projected UV radius range (metres) (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the range of PROJECTED baselines for which you want to include the data.
+</PRE>
+<P>
+  <PRE>
+You may use this option, - at the expense of throwing away data -, for such
+purposes as
+</PRE>
+<P>
+  <PRE>
+        - To make the projected synthesised aperture and hence the synthesised
+           beam somewhat more circularly symmetric.
+</PRE>
+<P>
+  <PRE>
+        - To exclude noise from long projected baselines where you know there is
+           no signal of interest.
+</PRE>
+<P>
+  <PRE>
+        - To eliminate data from the short baselines, e.g. to suppress
+           interference.
+</PRE>
+<P>
+  <PRE>
+The default is not to eliminate any baselines.
+</PRE>
+<P>
+<A NAME=.nmap.make><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>      
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

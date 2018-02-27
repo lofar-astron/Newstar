@@ -1,0 +1,46 @@
+<TITLE>Description of OPS_SCANS (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_SCANS</H1> 
+
+<DT><EM>Prompt:</EM> Select scan-statistics flagging criterion | SCANS; MAXABCS; ANOISE, XAN, YAN, RNOISE, XRN, YRN;|-INSPECT, STATIST, MODE, CLEAR, QUIT 
+<DT><EM>Expected input:</EM> Character(24).<P>
+ The operations available here flag scan headers and thereby 
+affect ENTIRE scans; in doing so they IGNORE ANY SELECTIONS you have defined 
+for interferometers (parameter IFRS) and/or polarisations (parameter 
+SELECT_XYX). Apart from this, only those scans that overlap with the primary 
+data cube are affected. <P>
+For each of the options an appropriate flag is selected, as noted below. If you 
+have defined your own selection through the USER_FLAGS parameter, that 
+selection will override NFLAG's defaults. 
+!                       {\em see \textref{FLAG_MODE}{.flag.mode} } <P>
+!               {\em see the dictinction between 
+!               \whichref{data and header flags}{} } <P>
+   Flagging the scans that you select. <P>
+        SCANS   Flag scans manually; you will be given the option to select a 
+                 secondary data cube for this operation. <P>
+   Flagging on data statistics. The default flag type is CLIP. <P>
+        MAXABCS Flag all scans in which the modulus of either the real (cosine) 
+                 or imaginary (sine) part of any visibility falls outside a 
+                 range to be specified. <P>
+   Flagging on noise statistics. The default flag type is NOISE. <P>
+        ANOISE  Flag all scans in which any of the four noise values (X/Y 
+                 gain/phase) recorded in the latest NCALIB ALIGN or SELFCAL 
+                 operation exceeds a threshold (yet to be prompted for). <P>
+        XAN, YAN As ANOISE, but checking only the X resp. Y noise values. <P>
+        RNOISE  Flag all scans in which any of the four noise values (X/Y 
+                 gain/phase) recorded in the latest NCALIB REDUN operation 
+                 exceeds a threshold (yet to be prompted for). <P>
+        XRN, YRN As RNOISE, but checking only the X resp. Y noise values. <P>
+   Navigation: <P>
+        INSPECT Make detour into the (flag) INSPECTion section of the program 
+        STATIST Make detour into the (data) STATISTics section of the program 
+        MODE    Make detour into the enviornment MODE-control section of the 
+                 program 
+        CLEAR   Go to the CLEAR-flags operation. 
+        QUIT    Return to FLAG_OPTION.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

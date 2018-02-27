@@ -1,0 +1,31 @@
+<TITLE>Description of CLIP_LIMITS (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword CLIP_LIMITS</H1> 
+
+<DT><EM>Prompt:</EM> Clip limits
+<DT><EM>Expected input:</EM> Real number, 2 values.<P>
+ Specify the range within which the test value will be accepted. 
+For values outside the range the flag will be set, for those within the range 
+it will be cleared. <P>
+The default value shown is three times the rms value calculated in a 'trial 
+run' through the first &lt;N&gt; valid (see Note below) scans in the 
+primary/secondary data cube. This is intended to be an educated guess at a 
+sensible 3-sigma threshold for your operation, but you must make your own 
+assessment of the probable suitability of this value. <P>
+Notes: 
+     The new setting of the target flag in each scan or data point will 
+      OVERRIDE the current one rather than being ORed into it. <P>
+     The number &lt;N&gt; of dry-run scans is defined by the parameter DRY_SCANS; the 
+      default is 25. <P>
+     The flags used in selecting valid scans are defined by parameter ? 
+SELECT_FLAGS; the default is ALL. 
+!               {\em see parameters \textref{DRY_SCANS}{.dry.scans},  
+!                \textref{SELECT_FLAG}{.select.flag} } 
+! 
+!!              rms, 3-sigma is not the right thing here - clarify 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

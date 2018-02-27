@@ -1,0 +1,423 @@
+<TITLE>Installation and maintenance of Newstar outside NFRA</TITLE>
+
+<STRONG>Subject:</STRONG> Installation and maintenance of Newstar outside NFRA
+<BR><STRONG>Author:</STRONG>  Marco de Vos (CMV), Henk Vosmeijer (HjV)
+<BR><STRONG>To:</STRONG>      Friends of Newstar
+<P><STRONG>Date:</STRONG>     24/11/94
+<P>
+<EM>Revision history</EM>
+<UL>
+<LI>18/06/96 - add Solaris as available machine, correct Building Newstar part
+<LI>24/11/94 - add questionnaire new Newstar sites, make html
+<LI>16/02/94 - first release
+<LI>04/03/94 - prerelease 
+</UL>
+
+<PRE></PRE>
+<H1>Installation and maintenance of Newstar outside NFRA</H1>
+<PRE></PRE>
+
+<H2>1. About Newstar and this document</H2>
+
+Newstar is the reduction package for WSRT data. 
+<BR>It makes optimal use of the specific properties of the WSRT. 
+
+<P>You can use it to:
+<UL>
+<LI>read, display, calibrate and analyse WSRT data.
+<LI>flag bad data interactively or in semi-automatic mode. 
+<LI>extract and improve parametrised models from the data.
+<LI>make and manipulate calibrated maps.
+<LI>save raw or calibrated data as UVFITS tapes or files.
+<LI>save maps as FITS tapes or files.
+</UL>
+
+General information on Newstar operations can be found in the Newstar
+Documentation. This documentation is available on-line. If you are 
+familiar with World Wide Web browsers like XMosaic, you can get at the
+documentation by opening <A HREF=http://www.nfra.nl/newstar/hlp/homepage.html>http://www.nfra.nl/newstar/hlp/homepage.html</A>
+<BR>Otherwise, please send an eMail to <EM>newstar@nfra.nl</EM> for assistance.
+<P>
+This document is concerned with installation and maintenance of Newstar
+at institutes other than the NFRA. It descibes our export policy, the
+procedure for first time installation and the procedures for local 
+maintenance.
+<PRE></PRE>
+
+<H2>2. Export policy</H2>
+
+The master copy of the Newstar software is maintained at the NFRA in
+Dwingeloo. Newstar is available for end-users on the following machines:
+<UL>
+<LI>hp =  HP Workstations  (9000 series, others at request)   
+<LI>sw =  Sun Workstations (sun4)
+<LI>dw =  DEC Workstations (DEC3100)
+<LI>da =  DEC Alpha/OSF1
+<LI>so =  Sun Solaris
+</UL>
+    
+(the two-letter codes will be used in the remainder of this document)
+<P>
+This list may be extended with other Unix systems in future. Newstar 
+can also be run on Convex (cv) systems, but this is not officially 
+supported by the NFRA.
+<P>
+If you want to install Newstar on your institute, the Newstar group 
+will assist with the first time installation of the package. We expect 
+you to assign a local "Friend of Newstar" who will take care of local
+maintenance, using the procedures described in this document. In case 
+of problems, you can of course contact the Newstar group, who will do
+it's best to solve things on a short notice. 
+<P>
+The Newstar maintenance at the radio-observatory in Westerbork is 
+updated by the Newstar group at a weekly basis.
+<PRE></PRE>
+
+<H2>3. First time installation</H2>
+
+It should be noted that the Newstar group is available for assistance
+with the first time installation of Newstar. Also we can implement such
+things as changes in printers and tapeunits. However, this section 
+describes the installation process in full detail.
+<P>
+<H3>3A. Before installation</H3>
+
+Before you can install Newstar, you have to sort out the following 
+things:
+<UL> 
+<LI>Set up an account for Newstar, or at least a directory where 
+Newstar can be installed (this directory will be refered to as 
+the "Newstar root-directory" in the remainder of this document). 
+<P>
+At present, disk-space requirements are:
+<UL>
+<LI>Sources:      15 ... 27 MByte 
+<LI>Libraries:    20 ... 25 MByte (for each architecture)
+<LI>Executables:  60 ... 90 MByte (for each architecture)
+</UL>
+<BR>The amount of diskspace varies per architecture.
+<BR>Sources, libraries and executables may reside at separate filesystems.
+<P>
+<LI>Find out the commands to send ASCII and postscript files to 
+your local printer(s).
+<P>
+<LI>Find out the names of the tapeunits connected to your hosts
+</UL>
+You should fill out the form in <STRONG>Appendix A</STRONG> and eMail
+it to <EM>newstar@nfra.nl</EM> (from this point on the Newstar group
+can take care of installation).
+
+
+<H3>3B. Installing the Newstar sources</H3>
+
+You should have tar-archives  nstar_src.tar.Z   and  nstar_src_aa.tar
+(where aa is the abbreviation of the architecture on which you want to 
+use Newstar, you may need several nstar_src_aa.tar files) from tape or 
+from anonymous ftp to  ftp.nfra.nl (directory newstar). 
+<BR>To unpack this archive, use the following commands:
+<PRE>
+>>>    cd "Newstar root-directory"
+>>>    mkdir src
+>>>    cd src
+>>>    uncompress [directory_with_archive/]nstar_src.tar.Z
+>>>    tar xvf    [directory_with_archive/]nstar_src.tar
+>>>    tar xvf    [directory_with_archive/]nstar_src_aa.tar
+</PRE>
+
+<H3>3C. Adapting to your local situation</H3>
+
+Assign an abbreviated name for your institute (up to 5 characters). This 
+name will be refered to as "xxxx" in the remainder of this document.
+<P>
+Your local situation will be reflected in the following files, all in 
+directory  "Newstar root-directory"/src/sys
+<PRE>
+newstar_xxxx.csh   Directory structure, tape-units, some details
+wngfex_xxxx.csh    Commands for printing
+i_aaxxxx.csh       Fine-tuning for compilation on architecture "aa"
+</PRE>
+In general, the Newstar group will create these files based on information
+supplied by you. In case you want to create the files yourself, please use
+the versions for the nfra (newstar_nfra.csh etc.) as a template, since 
+they are extensively documented.
+<P>
+In newstar_xxxx.csh you should define at least the following:
+<OL>
+<LI>The Newstar rootdirectory
+<BR><TT>(setenv n_root "Newstar root-directory")</TT>
+<P>
+<LI>The Newstar site
+<BR><TT>(setenv n_site xxxx)</TT>
+<P>
+<LI>The architectures you want to install Newstar for (we distribute 
+some precompiled binaries and libraries for which you need only the 
+versions specified here, these are in fact in nstar_src_aa.tar)   
+<BR><TT>(setenv n_install hp/sw)</TT>
+<P>
+<LI>The hosts on which Newstar has to be compiled (just one host per 
+architecture please...)
+<BR><TT>(setenv n_hosts   host1,host2)</TT>
+<P>
+The order in n_install and n_hosts is arbitrary, but you best keep it
+the same in both variables for your own convenience.
+<P>
+<LI>Definition of tape-units
+<BR><TT>(setenv MAG4 /dev/rmt/0mn)</TT>
+<P>
+<LI>The location of the executable files and libraries if they 
+should not reside on the same filesystem as the sources. 
+You should create those directories yourself. If you do not 
+specify directories here, they will be created automatically.
+</OL>
+If you create any files yourself, we would like to receive a copy of them.
+The files will then be included in the Newstar master.
+
+
+<H3>3D. Building Newstar</H3>
+
+If you want to make an executable installation for architecture aa, login 
+on a host of that architecture and initialise the Newstar environment:
+<PRE>
+>>>    source "Newstar root-directory"/src/sys/newstar_xxxx.csh
+</PRE>
+You may have received archives nstar_exe_aa.tar or nstar_lib_aa.tar.
+If aa matches the name of your architecture, you may just untar these files
+in the appropriate directories to get a working system:
+<PRE>
+>>>    nup quit
+>>>    cd $n_lib
+>>>    uncompress [directory_with_archive/]nstar_lib_aa.tar.Z
+>>>    tar xvf    [directory with_archive]/nstar_lib_aa.tar
+>>>    uncompress [directory_with_archive/]nstar_lib_inc.tar.Z
+>>>    tar xvf    [directory with_archive]/nstar_lib_inc.tar
+>>>    cd $n_exe
+>>>    uncompress [directory_with_archive/]nstar_exe_aa.tar.Z
+>>>    tar xvf    [directory_with_archive/]nstar_exe_aa.tar
+</PRE>
+If you need to build Newstar from scratch, use the following commands:
+<PRE>
+>>>    nup build -u wntinc            (will give 9 errors for dsc-files which could not be 
+				       translated because wntinc does not yet exist.)
+>>>    nup build -u -t:exe wntinc
+>>>    nup build -u all
+</PRE>
+Logs of all transactions and errors are kept in $n_src/updyymmddaa[i].log
+where i is an index (e.g. upd930623sw.log, upd930623sw1.log).
+<P>
+If something goes wrong during the installation, the log-files will be sent
+to the Newstar group by eMail. This assumes you have the  elm  mailer 
+running at your institute. If you do not have it, you should supply an
+alias to e.g. mail or mailx in newstar_xxxx.csh 
+(add a line like alias elm 'mail -s "\!1" \!2 ')
+<PRE></PRE>
+
+<H2>4. Using Newstar, revisions and releases</H2>
+
+If someone wants to run Newstar programs, the Newstar environment should
+be initialised first:
+<PRE>
+>>>    source "Newstar root-directory"/src/sys/newstar_xxxx.csh
+</PRE>
+This can be safely done in a .cshrc or .login file.
+<P>
+You can now display the version of Newstar you are currently using:
+<PRE>
+>>>    nnews
+</PRE>
+This will display the version number first, followed by a list of 
+recent changes. The version number consists of a release number followed
+by a dot and a revision number. 
+<PRE>
+>>>    dwe nscan
+</PRE>
+Programs are started by typing dwe (or exe) followed by the name of the
+program. This will display a line like "NSCAN$1 (v4.21) started ...".
+The version number can be lower than the version displayed by nnews, since
+a revision may concern only some programs. A full revision history with 
+the revisions for every program can be found in the on-line documentation
+(select "Revision history" from the Newstar home page presented by nhyper). 
+<P>
+A revision of Newstar is a series of minor changes that do not affect 
+the overall operation of Newstar. Revisions are typically bug repairs,
+small additions to the functionality of a program etc. They do not affect
+keyword syntax and fileformats. 
+<P>
+A release of Newstar is issued when any of the following occured:
+<OL>
+<LI>A change of fileformats (so you will have to use the 
+NVS "New Version" option in some programs)
+<LI>A change in keyword syntax (so you will have to type different 
+things or change batch files in some cases)
+<LI>Addition of a new program, or a full rewrite of an existing one.
+</OL>
+<PRE></PRE>
+
+<H2>5. Keeping your installation up to date</H2>
+
+In the following we assume that the Newstar environment has been initialised.
+<P>
+If we modify the Newstar master at NFRA, all Friends of Newstar that we
+know of will receive an eMail describing the changes. This message will
+also contain instructions how to upgrade your installation. 
+<P>
+In most cases, upgrading is done through a single command:
+<PRE>
+>>>    nup update
+</PRE>
+This in fact causes the following commands to be executed, which you may
+also execute by hand:
+<PRE>
+  >>>    cd $n_import
+</PRE>
+The default directory is set to $n_import, which is the proper place to
+receive new files. This keeps your current sources intact.
+<PRE>
+  >>>    nup retrieve all
+</PRE>
+This will make a fresh version of the file $n_src/sys/database.idx, which
+gives a full description of your current installation.
+Than it will retrieve the version of database.idx from the NFRA for 
+comparison. Any files that need to be updated are retrieved in $n_import.
+The list of files retrieved is in file  retrieved.grp.
+<PRE>
+  >>>    nup build -Update -T:^exe retrieved.grp
+</PRE>
+This will build all files just retrieved, and any files dependent on them.
+No executables will be built, this will be done after the library check.
+<PRE>
+  >>>    nup clear -NConfirm
+</PRE>
+This will throw away any source files in the master system that are no 
+longer needed.
+<PRE>
+  >>>    nup check l
+</PRE>
+This will check your libraries. Experience shows that escpecially on HP
+workstations libraries tend to get cluttered. This will be found by the
+library check. If necessary, an additional build command will be scheduled
+to rebuilt modules. Objects for which no source is present are removed 
+from the libraries. Duplicate entries are both removed and replaced by 
+a fresh entry. Out-of-date entries are updated.
+<PRE>
+  >>>    nup check e -Update
+</PRE>
+This will check your executables. Executables that do not yet exist 
+or are out-of-date with respect to the NFRA are rebuilt. Note that usually
+not all versions need to be rebuilt for a new revision. Thus some programs
+may show a lower version than the version shown by nnews.
+<PRE>
+  >>>    rsh HOST '( source $n_src/sys/newstar_xxxx.csh; nup update rsh)
+</PRE>
+If $n_hosts (as defined in newstar_xxxx.csh) contains more hosts, the above
+command will be issued for each of them. This will carry out the build 
+and check commands listed above, but not the retrieve.
+<P>
+The proceedings of the update command will dump a lot of output on your
+screen, which is also stored in logfiles $n_src/updyymmdd[i].log (see 
+above). You may want to redirect the output to a file or /dev/null.
+If any errors occur, the log-file will be sent to the Newstar group by eMail.
+<P>
+<P>
+The nup command has many more uses than the ones described above. Most of
+them should not be relevant to you, since they are related to partial
+rebuilds, making backups etc. In case you are interested though, you can
+get more information through the command
+<PRE>
+>>>    nup help -help
+
+</PRE>
+<HR>
+<H2>Appendix 1: Questionnaire new Newstar sites</H2>
+
+Provide the following information, and send it to <EM>newstar@nfra.nl</EM>
+<OL>
+
+<H3><LI>Site:</H3>
+<OL>
+<LI>Institute: 
+<P>
+<LI>Abbreviated institute name (up to 5 char):
+<P>
+<LI>Address:   
+<PRE>
+
+</PRE>
+<P>
+<LI>Friend of newstar: 
+<P>
+<LI>eMail address:  
+<P>
+<LI>ftp node(s):    
+<P>
+<LI>Phone:
+<PRE></PRE>
+</OL>
+
+<H3><LI>Platform:</H3>
+<OL>
+<LI>Platform(s) and their hostname(s) on which Newstar should run: 
+<OL>
+<LI>Convex (cv)
+<LI>DEC Alpha/OSF1 (da)
+<LI>DECstation (dw)
+<LI>HP workstation (hp)
+<LI>SUN (sw)
+</OL>
+If not in list contact to <EM>newstar@nfra.nl</EM> for possible inclusion of
+your platform.
+<P>
+<LI>Do platforms have a common NFS on which to place sources? 
+<OL>
+<LI>Yes
+<LI>No
+</OL>
+(only if more than one platform requested at 2.1)
+<P>
+<LI>Root directory for Newstar: 
+<BR>(e.g. /usr/src/newstar )
+<PRE></PRE>
+<LI>If object-libraries should be placed on a different file system,
+specify here:
+<PRE></PRE>
+<LI>Idem executables: 
+<PRE></PRE>
+<LI>Could you provide an account on your platform(s) in which we can
+login to do some remote checks can be made? 
+<OL>
+<LI>Yes
+<LI>No
+</OL>
+If <STRONG>YES</STRONG>, please specify it: 
+<PRE></PRE>
+</OL>
+
+<H3><LI>Software:</H3>
+<OL>
+<LI>Are you using the standard f77, cc and ld provided with your system? 
+<OL>
+<LI>Yes
+<LI>No
+</OL>
+If not, provide details on how to call them, and the switches provided)
+<PRE></PRE>
+<LI>What is your standard command to print 132 wide ASCII files? 
+<PRE></PRE>
+<LI>What is your standard command to plot A4-format PostScript files? 
+<PRE></PRE>
+<LI>What is your standard command to plot A3-format PostScript files? 
+<PRE></PRE>
+<LI>Which other plotters would you like to use? 
+<BR>(contact <EM>newstar@nfra.nl</EM> to see if support is possible)
+<PRE></PRE>
+</OL>
+
+<H3><LI>Input/Output medium:</H3>
+<OL>
+<LI>Specify the device-names of the available mediums for reading/writing data?
+<PRE></PRE>
+<LI>Specify on which medium you want to receive Newstar if you cannot 
+support ftp: 
+<BR>(9track/density, Exabyte, DAT, ...)
+<PRE></PRE>
+</OL>
+</OL>

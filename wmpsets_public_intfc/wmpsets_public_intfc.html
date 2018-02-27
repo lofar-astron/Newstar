@@ -1,0 +1,443 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Public parameter group WMPSETS</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=wmpsets_public_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=wmpsets_public_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=wmpsets_public_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=wmpsets_public_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=wmpsets_public_intfc.html#SECTION0003200000000000000>  <b>Parameter WMP_CHANNELS</b></A>
+<LI> <A NAME=tex2html6 HREF=wmpsets_public_intfc.html#SECTION0003300000000000000>  <b>Parameter WMP_FIELDS</b></A>
+<LI> <A NAME=tex2html7 HREF=wmpsets_public_intfc.html#SECTION0003400000000000000>  <b>Parameter WMP_GROUPS</b></A>
+<LI> <A NAME=tex2html8 HREF=wmpsets_public_intfc.html#SECTION0003500000000000000>  <b>Parameter WMP_LOOPS</b></A>
+<LI> <A NAME=tex2html9 HREF=wmpsets_public_intfc.html#SECTION0003600000000000000>  <b>Parameter WMP_MAPS</b></A>
+<LI> <A NAME=tex2html10 HREF=wmpsets_public_intfc.html#SECTION0003700000000000000>  <b>Parameter WMP_POLARS</b></A>
+<LI> <A NAME=tex2html11 HREF=wmpsets_public_intfc.html#SECTION0003800000000000000>  <b>Parameter WMP_SETS</b></A>
+<LI> <A NAME=tex2html12 HREF=wmpsets_public_intfc.html#SECTION0003900000000000000>  <b>Parameter WMP_TYPES</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the public parameter group WMPSETS, (part of) which is included in several <i>NEWSTAR </i> programs.
+<P>
+        The 
+document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+        Please note that the generic prompt and help texts defined for these parameters are frequently superseded in the actual applications by alternative texts that are more appropriate to the situation at hand. Unfortunately, the present architecture of <i>NEWSTAR </i> precludes the inclusion of such texts in the documentation system, so the only opportunity to read that information is during program execution (in your terminal window!).
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<A NAME=.wmp.channels><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter WMP_CHANNELS</b></A></H2>
+<P>
+  <em>Prompt:</em> 3rd index: channel(s) (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 value
+<P>
+    <PRE>
+Give the channel index-range CHN of an image-Set specification
+                                                (grp.fld.CHN.pol.typ.seq)
+</PRE>
+<P>
+  <PRE>
+Remember that channel 0 is the 'continuum' channel.
+</PRE>
+<P>
+  <PRE>
+Possible answers ([]=optional):
+</PRE>
+<P>
+  <PRE>
+        0               take the continuum channel
+        n1              take channel nr n1 (n1=0,1,2,3,....)
+        n1-n2[:n3]      loop over channels n1 through n2 [step n3]
+        *               loop over all channels for the field (wildcard)
+        n1-[*]          loop over all channels for the field,
+                         starting with n1 [step n3]
+</PRE>
+<P>
+  <PRE>
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values.
+</PRE>
+<P>
+<A NAME=.wmp.fields><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter WMP_FIELDS</b></A></H2>
+<P>
+<em>Prompt:</em> 2nd index: field(s) (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 value
+<P>
+  <PRE>
+Give the field index (range) FLD of an image-Set specification
+                                                (grp.FLD.chn.pol.typ.seq)
+</PRE>
+<P>
+  <PRE>
+Possible answers ([]=optional):
+</PRE>
+<P>
+  <PRE>
+        0               take first (or only) field
+        n1              take field nr n1 (n1=0,1,2,3,....)
+        n1-n2[:n3]      loop over fields n1 through n2 [step n3]
+        *               loop over all fields in the observation (wildcard)
+        n1-[*][:n3]     loop over all fields in the observation,
+                         starting with n1 [step n3]
+</PRE>
+<P>
+  <PRE>
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values.
+</PRE>
+<P>
+<A NAME=.wmp.groups><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter WMP_GROUPS</b></A></H2>
+<P>
+<em>Prompt:</em> 1st index: grp  (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 value
+<P>
+  <PRE>
+Give the group index (range) GRP of an image-Set specification
+                                                (GRP.fld.chn.pol.typ.seq)
+</PRE>
+<P>
+  <PRE>
+Possible answers ([]=optional):
+</PRE>
+<P>
+  <PRE>
+        0               take first (or only) group
+        n1              take group nr n1 (n1=0,1,2,3,....)
+        n1-n2[:n3]      loop over groups n1 through n2 [step n3]
+        *               loop over all available groups (wildcard)
+        n1-[*][:n3]     loop over all available groups,
+                         starting with n1 [step n3]
+</PRE>
+<P>
+  <PRE>
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values.
+</PRE>
+<P>
+<A NAME=.wmp.loops><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter WMP_LOOPS</b></A></H2>
+<P>
+<em>Prompt:</em> Loop specifications: |- (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 to 16 values
+<P>
+  <PRE>
+Using the WMP_LOOPS parameter in combination with your WMP_SETS soecification,
+you may specify repetitions of the operation you are currently defining,
+systematically incrementing the Group, Channel, etc. indices for each new cycle.
+</PRE>
+<P>
+  <PRE>
+This is done by specifying here pairs of values:
+</PRE>
+<P>
+  <PRE>
+        n1,incr1, n2,incr2, ...
+</PRE>
+<P>
+  <PRE>
+In each pair, the first value (n) indicates the number of times the loop has to
+execute; the second value (incr) indicates how the imaqge index is to be
+changed at the start of the successive loops.
+</PRE>
+<P>
+  <PRE>
+Example:
+        The specification WMP_SETS = grp.fld.1-2.* would select the combination
+of all images of frequency channels 1 and 2 for the field grp.fld. If you wish
+to process 32 sets of successive such pairs of frequency channels, you would
+have to type in all the successive WMP_SETS specifications:
+</PRE>
+<P>
+  <PRE>
+        grp.fld.1-2, grp.fld.3-4, ....., grp.fld.63-64
+</PRE>
+<P>
+  <PRE>
+Instead, you may specify WMP_LOOPS=32,0.0.2 and the first index only for
+WMP_SETS. This will cause the program to execute the present operation 32 times
+in a loop, starting with your WMP_SETS specification and then incrementing its
+indices by 0.0.2 for every iteration; this is equivalent to the above 32
+separate runs of the program.
+</PRE>
+<P>
+  <PRE>
+n must be > 0, and the increment can be any index string with simple positive
+or negative integers. An increment of 0 may be omitted, i.e. the increment
+specifications 0.0.3.0 and ..3 are equivalent.
+</PRE>
+<P>
+  <PRE>
+Loops may be nested (to a limiting depth of 8 levels). A following loop
+specification is executed inside the preceding one(s).
+</PRE>
+<P>
+  <PRE>
+Example of NESTED loops:
+        To run your program for 64 fields (fld index), for 10 odd channels (chn
+index) per field, starting at channel 7 and combining all polarisations (pol
+index) every time, specify:
+</PRE>
+<P>
+  <PRE>
+                WMP_LOOPS=64,.1, 10,..2
+                WMP_SETS=grp.0.7.* (initial set of images)
+</PRE>
+<P>
+  <PRE>
+The second loop is executed as an inner loop inside the first one, that is, for
+each mosaic subfield the channels are processed in a contiguous sequence.
+</PRE>
+<P>
+  <PRE>
+IF YOU WANT TO BE REMINDED OF WHAT IMAGES ARE IN YOUR FILE:
+        Type O or L in response to this prompt to get an Overview or Layout
+        of the file for which you need to specify the sets.
+</PRE>
+<P>
+<A NAME=.wmp.maps><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003600000000000000>  <b>Parameter WMP_MAPS</b></A></H2>
+<P>
+<em>Prompt:</em> 6th index: image sequence number(s) (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 value
+<P>
+  <PRE>
+Give the sequence-number index (range) SEQ of an image-Set specification
+                                                (grp.fld.chn.pol.typ.SEQ)
+</PRE>
+<P>
+  <PRE>
+Possible answers ([]=optional):
+</PRE>
+<P>
+  <PRE>
+        0               take the first image
+        n1              take image nr n1 (n1=0,1,2,3,....)
+        n1-n2[:n3]      loop over images n1 through n2 [step n3]
+        *               loop over all
+                         (wildcard)
+        n1-[*][:n3]     loop over all available ifrs|tels,
+                         starting with n1 [step n3]
+</PRE>
+<P>
+  <PRE>
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values.
+</PRE>
+<P>
+<A NAME=.wmp.polars><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003700000000000000>  <b>Parameter WMP_POLARS</b></A></H2>
+<P>
+<em>Prompt:</em> 4th index: polarisation(s) (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 value
+<P>
+  <PRE>
+Give the polarisation index (range) POL of an image-Set specification
+                                                (grp.fld.chn.POL.typ.seq)
+</PRE>
+<P>
+  <PRE>
+        POL is a number indicating the polarisation. For interferometer data,
+pol=0,1,2,3 represents XX,XY,YX,YY. For telescope data, pol=0,1 represents X,Y.
+</PRE>
+<P>
+  <PRE>
+        This index is useful for defining loops (WMP_LOOPS parameter).
+Otherwise you may find the SELECT_XYX parameter more convenient.
+</PRE>
+<P>
+  <PRE>
+        If you prefer to use WMP_POLARS here, examples of reasonable answers
+are:
+                *       XX, XY, YX, YY
+                0-3:3   XX, YY
+                0       XX
+                3       YY
+</PRE>
+<P>
+  <PRE>
+Note:
+ The associated WMP_LOOPS keyword allows even more looping over index values.
+</PRE>
+<P>
+<A NAME=.wmp.sets><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003800000000000000>  <b>Parameter WMP_SETS</b></A></H2>
+<P>
+<em>Prompt:</em> Images to process:  grp.fld.chn.pol.typ.seq | (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 to 64 values
+<P>
+  <PRE>
+        A NEWSTAR .WMP file contains maps and antenna patterns for one or more
+objects. The basic unit of data is the two-dimensional IMAGE representing
+either a MAP of a piece of sky or the synthesised ANTENNA PATTERN. Images are
+addressed through an IMAGE INDEX which is a string of six integers separated by
+dots:
+</PRE>
+<P>
+  <PRE>
+                        grp.fld.chn.pol.typ.seq
+</PRE>
+<P>
+  <PRE>
+   A GROUP is basically an administrative unit, allowing the user to subdivide
+    his data, e.g. per object.
+</PRE>
+<P>
+  <PRE>
+   The FIELD and CHANNEL are the field and channel numbers of the observation(s)
+    in the .SCN file from which the image was made. These numbers are defined by
+    the way the observation was made and should be indentical for
+    all observations involved (which could, e.g., be several 12-hour mosaic
+    observations with different baseline sets.).
+</PRE>
+<P>
+  <PRE>
+   POL is a code indicating the polarisation. The code distinguishes the
+    four components of a full polarisation represntation:
+</PRE>
+<P>
+  <PRE>
+                0,1,2,3 =  XX.XY.YX.YY or
+                0,1,2,3 =  I,Q,U,V
+</PRE>
+<P>
+  <PRE>
+    but it is your responsibility to remember which of the two representations
+    applies.
+</PRE>
+<P>
+  <PRE>
+   TYP codes the type of image: 0 for a map, 1 for an antenna pattern.
+</PRE>
+<P>
+  <PRE>
+   The image SEQ uence number distinguishes images for which all five of
+    the preceding indices are identical. It is used in particular to distinguish
+    residual maps in a CLEAN sequence. It is your responsibility to know what
+    the different SEQ values represent.
+</PRE>
+<P>
+  <PRE>
+Index values start at zero. (Remember that for the CHN index 0 is the continuum
+channel.)
+</PRE>
+<P>
+  <PRE>
+You may select SETS of images for processing through [ranges of] values for the
+five indices, e.g.
+</PRE>
+<P>
+  <PRE>
+                2.3-5:2.*.1-7.*
+</PRE>
+<P>
+  <PRE>
+The WILDCARD value '*' means 'all'. Each index may also be specified as a
+RANGE: <first>-<last>[<:increment>]. Indices omitted are assumed to be '*',
+i.e.  ....1.0  means *.*.*.*.1.0. For wildcards at the end the dots may also be
+omitted, i.e. 1.0 means 1.0.*.*.*.*
+</PRE>
+<P>
+  <PRE>
+The notation 3-5:2 stands for 'from 3 through 5 in steps of 2'. The step must
+be positive; if it is omitted, it is taken to be 1 (as in '1-7' above).
+</PRE>
+<P>
+  <PRE>
+Multiple image SETS may be specified, separated by comma's: <Set1>,<Set2>,...
+The associated WMP_LOOPS keyword allows even more looping over index values.
+</PRE>
+<P>
+  <PRE>
+IF YOU WANT TO BE REMINDED OF WHAT IMAGES ARE IN YOUR FILE:
+        Type O or L in response to this prompt to get an Overview or Layout
+        of your .WMP file.
+</PRE>
+<P>
+  <PRE>
+IF YOU DO NOT YET FEEL COMFORTABLE WITH THESE CONCEPTS MORE HELP IS PROVIDED:
+        type '' or '>' to be prompted for each of the 6 indices separately,
+        with more specific explanation per index.
+</PRE>
+<P>
+  <PRE>
+IF YOU GET BORED WITH 6-NUMBER INDICES:
+        Absolute Cut nrs '#<n>' can be used as an alternative.
+</PRE>
+<P>
+<A NAME=.wmp.types><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003900000000000000>  <b>Parameter WMP_TYPES</b></A></H2>
+<P>
+<em>Prompt:</em> 5th index: typ  (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *32:  1 value
+<P>
+  <PRE>
+Give the type index (range) TYP of an image-Set specification
+                                                (grp.fld.chn.pol.TYP.seq)
+</PRE>
+<P>
+  <PRE>
+This index is most useful in loop specifications (parameter WMP_LOOPS).
+</PRE>
+<P>
+  <PRE>
+Possible answers:
+</PRE>
+<P>
+  <PRE>
+        0               maps only
+        1               antenna patterns only
+        0-1 or *        both maps and antenna patterns
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

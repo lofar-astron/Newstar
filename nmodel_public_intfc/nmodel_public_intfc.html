@@ -1,0 +1,732 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Public parameter group NMODEL</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nmodel_public_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nmodel_public_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<UL> 
+<LI> <A NAME=tex2html3 HREF=nmodel_public_intfc.html#SECTION0002100000000000000>  <b>Parameter BEAM_DESCR</b></A>
+<LI> <A NAME=tex2html4 HREF=nmodel_public_intfc.html#SECTION0002200000000000000>  <b>Parameter BEAM_FACTOR_0</b></A>
+<LI> <A NAME=tex2html5 HREF=nmodel_public_intfc.html#SECTION0002300000000000000>  <b>Parameter BEAM_FACTOR_1</b></A>
+<LI> <A NAME=tex2html6 HREF=nmodel_public_intfc.html#SECTION0002400000000000000>  <b>Parameter BEAM_FREQ_0</b></A>
+<LI> <A NAME=tex2html7 HREF=nmodel_public_intfc.html#SECTION0002500000000000000>  <b>Parameter BEAM_FREQ_1</b></A>
+<LI> <A NAME=tex2html8 HREF=nmodel_public_intfc.html#SECTION0002600000000000000>  <b>Parameter BEAM_SCALE</b></A>
+<LI> <A NAME=tex2html9 HREF=nmodel_public_intfc.html#SECTION0002700000000000000>  <b>Parameter CLEAR_REF</b></A>
+<LI> <A NAME=tex2html10 HREF=nmodel_public_intfc.html#SECTION0002800000000000000>  <b>Parameter DELETE_AREA</b></A>
+<LI> <A NAME=tex2html11 HREF=nmodel_public_intfc.html#SECTION0002900000000000000>  <b>Parameter DELETE_LEVEL</b></A>
+<LI> <A NAME=tex2html12 HREF=nmodel_public_intfc.html#SECTION00021000000000000000>  <b>Parameter EDIT_FIELD</b></A>
+<LI> <A NAME=tex2html13 HREF=nmodel_public_intfc.html#SECTION00021100000000000000>  <b>Parameter EDIT_VALUE</b></A>
+<LI> <A NAME=tex2html14 HREF=nmodel_public_intfc.html#SECTION00021200000000000000>  <b>Parameter MERGE_RADIUS</b></A>
+<LI> <A NAME=tex2html15 HREF=nmodel_public_intfc.html#SECTION00021300000000000000>  <b>Parameter MODEL_ACTION</b></A>
+<LI> <A NAME=tex2html16 HREF=nmodel_public_intfc.html#SECTION00021400000000000000>  <b>Parameter MODEL_MODIFY</b></A>
+<LI> <A NAME=tex2html17 HREF=nmodel_public_intfc.html#SECTION00021500000000000000>  <b>Parameter MODEL_OPTION</b></A>
+<LI> <A NAME=tex2html18 HREF=nmodel_public_intfc.html#SECTION00021600000000000000>  <b>Parameter MODEL_SHOW</b></A>
+<LI> <A NAME=tex2html19 HREF=nmodel_public_intfc.html#SECTION00021700000000000000>  <b>Parameter NAMES_FILE</b></A>
+<LI> <A NAME=tex2html20 HREF=nmodel_public_intfc.html#SECTION00021800000000000000>  <b>Parameter SORT_CENTRE</b></A>
+<LI> <A NAME=tex2html21 HREF=nmodel_public_intfc.html#SECTION00021900000000000000>  <b>Parameter SORT_FIELD</b></A>
+<LI> <A NAME=tex2html22 HREF=nmodel_public_intfc.html#SECTION00022000000000000000>  <b>Parameter SORT_TYPE</b></A>
+<LI> <A NAME=tex2html23 HREF=nmodel_public_intfc.html#SECTION00022100000000000000>  <b>Parameter SOURCE</b></A>
+<LI> <A NAME=tex2html24 HREF=nmodel_public_intfc.html#SECTION00022200000000000000>  <b>Parameter SOURCE_FACTORS</b></A>
+<LI> <A NAME=tex2html25 HREF=nmodel_public_intfc.html#SECTION00022300000000000000>  <b>Parameter SOURCE_LIST</b></A>
+<LI> <A NAME=tex2html26 HREF=nmodel_public_intfc.html#SECTION00022400000000000000>  <b>Parameter SOURCE_NUMBER</b></A>
+<LI> <A NAME=tex2html27 HREF=nmodel_public_intfc.html#SECTION00022500000000000000>  <b>Parameter SOURCE_RANGE</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the public parameter group NMODEL, (part of) which is included in all those <i>NEWSTAR </i> programs that manipulate models in .MDL and/or .SCN files.
+<P>
+        The 
+document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+        Please note that the generic prompt and help texts defined for these parameters are frequently superseded in the actual applications by alternative texts that are more appropriate to the situation at hand. Unfortunately, the present architecture of <i>NEWSTAR </i> precludes the inclusion of such texts in the documentation system, so the only opportunity to read that information is during program execution (in your terminal window!).
+<P>
+<A NAME=.beam.descr><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0002100000000000000>  <b>Parameter BEAM_DESCR</b></A></H2>
+<P>
+  <em>Prompt:</em> Beam descriptors (<em>may vary per application</em>)<BR><em>Expected input:</em> Integer:  1 to 32 values
+<P>
+    <PRE>
+Describe the primary beam for an instrument other than the WSRT or the ATCA.
+Here you specify the formula to be used; later you will be asked for values for
+the coefficients.
+</PRE>
+<P>
+  <PRE>
+Each instrument (up to 8) is decribed by four numbers, with (in order) the
+following meaning:
+</PRE>
+<P>
+  <PRE>
+  - the value of the * in BEAM_FREQ_* and BEAM_FACTOR_* to use
+</PRE>
+<P>
+  <PRE>
+  - the type of formula:
+        0= cos(factor*freq(MHz)*angle(degree))**6;
+        1= 1/(1+fac1*(freq(GHz)*angle(arcmin))**2+fac2*...);
+        2= 1+fac1*(freq(GHz)*angel(arcmin))**2+fac2*...)
+</PRE>
+<P>
+  <PRE>
+  - the number of factors per frequency range in BEAM_FACTOR_*
+</PRE>
+<P>
+  <PRE>
+  - the number of frequency ranges specified in BEAM_FREQ_*
+</PRE>
+<P>
+  <PRE>
+Instruments are: first WSRT, second ATCA
+</PRE>
+<P>
+<A NAME=.beam.factor.0><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002200000000000000>  <b>Parameter BEAM_FACTOR_0</b></A></H2>
+<P>
+<em>Prompt:</em> Beam feed factors (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 64 values
+<P>
+  <PRE>
+Specify per frequency band specified in BEAM_FREQ_0 the factors to be used in
+the primary beam calculation formula (see BEAM_DESCR). This is for WSRT cos**6
+</PRE>
+<P>
+<A NAME=.beam.factor.1><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002300000000000000>  <b>Parameter BEAM_FACTOR_1</b></A></H2>
+<P>
+<em>Prompt:</em> Beam feed factors (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 64 values
+<P>
+  <PRE>
+Specify per frequency band specified in BEAM_FREQ_1 the factors to be used in
+the primary beam calculation formula (see BEAM_DESCR). This is for ATCA
+1/(1+ai.x**2i)
+</PRE>
+<P>
+<A NAME=.beam.freq.0><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002400000000000000>  <b>Parameter BEAM_FREQ_0</b></A></H2>
+<P>
+<em>Prompt:</em> Beam feed frequencies (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 8 values
+<P>
+  <PRE>
+Specify in increasing order the frequency bands to be used in calculating the
+primary beam. For each value there should be a corresponding set of values in
+BEAM_FACTOR_0 (the number of values in BEAM_DESCR).These factors will be used
+up to the corresponding frequency specified.
+</PRE>
+<P>
+<A NAME=.beam.freq.1><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002500000000000000>  <b>Parameter BEAM_FREQ_1</b></A></H2>
+<P>
+<em>Prompt:</em> Beam feed frequencies (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 8 values
+<P>
+  <PRE>
+Specify in increasing order the frequency bands to be used in calculating the
+primary beam. For each value there should be a corresponding set of values in
+BEAM_FACTOR_1 (the number of values in BEAM_DESCR).These factors will be used
+up to the specified corresponding frequency (MHz).
+</PRE>
+<P>
+<A NAME=.beam.scale><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002600000000000000>  <b>Parameter BEAM_SCALE</b></A></H2>
+<P>
+<em>Prompt:</em> Scale factor for primary-beam width (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify a scaling factor for the primary beam calculations. If, e.g. a beam has
+been defined (by BEAM_FACTOR) for a 25 m dish, it can be used for a 20 m dish
+by specifying here 20./25. (or 0.8)
+</PRE>
+<P>
+<A NAME=.clear.ref><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002700000000000000>  <b>Parameter CLEAR_REF</b></A></H2>
+<P>
+<em>Prompt:</em> Clear reference coordinates (Yes/No)? (<em>may vary per application</em>)<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+If you answer YES to this prompt, the reference coordinates of the model will
+be reset. Otherwise, only the number of components will be set to zero.
+</PRE>
+<P>
+<A NAME=.delete.area><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002800000000000000>  <b>Parameter DELETE_AREA</b></A></H2>
+<P>
+<em>Prompt:</em> Area l,m, dl,dm (arcsec) (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 4 values
+<P>
+  <PRE>
+Specify the area in which all sources should be deleted:
+</PRE>
+<P>
+  <PRE>
+        l,m     area centre (0,0 = map centre)
+        dl,dm   area size
+</PRE>
+<P>
+<A NAME=.delete.level><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0002900000000000000>  <b>Parameter DELETE_LEVEL</b></A></H2>
+<P>
+<em>Prompt:</em> Lower flux limit (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Source whose absolute flux is below the value specified here will be deleted
+from the model list.
+</PRE>
+<P>
+<A NAME=.edit.field><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021000000000000000>  <b>Parameter EDIT_FIELD</b></A></H2>
+<P>
+<em>Prompt:</em> Source attribute to edit| (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Specify the source attribute that you want to edit:
+</PRE>
+<P>
+  <PRE>
+   Source coordinates:
+</PRE>
+<P>
+  <PRE>
+        L, M          coordinates relative to reference (arcsec)
+</PRE>
+<P>
+  <PRE>
+   Properties of the source:
+</PRE>
+<P>
+  <PRE>
+        I             ampitude
+        SI            spectral index
+        RM            intrinsic rotation measure
+        Q, U, V       Stokes parameters in %
+        LA, SA, PA    long axis short axis, position angle of elliptic-Gaussian
+                       extended-source model
+</PRE>
+<P>
+  <PRE>
+   Administrative attributes in the model list:
+</PRE>
+<P>
+  <PRE>
+        ID            identification
+        BITS          bits mask (if source is extended, has polarisation)
+</PRE>
+<P>
+  <PRE>
+        TYP           source type (0 is the standard)
+</PRE>
+<P>
+  <PRE>
+        CCBM          clean component (1) and beam-corrected (8)
+</PRE>
+<P>
+  <PRE>
+        TP2           reserved
+</PRE>
+<P>
+<A NAME=.edit.value><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021100000000000000>  <b>Parameter EDIT_VALUE</b></A></H2>
+<P>
+<em>Prompt:</em> New value (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the value to set in specified edit field.
+</PRE>
+<P>
+<A NAME=.merge.radius><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021200000000000000>  <b>Parameter MERGE_RADIUS</b></A></H2>
+<P>
+<em>Prompt:</em> Coincidence radii dl,dm (arcsec) (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Point sources that are within (dl,dm) arcsec of each other are combined. The
+suggested default values are approximately half the synthesised  beam radius in
+l and m directions.
+</PRE>
+<P>
+<A NAME=.model.action><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021300000000000000>  <b>Parameter MODEL_ACTION</b></A></H2>
+<P>
+<em>Prompt:</em> specify model disposition and format in the order shown,|- (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 to 5 values
+<P>
+  <PRE>
+NOTE:
+        The defaults proposed have been chosen to minimise the time needed for
+the lengthy (re)calculations of model visibilities. The price you pay for this
+is a near-doubling of the size of the sectors in your .SCN file in which you
+store a model. Your priorities may be different, but before choosing
+non-default options make sure you understand the consequences.
+</PRE>
+<P>
+  <PRE>
+        In principle, the model list now in memory will be used to calculate
+the model sources' visibilities in your observation(s).
+</PRE>
+<P>
+  <PRE>
+        To avoid this lengthy calculation where possible, the program will try
+to use model visibilities stored earlier in the .SCN file. To this end, it will
+read the model list from the .SCN file and combine it with the list in core,
+then (re)calculate the visibilities only for those components that are not
+represented correctly in the .SCN file. Having done that, the program may or
+may not save the combined model and its visibilities back into the .SCN file.
+</PRE>
+<P>
+  <PRE>
+        You must select ONE of the following options for the combination and
+subsequent storage:
+</PRE>
+<P>
+  <PRE>
+   MERGE       Merge the model in the .SCN file with the one in core discarding
+                duplicates, i.e. components with identical position, extent and
+                flux; store the combined model in the .SCN file.
+               This option is suitable in the most common situations, viz.:
+                  - the list in core is an extension containing the list in the
+                    .SCN file as a subset; or
+                  - the list in core is an incremental update, i.e. a list of
+                    aditional components.
+</PRE>
+<P>
+  <PRE>
+   INCREMENT   As MERGE, but retain the resultant model IN CORE ONLY without
+                changing the .SCN file
+</PRE>
+<P>
+  <PRE>
+   NEW         Overwrite the model in the SCN file with the model in core.
+</PRE>
+<P>
+  <PRE>
+   TEMPORARY   Use the model in core, ignoring the one in the SCN file.
+</PRE>
+<P>
+  <PRE>
+   ADD         As MERGE, but without discarding any components, i.e. fluxes
+                of coincident sources are added.
+               This option will produce the same effect as MERGE in the case
+                that the list in core is an incremental update. Its use is
+                recommended for special applications only.
+</PRE>
+<P>
+  <PRE>
+        Separately from the above, you may define which effects must be
+accounted for in the visibility calculations. The four items below must be
+specified in the order shown. You may select the default by skipping the item,
+typing only the delimiter comma; for example ',,\BEAM' will select the
+defaults for the first four items.
+</PRE>
+<P>
+  <PRE>
+   BAND/NOBAND   To correct or not correct the radial extent of your model
+                  components for the smearing due to your finite observing
+                  bandwidth
+</PRE>
+<P>
+  <PRE>
+   TIME/NOTIME   To correct or not correct the tangential extent of your model
+                  model components for the smearing due to the finite
+                  integration time of your observation
+</PRE>
+<P>
+  <PRE>
+   INPOL/NOINPOL To correct or not correct the polarisation components
+                  Q,U,V of your model for the effect of position-dependent
+                  primary-beam polarisation.
+                 (NOTE: The iNPOL option is currently disabled.)
+</PRE>
+<P>
+  <PRE>
+   BEAM/NOBEAM   To correct or not correct your model fluxes for the
+                  position-dependent gain of the primary beam.
+</PRE>
+<P>
+  <PRE>
+NOTE that specifying options different from those used earlier in calculating
+the model visibilities that are noe now in the .SCN file will result in a
+partial or complete recalculation of the visibilities.
+</PRE>
+<P>
+<A NAME=.model.modify><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021400000000000000>  <b>Parameter MODEL_MODIFY</b></A></H2>
+<P>
+<em>Prompt:</em> Model-handling action (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify what you want to do with the model list in core:
+</PRE>
+<P>
+  <PRE>
+   Consolidating/rearranging the list:
+</PRE>
+<P>
+  <PRE>
+        MERGE   Combine (point-) sources at the same position.
+                 Must have the same spectral index and rotation measure.
+                 Stokes Q,U,V are properly taken into account.
+                 CLEAN components are NOT combined with non-CLEAN comp.
+                 Extended sources are ignored.
+        RMERGE  As MERGE, but within specified radius (which may be 0).
+                 The (l,m) position of the strongest source is taken.
+                 CLEAN components are combined if at the same position.
+</PRE> 
+  <PRE>
+        SORT    Sort source list in decreasing amplitude. (This will be done
+                 automatically when you write the list back to a .MDL file.)
+        FSORT   Sort on a specified field in source list (for subsequent
+                 display)
+</PRE>
+<P>
+  <PRE>
+   Modifying sources in the list:
+</PRE>
+<P>
+  <PRE>
+        CALIB   Calibrate the source list to a new amplitude and/or position
+        EDIT    Edit source list (an amplitude of zero will delete the source)
+        FEDIT   Edit a field in a range of sources
+        FLUX_KNOWN Toggle the 'unknown-flux' bit. When this bit is off, NCALIB
+                 will by default refrain from attempting a Selfcan gain
+                 solution.
+</PRE>
+<P>
+  <PRE>
+   Deleting sources in the list:
+</PRE>
+<P>
+  <PRE>
+        DEL     Delete sources
+        DNCLOW  Delete non-clean sources with low amplitudes
+        DCLOW   Delete clean components with low amplitudes
+        DAREA   Delete sources in specified area
+</PRE>
+<P>
+  <PRE>
+   Miscellaneous:
+</PRE>
+<P>
+  <PRE>
+        SHOW       Show the list. (You will be prompted for details)
+</PRE>
+<P>
+  <PRE>
+        QUIT       Quit model-handling.
+</PRE>
+<P>
+<A NAME=.model.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021500000000000000>  <b>Parameter MODEL_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Model-list action| (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify the action to be taken on the internal model list:
+</PRE>
+<P>
+  <PRE>
+   Transfers between the internal list and an external file:
+</PRE>
+<P>
+  <PRE>
+        READ   Read the components from a .MDL file on disk into the
+                program's model list. The default filename is the name of
+                the calibrator belonging to the most recently read sector,
+                derived from the fieldname and the frequency. .MDL files are
+                first searched for in the current directory or the directory
+                defined by parameter DATAB. If this fails, the file is looked
+                for in the directory defined by parameter MODELB and finally by
+                that defined by the Unix environment variable MODELB.
+</PRE>
+<P>
+  <PRE>
+               NOTE that reading is INCREMENTAL, so if you read the same
+                .MDL file twice, you will get every component doubled...
+</PRE>
+<P>
+  <PRE>
+        WRITE  Write the program's model list to a .MDL file.
+</PRE>
+<P>
+  <PRE>
+        INTERN This does not affect the list, but selects
+                the model stored in the scan-file(s). Selecting INTERN is
+                equivalent to setting DE_APPLY=MODEL.
+                You may use this internal model in combination with
+                components in the program's model list.
+</PRE>
+<P>
+  <PRE>
+   Modification and display of the internal list:
+</PRE>
+<P>
+  <PRE>
+        CLEAR  Empty the program's model list and optionally its reference
+                coordinates.
+</PRE>
+<P>
+  <PRE>
+        ADD    Manual input of sources to add the list
+</PRE>
+<P>
+  <PRE>
+        MODIFY Enter a submenu with options to modify the model list:
+                  - by deleting sources from the list;
+                  - by editing entries manually;
+                  - by sorting (for subsequent display) the list: you will be
+                     prompted for a definition of the sort order;
+                  - by calibrating.
+</PRE>
+<P>
+  <PRE>
+        SHOW   Show the program's model list, you will be prompted for details.
+</PRE>
+<P>
+  <PRE>
+        QUIT   Exit from model-handling.
+</PRE>
+<P>
+<A NAME=.model.show><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021600000000000000>  <b>Parameter MODEL_SHOW</b></A></H2>
+<P>
+<em>Prompt:</em> Model listing mode (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify what type of listing you want, and where it should be shown:
+</PRE>
+<P>
+  <PRE>
+   LIST   Show the program's model list in the log file.
+   SHOW   Idem, but both on the terminal and in the log file.
+</PRE>
+<P>
+  <PRE>
+   RLIST  Show the program's model list in RA/DEC coordinates in the log file.
+   RSHOW  Idem, but both on the terminal and in the log file.
+</PRE>
+<P>
+  <PRE>
+   TOTAL  Show the statistics of the program's model list.
+</PRE>
+<P>
+  <PRE>
+   QUIT   Back to MODEL_OPTION.
+</PRE>
+<P>
+<A NAME=.names.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021700000000000000>  <b>Parameter NAMES_FILE</b></A></H2>
+<P>
+<em>Prompt:</em> File with source names (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the full name of the input disk-file. The file should contain lines
+with Ra, Dec and Name, separated by white space. Comments may be added starting
+with an exclamation mark. A NULL answer (two double quotes) will ignore the
+name-list: no file will be opened.
+</PRE>
+<P>
+<A NAME=.sort.centre><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021800000000000000>  <b>Parameter SORT_CENTRE</b></A></H2>
+<P>
+<em>Prompt:</em> Reference coordinates l,m|- (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the reference coordinates for the distance sort that you selected.
+</PRE>
+<P>
+<A NAME=.sort.field><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00021900000000000000>  <b>Parameter SORT_FIELD</b></A></H2>
+<P>
+<em>Prompt:</em> Sort criterion (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+Specify sourfce attribute on which to sort:
+</PRE>
+<P>
+  <PRE>
+   Source coordinates:
+</PRE>
+<P>
+  <PRE>
+        L, M          l or m, arbitrary order for the other
+        LM, ML        l and then m, or m and then l
+        DIST          distance to a specified reference point
+</PRE>
+<P>
+  <PRE>
+   Properties of the source:
+</PRE>
+<P>
+  <PRE>
+        I             ampitude
+        SI            spectral index
+        POL           polarised intensity
+        RM            intrinsic rotation measure
+        Q, U, V       Stokes parameters in %
+        LA, SA, PA    long axis short axis, position angle of elliptic-Gaussian
+                       extended-source model
+</PRE>
+<P>
+  <PRE>
+   Administrative attributes in the model list:
+</PRE>
+<P>
+  <PRE>
+        ID            identification
+        BITS          bits mask (if source is extended, has polarisation)
+</PRE>
+<P>
+  <PRE>
+        TYP           source type (0 is the standard)
+</PRE>
+<P>
+  <PRE>
+        CCBM          clean component (1) and beam-corrected (8)
+</PRE>
+<P>
+  <PRE>
+        TP2           reserved
+</PRE>
+<P>
+<A NAME=.sort.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00022000000000000000>  <b>Parameter SORT_TYPE</b></A></H2>
+<P>
+<em>Expected input:</em> Character *24:  1 value
+<P>
+  <PRE>
+        Specify the polarity of the sort
+</PRE>
+<P>
+<A NAME=.source><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00022100000000000000>  <b>Parameter SOURCE</b></A></H2>
+<P>
+<em>Prompt:</em> I,l,m,id,Q,U,V,lax,sax,pa,si,rm,rs (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 13 values
+<P>
+  <PRE>
+Specify the source parameters in order shown.
+</PRE>
+<P>
+  <PRE>
+   I            intensity (W.U.)
+   l, m         coordinates w.r.t. reference (arcsec)
+   id           identification number (see below)
+   Q            Stokes Q relative to I (%
+   U            Stokes U relative to I (%
+   V            Stokes V relative to I (%
+   lax          long-axis full halfwidth (arcsec, =0 for a point source)
+   sax          short-axis full halfwidth (arcsec, =0 for a point source)
+   pa           position angle of long axis (degrees, North through East)
+   si           spectral index
+   rm           intrinsic rotation measure ( rad/m**2 at 1 Ghz)
+   rs           reserved
+</PRE>
+<P>
+  <PRE>
+You may omit values that you want to leave alone, but not the commas that
+delimit them. Trailing values and commas may be omitted.
+</PRE>
+<P>
+  <PRE>
+    Example:
+        ,,3 will set m to 3 and leave all other parameters unchanged.
+</PRE>
+<P>
+  <PRE>
+The identification number is of the form
+</PRE>
+<P>
+  <PRE>
+        <sequence number>-<mask byte>
+</PRE>
+<P>
+<A NAME=.source.factors><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00022200000000000000>  <b>Parameter SOURCE_FACTORS</b></A></H2>
+<P>
+<em>Prompt:</em> Amlitude ratio Anew/Aold, | shift dl,dm (arcsec) (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 3 values
+<P>
+  <PRE>
+Specify the calibration parameters in te order shown:
+  An/Ao new/old amplitude
+  dl    new-old l in arcsec
+  dm    new-old m in arcsec
+</PRE>
+<P>
+<A NAME=.source.list><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00022300000000000000>  <b>Parameter SOURCE_LIST</b></A></H2>
+<P>
+<em>Prompt:</em> Source number list (<em>may vary per application</em>)<BR><em>Expected input:</em> Integer:  1 to 128 values
+<P>
+  <PRE>
+Specify a list of individual source numbers to be acted upon. If you want to
+spaecfy a range, reply '*' here and wait for the next prompt
+</PRE>
+<P>
+<A NAME=.source.number><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00022400000000000000>  <b>Parameter SOURCE_NUMBER</b></A></H2>
+<P>
+<em>Prompt:</em> Source number (<em>may vary per application</em>)<BR><em>Expected input:</em> Integer:  1 value
+<P>
+  <PRE>
+Specify the number of the source to be acted upon.
+</PRE>
+<P>
+<A NAME=.source.range><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00022500000000000000>  <b>Parameter SOURCE_RANGE</b></A></H2>
+<P>
+<em>Prompt:</em> Source number range (<em>may vary per application</em>)<BR><em>Expected input:</em> Integer:  1 to 2 values
+<P>
+  <PRE>
+Specify the first and last source number to process. * indicates 'all'. If you
+want all sources from some number <N> upward, reply
+</PRE>
+<P>
+  <PRE>
+        '<N>-<some very large number>'.
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

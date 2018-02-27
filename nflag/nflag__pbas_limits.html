@@ -1,0 +1,32 @@
+<TITLE>Description of PBAS_LIMITS (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword PBAS_LIMITS</H1> 
+
+<DT><EM>Prompt:</EM> Projected-baseline range to be flagged (m)
+<DT><EM>Expected input:</EM> Real number, 2 values.<P>
+ Specify the range of lengths of PROJECTED baseline to be 
+flagged. The default flag-type is SHADOW. <P>
+Short baselines are more sensitive to interference. In flagging them wholesale,  
+however, one also loses visibility data representing extended source structure; 
+a more selective procedure is to be preferred. <P>
+Another application of this parameter is to force a uv coverage that is more 
+nearly circular in the PROJECTED uv plane, and hence produces a more circularly 
+symmetric antenna pattern. To this end, set the lower limit less than or equal 
+to <P>
+        &lt;longest baseline&gt; * sin DEC <P>
+Instead of permanently modifying the .SCN file in this way, one may use the 
+NMAP parameters CWEIGHT_TYPE and CWEIGHT_VALUE to achieve a similar effect. 
+!               {\em see NMAP public paremeter 
+!                \textref{CWEIGHT_TYPE}{nmap_public_keys.cweight.type} } <P>
+Examples: 
+        PBAS_LIMITS = 0, 288 <P>
+   causes all projected baselines up to 288 m (inclusive) to be flagged. <P>
+   For a source at a declination of 30 deg,  <P>
+        PBAS_LIMITS = 1500, 10000 <P>
+   will flag projected baselines longer than 1500 m.   <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

@@ -1,0 +1,652 @@
+<TITLE>Newstar configuration management at NFRA</TITLE>
+
+<BR><STRONG>Subject:</STRONG> Newstar configuration management at NFRA
+<BR><STRONG>Author:</STRONG>  Marco de Vos (CMV) and Henk Vosmeyer (HjV)
+<BR><STRONG>To:</STRONG>      Newstar Support Team (HjV, CMV, JEN, JPH)
+<P> <STRONG>Date:</STRONG>    08/11/94 
+<P>
+<EM>Revision history</EM>
+<UL>
+<LI>22/01/96 - Change appendix 3
+<LI>11/11/94 - Add appendix 3
+<LI>08/11/94 - Typo's and minor changes
+<LI>02/11/94 - Separation of NFRA-Master and Export-Master
+<LI>04/03/94 - First release 
+<LI>21/02/94 - Prerelease
+</UL>
+
+
+<H1>Newstar configuration management at NFRA</H1>
+<PRE></PRE>
+
+
+<H2>General concerns</H2>
+
+The Newstar package is not a static product. Major and minor changes are 
+often being made to the software. These changes should affect the use of
+the package in a positive sense only. Therefore we need to guard the
+integrity of the package at NFRA and define clear procedures for external
+users on how to upgrade their implementation. This document describes
+those procedures. 
+<P>
+This document is limited to configuration management on the Unix systems.
+The VAX system will be no longer supported at NFRA from 15/03/94, and 
+can be maintained through the perl-scripts provided by WNB.
+<P>
+Reference to Newstar directories are made through the usual variables 
+$n_src, $n_root etc. Refer to Appendix 2 for the details. 
+<P>
+All commands assume one is logged in as the Newstar Master (newstar).
+<PRE></PRE>
+
+<H2>What makes up the Newstar configuration at NFRA</H2>
+
+The Newstar configuration at NFRA consists of the following:
+<P>
+<UL>
+  <LI><STRONG>The NFRA-Master system</STRONG> on the /newstar disk (below $n_root):
+  <OL>
+    <LI>The Master source tree (below $n_src)
+    <LI>The NFRA library and executable areas ($n_inc, $n_lib,
+             $n_exe and $n_tst for the various architectures)
+    <LI>The NFRA documentation area ($n_hlp)
+    <LI>The NFRA import area (below $n_import)
+  </OL>
+  <P>
+    Below /newstar/master we also have an installation of: (1) mongo (in
+    /newstar/master/mongo), of (2) perl (in /newstar/master/perl) and 
+    (3) a copy of the sources for the VAX-based Remote Tape Daemon (in
+    /newstar/master/rmtd).
+  <P>  
+    This is a working system, used by NFRA users and programmers.
+  <P>
+  <LI><STRONG>The Export-Master system</STRONG> on the /users disk of ftp.nfra.nl:
+  <OL>
+    <LI>The Export Master source tree           (below $n_src)
+    <LI>The Server version of the documentation (below $n_www)
+      <UL>
+        <LI>server homepage            $n_www/homepage.html
+        <LI>documentation relevant to the Export Master source tree
+                                       $n_www/hlp/
+        <LI>user feedback system       $n_www/bug/
+        <LI>link to mail area          $n_www/mail/
+      </UL>
+    <LI>Some server programs for ftp.nfra.nl    (below /users/newstar)
+    <LI>The import area for sites outside NFRA  (/users/ftp/newstar/import)
+  </OL>
+  <P>
+    This is a sources-only system which is never compiled.
+    The Export Master source tree and the documentation are kept
+    up-to-date from the NFRA Master system.
+  <P>
+  <LI><STRONG>The Newstar account</STRONG> on the NFRA Unix system (~newstar)
+  <OL>
+    <LI>Startup files for the newstar account (.cshrc and .login etc.). These 
+        files should not contain commands that are essential for the 
+        functioning of newstar apart from PATH settings and 
+        the startup command:
+<PRE>
+#
+# Initialise Newstar (either NFRA-Master or Export-Master)
+#
+if (-e  /newstar/master/src/sys/newstar_nfra.csh) then
+ source /newstar/master/src/sys/newstar_nfra.csh
+else if (-e /users/newstar/bin/newstar_init.csh) then
+ source     /users/newstar/bin/newstar_init.csh
+endif
+</PRE>
+
+    <LI>Mail environment (~/Mail and ~/.elm). The elm
+        alias friends_of_newstar is used to inform on updates. The Newstar
+        environment variable $n_master points to this eMail account.
+    <LI>Server interface (~/server). This directory is used to pass commands
+        to the server programs on ftp.nfra.nl
+  </OL>
+  <P>
+    This account is the owner of the NFRA-Master and the Export-Master, and
+    is the only account that can modify them (apart from $n_import and the
+    locking database).
+</UL>
+<PRE></PRE>
+
+<H2>Relations between NFRA-Master and Export-Master</H2>
+
+The dynamic relations between Master systems (either the NFRA Master or
+another one) and Export-Master are as follows:
+<PRE>
++----------------------------------------------------------------------+
+|  Master:                                                             |
+|                 $n_src      <--------+                               |
+|                   |                  | nup build -U (in $n_import)   |
+|                   | nup build -U     |                               |
+|                   v                  |                               |
+|                 $n_exe, ... <--------+                               |
+|                                      |                               |
+|                 $n_import -->--------+                               |
+|                  | ^   ^^                                            |
+|                  | |   ||                                            |
+|                  | |   || (NFRA only)                                |
+|                  | |   |+--------------------+--<-- nsh in           |
+|                  | |   |                     |                       |
++----------------------------------------------------------------------+
+|  Export-Master:  | |   |                     |                       |
+|                  | |   | nup retrieve ...    | (NFRA and others)     |
+|                  | |   |  (NFRA only)        |                       |
+|      nup release | |   |                     |                       |
+|                  | | nup retrieve            |                       |
+|                  v |   |                     |                       |
+|                 $n_src |                     |                       |
+|                 $n_import <------------------+                       |
+|                                                                      |   
++----------------------------------------------------------------------+
+</PRE>
+Use of the "<TT>nup release</TT>" command is restricted to the NFRA-Master.
+Master systems outside NFRA use the "<TT>nup retrieve</TT>" command to get 
+updated files from the Export-Master. The "<TT>nup update</TT>" command 
+combines "<TT>nup retrieve</TT>" and "<TT>nup build -U</TT>".
+<BR>The NFRA-Master uses the "<TT>nup retrieve -import ...</TT>" to get 
+files from the Export-Master's $n_import (files checked in by 
+programmers outside the NFRA).
+<PRE></PRE>
+
+<H2>Definition of revisions and releases</H2>
+
+Every modification of files in the Master source tree results in a new
+<EM>revision</EM>, even if the modification does not involve changes in the
+executables. The procedure for merging modifications in the Master source
+tree is described in the next section.
+<P>
+A <EM>release</EM> is defined as a revision which involves one or more of the
+following items:
+<OL>
+  <LI>A change of fileformats, so you will have to use the 
+        NVS (New Version) option in some programs
+  <LI>A change in keyword syntax (so you will have to type different
+         things or change batch files in some cases) other than an 
+         additional keyword for which the default can be used.
+  <LI>Addition of a new program, or a major rewrite of an existing one.
+</OL>
+The issue of a new release has to be decided upon by at least two members 
+of the Newstar Project Team.
+<P>
+The updating of revision numbers is taken care of by the update script.
+Releases need to be explicitly indicated. The procedure for this is 
+described in a later section.
+<P>
+The version number of the current Newstar configuration is given
+by the file  $n_src/sys/version.idx
+<P>
+A full description of the current Newstar configuration is given by 
+the file  $n_src/sys/database.idx  after the command "<TT>nup check d</TT>"
+<P>
+A user-oriented decription of the configuration is given in the
+file  $n_src/doc/nnews.hlp  which is shown by the command "<TT>nnews</TT>"
+<P>
+The version number of the Newstar executables is given by the
+command 
+<BR>"<TT>what $n_exe/*.exe | grep %NST%</TT>"
+<P>
+<PRE></PRE>
+
+<H2>Checking-in modified files</H2>
+
+When programmers (in or outside the NFRA) want to make a change in files 
+in their Master source tree they have to use the "<TT>nsh in</TT>" command. 
+This will ask (among other things) for a list of files to be checked in, for 
+a comment and for the executables to be rebuilt (seprated by blanks). 
+<P>
+When programmers check in their modified files, these files are copied
+into their local $n_import directory, together with a groupfile listing
+the files and executables. The same files are copied into the $n_import
+directory of the Export-Master. If the "<TT>nsh in</TT>" command is issued for 
+(modified) files in a Master tree (presumably outside the NFRA), these 
+files are not copied to the local $n_import. They are copied into the 
+Export-Master. In all cases, a mail message describing the check-in is
+sent to $n_master (currently newstar@nfra.nl).
+<P>
+Testing should be completed before check-in! At the NFRA, an executable 
+and/or ppd-file supplied by a programmer can at request be copied into 
+$n_tst for testing by a broader user-group. 
+<PRE></PRE>
+
+
+<H2>Merging modifications into the NFRA-Master source tree</H2>
+
+When mail concerning a check-in is received, the following actions
+should be taken:
+<P>
+
+<EM> 1e. If files originate from outside the NFRA, they should be 
+     received in $n_import of the NFRA-Master (more than one 
+     groupfile can be handled with a single update command):</EM>
+<PRE>
+  >>> nup retrieve -import updxxx.grp
+</PRE>
+<STRONG>Any file that has to be ftp'd with binary mode has to be retrieved
+separately.</STRONG>
+<P>
+<EM> 2e. Perform some elementary checks: </EM>
+<P>
+If psc/pin/pef-files are changed, they should be checked against 
+changes in keywords. If the meaning of existing keywords have been 
+changed, the revision should be treated as a release (see the previous 
+section). 
+<P>
+If keywords have been removed from a psc file, it should be checked wether
+they have been removed from the programs as well. In such cases, special
+care should be taken that executables are being rebuilt synchroneously
+with the ppd-files. In general, removal of keywords is discouraged for 
+revisions. 
+<P>
+NOTE: The synchronisation of exe/ppd files is not optimal in the present
+      structure for configuration management, but cannot be improved 
+      without structural changes in the coupling of exe and ppd files.
+<P>
+<EM> 3e. Update libraries and executables for all architectures:</EM>
+<PRE>
+  >>>  nup build -Update  updxxx.grp                   (on rzmws0)
+  >>>  nup build -Update  updxxx.grp                   (on rzmws5)
+</PRE>
+
+Any errors reported by the build command should be reported to 
+and repaired by the programmer. 
+<P>
+<EM> 4e. At successful compilation, merge the files in the source tree:</EM>
+<PRE>
+  >>>  nup build -Update -T:none -Merge updxxx.grp     (on rzmws0)
+</PRE>
+
+The revision number will be automatically updated in version.idx.
+<P>
+The subject from the groupfile(s) is copied in the nnews.hlp file, and a
+message to be sent to local Friends of Newstar is composed (so enter
+useful information). Both files will
+be presented in the MicroEmacs editor (change buffers with ^X X command,
+exit with Esc Z).
+Comments concerning programmers only should be removed from nnews.hlp, or
+be prefixed by "System: ". This checking of nnews.hlp is very important
+since most users rely on this file for their information on changes.
+The message is kept in $n_import/message.RR.rr where RR is the new Release,
+rr the new revision of Newstar.
+<P>
+The message is not yet sent, this is done after the Export-Master has been
+updated. 
+<BR>This is done with the "<TT>nup release</TT>" command, discussed later.
+A mail is sent to $n_master to remind you of this revision after three days.
+<PRE></PRE>
+
+<H2>Special procedure in case a groupfile needs to be deleted</H2>
+
+If a groupfile needs to be removed from the Master, it should be explicitly
+deleted using a command like 
+<BR>"<TT>rm $n_src/xxx/yyy.grp</TT>" followed by a reconstruction of the 
+database with  "<TT>nup check d</TT>".
+<P>
+At remote sides, the groupfile will be deleted automatically after the
+next update.
+<PRE></PRE>
+
+
+<H2>Special procedure for new releases</H2>
+
+If a modification is to be interpreted as a release, the following 
+special actions need to be taken:
+<OL>
+   <LI>Check out file  $n_src/sys/version.idx
+   <LI>Increase the release number by hand, set the revision number to 1
+   <LI>Check in file $n_src/sys/version.idx
+       <UL>
+        <LI>The comment should clearly indicate the new release
+        <LI>When asked for the executables to be rebuilt, answer:  @all
+       </UL>
+   <LI>Update the resulting groupfile in the master:
+       <UL>
+        <LI>Nnews should clearly reflect the new release
+        <LI>The mail message has to be edited to mention the release explicitly
+       </UL>
+   <LI>The file $n_root/updates.html should be edited
+       to reflect the new release. An example how to do this should be
+       taken from header of the previous release. It should be decided
+       wether the old revision history should still be kept in this file. 
+       If not, the revision information should be replaced by the remark
+<PRE>
+         &lt;EM&gt;Revision history not recorded&lt;/EM&gt;&lt;P&gt;
+</PRE>
+       The description of previous releases should not be removed.
+       Add a hypertext link to this release at the beginning of the file.
+</OL>
+<PRE></PRE>
+
+<H2>Merging changes into the Export-Master</H2>
+
+After the changes have been active in Dwingeloo, they have to be made 
+known to the outside world. This is typically done after three days (to 
+remind you, the above mentioned at-job is scheduled). 
+<P>
+The procedure to update the Export-Master is as follows:
+<P>
+<PRE>
+  >>>   telnet wsrt00
+  >>>   setenv n_remote rzmws0.nfra.nl newstar /newstar/master/src
+  >>>   nup update
+</PRE>
+This will try to update the Westerbork installation from the NFRA-master.
+Any errors occurring here will almost certainly occur in other installtions
+as well, so they need to be repaired before the next step. Should you choose
+to make changes directly in the NFRA-Master, issue the following command
+<STRONG>at rzmws0</STRONG> before trying to update wsrt00 again:
+<PRE>
+  >>>  nup check d
+</PRE>
+This will make a fresh version of the database. Once installation on wsrt00
+is successfull, give the following command <STRONG>at rzmws0</STRONG>:
+<PRE>
+  >>>  nup release
+</PRE>
+This will rebuild the documentation, create a fresh database, pack
+all sources, libraries and executables and send them over to the
+Export-Master. It also tells the server program that files are waiting
+to be unpacked. Once this has been done, the message will be sent. In 
+case more than one release has been pending, a fresh message for the
+most recent revision will be composed, containing all the subjects 
+from previous revisions. The message will be sent to the Friends of Newstar.
+This relies on an elm alias friends_of_newstar. 
+<PRE></PRE>
+
+<H2>Maintenance of server programs for the Export-Master</H2>
+
+The server programs for the Export-Master are maintained outside the 
+normal Newstar routine. All sources (programs, scripts and text-files) 
+have to be in /users/newstar/src/. They have to be compiled or put in 
+their proper place by executing the "<TT>make</TT>" command in that directory.
+A "<TT>make</TT>" should be done after any change in files in /users/newstar/src.
+Refer to file /users/newstar/src/Makefile for details about requirements 
+for server programs.
+<PRE></PRE>
+
+<H2>Maintenance of the locking database</H2>
+
+The locking database is there mainly for administrative purposes.
+It warns users who check out a locked file, but still makes a copy for them.
+However, it will prohibit checking in locked files. Since users sometimes
+just delete files without unlocking them, the lock-file will get polluted.
+Therefore the weekly routine includes cleaning up of this file.
+<PRE></PRE>
+
+
+<H2>Weekly routines for the Newstar Master copy at NFRA</H2>
+
+Backups are made each Thursday afternoon or Friday morning. The procedure 
+for backups is:
+<PRE>
+  >>>   nup check d  
+</PRE>
+This will build a fresh version of file  database.idx  
+The database will be updated for any direct changes in the Master (that is:
+without proper checkin through $n_import). 
+<PRE>
+  >>>   nup save
+</PRE>
+This will make a backup of the entire master tree (all files below $n_root).
+Three DAT tapes are used for the backups (cyclic use of Newstar_A, Newstar_B
+and Newstar_C). The save command will run in the background and notify
+by mail when it is ready. 
+<P>
+The two most recent backups are stored at the Bank of Dwingeloo.
+Backups of the Export-Master are made as part of the Scissor backup
+routine.
+<P>
+
+After the backup, the following command should be entered:
+<PRE>
+  >>>   rm $n_exe/*.old $n_tst/*.old
+</PRE>
+This will throw away old versions, which can be restored from the backup
+tape if necessary.
+<PRE>
+  >>>   nup clear -Confirm
+</PRE>
+This will remove any obsolete files from the Master copy. See above for
+the deletion of obsolete groupfiles. Removing a file from a groupfile will
+cause a prompt for deletion here. In such cases, check wether the file
+has become really obsolete (e.g. by using a grep on the subroutine name).
+If the file has been accidentally removed from a groupfile, check out
+the groupfile, re-insert the file, check-in the groupfile and make a 
+maintenance revision.
+<PRE>
+  >>>   nup check  l        (on rzmws0)
+  >>>   nup check  l        (on rzmws5)
+</PRE>  
+This will check the current libraries. If faults are reported, the
+libraries should be updated through the groupfile produced by the
+check command (instructions are given by the command). The name of
+the groupfile will be  libyymmdd${n_arch}.grp.
+<PRE></PRE>
+
+
+<H2>Appendix 1: Terminology</H2>
+
+<DL>
+<DT> Site:<DD>
+             on or more computers that share a (Network) File System
+
+<DT> Master-systeem:<DD>
+   the officially installed Newstar version on a site
+
+<DT> NFRA-Master:<DD>
+      the master system at the Unix network of the NFRA,
+
+<DT> Export-Master:<DD>
+    the (sources-only) master system at the Unix network 
+                    of the NFRA, distribution is done from this master.
+
+<DT> User-systeem:<DD>
+     a (partial) version of Newstar that is made by a user/
+                    programmer based on the Master-system. When starting
+                    an executable, a version in the user-system has priority 
+                    over the Master.
+
+<DT> Binary-tree:<DD>
+      a directory tree in a Master or User system containing
+                    the executable files needed to run Newstar (NB: you 
+                    also need the startup scripts in $n_src/sys).
+
+<DT> Source-tree:<DD>
+      a directory tree in a Master or User system containing
+                    only all files needed to install a binary tree 
+                    (excluding the operating system and compilers...).
+
+<DT> Library-tree:<DD>
+     a directory tree in a Master or User system with libraries
+                    and (for a User system) object files; one directory in the
+                    library tree contains include files and system independent
+                    pre-processed files, all derived from the source tree.
+
+<DT> Work-directory:<DD>
+   a directory for temporary files, for listingss and for
+                    files needed for the debugger.
+</DL>
+<P>
+The Master system has two binary trees:
+<UL>
+   <LI>$n_root/exe     No debugging information.
+   <LI>$n_root/tst     Can be used for debugging, will usually be empty.
+</UL>
+<P>
+Executable files are looked for in the current directory first, then
+in $n_uexe (if it exists) and finally in $n_exe.
+<P>
+A user may decide to do "<TT>setenv n_uexe $n_tst</TT>" to get access to test versions,
+and programmers will set $n_uexe to the binary tree of their user system.
+<PRE></PRE>
+
+<H2>Appendix 2: Directory trees</H2>
+
+<PRE>
+Master (NFRA or elsewhere):
+---------------------------
+
+$n_root -+-- src           = $n_src       Source tree 
+         |
+         +-- lib -+-- inc  = $n_inc       Precompiled files 
+         |        +-- sun  = $n_lib       Object libraries
+         |        +-- hp
+         |
+         +-- exe -+-- sun  = $n_exe       Executables and ppd-files 
+         |        +-- hp
+         |        |
+         |        +-- html = $n_hlp       Hypertext help files (elsewhere)
+         |
+         +-- hlp           = $n_hlp       Hypertext help files (at NFRA)
+         |
+         +-- tst -+-- sun  = $n_tst       Test versions
+         |        +-- hp
+         |
+         +-- work -+-- sun = $n_work      Intermediate files, files
+         |         +-- hp                 necessary for debugging
+         |
+         +-- import        = $n_import    Import area for uploading of
+                                          revisions and programmers files.
+
+Sites outside NFRA can have other architectures in $n_lib and $n_exe. 
+At most sites outside NFRA $n_hlp is a subdirectory of $n_root/exe.
+
+This structure can be split over various filesystems. The tree can than
+be realised through symbolic links. Since all system commands use the
+environment variables this is not strictly necessary.
+		    
+Additional directories at NFRA only:          
+
+         |
+         +-- mongo                        Installation of mongo
+         +-- perl                         Executables for perl
+         +-- rmtd                         Sources for rmtd (VAX)
+
+Possible files in $n_root:  backups.txt  Log of backups
+                            updates.log  Log of update-commands
+                            updates.html Revision history (NFRA only)
+
+Source tree:
+
+   $n_src  -+-- sys                       Maintenance system
+            |
+            +-- doc -+- ...               Documents
+            |
+            +-- wng                       Precompiler, files, I/O etc.
+            +-- dwarf                     Parameter interface
+            +-- n*                        The various programs
+            | 
+            +-- data                      Calibrator models
+            | 
+            +-- batch                     Standard batch procedures
+
+Possible files in $n_src:  upd*.log      Compilation logs
+
+
+User system:
+------------
+
+~programmer +... $n_uroot -+-- lib -+-- inc = $n_uinc
+            :              |        +-- sun = $n_ulib
+            :              |
+                           +-- exe -+-- sun = $n_uexe
+                           |
+                           +-- work         = $n_work
+                           |
+                   [       +-- src          = $n_usrc  ]
+            :
+            +...                     Arbitrary directories with files
+                                          modified by the programmer.
+
+
+Logging in as the owner of $n_root (Newstar manager) causes $n_u... 
+to point to $n_..., $n_work will point to $n_root/work/$n_arch. 
+If the Newstar manager uses the -NUpdate switch for update, $n_uexe
+will be set to $n_tst, else it will be at $n_exe.
+
+It is confusing that there is no $n_uwork, this departure from the 
+general practice may be removed in future.
+
+
+Export Master (NFRA only, at ftp.nfra.nl):
+------------------------------------------
+
+/users/ftp/newstar          = $n_root     Newstar ftp area
+/users/www/newstar          = $n_www      Newstar www area
+/users/newstar                            Newstar server programs
+
+$n_root -+-- src            = $n_src      Source tree 
+         |
+         +-- import         = $n_import   Import area for uploading of
+                                           revisions and programmers files
+                                           (also from non-NFRA sites).
+
+Files in $n_root: 
+   nstar_src.tar.Z                        Archive with sources
+   nstar_src_??.tar                       Archive with additional sources
+                                          for various architectures
+   nstar_hlp.tar.Z                        Archive with documentation
+   nstar_exe_??.tar.Z                     Archive with executables for
+                                          various architectures
+   nstar_lib_??.tar.Z                     Archive with libraries for
+                                          various architectures
+   nstar_lib_inc.tar.Z                    Archive with include files
+   
+
+
+$n_www  -+-- hlp                          Documentation (from nstar_hlp.tar)
+         |
+         +-- bug                          User Feedback System
+         |
+         +-- bin            = $n_cgi      httpd scripts for Newstar
+         |                                  (sources in /users/newstar/src)
+         |
+         +-- mail                         Link to Newstar mail area for HjV
+
+Files in $n_www:
+   homepage.html                          Homepage for the server area,
+                                          different from hlp/homepage.html
+   index.html                             Link to homepage.html, you get this
+                                          for http://www.nfra.nl/newstar/
+   example.*                              Some sample images
+   updates.html                           Revision history (from NFRA master)
+
+
+/users/newstar -+-- src                   Server programs (sources)
+                +-- bin     = $n_bin      Server programs (executables)
+
+</PRE>
+<PRE></PRE>
+
+<H2>Appendix 3: Other programs and procedures related to Newstar</H2>
+
+<H3>Mails concerning Newstar</H3>
+
+A copy of all E-mail correspondention between the different members of the
+Newstar group should always be send to HjV (hjvosmeijer@nfra.nl). He will
+extract those documents and put them in his Newstar mail directory
+(~hjv/public_html/newstar/mail). A printed version of the documents will be put in
+a special binder which will be kept in HjV's room.
+<BR>Every working-day at 07.00 AM a script will create an updated HTML
+file (<A HREF=http://www.nfra.nl/~hjv/newstar/mail.html>mail.html</A>)
+which gives everyone the possibility to read the mails and search for 
+keywords using Mosaic. 
+
+
+
+<H3>Newstar use</H3>
+
+On every site where Newstar is installed, the programs will write an
+entry (with username, programname, date a.s.o.) in the file 
+$n_import/newstar.use. During an update of a site, this file is ftp'ed 
+to NFRA (/users/ftp/pub/incoming) and a new (empty) version is
+created on the updating site.
+<BR>At NFRA every working-day at 07.00 AM a script will take care for
+moving those new files to ~hjv/newstar/use, compressing the files and
+merge them with the already existing files per site, create quarterly 
+and monthly reports. The script will also update an HTML file 
+(<A HREF=http://www.nfra.nl/~hjv/newstar/use.html>use.html</A>) 
+which which gives everyone the possibility to view those reports 
+by using Mosaic.  
+
+

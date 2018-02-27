@@ -1,0 +1,20 @@
+<TITLE>Description of DSHIFT (NCALIB)</TITLE>
+<H1>Program NCALIB: private keyword DSHIFT</H1> 
+
+<DT><EM>Prompt:</EM> Shift rate (dl/dt, dm/dt, arcsec/day)
+<DT><EM>Expected input:</EM> Real number, 2 values.<P>
+Specify the SHIFT rate in arcsec per sidereal day to be applied to the data 
+whenever the DE_APPLY SHIFT correction is requested. <P>
+This parameter is used for a first-order approximation to the proper motion of 
+a solar-system object through the formula: <P>
+        Total shift =  SHIFT + DSHIFT * (HA-HAB) <P>
+where hour angles are measured as fractions of a full circle and HAB is the 
+starting HA of the sector. 
+!               \whichref{}{}. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ncalib/ncalib_keys.html">List of keywords</A> for NCALIB
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../ncalib_descr/ncalib_descr.html">program NCALIB</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

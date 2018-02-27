@@ -1,0 +1,53 @@
+<TITLE>Description of UFLAG (NGEN)</TITLE>
+<H1>Description of general keyword UFLAG</H1>
+
+<DT><EM>Prompt:</EM> Specify which flags you want to ignore | NONE, ALL; MAN, OLD, CLIP, NOIS, ADD, SHAD; U1, U2, U3|
+<DT><EM>Default:</EM> NONE /NOASK.
+<DT><EM>Expected input:</EM> Character(8), 16 values.<P>
+Scan headers and data in a .SCN file can be flagged as invalid. There are 8 
+different flags distinguishing 8 different types of reasons for the flagging. 
+Flags can be set in a variety of ways, mostly through various options in NFLAG,  
+or by manual flagging in NGIDS. <P>
+By default, data points that have any one of the 8 flags set will be discarded. 
+You are given here the option to ignore specific types of flag, i.e. accept 
+data as valid even they have flags of these types set. You may give any 
+combination of options, separated by commas. <P>
+        NONE or ""     ignore none of the flags, i.e. discard all flagged data 
+        ALL or *       ignore all flags, i.e. accept all data 
+        MAN            ignore MANUAL flags 
+        CLIP           ignore CLIP flags 
+        NOIS           ignore NOISE flags 
+        SHAD           ignore SHADOW flags 
+        ADD            ignore ADDITIVE flags 
+        U1             ignore USER1 flags 
+        U2             ignore USER2 flags 
+        U3             ignore USER3 flags NOTES: 
+   1. If two options are mutually exclusive, the one specified last prevails,  
+e.g. 
+        NONE, CLIP, MAN   ignores the CLIP and MAN flags; 
+        CLIP, MAN, NONE   iognores none of the flags. <P>
+. 
+This keyword is part of NGEN, i.e. it is a NEWSTAR 'environment keyword', which 
+is available to all NEWSTAR programs. The switch /NOASK indicates that it is 
+'hidden', i.e. the user is not prompted for it, but the default value is used. <P>
+Its value may be modified (for a given $stream) in several ways: 
+        Permanently for all programs and streams during current login: 
+                change the default value: dws[pecify] 'NGEN$0' 
+        Permanently for all programs in certain stream during current login: 
+                change the default value: dws[pecify] NGEN['$stream'] 
+        Permanently for certain program in all streams during current login: 
+                change the default value: dws[pecify] 'program$0' 
+        Permanently for certain program in certain stream during current login: 
+                change the default value: dws[pecify] program['$stream'] .Note: 
+use automatic saving in LOGOUT to pass on values beyond current login 
+        Incidentally for a certain incarnation of program[$stream]: 
+                run as: dwe program['$stream']/UFL=value (or: 
+                '(val1, val2, ...)') 
+        Incidentally for all hidden values: 
+                run a NEWSTAR program as: dwe program['$stream']/ASK <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngen/ngen_comm.html">List of general keywords</A> for NGEN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

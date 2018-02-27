@@ -1,0 +1,54 @@
+<TITLE>Description of OPS_FCOPY (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_FCOPY</H1> 
+
+<DT><EM>Prompt:</EM> Flag-copy operation TOTEL, TOPOL, TODATA, TOHEAD;|INSPECT, STATIST, MODE, CLEAR, QUIT 
+<DT><EM>Expected input:</EM> Character(24).<P>
+ FCOPY propagates flags of the selected type from individual 
+interferometers to groups of interferometers that have something in common with 
+the flagged ones. <P>
+Flags are looked for in the entire primary data cube, but changes affect only 
+the primary/secondary cube. Make sure that you understand which of the 8 flag 
+types are affected! 
+!!              Primary/secondary: Correct? <P>
+   Operations that modify flags on individual data points: <P>
+        TOTEL  Copy flags from interferometers to telescopes: For each scan 
+                selected, flag all data that share a dipole (X or Y channel of 
+                a telescope) with any interferometer for which the flag 
+                selected is set. <P>
+        TOPOL  Copy flags to all polarisations: For each scan selected, flag 
+all 
+                polarisations of all telescope pairs for which the flag 
+selected 
+                is already set for at least one of them. (This is a sort of 
+                mini-PUT). 
+!!                      Each scan &lt;--&gt; primary data cube? <P>
+   Operations that affect ENTIRE scans. NOTE that these IGNORE ANY SELECTIONS 
+   you have defined for interferometers (parameter IFRS) and/or polarisations 
+   (parameter SELECT_XYX). 
+!               {\em see the dictinction between\ 
+!               \whichref{data and header flags}{} } <P>
+        TOHEAD  For each flag selected, set the scan-header flag if it is set 
+                 for more than a given number (paremeter TOH_LIMIT) of data 
+                 points. 
+                This invalidates the entire scan. The operation is reversible 
+                 (parameter OPS_MANUAL = CLHEAD); the individual data flags 
+                 are not affected. 
+!                       {\em See parameters \textref{TOH_LIMIT}{.toh.limit},  
+!                       \textref{OPS_MANUAL}{.ops.manual} } <P>
+        TODATA  Transfer flags of the type selected from the header of each 
+scan 
+                 to all the scan's data, deleting them in the headers. <P>
+   Navigation: <P>
+        INSPECT Make detour into the (flag) INSPECTion section of the program 
+        STATIST Make detour into the (data) STATISTics section of the program 
+        MODE    Make detour into the enviornment MODE-control section of the 
+                 program 
+        CLEAR   Go to the CLEAR-flags operation. 
+        QUIT    Return to FLAG_OPTION.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

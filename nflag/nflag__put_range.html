@@ -1,0 +1,46 @@
+<TITLE>Description of PUT_RANGE (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword PUT_RANGE</H1> 
+
+<DT><EM>Prompt:</EM> Ranges for expansion volume around PUT points:|-chan.HA.ifr.pol 
+<DT><EM>Expected input:</EM> Character(8), 4 values.<P>
+ PUT performs flagging commands from the internal flag list on 
+your primary data cube. Each command consists of a flag/unflag mask plus ranges 
+in the frequency- 
+channel, interferometer, polarisation and hour-angle 'dimensions' of the TARGET 
+points to which it must be applied. <P>
+PUT has the capability to EXPAND, within the limits of the primary data cube,  
+the operation over a 4-dimensional volume of data around each target point. 
+The extension volume is specified through RANGES along the channel, hour-angle,  
+interferometer and polarisation axes in this order. Except for interferometers,  
+a range is formulated in terms of units of sequential position rather than 
+physical coordinates. It can be one of the foloowing: <P>
+   .            do not extend along this axis 
+   *            extend to all positions along this axis 
+   &lt;n&gt; or &lt;n&gt;C  extend over &lt;n&gt;/2-1 positions on either side (incrementing &lt;n&gt; 
+                 if it is even) 
+   &lt;n&gt;L         extend over &lt;n&gt;-1 positions to the 'left' (i.e. toward lower 
+                 coordinates) 
+   &lt;n&gt;R         extend over &lt;n&gt;-1 fields to the 'right' (i.e. toward higher 
+                 coordinates) <P>
+   The following special notations can also be used in each dimension: <P>
+        &lt;n&gt;=0   suppress flagging altogether (length of the nextension cube is 
+                 zero) 
+        &lt;n&gt;=1   identical to . (length of extension cube is 1: no extension) 
+   The following shorthand can be used for the entire reply: <P>
+        *       short for 1, 1, 1, 1 or ., ., ., (You may do better to avoid this 
+                 form because this use of a wildcard character is anomalous.) <P>
+?  The interferometer range works on telescope basis, i.e. the given range is ? 
+  valid for both receptors (e.g. 0Y and AX). 
+!!              Clarify, it must be different from the other coordinates... <P>
+Example: 
+        If a particular ineterferometer is flagged in one of frequency 
+channels,  
+                PUT_RANGE= *, ., ., . 
+ will propagate the flag to all channels for that interferometer  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

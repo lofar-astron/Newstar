@@ -1,0 +1,62 @@
+<TITLE>Description of OPS_CLIPDATA (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_CLIPDATA</H1> 
+
+<DT><EM>Prompt:</EM> Select data-thresholding criterion | AMPL, COS, SIN; ARESID, RRESID; QXY, UXY, VXY; DT1;|-INSPECT, STATIST, MODE, CLEAR, QUIT | 
+<DT><EM>Expected input:</EM> Character(24).<P>
+ Remember that only the primary data cube is affected. <P>
+The following operations flag individual data points, according to a flagging 
+criterion that is derived from the visibilities themselves. You will be 
+prompted for an upper limit. For each visibility point exceeding the limit the 
+flag will be set if it exceeds the limit, for the others it will be cleared: 
+Current flags are NOT preserved. <P>
+The flag type is CLIP, unless you have defined your own type through the 
+USER_FLAGS parameter. <P>
+   Flagging on straight data values exceeding the threshold. These criteria are 
+   intended for use with CORRECTED data (Parameter FLAG_MODE=CORR). <P>
+        AMPL    Threshold applies to absolute value 
+        COS     Threshold applies to real (cosine) part. 
+        SIN     Threshold applies to imaginary (sine) part. <P>
+   Flagging on Selfcal/Redundancy residuals. You will be prompted to specify 
+the 
+   Selfcal source model used in the latest NCALIB SEFCAL/REDUN run. 
+   (NOTE that the residuals here are VECTOR differences between observation 
+    and source model; this definition is different from that used by NPLOT.) <P>
+        ARESID  Threshold applies to the magnitude of the residual 
+        RRESID  Threshold is the absolute difference of the residual's 
+magnitude 
+                 from the average magnitude of all residuals in the scan for 
+the 
+                 same baseline. (In short: This flags outliers in sets of 
+                 redundant baselines.) 
+                NOTE: This operation can be performed even on uncalibrated 
+data,  
+                 provided a source model is available. <P>
+   Flagging on polarisation-related criteria: <P>
+        QXY     Threshold applies to the magnitude of the difference between XX 
+                 and YY visibilities per interferometer (i.e. magnitude of 
+                 Stokes Q for parallel dipoles). 
+        UXY     Threshold applies to ABS(XY-YX) per interferometer 
+                 (i.e. ABS(U) if the dipoles are parallel). 
+        VXY     Threshold applies to ABS(j(XY+YX)) per interferometer 
+                 (i.e. ABS(V) if the dipoles are parallel). <P>
+                For unpolarised sources, this criterion should be as effective 
+                 as ARESID above. <P>
+   Flagging on discontinuities in time. The flags raised here serve only as an 
+   ALERT that there is a 'jump' in the data; you will have to decide yourself 
+   what to do about the problem. <P>
+        DT1     Threshold is the difference in amplitude of a data point with 
+                 its counterpart in the preceding scan. <P>
+  Navigation: <P>
+        INSPECT Make detour into the (flag) INSPECTion section of the program 
+        STATIST Make detour into the (data) STATISTics section of the program 
+        MODE    Make detour into the environment MODE-control section of the 
+                 program 
+        CLEAR   Go to the CLEAR-flags operation. 
+        QUIT    Return to FLAG_OPTION.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

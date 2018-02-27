@@ -1,0 +1,228 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The Program NFLAG</b>
+<P>
+<em>Contributed by Johan Hamaker, October 1995.<BR>Revision of original docyment by Jan Noordam, August 1993. </em>
+<P>
+<em>This is a preliminary version of a new document replacing the old version of August 1993 by J.E. Noordam. The information in it is thought to be accurate but known to be incomplete. It should, however, in its present from help the user to get to grips with NFLAG's overwhelming user interface and functionality. </em>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nflag_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nflag_descr.html#SECTION0002000000000000000> <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=nflag_descr.html#SECTION0003000000000000000>  <b>The <i>NEWSTAR </i> flags concept</b></A>
+<LI> <A NAME=tex2html4 HREF=nflag_descr.html#SECTION0004000000000000000>  <b>Flagging logistics</b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=nflag_descr.html#SECTION0004100000000000000>  <b>Visibility and scan-header flags</b></A>
+</UL> 
+<LI> <A NAME=tex2html6 HREF=nflag_descr.html#SECTION0005000000000000000>  <b>Primary and secondary visibility (hyper)cubes</b></A>
+<LI> <A NAME=tex2html7 HREF=nflag_descr.html#SECTION0006000000000000000>  <b>The flagging branch of NFLAG</b></A>
+<LI> <A NAME=tex2html8 HREF=nflag_descr.html#SECTION0007000000000000000>  <b>The INSPECTion branch of NFLAG</b></A>
+<LI> <A NAME=tex2html9 HREF=nflag_descr.html#SECTION0008000000000000000>  <b>The STATISTics branch of NFLAG</b></A>
+<LI> <A NAME=tex2html10 HREF=nflag_descr.html#SECTION0009000000000000000>  <b>NFLAGS environment paremeters: The MODE branch</b></A>
+<LI> <A NAME=tex2html11 HREF=nflag_descr.html#SECTION00010000000000000000>  <b>Selection of bad visibilities on an X11 display </b></A>
+</UL>
+<A NAME=.overview><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000> <b>Overview</b></A></H1>
+<P>
+        The basic function of NFLAG is to mark visibility points in a .SCN file as faulty by 'flagging' them, i.e. by setting bits in the 'flag mask' associated with each point. In general, visibilities thus flagged will be considered no longer to exist; in this sense flagging is equivalent to deletion, but unlike deletion it is reversible, i.e. flag bits can be cleared at a later time. It is also possible to instruct processing programs to ignore flag bits and treat flagged visibilities as valid.
+<P>
+        A secondary function in NFLAG, not further described here, is the SHOW option through which one may explore the contents of a .SCN file. For a description, see the descriptions of <A HREF="../nscan_descr/nscan_descr.html">NSCAN</A> and its 
+<A HREF="../nscan_private_intfc/nscan_private_intfc.html">parameter interface</A>.
+<P>
+<A NAME=.flag.concept><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>The <i>NEWSTAR </i> flags concept</b></A></H1>
+<P>
+        The simplest way to get rid of bad visibilities is by <em>deleting</em> them. Typically this is done by replacing each bad value by a special value that processing programs recognise as an instruction to ignore the data point. Since its original value is overwritten, a deleted data point is irreversibly lost.
+<P>
+        The first step toward refinement is to <em>flag</em> visibilities as bad without overwriting them; processing programs ignore those data for which the flag is set. Since the original value is retained, is can be 'undeleted' by clearing the flag; flagging is therefore also known as 'reversible deletion'. This method is a well-known one, because it is implemented AIPS.
+<P>
+        In <i>NEWSTAR </i>, it is carried a step further by differentiating between a number of different reasons for which a visibility may be considered bad. Rather than a single flag, <i>NEWSTAR </i> associates a complete <em>flag byte</em> with each visibility point: Thus one has not a single bit to play with, but eight different ones.     The advantage of this approach is that different flagging operations can be treated independently of one another. This makes it possible in many cases to backtrack form a flagging operation that produced undesirable results and thus introduces an important margin of safety: For instance, a selection made in a laborious manual flagging session cannot be accidentally undone by a subsequent automatic clipping operation going wrong.
+<P>
+        Five of the eight bits in the flag byte are used by NFLAG, the user may use the remaining three in whichever way he wishes. By default, programs bypass all visibilities for which any one of the eight flags is set; it is also possible, however, to instruct a program to ignore certain flags. The three user-definable flag-types can be used for experiments with different selections of uv-data. (This is analogous to the use of different flag tables in AIPS.)
+<P>
+        Below is a list of the flags defined by <i>NEWSTAR </i>. The numbers shown in parentheses are the bit number (LSB=0) and hexadecimal values for these flags: 
+ <UL><LI>   MANUAL (bit 7, 80): NFLAG sets this flag when the user explicitly selects data points for flagging by specifying their coordinates (sector index, hour-angle range etc.)
+<P>
+<LI>   CLIP (bit 6, 40): This flag is set in operations that select bad data by comparing them against some limit, e.g. a maximum for their cos or sin components or their selfcal residual amplitiude.
+<P>
+<LI>   NOISE (bit 5, 20):  This flag is set in operations that select groups of bad data by checking their noise levels, e.g. those that NCALIB has calculated and stored in the .SCN file in a REDUN or 
+SELFCALperation.
+<P>
+<LI>   ADDitive (bit 4, 10):  This flag is set in operations that select groups of bad data by comparing their average value against some limits
+<P>
+<LI>   SHADowing (bit 3, 08):  This flag is set in operations that select bad data on the basis of some function of their coordinates, e.g. the length of the projected baseline or a geometry in which shadowing occurs.
+<P>
+ </UL>  The remaining three bits are known as U1 (bit 2, 04), U2 (bit 1, 02) and U3 (bit 0, 01).
+<P>
+        The <i>NEWSTAR </i> visibility flagging scheme gives the user unprecedented flexibility for reversible data-editing, although its very power makes it a little more difficult to understand and use than a simple scheme such as AIPS's.
+<P>
+<A NAME=.logistics><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000>  <b>Flagging logistics</b></A></H1>
+<P>
+        The only program that actiually sets and clears flags is NFLAG. It contains a number of options to select bad data on a varied range of criteria and set flags accordingly. To verify the effect, it also offers the option to 
+count flags over various cross-sections or projections of the 
+<A HREF="../scn_file/scn_file.html#.hypercube">data hypercube</A> and tabulate the results.
+<P>
+        Another option is to select flags on a display of some two-dimensinal cross section through the hypercube, using the program NGIDS. NGIDS then produces a file with flagging commands which may subsequently be 
+read and executedy NFLAG.
+<P>
+        On a micro-level, it is possible to inspect the individual flag bytes in individual scans through the <A HREF="#.overview">SHOW</A> option.
+<P>
+<A NAME=.header.flags><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004100000000000000>  <b>Visibility and scan-header flags</b></A></H2>
+<P>
+        In addition to the flag bytes associated with the individual visibilities, the <A HREF="../scn_file/scn_file.html#.scan">scan header</A> also contains a flag byte. Through the flags in this byte one may invalidate the scan as a whole. This is obviously a more expedient way to handle flagging, since a single computer instruction will flag or test the entire scan.
+<P>
+        In the present implementation of NFLAG, visibility flagging and scan-header flagging operate independently. That is, when the header is flagged the corresponding flags on the individual visibilities are left unchanged, and if the header is later unflagged those flags come back into force. On one hand this introduces some additional independence between different flagging operations as discussed <A HREF="#.flag.concept">above</A>. On the other hand it forces upon the user a technical distinction between two types of flagging that are functionally equivalent: The user must contend with such flagging operations as 
+<A HREF="../nflag_private_intfc/nflag_private_intfc.html#.ops.scans">HASCANS</A>, 
+<A HREF="../nflag_private_intfc/nflag_private_intfc.html#.ops.manual">CLHEAD</A>, 
+<A HREF="../nflag_private_intfc/nflag_private_intfc.html#.ops.fcopy">TOHEAD, TODATA</A>, statistics specifiers such as 
+<A HREF="../nflag_private_intfc/nflag_private_intfc.html#.ops.statist">SCANS</A>. (Unfortunately, the keywords used are not an example of clarity and consistency...)
+<P>
+<A NAME=.hypercubes><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000>  <b>Primary and secondary visibility (hyper)cubes</b></A></H1>
+<P>
+        We assume here that the concept of the visibility 
+<A HREF="../scn_file/scn_file.html#.hypercube">hypercube</A> is understood. We recall that the group/observation, mosaic-subfield, frequency-channel and (for a mosaic observation) the successive hour-angle 'cuts' are selected through the compound 
+<A HREF="../scn_file/scn_file.html#.SCNSUM.indices">sector index</A>; the scan's hour-angle, and within a scan the interferometer and polarisation are selected by direct specification.
+<P>
+        At the very start, NFLAG asks you to select a <em>primary data hypercube</em> to operate on, through the parameters 
+ <UL> 
+<LI><A HREF="../scnnode_public_intfc/scnnode_public_intfc.html#.scn.node"><b>SCN_NODE</b></A>: 
+        .SCN file; 
+<LI>   <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html#.scn.sets"><b>SCN_SETS</b></A>: 
+        sets of sectors, i.e. one ore more combinations of group, observation, 
+        mosaic subfield, frequency channels and hour angle cuts; 
+<LI>   <A HREF="../select_public_intfc/select_public_intfc.html#.ha.range"><b>HA_RANGE</b></A>: 
+        hour-angle range; 
+<LI>   <A HREF="../select_public_intfc/select_public_intfc.html#.select.ifrs"><b>SELECT_IFRS</b></A>: 
+        interferometers; 
+<LI>   <A HREF="../select_public_intfc/select_public_intfc.html#.select.xyx"><b>SELECT_XYX</b></A> 
+        polarisations. 
+ </UL>
+<P>
+This primary cube may later be redefined partly or completely through the MODE branch of NFLAG which is accessible from several places in the program.
+<P>
+        For certain operations, one may narrow down the range of visibilities to be operated on by defining a <em>secondary hypercube</em>; the data volume operated upon will then be the cross section of the primary and secondary cubes. Secondary-cube definition is limited to the latter three of the parameters listed above; note, in particular, that it is not presently possible to define a secondary frequency-channel range because that definition is part of the SCN_SETSparameter.
+<P>
+        A word of caution is in order about the effect of data-cube definitions in operations that affect the <A HREF="#.header.flags"><em>scan-header</em></A> flags. Since such actions operate on the entire scan, <em>the ranges of interferometers and polarisations (parameters <em>SELECT_IFRS</em> and 
+<em>SELECT_XYX</em>) that you defined for your hypercubes have no effect</em>.
+<P>
+<A NAME=.flagging.branch><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0006000000000000000>  <b>The flagging branch of NFLAG</b></A></H1>
+<P>
+<A NAME=.nflag.flag><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<A HREF="../fig/nflag_flag.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i>Bird's eye view of the flagging branch of NFLAG, showing the four main branches and their interconnections. Regular text represents manpulation of program variables. Interactions with the user are shown in boldface; an arrow shows parameter input into a program variable. 
+<BR>Full-drawn lines represent the main-branch connections, dashed lines the detours from one main branch into another one; the user selects these routes through the nparameter inputs shown. 
+<BR>Dotted lines represent the return paths that are selected through a QUIT input in each of the branches. All returns are through label 101 in the top left; in the case where the return is from a detour, control is returned to the branch where the detour originated. </i>
+<P>
+<A NAME=.nflag.operate><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<A HREF="../fig/nflag_operate.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i>Schematic of the operations branch of NFLAG. 
+<BR>This branch contains options to set visibility or scan-header flags on the basis of a variety of criteria. See text for a description. </i>
+<P>
+        The flagging branch is where the actual work of NFLAG is done. All commands that change flag setting on visibility points or scan headers are to be found here. The flagging options are shown in the upper left box in 
+<A HREF=" #.nflag.flag">figure</A> A detailed overview of the branch is given in 
+<A HREF=" #.nflag.operate">figure</A>.
+<P>
+<A NAME=.inspection.branch><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0007000000000000000>  <b>The INSPECTion branch of NFLAG</b></A></H1>
+<P>
+<A NAME=.nflag.inspect><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<A HREF="../fig/nflag_inspect.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i>Schematic of the INSPECT branch of NFLAG. 
+<BR>By default NFLAG executes a COUNT operation at the end of each 
+flagging operation. The COUNT option is provided mainly for convenience, but must be executed if you want to display flagging statistics before doing anything else. </i>
+<P>
+        The purpose of the inspection branch is to provide overviews of the flags present. Generally speaking, the bulk of the visibilities is much too large for making useful graphic or tabular representations of the individual flag settings. For most purposes, however, the information one needs can be represented in the form of tables of flag counts along various cross-sections of the visibility hypercube. Such tables is what the inspection commands produce.
+<P>
+        A schematic overview of the branch is given in <A HREF=" #.nflag.inspect">figure</A>.
+<P>
+        From the INSPECT branch, it is possible also to make a detour into the 
+<A HREF="#.mode.branch">MODE</A> or <A HREF="#.statist.branch">STATISTICS</A> branch.
+<P>
+<A NAME=.statist.branch><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0008000000000000000>  <b>The STATISTics branch of NFLAG</b></A></H1>
+<P>
+<A NAME=.nflag.statist><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<A HREF="../fig/nflag_statist.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i>Schematic of the STATIST branch of NFLAG. 
+<BR>This branch accumulates statistical characteristics from the visibilities and/or the noise parameters in the scan headers and provides displays of the results in various formats. </i>
+<P>
+        The purpose of the statistics branch is to provide statistical overviews of the visibility data. Generally speaking, the bulk of the visibilities is much too large for making useful graphic or tabular representations of the individual values (except with NGIDS. For flagging purposes, however, much of the information one needs can be represented in the form of tables of data statistics along various cross-sections of the visibility hypercube. Such tables is what the statistics commands produce.
+<P>
+        A schematic overview of the branch is given in <A HREF=" #.nflag.statist">figure</A>.
+<P>
+        From the STATISTICS branch, it is possible also to make a detour into the INSPECT branch.
+<P>
+<A NAME=.mode.branch><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0009000000000000000>  <b>NFLAGS environment paremeters: The MODE branch</b></A></H1>
+<P>
+<A NAME=.x11><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION00010000000000000000>  <b>Selection of bad visibilities on an X11 display </b></A></H1>
+<P>
+<A NAME=.nflag.gids><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<A HREF="../fig/nflag_gids.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i>The use of a flag file to transfer flagging commands into NFLAG. 
+<BR>Flag files contain flagging commands that NFLAG can read and execute. Both a compact binary form (the .FLF file) and a bulky text form are available. The latter form can be edited manually. 
+<BR>Flag files may be generated by NGIDS and through commands in the 
+FLIST branch of NFLAG. </i>
+<P>
+        For detailed point-by-point flagging of visibilities the flagging modes of NFLAG are much too cumbersome. For this purpose one may instead use a combination of 
+ <UL><LI>   NGIDS, to select data points with a cursor on a two-dimensional display of a cross section through the visibility hypercube in which data values are represented by colours;
+<P>
+<LI>   NFLAG, to do the actual flagging of the selected points. 
+ </UL>  The procedure is schematically represented in <A HREF=" #.nflag.gids">figure</A>.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

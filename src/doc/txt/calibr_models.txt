@@ -1,0 +1,79 @@
+From Ger@NFRA.NL Mon Dec  4 16:34:33 1995
+Date: Mon, 04 Dec 1995 16:34:07 +0100 (MET)
+From: Ger@NFRA.NL (Ger de Bruyn)
+Subject: models at 92cm
+To: foley@NFRA.NL (Tony Foley)
+To: henk@NFRA.NL (Henk Vosmeijer)
+To: jph@NFRA.NL (Johan Hamaker)
+To: noordam@NFRA.NL (Jan Noordam)
+X-Envelope-To: hjv@RZMWS0.NFRA.NL, jph@RZMWS0.NFRA.NL, noordam@RZMWS0.NFRA.NL
+Mime-Version: 1.0
+X-Mailer: ELM [version 2.4 PL23]
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Length: 2446
+Status: RO
+X-Lines: 61
+
+Beste mensen,
+
+Op /user4/92calib staan 5 modellen voor 325 MHz
+van 5 in Westerbork gebruikte calibrators (3C48, 147,
+286, 295 en 345)
+
+Ze bevatten ruim honderd componenten, voldoende voor een
+nauwkeurige zelfcalibratie.
+
+Bedenk echter het volgende:
+
+1) Ze gelden voor 325 MHz en als je ze in NCALIB
+wilt gebruiken op andere banden van het
+breedband 92cm systeem moet de BEAM optie aangezet
+worden. Dat corrigeert dan in eerste orde (met behulp
+van  een (cos**6(cfr) functie) voor de veranderende primaire
+bundel (met c=0.0629 dat nu geldt voor alle
+frequenties beneden 500 MHz). Echter op de laagste frequenties
+is de bundel waarschijnlijk breder dan een simpele
+frequentie schaling. Daar moet dan dus een nieuwe 
+coefficient voor worden bepaald alsmede een nieuw frequentie
+interval waarvoor die constante geldt voor worden gecreeerd.
+
+2) De calibratie bronnen zijn in werkelijkheid natuurlijk minder sterk
+op de hogere frequenties. Maar om redenen uitgelegd in een
+README help file in dezelfde directory wordt daar NIET voor
+gecorrigeerd !! Daar moeten de astronomen zelf voor corrigeren
+met behulp van de spectrale indices van die bronnen.
+
+
+3) De bron 3C345 mag niet als flux calibrator gebruikt worden omdat
+hij in fluxdichtheid varieert. Deze bron wordt slechts zo af en toe
+gemeten om dat hij gepolariseerd is waardoor met behulp van het Stokes
+U signaal het phase verschil van de XX en YY kanalen gecontroleerd
+kan worden onder de aanname dat V=0 (VZERO optie in NCALIB-polar)
+Deze bron heeft ook een RM van ongeveer 15-20 rad/m**2 waardoor de
+Stokes Q en U percentages afhangen van frequentie.
+Deze percentages staan dus ook niet in het model.
+Ze zijn trouwens afhankelijk van de ionosferische Faraday draaiiing
+die niet nauwkeurig bekend is.
+
+4) Voor de bron 3C303 (die ook i.v.m. met zijn hoge lineaire
+polarisatie wordt waargeneomen, net als 3C345) 
+wacht ik nog steeds op een aantal metingen 
+waaruit ik een goede kaart kan maken waaruit een model te halen is.
+Verder geldt voor deze bron hetzelfde als voor 3C345 behalve dat hij
+niet verandert in flux dichtheid.
+
+Henk: Kun jij deze modellen neerzetten op de plaats waar NEWSTAR
+zijn default modellen weghaalt.
+
+Als er vragen zijn dan hoor ik het wel.
+
+Ger
+-- 
+
+A.G. de Bruyn  (Ger)           | Internet:   ger@nfra.nl
+NFRA                           | 
+Postbus 2                      | Phone: (31)-521-595257
+7990 AA Dwingeloo              | Fax:   (31)-521-597332 
+The Netherlands
+

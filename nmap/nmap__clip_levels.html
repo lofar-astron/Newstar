@@ -1,0 +1,23 @@
+<TITLE>Description of CLIP_LEVELS (NMAP)</TITLE>
+<H1>Program NMAP: private keyword CLIP_LEVELS</H1> 
+
+<DT><EM>Prompt:</EM> Amplitude range to be discarded
+<DT><EM>Default:</EM> 100000., 100000..
+<DT><EM>Expected input:</EM> Real number, 2 values.<P>
+Specify amplitude range (in Westerbork Units) of visibility magnitudes that you 
+want to discard. <P>
+In the annulus defined by CLIP_AREA, values between the limits you specify will 
+be discarded. 
+! {\em parameter \textref{CLIP_AREA}{.clip.area} } <P>
+NOTE: It would be more natural to define a range within which visibilities are 
+considered valid. As it is, only the lower limit is actually useful, allowing 
+you to define a rejection threshold for interference. To do so, specify your 
+threshold for the lower and 'infinity' for the upper limit, e.g. <P>
+                &lt;threshold&gt;, 100000  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmap/nmap_keys.html">List of keywords</A> for NMAP
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nmap_descr/nmap_descr.html">program NMAP</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

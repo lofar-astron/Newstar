@@ -1,0 +1,21 @@
+<TITLE>Description of USER_FLAGS (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword USER_FLAGS</H1> 
+
+<DT><EM>Prompt:</EM> Select flag type(s) for ALL flagging operations| NONE, [ALL]; MAN, CLIP, NOISE, ADD, SHAD, U1, U2, U3; [OLD]
+<DT><EM>Expected input:</EM> Character(16), 16 values.<P>
+ Each flagging operation changes a specific flag type by default. 
+You may define here an alternative (set of) flag type(s) to be used in ALL 
+subsequent flagging operations. Reply NONE to revert to the default settings. <P>
+The purpose is to allow you to do experimental flagging with one of the USER 
+flags without messing up the flagging that you have already done. <P>
+        OLD     use the flag type for the 'OLD' class (i.e. flagged before 
+                 930609, and converted with NVS option) 
+                 NB: OLD uses the same flag-bit as MAN 
+!!              I suppose this can now be removed. 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

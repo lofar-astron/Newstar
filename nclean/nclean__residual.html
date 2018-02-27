@@ -1,0 +1,20 @@
+<TITLE>Description of RESIDUAL (NCLEAN)</TITLE>
+<H1>Program NCLEAN: private keyword RESIDUAL</H1> 
+
+<DT><EM>Prompt:</EM> residual map?
+<DT><EM>Expected input:</EM> Logical.<P>
+Specify if the residual map must be written. <P>
+For BEAM and UVCOVER cleaning, this map is an automatic by-product of the 
+process and the choice is whether or not to write it to the .WMP file. The map 
+will be given the same indices as the input map except for an incremented 
+sequence number. <P>
+For UVDAT cleaning, the residual map must be constructed by making a new map 
+from the original visibilities, in which the CLEAN components just found are 
+subtracted. The new map will OVERWRITE the input map. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nclean/nclean_keys.html">List of keywords</A> for NCLEAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nclean_descr/nclean_descr.html">program NCLEAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

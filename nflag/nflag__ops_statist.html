@@ -1,0 +1,47 @@
+<TITLE>Description of OPS_STATIST (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword OPS_STATIST</H1> 
+
+<DT><EM>Prompt:</EM> "Statistics operation - (ACC, SCANS, UVDAT, &lt;name&gt;;|-GROUPS, EXPLAIN; INSPECT, MODE, QUIT)" 
+<DT><EM>Expected input:</EM> Character(24).<P>
+ Accumulate statistics from data and/or scan headers over the 
+primary or secondary data cube and display it. <P>
+   Accumulate: 
+        ACC     Accumulate statistics from data and scan headers, excluding 
+data 
+                 points/headers that are flagged. 
+                You may select a secondary data cube for this purpose 
+(parameter 
+                 XXX). <P>
+   Inspect the results of accumulation: <P>
+        SCANS   Show the collected scan-header statistics. 
+        UVDAT   Show the collected visibility statistics. 
+        &lt;name&gt;  Show the statistics of the named 'accumulation group' (use 
+                 GROUPS and EXPLAIN above to see what choices you have). <P>
+   These options will produce a Table with the following columns: <P>
+        &lt;name&gt;  The name of the quantity for which statistics have been 
+                 calculated. 
+        mean    Its average value 
+        rms     Its rms magnitude 
+        rmsms   Its rms deviation w.r.t. the mean. 
+        rmsvar  The rms difference, between pairs of successively processed 
+                 values. 
+        wtot    Total weight. Usually it indicates the total nr of samples. 
+        minval  Its minimum value. 
+        maxval  Its maximum value. 
+        &lt;unit&gt;  The units in which the above values (except wtot) are 
+expressed. <P>
+   Get some extra help: <P>
+        GROUPS  Show the names of the currently defined 'accumulation groups' 
+        EXPLAIN Show explanation of statistical quantities. <P>
+   Navigation: <P>
+        INSPECT Make detour into the (flag) INSPECTion section of the program 
+        MODE    Make detour into the enviornment MODE-control section of the 
+                 program 
+        QUIT    Go back to what you were doing before.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

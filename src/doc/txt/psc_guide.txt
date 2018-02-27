@@ -1,0 +1,360 @@
+Style guide for parameter definition files
+------------------------------------------
+
+History:
+ 941110 contributed by JPH
+ 941117 Style recommendation 7.
+ 941212 Revise the latter following changes in cplvallist.for, ppdopstr.for.
+
+
+Summary
+=======
+
+	This document contains guidelines for writing .psc/.pef parameter
+definition files. A few implementation notes are added as an Appendix. The
+following subjects are addressed:
+
+	a. Definition of parameter properties
+
+	b. Definition of default values
+
+	c. Prompt formatting
+
+	d. Insertion of hypertext references
+
+
+Related documents
+=================
+
+	The reader is assumed to have some knowledge of LaTeX and the way it is
+used for Newstar documentation. The latter is described in the Newstar document
+"Guide for writing and maintaining Newstar documents".
+
+
+Definition of parameter properties
+==================================
+
+	A large number of properties can be defined for each parameter. I
+discuss only a few.
+
+	- ATTRIBUTES=<attr>[,<attr>]...
+
+	  . LOOP: WNDPAR returns the special status DWC_ENDOFLOOP when no more
+parameter values are available. The calling program may detect this status as a
+signal for some special action. When LOOP is not specified, the value(s)
+specified is/are simply re-used.
+
+	  . NULL_VALUES: It is allowed to enter 0 values, either by default or
+by the user. A null value is represented by an empty string: "". For a null
+reply, WNDPAR returns <number of values>=0.
+
+	  . WILD_CARDS: A wildcard, *, is allowed as default or reply. For a
+wildcard, WNDPAR returns <number of values>=-1.
+
+In a proper implementation, the latter two attributes should be defined only
+where appropriate. In Newstar, they are declared almost everywhere and
+consequently programs must make special checks in many places for illegitimate
+null and wildcard values.
+
+	This situation is clearly unsatisfactory, but systematic rectification
+is not worth the effort and risk of mistakes. Some efforts in this direction
+have been made but are being discontinued.
+
+
+Definition of parameter defaults
+================================
+
+	Defaults in a prompt can be defined in a number of ways. The DWARF
+design postulated that the interface presented to the user should be defined as
+much as possible in the .psc file; the
+
+	- DEFAULTS=<values>
+
+clause in a keyword description serves this purpose. As an alternative, dynamic
+defaulting can be used.
+
+	Newstar largely ignores this philosophy, by defining most defaults
+through the dynamic mechanism, even when the value is a constant. In some cases
+both .psc and dynamic defaults are provided, - in which case the latter will
+take precedence.
+
+	This situation is clearly unsatisfactory, but systematic rectification
+is not worth the effort and risk of mistakes. Some efforts in this direction
+have been made but are being discontinued.
+
+
+Prompt and options string formatting
+====================================
+
+	A Newstar prompt is composed of
+
+		<keyword> -
+		<prompt text>
+		(<options list>)
+		=<default>:
+
+The complete prompt is concatenated from these components and then formatted
+into one or more lines on the terminal.
+
+	As of november 1994, the formatting routine has been modified to allow
+the programmer more control over the form in which the prompt is displayed,
+through the use of some special punctuation:
+
+	- The prompt string may be terminated in a '|' to put the options
+string on a new line.
+
+	- The options string may contain the characters ' ,;|/[]' to format it:
+
+	  . The '|' can be used to split the string over multiple lines; when
+appended at the and of the list, it signals that the <default> must be put on a
+new line of its own.
+
+	  . ';' and ' ' can be used to group options in functionally related
+subsets;
+
+	  . '/' can be used to group options that are alternatives, e.g.
+BAND/NOBAND.
+
+	  . '[]' can be used to indicate options that one would only use in
+exceptional situations;
+
+	  . '(:)' can be used to insert comments (this may not work, it has not
+been tested).
+
+
+Long and short lines
+--------------------
+
+	Within Newstar a need exists for text files to be formatted as one line
+per full paragraph in some application, and in other uses for the same files to
+be formatted in lines that fit a terminal screen. The conversions can be made
+automatically, provided a few guidelines are heeded: See item 7 of the Style
+Recommendations below.
+
+
+Style recommendations
+---------------------
+
+	1. The '|' character will signal a line break and therefore cannot be
+used otherwise (e.g. as an 'OR' symbol).
+
+	2. If the prompt, options, and default strings combined leave enough
+room for a reply on the same line, donot insert any newlines.
+
+	3. If the options string must be divided over more than one line, then
+put the entire options string on lines of its own (i.e. terminate both the
+prompt and options strings in a '|');
+
+	4. Use blanks and semicolons to visually group the options, and use the
+same grouping in the help text. Insert newlines only between groups, and put a
+semicolon before such a newline.
+
+	5. Remember that the options string will be shown enclosed in
+parentheses. Therefore donot terminate it in a semicolon. (If it ends in a '|',
+that character will be shifted behind the closing parenthesis.)
+
+	6. Format the OPTION string in the way you want it to appear in the
+prompt, remembering that the prompting routine will indent each new line by 4
+blanks: (So donot insert additional blanks in your .psc file!)
+
+	OPTIONS=-
+QUIT; COPY,CCOPY,LINE; ZERO,MANUAL,INIT,RENORM;| -
+EXT,REF, IREF,FAR, IFR,MIFR, SHIFT,CLK; DX,DY,DZ, POLE,FREQ
+
+	7. Make sure the product of the number of options and the LENGTH for
+character parameters is less than 512. (All options are extended by CPL_VALLIST
+to LENGTH characters and concatenated in a local buffer defined by
+PPD_OPSTR_PUT.)
+
+	8. Newstar's automatic line-formatting mechanism may concatenate
+consecutive short lines into a longer one. It does, however, avoid improper
+joining of lines by assuming that the following input line types either start a
+new output line or terminate the current output line or both:
+
+	- a line starting in whitespace, '-' or a '!' comment character: new
+	  output line;
+
+	- a blank line or a line consisting of a '.' only: copy literally;
+
+	- a line containing an in-line comment or a double quote: terminate
+	  output line.
+
+Similarly, a line ending in a hyphen (the DWARF 'to be continued' mark)
+terminates the current output.
+
+
+
+TaTeX/Hypertext conversion of the Help texts
+============================================
+
+	The command 'ndoc Key' translates the files
+
+		<xxx>.psc resp. <xxx>.pef
+
+into LaTeX files
+
+		$n_doc/intfc/<xxx>_private_intfc.tef
+	  resp. $n_doc/intfc/<xxx>_public_intfc.tef
+
+It subsequently calls ndoc Cook to process a corresponding .tex file to produce
+the hypertext document.
+
+	(NOTE: This is a change w.r.t. the previous situation, in which only
+the hypertext translation was available, consisting of one separate small .html
+file per keyword. The logistics for the _intfc.tex/tef files is now entirely
+identical to that for the other .tex documents, which is advantageous in many
+ways.)
+
+
+Cross references
+----------------
+
+	To fully exploit the symmetry between LaTeX sources and the .tef files
+provision is made for cross-references in the latter. These take the form of
+LaTeX \textref commands on comment lines in the .psc/.pef file, e.g.
+
+	! {\em see also the}\textref{DWARF}{<file name>} interface description}
+
+Conversely, references to Help texts can be made both from other Help texts and
+LaTeX documents. For this purpose, ndoc Key generates a label for each help
+text:
+
+	keyword <XXX>_<YYY>_<ZZZ> --> label .<xxx>.<yyy>.<zzz>
+
+
+Appendix: Prompt formatting
+===========================
+
+	The DWARF susbsytem of NEWSTAR is responsible for displaying prompt
+information on the terminal and checking the user's reply. As inherited, the
+formatting of the prompts was very clumsy, making them difficult to read,
+particularly in those frequent cases where a large number of options must be
+chosen from.
+
+	It has proved possible by some very simple changes to give the maker of
+the .psc file, - that defines the prompt and options strings -, a great deal of
+control over the way a prompt is formatted. This is made possible by the fact
+that
+
+	a. Prompt and options strings are copied litterally from the .psc file
+to the binary .ppd file that an executable program reads.
+
+	b. Parsing of the options string relies on a string parameter that
+defines which characters delimit inidividual options in the options string. By
+extending the former string we may allow other characters than ',' to be used
+as delimiters.
+
+	c. The prompt is composed by essentially a simple concatenation of the
+prompt, options and default strings and then breaking it into lines for output
+on the terminal. It is easy to change the line-breaking algorithm to break
+lines at a predefined delimiter character; the vertical bar '|' was chosen for
+this purpose.
+
+	It has later been found that there are other DWARF routines that assume
+that a comma is the only delimiter, such as CPL_VALLIST. These seem to work
+correctly, provided only that the parameter's LENGTH is defined large enough
+(cf. Style recommendation number 7 above.). This can be safely done since this
+attribute is only used to allocate buffer space.
+
+
+Implementation in the prompt and reply paths
+--------------------------------------------
+
+	A schematic of the prompt and reply paths is shown in the following
+diagram:
+
+|GP_INP
+|  calls GP_INP_GET
+|
+|       GP_INP_GET
+|       | calls PPD_PROMPT
+|       |
+|       |       PPD_PROMPT
+|       |         calls PPD_PRSTR_GET to get <prompt string>
+|       |         calls PPD_OPSTR_GET to get <options string>
+|       |         returns with
+|       | PROMPT = <prompt string> (<options string> )'
+|       | appends '=<default string>' to PROMPT
+|       | calls DWC_INPUT with PROMPT
+|       |
+|       |       |DWC_INPUT
+|       |       | calls GEN_INPUT
+|       |       |
+|       |       |       |GEN_INPUT
+|       |       |       | formats prompt and outputs line by line
+									prompt
+******************************************************************************
+									reply
+
+									prompt
+******************************************************************************
+									reply
+|       |       |       | reads answer
+|       |       |       | detects DWC_EOFCTRLZ
+|       |       |       | returns
+|       |       |
+|       |       | returns
+|       |
+|       |  does some checks on ANSWER
+|       |  reprompts for some errors
+|
+| calls GP_INP_PARSE
+| ...
+| calls GP_INP_DECODE
+|
+|       GP_INP_DECODE
+|       | calls PV_BLK_DECODE
+|       | calls PPD_CHECK
+|       |
+|       |       PPD_CDHECK
+|       |       | if options defined:
+|       |       |   calls PPD_OPSTR_MATCH
+|       |       |
+|       |       |       PPD_OPSTR_MATCH
+|       |       |       | calls STR_MATCH_L
+|       |       |       |
+|       |       |       |       STR_MATCH_L
+|       |       |       |       |  returns <match number>
+|       |       |       |
+|       |       |       | loop <match number> times
+|       |       |       |   calls STR_SKIP_U (DELIM=',;|[]',...)
+|       |       |       |
+|       |       |       |       STR_SKIP_U
+|       |       |       |       |       skips up to character in argt DELIM
+|       |       |       |
+|       |       |       | end loop
+|       |       |       | calls STR_SKIP_W
+|       |       |       |
+|       |       |       |       STR_SKIP_W
+|       |       |       |       |       skips whitespace
+|       |       |       |
+|       |       |       | calls STR_COPY_U (DELIM='.;|[]',...)
+|       |       |       |
+|       |       |       |       STR_COPY_U
+|       |       |       |       |       copies up to character in argt DELIM
+|       |       |       |
+|       |       |       |returns full OPTION
+|       |       |
+|       |       |end if
+|       |       |...
+|       |
+|       |...
+| |...
+
+
+	In the prompt path GP_INP_GET and PPD_PROMPT concatenate the keyword,
+prompt, options and default strings in string PROMPT. These strings are taken
+litterally from the .PPD file or WNDPOH without any processing except for the
+insertion of a few punctuation marks to delineate the four components. All
+punctuation marks in the strings are preserved.
+
+	GEN_INPUT formats PROMPT into lines for the terminal. It interprets one
+or more vertical bars '|' as a newline and does not autonomously generate any
+additional newlines. Any lines after the first are indented by 4 spaces; apart
+from this, the formatting is entirely controlled by the bar characters in the
+strings as defined in the .psc file. No checks are made on the lengths of the
+lines being output.
+
+	The reply path uses the options string to check the reply and must
+therefore recognise all punctuation characters. This is realised extremely
+simply by including them in the DELIM argument so STR_SKIP_U and STR_COPY_U

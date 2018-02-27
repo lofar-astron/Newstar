@@ -1,0 +1,66 @@
+
+Transparent reading of the Optical Disks with Newstar
+-----------------------------------------------------
+
+It is now possible to access the optical disk units that are 
+connected to the VAX while working on a Unix machine.
+
+In Dwingeloo, the following tape-devices have been defined:
+
+   MAG4   //rzmvx4.astron.nl:1100/RZMVX4$MUA0  
+   MAG5   //rzmvx4.astron.nl:1101/RZMVX4$MUA1
+
+These devives allow you to read data from the units MUA0 and MUA1
+as if they were connected to your Unix machine.
+
+If you work on e.g. rzmws10 and you want to get data from MUA0,
+just run NSCAN and specify unit 4. 
+
+
+Note 1: Implementation
+ 
+   Transparent reading is implemented by a server on the VAX and
+   an extension of the tape-handling routines in Newstar.
+   The server on the VAX is USER5:[DEVOSCM.RMTD]RMTD.EXE
+   The server has to be started on two ports, this can be done
+   by including in the system-startup:
+
+      @user5:[devoscm.rmtd]rmtd_start.com  
+  
+   which will submit two jobs on RZMVX4_BATCH.
+
+   The names of the remote units have been defined in the startup file
+       $n_src/sys/newstar_nfra.csh
+
+   The routines changed for the implementation are $n_src/wng/wnftrw.cun 
+   and $n_src/wng/wnf???_x.cun. The code for the client side of the 
+   network is in wnftrw.cun. The changes in the other files are: (1) all
+   calls to open, close, read and write now go through a routine in 
+   wnftrw.cun and (2) all calls to routines wnftrw pass the MCA (not FCA)
+
+Note 2: Suggested testing
+
+   To test the reliability of the transparent tape-reading I suggest
+   the following. During the next week, all files read from Optical Disk
+   by the Reduction Group are read two times and then compared
+
+      1e. Unix: NSCAN LOAD UNIT=4 or 5 
+
+      2e. VAX:  NSCAN LOAD UNIT=4 or 5
+          Unix: ftp SCN-file
+                NSCAN CVX
+
+      3e. Unix: ~devoscm/tst.csh File1.SCN File2.SCN
+  
+   If the files have been loaded identically, no differences should appear.
+   The tst.csh procedure ignores differences of 1 unit in the data, since 
+   they can be produced by rounding errors during the time-averaging.
+
+   Any differences should be reported to Marco de Vos.
+
+   After testing some 10 SCN files, we are sure that no systematic errors 
+   take place. The remaining test is on reliability of the connection over
+   a longer period. This can be tested by using only the Unix version of 
+   Newstar to read data from the archive. After a month, we will have a 
+   good impression of the reliability. 
+

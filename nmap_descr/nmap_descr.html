@@ -1,0 +1,273 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The Program NMAP</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=nmap_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=nmap_descr.html#SECTION0002000000000000000>  <b>Introduction</b></A>
+<LI> <A NAME=tex2html3 HREF=nmap_descr.html#SECTION0003000000000000000> <b>Overview of NMAP options</b></A>
+<LI> <A NAME=tex2html4 HREF=nmap_descr.html#SECTION0004000000000000000> <b>Option MAKE: Making maps</b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=nmap_descr.html#SECTION0004100000000000000> <b>Types of output images</b></A>
+<LI> <A NAME=tex2html6 HREF=nmap_descr.html#SECTION0004200000000000000> <b>Operations on the input data</b></A>
+</UL> 
+<LI> <A NAME=tex2html7 HREF=nmap_descr.html#SECTION0005000000000000000> <b>Option MAKE: example</b></A>
+<UL> 
+<LI> <A NAME=tex2html8 HREF=nmap_descr.html#SECTION0005100000000000000> <b>QMAPS: Hidden map options</b></A>
+<LI> <A NAME=tex2html9 HREF=nmap_descr.html#SECTION0005200000000000000> <b>QDATAS: Hidden map options</b></A>
+</UL> 
+<LI> <A NAME=tex2html10 HREF=nmap_descr.html#SECTION0006000000000000000> <b>Option FIDDLE: Operations on maps</b></A>
+<LI> <A NAME=tex2html11 HREF=nmap_descr.html#SECTION0007000000000000000> <b>Option FITS: Conversion to FITS format</b></A>
+</UL>
+<A NAME=.intro><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000>  <b>Introduction</b></A></H1>
+<P>
+        The <i>NEWSTAR </i> program NMAP makes maps (images) from the uv-data in a SCN-file, and stores them in a WMP-file. The input data may be combined in many different ways, to produce maps that range from simple to quite exotic.  As a by-product, antenna patterns may be calculated (and stored in the same .WMP file), for use in <A HREF="../nclean_descr/nclean_descr.html">NCLEAN</A>.
+<P>
+        The program NMAP also allows the user to manipulate maps in a .WMP file, and to convert them to other formats.
+<P>
+        A .WMP file may contain various kinds of maps that are <em>related in some way</em>, i.e. different frequency channels, polarisations, pointing centres (mosaicking), antenna patterns, CLEAN residuals, and even gridded uv-data. Each <em>image</em> in a .WMP file consists of a 2-dimensional array of pixel values, withj a header containing descriptive information. A 'hypercube' of images in a .WMP file can have maps of different sizes. For more information about the structure of the .WMP file, see the <A HREF="../wmp_descr/wmp_descr.html">.WMP file</A> description.
+<P>
+<A NAME=.options><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000> <b>Overview of NMAP options</b></A></H1>
+<P>
+The program NMAP offers the following main options:
+<P>
+<UL><LI> <b>MAKE:</b>      Make map(s) and/or antenna patterns 
+<LI> <b>SHOW:</b>      Show/edit map (header) data. 
+                        See section on WMP File Description. 
+<LI> <b>FIDDLE:</b>    Perform all kinds of operations on maps. 
+<LI> <b>W16FITS:</b>   Write FITS tape/disk with 16 bits data. 
+<LI> <b>W32FITS:</b>   Write FITS tape/disk with 32 bits data. 
+<LI> <b>FROM_OLD:</b> Convert from old (R-series) format to WMP format. 
+<LI> <b>TO_OLD:</b>   Convert from WMP format to old (R-series) format. 
+<LI> <b>CVX:</b>       Convert a WMP-file from other machine's format 
+                        to local machine's. 
+<LI> <b>NVS:</b>       Convert a WMP file to newest version. 
+                        This option should be run if indicated by the program). 
+<LI> <b>QUIT:</b>      Quit the program NMAP. 
+</UL>
+<P>
+<A NAME=.make><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000> <b>Option MAKE: Making maps</b></A></H1>
+<P>
+        An overview of the user interface for the MAKE option is shown in 
+<A HREF=" #.nmap.make">figure</A> and its companion <A HREF=" #.nmap.make.q">figure</A>.
+<P>
+<A NAME=.nmap.make><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Overview of NMAP's map-making interface. 
+<A HREF="../fig/nmap_make.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i><BR><BR>See <A HREF=" #.nmap.make.q">figure</A> for the QMAPS and QDATS branches; by default, these branches are bypassed. 
+<BR><BR>(The rightmost column in the diagram is irrelevant for map-making in NMAP.) </i>
+<P>
+<A NAME=.make.output><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004100000000000000> <b>Types of output images</b></A></H2>
+<P>
+        The program NMAP produces (multiple) images of the following types:
+<P>
+<UL><LI> <b>MAP:</b> Normal map of the uv-data or the uv-model (the uv-representation of the Selfcal model) from the SCN-file. Various linear combinations of the four measured polarisations can be specified with the keyword <b>MAP_POLAR</b>, to produce:
+<P>
+  <UL><LI> <b>XX, YY, XY or YX-maps:</b> Use XX, YY, XY or YX data only 
+  <LI> <b>I-map:</b>   (XX+YY)/2 
+  <LI> <b>Q-map:</b>   (-XX+YY)/2 
+  <LI> <b>U-map:</b>   (-XY+YX)/2 
+  <LI> <b>V-map:</b>   (XY+YX)*i/2 
+  <LI> <b>L-map:</b>   XX or YY or (XX+YY)/2 if both present 
+  <LI> <b>*I-map:</b>  any of the above, but multiplied with <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap338.png"> 
+  </UL>
+<P>
+NB: Note that parallel dipoles (++) are assumed here. Observations with `crossed' dipoles (+x) require linear combinations of all four polarisations. This can be done in the map plane (see NMAP option <b>FIDDLE_OPTION</b>).
+<P>
+<LI> <b>AP:</b>        Antenna pattern (Replace uv-data by 1's) 
+<LI> <b>COS:</b>       Assume input sines to be zero 
+<LI> <b>SIN:</b>       Assume input cosines to be zero 
+<LI> <b>AMPL:</b>      Assume input phases to be zero 
+<LI> <b>PHASE:</b>     Assume input amplitudes to be one 
+</UL>
+<P>
+It is also possible to store <b>uv-data</b> in a WMP file, for display purposes. The uv-data is `gridded' (convolved onto a rectangular grid).
+<P>
+<UL><LI> <b>COVER:</b>     Gridded uv-coverage (data replaced by 1's) 
+<LI> <b>REAL:</b>      Real part of the gridded uv-data 
+<LI> <b>IMAG:</b>      Imaginary part of the gridded uv-data 
+<LI> <b>AMPL:</b>      Amplitude of the gridded uv-data 
+<LI> <b>PHASE:</b>     Phases of the gridded uv-data 
+</UL>
+<P>
+<A NAME=.make.input><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0004200000000000000> <b>Operations on the input data</b></A></H2>
+<P>
+<A NAME=.nmap.make.q><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Overview of the optional detailed-question sequences of the map-making interface. This diagram expands the <em>QMAPS</em> and <em>QDATAS</em> stubs in 
+<A HREF="../fig/nmap_make_q.ps"><STRONG>FIGURE</STRONG></A> 
+ .]<i><A HREF=" #.nmap.make">figure</A>. </i>
+<P>
+<UL><LI> <b>Data selection</b>: The uv-data that go into a map may be selected in various ways: 
+  <UL><LI> One or more SCN-files. 
+  <LI> Sets within a SCN-file (e.g. frequ channels, pointing centres). 
+  <LI> HA-Scans within each Set (HA-range). 
+  <LI> Polarisations (XX,YY,XY,YX). 
+  <LI> Individual iterferometers 
+  <LI> An area in the uv-plane 
+  <LI> Clip-level 
+  </UL>
+<P>
+<LI> <b>Data correction</b>: Various correction factors are stored in the Set and Scan headers of the SCN-file. They may be applied to the uv-data at the moment that they are read from disk for processing. Application of correction is controlled by the NGEN keywords <b>APPLY</b> and <b>DE_APPLY</b> (see the section `Common Features of <i>NEWSTAR </i> Programs' in this Cookbook).
+<P>
+<LI> <b>Data conversion</b>: The uv-data may be converted in various ways: 
+  <UL><LI> Subtraction of a source model. 
+  <LI> Combination of different polarisations (XX,YY,XY,YX). 
+  <LI> Conversion to amplitudes or phases. 
+  </UL>
+<P>
+<LI> <b>Data weighting:</b> 
+  <UL><LI>   NATURAL:  Take each individual measured point separately, 
+                        without weighting for the UV track covered by it. 
+  <LI>   STANDARD: Weight each observed point with the track length covered 
+                        on the UV plane, 
+                        and average redundant baselines on a per set basis. 
+  <i>(default)</i> 
+  <LI>   FULL:     Weight each point according to the actual UV point 
+                        density. In this case care is taken of all local UV 
+                        plane density enhancements, 
+                        but it necessitates an extra pass through the data. 
+  </UL>
+<P>
+<LI> <b>Data tapering:</b> 
+  <UL><LI>   GAUSS:      <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap340.png"> 
+  <i>(default)</i> 
+  <LI>   LINEAR:     max(0,1-baseline/taper_value) 
+  <LI>   NATURAL:    no taper 
+  <LI>   OVERR:      <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap342.png"> 
+  <LI>   RGAUSS:     <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap344.png"> 
+  </UL>
+<P>
+<LI> <b>Data convolution:</b> (onto a rectangular grid in the uv-plane) 
+  <UL><LI>   GAUSS:      Gaussian type with <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap346.png"> grid points 
+  <LI>   P4ROL:      Prolate spheroidal function with <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap346.png"> grid points 
+  <LI>   P6ROL:      Prolate spheroidal function with <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap350.png"> grid points 
+  <LI>   EXPSINC:    <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap352.png"> on <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap350.png"> grid points 
+  <i>(default)</i> 
+  <LI>   BOX:        A square box 
+  </UL> 
+</UL>
+<P>
+At this point, the data are either stored in the WMP file as gridded uv-data (usually for display purposes), or Fouries transformed into an image.
+<P>
+<A NAME=.make.example><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0005000000000000000> <b>Option MAKE: example</b></A></H1>
+<P>
+The following is an example of making a `normal' map (and its antenna pattern), using the program defaults. This is usually sufficient to get a satisfactory result. Experienced users may experiment with some of the more advanced options.
+<P>
+**** Put new script here ****
+<P>
+<A NAME=.make.qmaps><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005100000000000000> <b>QMAPS: Hidden map options</b></A></H2>
+<P>
+The more advanced map-making options are hidden behind the NMAP keyword <b>QMAPS</b>. If skipped, the (context-sensitive) default values will give a satisfactory result in most cases. Their values will be printed in the NMAP log-file. For more information on each of these keywords, see the on-line Help text (type `?'), which is also printed in the `Summary of NMAP keywords' in this Cookbook.
+<P>
+**** Put new script here ****
+<P>
+<A NAME=.make.qdatas><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0005200000000000000> <b>QDATAS: Hidden map options</b></A></H2>
+<P>
+The more advanced data-selection options are hidden behind the NMAP keyword <b>QDATA</b>. If skipped, the (context-sensitive) default values will give a satisfactory result in most cases. Their values will be printed in the NMAP log-file. For more information on each of these keywords, see the on-line Help text (type `?'), which is also printed in the `Summary of NMAP keywords' in this Cookbook.
+<P>
+ QDATAS 
+ (More data handling details?) 
+ = NO: 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap356.png">
+<P>
+(To be added later).
+<P>
+<A NAME=.fiddle><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0006000000000000000> <b>Option FIDDLE: Operations on maps</b></A></H1>
+<P>
+<A NAME=.nmap.handle><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> Overview of NMAP's map-handling interface. } 
+<A HREF="../fig/nmap_handle.ps"><STRONG>FIGURE</STRONG></A> 
+ .]{<i>The NMAP keyword <b>FIDDLE_OPTION</b> offers the user a wide range of possibilities to perform oparations on maps in WMP files:
+<P>
+All relevant data are copied from the first (or only) input map. If 2 maps are required (ADD,AVER,POL,ANGLE) all pairs of SETS_1and SETS_2will produce an output map. SUM will average all SETS_1maps. MOSCOM will produce a single output map from all specified input maps. The others will produce an output for each SETS_1. BEAM, DEBEAM and FACTOR will overwrite the input maps. F is a specified multiplication factor.
+<P>
+<UL><LI> <b>ADD:</b>  <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap358.png"> 
+<LI> <b>AVER:</b>  <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap360.png"> 
+<LI> <b>SUM:</b>  Various averages of maps. In all cases the summation produces a weighted average map over all SETS_1, the weight depending on the type: 
+  <UL><LI> <b>SUM:</b>  weight(i)= 1 
+  <LI> <b>NSUM:</b>  weight(i)= normalisation factor of map 
+  <LI> <b>BSUM:</b>  weight(i)= bandwidth 
+  <LI> <b>BNSUM:</b>  weight(i)= bandwidth <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap362.png"> normalisation factor 
+  <LI> <b>FSUM:</b>  weight(i)= factor given by the user. 
+                Up to 8 factors can be given, 
+                which will be used in a cyclic fashion if more needed 
+  <LI> <b>NSSUM:</b>  weight(i)= <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap364.png"> 
+  <LI> <b>QUIT:</b>  finished 
+  </UL> 
+<LI> <b>POL:</b>  <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap366.png">, 
+                unless <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap368.png">, then 0 
+<LI> <b>ANGLE:</b>  <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap370.png"> (radians), 
+                unless <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap372.png">, then 0 
+<LI> <b>EXTRACT:</b>  extract an area of maps 
+<A NAME=.copy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<LI> <b>COPY:</b>  copy maps 
+<LI> <b>BEAM:</b>  correct maps for primary beam 
+<LI> <b>DEBEAM:</b>  de-correct maps for primary beam 
+<LI> <b>FACTOR:</b>  <IMG ALIGN=BOTTOM ALT="" SRC="_10703_tex2html_wrap374.png"> 
+<LI> <b>MOSCOM:</b>  combine all specified maps 
+                (referenced to same mosaic position) into one output map. 
+                The noise of the individual maps may be used as weight. 
+<LI> <b>QUIT:</b>  quit the fiddle option. 
+</UL>
+<P>
+<A NAME=.fits><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+</i><H1><A NAME=SECTION0007000000000000000> <b>Option FITS: Conversion to FITS format</b></A></H1>
+<P>
+There are two separate NMAP options (<b>W16FITS</b> and <b>W32FITS</b>.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

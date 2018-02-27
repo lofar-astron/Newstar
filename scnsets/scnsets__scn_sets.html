@@ -1,0 +1,70 @@
+<TITLE>Description of SCN_SETS (SCNSETS)</TITLE>
+<H1>Description of general keyword SCN_SETS</H1>
+
+<DT><EM>Prompt:</EM> Sectors to process:  grp.obs.fld.chn.seq 
+<DT><EM>Expected input:</EM> Character(32), 64 values.<P>
+ Quick reminders: =============== 
+
+<DT>   - L gives you a quick summary of the groups in your .SCN file 
+
+<DT>   - O gives you access to more detailed overviews in various levels of detail 
+
+<DT>   - #&lt;n&gt; is a synonym for the grp.obs.fld.chn.seq index that is sometimes 
+	convenient to use. # ('absolute') sector numbers are shown in most 
+	displays that show sector indices. 
+
+<DT>   - @ or &gt; will prompt you for each of the 5 indices separately. Use this 
+	option if you are not yet comfortable with the sector-indexing system. 
+
+<DT>   - If you have requested looping (SCN_LOOPS parameter), the sectors you 
+	specify will be processed in the first loop cycle, and the indices 
+	incremented for each following cycle. 
+
+<DT>   - If you have second thoughts about looping, reply # or ctrl-D to backtrack. <P>
+Sector selection: ================ 
+	You may select SETS of sectors for processing by [ranges of] values for 
+the five indices. A range has the form &lt;start&gt;-[&lt;end&gt;][:&lt;step&gt;]. A wildcard '*' 
+means 'all'; *s and trailing dots may be omitted. 
+   Example 
+		. 3-7:2 . 4-:2 . 1-7 (blanks inserted for clarity only) 
+   meaning 
+	all grp (missing grp index is replaced by a '*') 
+	for each grp: obs=3 to 7 in steps of 2 (i.e. 3, 5 and 7) 
+	for each obs: all even fld starting at 4 
+	for each fld: chn=1 to 7; 
+	for each chn: all seq (omitted trailing seq index replaced by a '*') <P>
+ 
+Multiple SETS may be specified, separated by comma's: &lt;Set1&gt;, &lt;Set2&gt;, ... The 
+associated SCN_LOOPS keyword allows even more looping over index values. <P>
+Other keywords allow the user to select hour-angle range, polarisation and 
+interferometers within each SECTOR. <P>
+Explanation of sector indices: ============================= 
+	A .SCN file contains visibilities and associated data for one or more 
+objects. The basic unit of data is the SECTOR, which is a collection of SCANS 
+contiguous in hour angle for one sky position and one frequency. Sectors are 
+addressed through a SECTOR INDEX which is a string of five integers separated 
+by dots: 
+			grp.obs.fld.chn.seq <P>
+   The GROUP (grp) and OBSERVATION (obs) are basically administrative units for 
+    organising the data, e.g. per object. grp and obs number alocations have 
+    been determined by NSCAN when you read the data in. <P>
+   Mosaic observations contain multiple FIELDs (fld), numbered from 0 to n-1 in 
+    the sequence in which they were observed at the WSRT. A non-mosaic 
+    observation contains only field 0. <P>
+   Line and broadband continuum observations generally have several frequency 
+    CHANNELS (chn), also known as 'bands'. The channles are numbered from 1 to 
+    N. Channel 0 is by definition the 'continuum' channel, i.e. the sum of all 
+    'line' channels. <P>
+   In mosaic observations, the sector SEQUENCE (seq) number distinguishes the 
+    successive hour-angle 'sectors'. Other situations are conceivable where 
+    multiple sectors with the same grp.obs.fld.chn exist; it is then your 
+    responsibility to know what they represent. <P>
+Index values start at zero. (Remember that for the CHN index this is the 
+continuum channel.) <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../scnsets/scnsets_comm.html">List of general keywords</A> for SCNSETS
+<LI>Description of the <A HREF="../scn_descr/scn_descr.html">SCN file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

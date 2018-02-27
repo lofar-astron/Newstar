@@ -1,0 +1,33 @@
+<TITLE>Description of SORT_FIELD (NMODEL)</TITLE>
+<H1>Description of general keyword SORT_FIELD</H1>
+
+<DT><EM>Prompt:</EM> Sort criterion L, M, LM, ML, DIST; I, SI, POL, RM, Q, U, V; LA, SA, PA;| -ID, BITS, TYP, CCBM, TP2
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify sourfce attribute on which to sort: <P>
+   Source coordinates: <P>
+        L, M          l or m, arbitrary order for the other 
+        LM, ML        l and then m, or m and then l 
+        DIST          distance to a specified reference point <P>
+   Properties of the source: <P>
+        I             ampitude 
+        SI            spectral index 
+        POL           polarised intensity 
+        RM            intrinsic rotation measure 
+        Q, U, V       Stokes parameters in % of I 
+        LA, SA, PA    long axis short axis, position angle of elliptic-Gaussian 
+                       extended-source model <P>
+   Administrative attributes in the model list: <P>
+        ID            identification 
+        BITS          bits mask (if source is extended, has polarisation) 
+!                       \whichref{}{} 
+        TYP           source type (0 is the standard) 
+!                       \whichref{}{} 
+        CCBM          clean component (1) and beam-corrected (8) 
+!                       \whichref{}{} 
+        TP2           reserved  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nmodel/nmodel_comm.html">List of general keywords</A> for NMODEL
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

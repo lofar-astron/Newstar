@@ -1,0 +1,223 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Public parameter group SELECT</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=select_public_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=select_public_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=select_public_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=select_public_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=select_public_intfc.html#SECTION0003200000000000000>  <b>Parameter HA_RANGE</b></A>
+<LI> <A NAME=tex2html6 HREF=select_public_intfc.html#SECTION0003300000000000000>  <b>Parameter SELECT_IFRS</b></A>
+<LI> <A NAME=tex2html7 HREF=select_public_intfc.html#SECTION0003400000000000000>  <b>Parameter SELECT_TELS</b></A>
+<LI> <A NAME=tex2html8 HREF=select_public_intfc.html#SECTION0003500000000000000>  <b>Parameter SELECT_XYX</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the public parameter group SELECT, (part of) which is included in several <i>NEWSTAR </i> programs.
+<P>
+        The 
+document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+        Please note that the generic prompt and help texts defined for these parameters are frequently superseded in the actual applications by alternative texts that are more appropriate to the situation at hand. Unfortunately, the present architecture of <i>NEWSTAR </i> precludes the inclusion of such texts in the documentation system, so the only opportunity to read that information is during program execution (in your terminal window!).
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<A NAME=.ha.range><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter HA_RANGE</b></A></H2>
+<P>
+  <em>Prompt:</em> HA range (<em>may vary per application</em>)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+    <PRE>
+        Specify the hour-angle range to be selected
+</PRE>
+<P>
+<A NAME=.select.ifrs><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter SELECT_IFRS</b></A></H2>
+<P>
+<em>Prompt:</em> Changes to the interferometer selection| (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *4:  1 to 40 values
+<P>
+  <PRE>
+        Specify how you want to change the interferometer selection.
+</PRE>
+<P>
+  <PRE>
+Interferometers are defined as combinations of two telescopes; an
+interferometer may thus contain 1, 2 or 4 polarisations.
+</PRE>
+<P>
+  <PRE>
+A combination of two different telescopes is called a CROSS[-correlating]
+interferometer, a telescope combined with itself an AUTO[-correlating]
+interferometer. At present, WSRT data contain only cross-interferometer data,
+so selection/elimination of auto-interferometers is irrelevant.
+</PRE>
+<P>
+  <PRE>
+The following codes are used to identify (groups of) telescopes:
+</PRE>
+<P>
+  <PRE>
+        P       show the present selection table
+</PRE>
+<P>
+  <PRE>
+   For the WSRT:
+        0,1,2,3,4,5,6,7,8,9,A,B,C,D:
+                 individual WSRT telescopes (case-insensitive)
+        *       all telescopes or all cross interferometers
+        F       all fixed telescopes = 0 through 9
+        M       all movable telescopes = A through D
+        Y       telescopes A and B
+        Z       telescopes C and D
+        #       autocorrelation
+</PRE>
+<P>
+  <PRE>
+   Additional codes for the Australian Telecope Compact Array (ATCA):
+        T       ATCA telescopes (8-D)
+        U       the ATCA complement (0-7).
+</PRE>
+<P>
+  <PRE>
+An interferometer specification without a prefix or prefixed with a + sign is
+SELECTED, a specification with a minus sign prefixed is ELIMINATED. Selection
+and elimination are incremental. Up to 40 select/eliminate specifications may
+be given, separated by comma's; they will be honored in the order in which you
+give them. Prompting will continue until you stop replying.
+</PRE>
+<P>
+  <PRE>
+The standard operation is on the cross-correlations. A telescope name followed
+with a # indicates the auto-correlations.
+</PRE>
+<P>
+  <PRE>
+Examples:
+        -3F     eliminate combinations of 3 with other fixed telescopes
+        FM,-9A  select all fixed-movable combinations (the WSRT's 40 'standard'
+                 interferometers) except 9A
+        -#,33   eliminate all auto-interferometers, then re-select 33
+</PRE>
+<P>
+<A NAME=.select.tels><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter SELECT_TELS</b></A></H2>
+<P>
+<em>Prompt:</em> Changes to the telescope selection| (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *4:  1 to 20 values
+<P>
+  <PRE>
+        Specify how you want to change the telescope selection.
+</PRE>
+<P>
+  <PRE>
+The following codes are used to identify (groups of) telescopes:
+</PRE>
+<P>
+  <PRE>
+        P       show the present selection table
+</PRE>
+<P>
+  <PRE>
+   For the WSRT:
+        0,1,2,3,4,5,6,7,8,9,A,B,C,D:
+                individual WSRT telescopes (case-insensitive)
+        *       all telesopes
+        F       all fixed telescopes = 0 through 9
+        M       all movable telescopes = A through D
+        Y       telescopes A and B
+        Z       telescopes C and D
+</PRE>
+<P>
+  <PRE>
+   Additional codes for the Australian Telecope Compact Array (ATCA):
+        T       ATCA telescopes (8-D)
+        U       the ATCA complement (0-7).
+</PRE>
+<P>
+  <PRE>
+A telesope specification without a prefix or prefixed with a + sign is
+SELECTED, a specification with a minus sign prefixed is ELIMINATED. Selection
+and elimination are incremental. Up to 20 select/eliminate specifications may
+be given, separated by comma's; they will be honored in the order in which you
+give them. Prompting will continue until you stop replying.
+</PRE>
+<P>
+  <PRE>
+Examples: -*,3,+3,-8,*,-F,-U,T
+</PRE>
+<P>
+<A NAME=.select.xyx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter SELECT_XYX</b></A></H2>
+<P>
+<em>Prompt:</em> polarisations (<em>may vary per application</em>)<BR><em>Expected input:</em> Character *4:  1 value
+<P>
+  <PRE>
+        Select the polarisation(s) to be used:
+</PRE>
+<P>
+  <PRE>
+        XYX     all four combinations (XX,YX,YX,YY)
+        XY      XX and YY
+        X       XX only
+        Y       YY only
+        YX      XY and YX
+        YYX     YX
+        XXY     XY
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

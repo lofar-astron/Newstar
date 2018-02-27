@@ -1,0 +1,37 @@
+<TITLE>Description of INTEGRATION_TIME (NSCAN)</TITLE>
+<H1>Program NSCAN: private keyword INTEGRATION_TIME</H1> 
+
+<DT><EM>Prompt:</EM> integration time (sec)
+<DT><EM>Default:</EM> 120.
+<DT><EM>Expected input:</EM> Integer number; min.value: 10.000000; max.value: 3600.000000.<P>
+Specify the desired integration time per output scan in seconds. <P>
+120 sec is a good default; a lower value should be selected if visibilities 
+vary rapidly as a consequence of the source distribution in the observed field,  
+atmospheric conditions or interference. <P>
+For standard observations, the number must be a multiple of the basic 
+integration time used for the observation (which is some multiple of 10 sec). <P>
+In WSRT mosaic observations, slewing occurs in the last 10 sec of the dwell 
+time on each subfield. The integration time you specify must therefore at most 
+be &lt;dwell time&gt; minus 10 sec. You may also use a submultiple of this value 
+without losing data. <P>
+    Example: 
+        If the dwell time is 90 sec, there is 80 sec of valid data. HA_INT = 80,  
+    40, 20 or 10 will use it all. However, HA_INT = 30 or 60 will result in the 
+    loss of the last 20 sec. <P>
+        The volume of your data in the .SCN depends primarily on the 
+integration time. For each integration interval a 'scan' is created which 
+consists of <P>
+        &lt;nr of polarisations&gt; * &lt;nr of interferometers&gt; * 12 + 1024 bytes <P>
+Model visibilities which may be added later will occupy another <P>
+        4 * &lt;nr of interferometers&gt; * 12 bytes .                 NOTE: 
+        The WSRT runs on Universal Time; the quantum of integration time is 
+therefore 10 UT seconds, and a full 12-sidereal-hour observation contains 
+somewhat less than 12*360 of these quanta. You can mostly ignore this subtlety,  
+but the difference may be of practical importance in some situations.   <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nscan/nscan_keys.html">List of keywords</A> for NSCAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nscan_descr/nscan_descr.html">program NSCAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

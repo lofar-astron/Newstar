@@ -1,0 +1,24 @@
+<TITLE>Description of DISPLAY (NGEN)</TITLE>
+<H1>Description of general keyword DISPLAY</H1>
+
+<DT><EM>Prompt:</EM> Output Display
+<DT><EM>Default:</EM> * /NOASK.
+<DT><EM>Expected input:</EM> Character(24).<P>
+Specify the X-Display on which to produce output. E.g. if you are working from 
+a workstation or Xterminal called e.g. rzmwx5 on another machine (maybe a fast 
+processor, say rzmvfp); you can get the NGIDS display on your local machine by 
+giving as answer: rzmwx5:0.0 <P>
+If you specify a wildcard (*) or an empty answer, the display will be taken 
+from the environment variable DISPLAY; if this environment variable does not 
+exist, the default :0.0 will be assumed. <P>
+If your display machine is your working machine, give :0.0 (the default). <P>
+Note: Before being able to use your local display you should enable it by 
+typing while logged in on your local machine (rzmwx5) either: 
+        xhost + or: 
+        xhost +rzmfvp <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngen/ngen_comm.html">List of general keywords</A> for NGEN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

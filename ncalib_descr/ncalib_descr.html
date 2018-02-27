@@ -1,0 +1,218 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>The Program NCALIB</b>
+<P>
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=ncalib_descr.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=ncalib_descr.html#SECTION0002000000000000000> <b>Overview of NCALIB options</b></A>
+<LI> <A NAME=tex2html3 HREF=ncalib_descr.html#SECTION0003000000000000000> <b>Option SET: Set various corrections in the SCN-file</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=ncalib_descr.html#SECTION0003100000000000000> <b>SET ZERO: Set selected corrections to zero</b></A>
+<LI> <A NAME=tex2html5 HREF=ncalib_descr.html#SECTION0003200000000000000> <b>SET MANUAL: Manual input of telescope corrections</b></A>
+<LI> <A NAME=tex2html6 HREF=ncalib_descr.html#SECTION0003300000000000000> <b>SET RENORM: Renormalise telescope corrections</b></A>
+<LI> <A NAME=tex2html7 HREF=ncalib_descr.html#SECTION0003400000000000000> <b>SET LINE: Copy telescope corrections from continuum channel</b></A>
+<LI> <A NAME=tex2html8 HREF=ncalib_descr.html#SECTION0003500000000000000> <b>SET COPY: Copy telescope corrections from somewhere else</b></A>
+<LI> <A NAME=tex2html9 HREF=ncalib_descr.html#SECTION0003600000000000000> <b>SET CCOPY: Like COPY, but more intelligent</b></A>
+<LI> <A NAME=tex2html10 HREF=ncalib_descr.html#SECTION0003700000000000000> <b>SET EXTINCT: Set extinction correction</b></A>
+<LI> <A NAME=tex2html11 HREF=ncalib_descr.html#SECTION0003800000000000000> <b>SET REFRACT: Set refraction correction</b></A>
+<LI> <A NAME=tex2html12 HREF=ncalib_descr.html#SECTION0003900000000000000> <b>SET FARADAY: Set Faraday rotation</b></A>
+</UL> 
+<LI> <A NAME=tex2html13 HREF=ncalib_descr.html#SECTION0004000000000000000> <b>Option SHOW: Print average corrections (on line printer)</b></A>
+</UL>
+<b>Related chapters:</b> 
+<UL><LI> <A HREF="../ncalib_redun/ncalib_redun.html">NCALIB REDUN: Redundancy, Align and Selfcal</A> 
+<LI> <A HREF="../ncalib_polar/ncalib_polar.html">NCALIB POLAR: Polarisation corrections</A> 
+</UL>
+<P>
+<A NAME=.overview><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0002000000000000000> <b>Overview of NCALIB options</b></A></H1>
+<P>
+        The program NCALIB is the heart of the NEWSTAR package.  It offers a wide range of options for the determination of all kinds of instrumental corrections (calibration) and their application to the data (correction). Corrections are stored in the Set headers and Scan headers of the <A HREF="../scn_descr/scn_descr.html">SCN file</A>.  They may be applied to the uv-data whenever they are read into memory, subject to the specifications given by means the 
+<A HREF="../common_descr/common_descr.html">APPLY</A> keyword. Corrections in the SCN-file may also be manipulated, or `imported' from other sources.
+<P>
+<UL><LI> <A HREF="../ncalib_redun/ncalib_redun.html"><b>REDUNDANCY</b></A>: Calculate Redundancy, Align or 
+Selfcal corrections. <LI> 
+<A HREF="../ncalib_polar/ncalib_polar.html"><b>POLAR</b></A>: 
+  Determine/manipulate polarisation corrections:   <UL><LI> <A HREF="../ncalib_polar/ncalib_polar.html#.calc"><b>CALC</b></A>:  Calculate polarisation corrections 
+  <LI> <A HREF="../ncalib_polar/ncalib_polar.html#.show"><b>SHOW</b></A>:  Show polarisation corrections 
+  <LI> <A HREF="../ncalib_polar/ncalib_polar.html#.set"><b>SET</b></A>:    Set corrections manually 
+  <LI> <A HREF="../ncalib_polar/ncalib_polar.html#.copy"><b>COPY</b></A>:  copy polarisation corrections from one set to others 
+  <LI> <A HREF="../ncalib_polar/ncalib_polar.html#.ccopy"><b>EDIT</b></A>: Edit polarisation corrections 
+  <LI> <A HREF="../ncalib_polar/ncalib_polar.html#.zero"><b>ZERO</b></A>:  Zero polarisation corrections 
+  <LI> <A HREF="../ncalib_polar/ncalib_polar.html#.vzero"><b>VZERO</b></A>:        Calculate X-Y phase zero difference, assuming V=0 
+  </UL> <LI>   <A HREF="#.option.set"><b>SET</b></A>: Set some correction data   <UL><LI> <A HREF="#.set.zero"><b>ZERO</b></A>:          Zero selected corrections 
+  <LI> <A HREF="#.set.manual"><b>MANUAL</b></A>:      Copy corrections from manual input 
+  <LI> <A HREF="#.set.copy"><b>COPY</b></A>:          Copy corrections from somewhere else 
+  <LI> <A HREF="#.set.line"><b>LINE</b></A>:          Copy all corrections from corresponding continuum channel 
+  <LI> <A HREF="#.set.extinct"><b>EXTINCT</b></A>:    Set extinction 
+  <LI> <A HREF="#.set.refract"><b>REFRACT</b></A>:    Set refraction 
+  <LI> <A HREF="#.set.faraday"><b>FARADAY</b></A>:    Set Faraday rotation 
+  <LI> <A HREF="#.set.renorm"><b>RENORM</b></A>:      Renormalise telescope corrections 
+  </UL> <LI>   <A HREF="#.option.show"><b>SHOW</b></A>:       Show (on printer) the average 
+telescope corrections (over all HA-Scans) in specified set(s). <LI>   <b>QUIT</b>:     Quit program NCALIB 
+</UL>
+<P>
+<A NAME=.option.set><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000> <b>Option SET: Set various corrections in the SCN-file</b></A></H1>
+<P>
+        The NCALIB option SET is accessed in the following manner:
+<P>
+ <BR> > <i>dwe ncalib</i>
+<P>
+		<BR><tt>     NCALIB$1is started at 17-DEC-92 15:58:01</tt>
+<P>
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap383.png"> <b>OPTION</b> 
+ (REDUNDANCY,POLAR,SET,SHOW,QUIT) 
+ = QUIT: 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap387.png">
+<P>
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap383.png"> <b>SET_OPTION</b> 
+ (ZERO,MANUAL,COPY,LINE,EXTINCT,...) 
+ = QUIT: 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap389.png">
+<P>
+In the following, the various sub-options of the NCALIB option SET will be treated in some detail.
+<P>
+<A NAME=.set.zero><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000> <b>SET ZERO: Set selected corrections to zero</b></A></H2>
+<P>
+The uv-data stored in a SCN file are never physically modified. Corrections are stored separately in the Scan and Set header(s), and applied to the data whenever they are read into memory for processing. Thus, by setting some (or all) corrections to zero, a reduction process that has gone wrong can always be returned to a known initial state. The keyword ZERO allows the user to specify which of the various kinds of corrections are to be set to zero.
+<P>
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap383.png"> <b>SET_OPTION</b> 
+ (ZERO,MANUAL,COPY,LINE,EXTINCT,...) 
+ = QUIT: 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap395.png">
+<P>
+<BR><IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap383.png"> <b>ZERO</b> 
+ (ALL,NONE,RED,ALG,OTH,...) 
+ = NONE: 
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap397.png">
+<P>
+***** Insert new script here *****
+<P>
+NB: Going trough a large SCN file (e.g. one with many line channels) will take some time.
+<P>
+<A NAME=.set.manual><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000> <b>SET MANUAL: Manual input of telescope corrections</b></A></H2>
+<P>
+The telescope gain and phase corrections may be specified manually by the user. The given values will be stored as `other corrections' (OTHC) in the Scan headers of the specified range (Sets and HA-range).
+<P>
+<i>Note of the editor: It is not yet clear to me what happens to the other telescope corrections (REDC and ALGC) in the Scan header. It seems reasonable that they are set to zero.</i>
+<P>
+***** Insert new script here *****
+<P>
+<A NAME=.set.renorm><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003300000000000000> <b>SET RENORM: Renormalise telescope corrections</b></A></H2>
+<P>
+In the Redundancy calibration process, the <em>average</em> telescope gain and phase corrections over all telescopes are arbitrarily set to zero. This is a `reasonable' assumption, unless the correction for one or more telescopes happens to be  anomalously large. In that case, the gain and/or phase corrections of all the other telescopes will be shifted by an `unreasonable' amount (since the average must be zero). Therefore, it is sometimes desirable to RENORMalise by shifting the telescope corrections by a common amount, until the average is zero for a selection of `good' telescopes.
+<P>
+***** Insert new script here *****
+<P>
+Note that the program terminates upon completion, i.e. it does not return to the level of the SET option.
+<P>
+<A NAME=.set.line><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003400000000000000> <b>SET LINE: Copy telescope corrections from continuum channel</b></A></H2>
+<P>
+Since Selfcal/Redundancy calibration requires a S/N of more than 2-5, it is often possible for the continuum channel (0), but not for the individual line channels. In those cases, the telescope gain and phase corrections that have been found for channel 0 may be transferred to the line channels. This is a `reasonable' thing to do, since the total telescope errors will vary much more than the reletive errors between channels (i.e. the bandpass shape).
+<P>
+***** Insert new script here *****
+<P>
+<A NAME=.set.copy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003500000000000000> <b>SET COPY: Copy telescope corrections from somewhere else</b></A></H2>
+<P>
+In the Standard Calibration process, the telescope gain and phase errors <IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap399.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8208_tex2html_wrap401.png"> are calculated with the help of a strong calibrator source, which has been observed directly before (or after) the actual observation. In order to use these calibrator corrections to correct the latter, they must be transferred (copied) from the Scan header(s) of the calibrator to the Scan header(s) of the observed object.
+<P>
+There are two possibilities: The calibrator observation (and thus the desired corrections) may be stored in a separate SCN-file (node), or they may be stored as another `job' of the same SCN-file as the observed object. In the following example, the observed object is stored as job nr 0, while the calibrator observation is stored in the same SCN-file, as job nr 1:
+<P>
+***** Insert new script here *****
+<P>
+NB: Note that the program exits upon completion, and does not return to SET_OPTION.
+<P>
+<A NAME=.set.ccopy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003600000000000000> <b>SET CCOPY: Like COPY, but more intelligent</b></A></H2>
+<P>
+<A NAME=.set.extinct><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003700000000000000> <b>SET EXTINCT: Set extinction correction</b></A></H2>
+<P>
+The actual atmospheric extinction factor (as a function of telescope elevetion) may differ from the default value, which is based on a standard model of the atmosphere.
+<P>
+***** Insert new script here *****
+<P>
+<A NAME=.set.refract><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003800000000000000> <b>SET REFRACT: Set refraction correction</b></A></H2>
+<P>
+***** Insert new script here *****
+<P>
+<A NAME=.set.faraday><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003900000000000000> <b>SET FARADAY: Set Faraday rotation</b></A></H2>
+<P>
+Information about the ionospheric Faraday rotation during the observation may be obtained externally, e.g. from ionosonde measurements. NFRA receives these values routinely from meteorological stations not too far from the WSRT. The information may be entered into the SCN-file as a function of HA. They are stored as corrections (FARAD) in the Scan header, and will be applied routinely to the data if specified by the keyword APPLY.
+<P>
+***** Insert new script here *****
+<P>
+<A NAME=.option.show><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0004000000000000000> <b>Option SHOW: Print average corrections (on line printer)</b></A></H1>
+<P>
+The average telescope gain and phase corrections that are stored in the SCN file can be printed, for a specified range of sets. The numbers printed are a <em>combination</em> of the several kinds of telescope corrections stored in the SCN file (see the SCN-file description section). The desired combination may be specified with the keywords APPLY and D_APPLY.
+<P>
+The output takes the form of 14 columns of 8 numbers: 
+<BR>- X gain: as gain factor and as percentage (%) 
+<BR>- X phase: in radians and in degrees 
+<BR>- Y gain: as gain factor and as percentage (%) 
+<BR>- Y phase: in radians and in degrees
+<P>
+***** Insert new script here *****
+<P>
+The output will now be printed on the line printer. Note that the program terminates upon completion, i.e. it does not return to the level of the SHOW option.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

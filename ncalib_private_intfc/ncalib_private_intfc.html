@@ -1,0 +1,1362 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>Private parameters for program NCALIB</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=ncalib_private_intfc.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=ncalib_private_intfc.html#SECTION0002000000000000000>  <b>Overview</b></A>
+<LI> <A NAME=tex2html3 HREF=ncalib_private_intfc.html#SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A>
+<UL> 
+<LI> <A NAME=tex2html4 HREF=ncalib_private_intfc.html#SECTION0003100000000000000>  <b>References to public interfaces</b></A>
+<LI> <A NAME=tex2html5 HREF=ncalib_private_intfc.html#SECTION0003200000000000000>  <b>Parameter ALIGN_OPTION</b></A>
+<LI> <A NAME=tex2html6 HREF=ncalib_private_intfc.html#SECTION0003300000000000000>  <b>Parameter BASEL_CHECK</b></A>
+<LI> <A NAME=tex2html7 HREF=ncalib_private_intfc.html#SECTION0003400000000000000>  <b>Parameter BASEL_DX</b></A>
+<LI> <A NAME=tex2html8 HREF=ncalib_private_intfc.html#SECTION0003500000000000000>  <b>Parameter BASEL_DY</b></A>
+<LI> <A NAME=tex2html9 HREF=ncalib_private_intfc.html#SECTION0003600000000000000>  <b>Parameter BASEL_DZ</b></A>
+<LI> <A NAME=tex2html10 HREF=ncalib_private_intfc.html#SECTION0003700000000000000>  <b>Parameter BASEL_POLE</b></A>
+<LI> <A NAME=tex2html11 HREF=ncalib_private_intfc.html#SECTION0003800000000000000>  <b>Parameter CAL_EQUAL</b></A>
+<LI> <A NAME=tex2html12 HREF=ncalib_private_intfc.html#SECTION0003900000000000000>  <b>Parameter CHECKS</b></A>
+<LI> <A NAME=tex2html13 HREF=ncalib_private_intfc.html#SECTION00031000000000000000>  <b>Parameter CLOCK_CORR</b></A>
+<LI> <A NAME=tex2html14 HREF=ncalib_private_intfc.html#SECTION00031100000000000000>  <b>Parameter COMPLEX</b></A>
+<LI> <A NAME=tex2html15 HREF=ncalib_private_intfc.html#SECTION00031200000000000000>  <b>Parameter COMPLEX_ONLY</b></A>
+<LI> <A NAME=tex2html16 HREF=ncalib_private_intfc.html#SECTION00031300000000000000>  <b>Parameter CONTINUITY</b></A>
+<LI> <A NAME=tex2html17 HREF=ncalib_private_intfc.html#SECTION00031400000000000000>  <b>Parameter DSHIFT</b></A>
+<LI> <A NAME=tex2html18 HREF=ncalib_private_intfc.html#SECTION00031500000000000000>  <b>Parameter EXTINCTION</b></A>
+<LI> <A NAME=tex2html19 HREF=ncalib_private_intfc.html#SECTION00031600000000000000>  <b>Parameter FARADAY_FILE</b></A>
+<LI> <A NAME=tex2html20 HREF=ncalib_private_intfc.html#SECTION00031700000000000000>  <b>Parameter FLW_FACTOR</b></A>
+<LI> <A NAME=tex2html21 HREF=ncalib_private_intfc.html#SECTION00031800000000000000>  <b>Parameter FORCE_FREEDOM</b></A>
+<LI> <A NAME=tex2html22 HREF=ncalib_private_intfc.html#SECTION00031900000000000000>  <b>Parameter FORCE_PHASE</b></A>
+<LI> <A NAME=tex2html23 HREF=ncalib_private_intfc.html#SECTION00032000000000000000>  <b>Parameter FREQ_CORR</b></A>
+<LI> <A NAME=tex2html24 HREF=ncalib_private_intfc.html#SECTION00032100000000000000>  <b>Parameter GAIN_FREEDOM</b></A>
+<LI> <A NAME=tex2html25 HREF=ncalib_private_intfc.html#SECTION00032200000000000000>  <b>Parameter GAIN_NORM</b></A>
+<LI> <A NAME=tex2html26 HREF=ncalib_private_intfc.html#SECTION00032300000000000000>  <b>Parameter GAIN_X</b></A>
+<LI> <A NAME=tex2html27 HREF=ncalib_private_intfc.html#SECTION00032400000000000000>  <b>Parameter GAIN_XX</b></A>
+<LI> <A NAME=tex2html28 HREF=ncalib_private_intfc.html#SECTION00032500000000000000>  <b>Parameter GAIN_XY</b></A>
+<LI> <A NAME=tex2html29 HREF=ncalib_private_intfc.html#SECTION00032600000000000000>  <b>Parameter GAIN_Y</b></A>
+<LI> <A NAME=tex2html30 HREF=ncalib_private_intfc.html#SECTION00032700000000000000>  <b>Parameter GAIN_YX</b></A>
+<LI> <A NAME=tex2html31 HREF=ncalib_private_intfc.html#SECTION00032800000000000000>  <b>Parameter GAIN_YY</b></A>
+<LI> <A NAME=tex2html32 HREF=ncalib_private_intfc.html#SECTION00032900000000000000>  <b>Parameter HA_INTEGRATION</b></A>
+<LI> <A NAME=tex2html33 HREF=ncalib_private_intfc.html#SECTION00033000000000000000>  <b>Parameter IFR_XX</b></A>
+<LI> <A NAME=tex2html34 HREF=ncalib_private_intfc.html#SECTION00033100000000000000>  <b>Parameter IFR_XY</b></A>
+<LI> <A NAME=tex2html35 HREF=ncalib_private_intfc.html#SECTION00033200000000000000>  <b>Parameter IFR_YX</b></A>
+<LI> <A NAME=tex2html36 HREF=ncalib_private_intfc.html#SECTION00033300000000000000>  <b>Parameter IFR_YY</b></A>
+<LI> <A NAME=tex2html37 HREF=ncalib_private_intfc.html#SECTION00033400000000000000>  <b>Parameter IREFRACT_FILE</b></A>
+<LI> <A NAME=tex2html38 HREF=ncalib_private_intfc.html#SECTION00033500000000000000>  <b>Parameter MWEIGHT_DATA</b></A>
+<LI> <A NAME=tex2html39 HREF=ncalib_private_intfc.html#SECTION00033600000000000000>  <b>Parameter MWEIGHT_TYPE</b></A>
+<LI> <A NAME=tex2html40 HREF=ncalib_private_intfc.html#SECTION00033700000000000000>  <b>Parameter OPTION</b></A>
+<LI> <A NAME=tex2html41 HREF=ncalib_private_intfc.html#SECTION00033800000000000000>  <b>Parameter OTH_OPTION</b></A>
+<LI> <A NAME=tex2html42 HREF=ncalib_private_intfc.html#SECTION00033900000000000000>  <b>Parameter PHASE_FREEDOM</b></A>
+<LI> <A NAME=tex2html43 HREF=ncalib_private_intfc.html#SECTION00034000000000000000>  <b>Parameter PHASE_NORM</b></A>
+<LI> <A NAME=tex2html44 HREF=ncalib_private_intfc.html#SECTION00034100000000000000>  <b>Parameter PHASE_X</b></A>
+<LI> <A NAME=tex2html45 HREF=ncalib_private_intfc.html#SECTION00034200000000000000>  <b>Parameter PHASE_XX</b></A>
+<LI> <A NAME=tex2html46 HREF=ncalib_private_intfc.html#SECTION00034300000000000000>  <b>Parameter PHASE_XY</b></A>
+<LI> <A NAME=tex2html47 HREF=ncalib_private_intfc.html#SECTION00034400000000000000>  <b>Parameter PHASE_Y</b></A>
+<LI> <A NAME=tex2html48 HREF=ncalib_private_intfc.html#SECTION00034500000000000000>  <b>Parameter PHASE_YX</b></A>
+<LI> <A NAME=tex2html49 HREF=ncalib_private_intfc.html#SECTION00034600000000000000>  <b>Parameter PHASE_YY</b></A>
+<LI> <A NAME=tex2html50 HREF=ncalib_private_intfc.html#SECTION00034700000000000000>  <b>Parameter POLAR_OPTION</b></A>
+<LI> <A NAME=tex2html51 HREF=ncalib_private_intfc.html#SECTION00034800000000000000>  <b>Parameter POL_ORTHOG</b></A>
+<LI> <A NAME=tex2html52 HREF=ncalib_private_intfc.html#SECTION00034900000000000000>  <b>Parameter POL_ROTAN</b></A>
+<LI> <A NAME=tex2html53 HREF=ncalib_private_intfc.html#SECTION00035000000000000000>  <b>Parameter POL_X_ELLIPS</b></A>
+<LI> <A NAME=tex2html54 HREF=ncalib_private_intfc.html#SECTION00035100000000000000>  <b>Parameter POL_Y_ELLIPS</b></A>
+<LI> <A NAME=tex2html55 HREF=ncalib_private_intfc.html#SECTION00035200000000000000>  <b>Parameter QDETAILS</b></A>
+<LI> <A NAME=tex2html56 HREF=ncalib_private_intfc.html#SECTION00035300000000000000>  <b>Parameter REFRACTION</b></A>
+<LI> <A NAME=tex2html57 HREF=ncalib_private_intfc.html#SECTION00035400000000000000>  <b>Parameter SAVE_RESIDUALS</b></A>
+<LI> <A NAME=tex2html58 HREF=ncalib_private_intfc.html#SECTION00035500000000000000>  <b>Parameter SET_OPTION</b></A>
+<LI> <A NAME=tex2html59 HREF=ncalib_private_intfc.html#SECTION00035600000000000000>  <b>Parameter SHIFT</b></A>
+<LI> <A NAME=tex2html60 HREF=ncalib_private_intfc.html#SECTION00035700000000000000>  <b>Parameter SHOW_LEVEL</b></A>
+<LI> <A NAME=tex2html61 HREF=ncalib_private_intfc.html#SECTION00035800000000000000>  <b>Parameter SOLVE</b></A>
+<LI> <A NAME=tex2html62 HREF=ncalib_private_intfc.html#SECTION00035900000000000000>  <b>Parameter USE_SCN_NODE</b></A>
+<LI> <A NAME=tex2html63 HREF=ncalib_private_intfc.html#SECTION00036000000000000000>  <b>Parameter USE_SCN_SETS</b></A>
+<LI> <A NAME=tex2html64 HREF=ncalib_private_intfc.html#SECTION00036100000000000000>  <b>Parameter VZERO_OPTION</b></A>
+<LI> <A NAME=tex2html65 HREF=ncalib_private_intfc.html#SECTION00036200000000000000>  <b>Parameter VZERO_PHASE</b></A>
+<LI> <A NAME=tex2html66 HREF=ncalib_private_intfc.html#SECTION00036300000000000000>  <b>Parameter WEIGHT_MIN</b></A>
+<LI> <A NAME=tex2html67 HREF=ncalib_private_intfc.html#SECTION00036400000000000000>  <b>Parameter ZERO</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Overview</b></A></H1>
+<P>
+        This document contains an overview of the parameter interface of the program NCALIB. The program also uses a number of public interfaces; references to these are also <A HREF="#.public">listed</A>. 
+show parameters that 
+        The remainder of the document describes the individual parameters in alphabetical order. This description centers on the Help texts, which have been designed to guide the user to the proper choice at each junction, even if his knowledge of the overall workings of the program is only superficial.
+<P>
+<A NAME=.descriptions><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H1><A NAME=SECTION0003000000000000000>  <b>Descriptions of the individual parameters</b></A></H1>
+<P>
+<A NAME=.public><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003100000000000000>  <b>References to public interfaces</b></A></H2>
+<P>
+<em>See also:</em> 
+<UL><LI> <A HREF="../introduction/introduction.html#.user.interface">DWARF</A> user interface 
+<LI> <A HREF="../mdlnode_public_intfc/mdlnode_public_intfc.html">MDLNODE</A> public keywords 
+<LI> <A HREF="../ngen_public_intfc/ngen_public_intfc.html">NGEN</A> public keywords 
+<LI> <A HREF="../nmodel_public_intfc/nmodel_public_intfc.html">NMODEL</A> public keywords 
+<LI> <A HREF="../scnnode_public_intfc/scnnode_public_intfc.html">SCNNODE</A> public keywords 
+<LI> <A HREF="../scnsets_public_intfc/scnsets_public_intfc.html">SCNSETS</A> public keywords 
+<LI> <A HREF="../select_public_intfc/select_public_intfc.html">SELECT</A> public keywords 
+</UL>
+<P>
+<A NAME=.align.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A> 
+<H2><A NAME=SECTION0003200000000000000>  <b>Parameter ALIGN_OPTION</b></A></H2>
+<P>
+  <em>Prompt:</em> Type of Selfcal desired<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+    <PRE>
+Selfcal is the generic name for all methods that use a source model in
+combination with your visibilities to estimate the telecope gain/phase
+corrections. Since you have selected a model, NCALIB assumes that you want to
+use it, by doing a Selfcal. (If you had not, it would propose a REDUNdancy-only
+solution.)
+</PRE>
+<P>
+  <PRE>
+The alternative you have here is to use the source model to recover the unknown
+position shift that scans suffer when they are processed with the  redundancy
+constraints only (REDUN solution). In this operation the source model is only
+used as a position reference. The telescope phases are shifted by an amount
+that is a linear function of position along the array; the telescope gains do
+not change at all.
+</PRE>
+<P>
+  <PRE>
+To summarise, the choices you have are:
+</PRE>
+<P>
+  <PRE>
+   SELFCAL       use the model to constrain in position a redundancy solution
+                  that will be made now
+   ALIGN         use the model to constrain a redundancy solution that was made
+                  earlier
+</PRE>
+<P>
+<A NAME=.basel.check><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003300000000000000>  <b>Parameter BASEL_CHECK</b></A></H2>
+<P>
+<em>Prompt:</em> Redundant-baseline difference allowed (metres)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the maximum difference between baselines for them still to be
+considered identical in Redundancy calculations.
+</PRE>
+<P>
+<A NAME=.basel.dx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003400000000000000>  <b>Parameter BASEL_DX</b></A></H2>
+<P>
+<em>Prompt:</em> Increments to telescope X positions (mm) |<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the X telescope corrections in mm, one value per telescope.
+</PRE>
+<P>
+  <PRE>
+The correction will be added as an HA-dependent phase to the OTH telescope
+corrections. It can only be undone by either zeroing the entire OTH corrections
+by means of the SET ZERO option (which will destroy whatever other corrections
+have been stored there), or by inserting the same BASEL_DX value with opposite
+sign.
+</PRE>
+<P>
+  <PRE>
+The default value 0,0,...0,0 leaves the corrections unchanged.
+</PRE>
+<P>
+<A NAME=.basel.dy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003500000000000000>  <b>Parameter BASEL_DY</b></A></H2>
+<P>
+<em>Prompt:</em> Increments to telescope Y positions (mm) |<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify 14 Y telescope corrections in mm, one value per telescope.
+</PRE>
+<P>
+  <PRE>
+The correction will be added as an HA-dependent phase to the OTH telescope
+corrections. It can only be undone by either zeroing the entire OTH corrections
+by means of the SET ZERO option (which will destroy whatever other corrections
+have been stored there), or by inserting the same BASEL_DY value with opposite
+sign.
+</PRE>
+<P>
+  <PRE>
+The default value 0,0,...0,0 leaves the corrections unchanged.
+</PRE>
+<P>
+<A NAME=.basel.dz><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003600000000000000>  <b>Parameter BASEL_DZ</b></A></H2>
+<P>
+<em>Prompt:</em> increments to telescope Z positions (mm) |<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the Z telescope corrections in mm, one value per telescope.
+</PRE>
+<P>
+  <PRE>
+The correction will be added as an HA-dependent phase to the OTH telescope
+corrections. It can only be undone by either zeroing the entire OTH corrections
+by means of the SET ZERO option (which will destroy whatever other corrections
+have been stored there), or by inserting the same BASEL_DZ value with opposite
+sign.
+</PRE>
+<P>
+  <PRE>
+The default value 0,0,...0,0 leaves the corrections unchanged.
+</PRE>
+<P>
+<A NAME=.basel.pole><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003700000000000000>  <b>Parameter BASEL_POLE</b></A></H2>
+<P>
+<em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the baseline-pole declination correction in degrees.
+</PRE>
+<P>
+  <PRE>
+The correction will be added as an HA-dependent phase to the OTH telescope
+corrections. It can only be undone by either zeroing the entire OTH corrections
+by means of the SET ZERO option (which will destroy whatever other corrections
+have been stored there), or by inserting the same BASEL_POLE value with
+opposite sign..
+</PRE>
+<P>
+  <PRE>
+The default value 0 leaves the corrections unchanged.
+</PRE>
+<P>
+<A NAME=.cal.equal><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003800000000000000>  <b>Parameter CAL_EQUAL</b></A></H2>
+<P>
+<em>Prompt:</em> Copy with equal length?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+If YES, all calibrators specified with USE_SCN_SETS will be made of equal
+length, that is: the number of HA scans used for each calibrator will be the
+same (and equal to the smallest number available).
+</PRE>
+<P>
+  <PRE>
+This is necessary when calibrators have frequencies that have been offset (plus
+and minus respectively) to the observing frequency of the target source.
+</PRE>
+<P>
+<A NAME=.checks><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0003900000000000000>  <b>Parameter CHECKS</b></A></H2>
+<P>
+<em>Prompt:</em> Iterations, gain deviation, relative mean error: 3 values|<BR><em>Expected input:</em> Real:  1 to 3 values
+<P>
+  <PRE>
+Specify:
+</PRE>
+<P>
+  <PRE>
+   - the maximum number of iterations in the complex solution;
+</PRE>
+<P>
+  <PRE>
+   - the relative allowable gain deviation for successive complex solutions;
+</PRE>
+<P>
+  <PRE>
+   - the mean error allowed per scan, relative to the average mean error
+        for all scans already solved.
+</PRE>
+<P>
+<A NAME=.clock.corr><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031000000000000000>  <b>Parameter CLOCK_CORR</b></A></H2>
+<P>
+<em>Prompt:</em> Clock correction (sec)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the clock correction in seconds to be applied to data. The new value
+will be ADDED to the existing one.
+</PRE>
+<P>
+<A NAME=.complex><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031100000000000000>  <b>Parameter COMPLEX</b></A></H2>
+<P>
+<em>Prompt:</em> Complex solution (YES/NO)?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Specify if you want a complex solution of gains-plus-phases.
+</PRE>
+<P>
+<A NAME=.complex.only><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031200000000000000>  <b>Parameter COMPLEX_ONLY</b></A></H2>
+<P>
+<em>Prompt:</em> Complex solution only (YES/NO)?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Specify if you want ONLY a complex solution.
+</PRE>
+<P>
+  <PRE>
+Note: will only work if an initial guess for the gains (e.g. from a calibrator)
+has been specified
+</PRE>
+<P>
+<A NAME=.continuity><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031300000000000000>  <b>Parameter CONTINUITY</b></A></H2>
+<P>
+<em>Prompt:</em> Continuity in solution (YES/NO)?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Specify if you want continuity in gain solution. If not, the initial guess for
+the solution will be 0 (gain) and the forced phases (phase), else the solution
+found in a previous scan.
+</PRE>
+<P>
+<A NAME=.dshift><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031400000000000000>  <b>Parameter DSHIFT</b></A></H2>
+<P>
+<em>Prompt:</em> Shift rate (dl/dt, dm/dt, arcsec/day)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the SHIFT rate in arcsec per sidereal day to be applied to the data
+whenever the DE_APPLY SHIFT correction is requested.
+</PRE>
+<P>
+  <PRE>
+This parameter is used for a first-order approximation to the proper motion of
+a solar-system object through the formula:
+</PRE>
+<P>
+  <PRE>
+        Total shift =  SHIFT + DSHIFT * (HA-HAB)
+</PRE>
+<P>
+  <PRE>
+where hour angles are measured as fractions of a full circle and HAB is the
+starting HA of the sector.
+</PRE> 
+               .
+<P>
+<A NAME=.extinction><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031500000000000000>  <b>Parameter EXTINCTION</b></A></H2>
+<P>
+<em>Prompt:</em> Extinction-1: quadratic's coefficients|<BR><em>Expected input:</em> Real:  1 to 3 values
+<P>
+  <PRE>
+Specify the coefficients A, B and C in the quadratic representation of the
+zenith extinction oefficient as a function of frequency F in GHz:
+</PRE>
+<P>
+  <PRE>
+        EXT= (1+A) + B*F +C*F*F
+</PRE>
+<P>
+<A NAME=.faraday.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031600000000000000>  <b>Parameter FARADAY_FILE</b></A></H2>
+<P>
+<em>Prompt:</em> Faraday-rotation data file<BR><em>Expected input:</em> Character:  1 value
+<P>
+  <PRE>
+Specify the name of a file with Faraday rotation data. The file must be an
+ASCII file with lines
+</PRE>
+<P>
+  <PRE>
+        <hour angle in degrees>, <faraday rotation in degrees at 1GHz>
+</PRE>
+<P>
+  <PRE>
+The file will be used to calculate Faraday rotation values for each scan by
+interpolation between the values in this file and scaling to the observing
+frequency. The calculated values will be stored in the scans as corrections.
+</PRE>
+<P>
+<A NAME=.flw.factor><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031700000000000000>  <b>Parameter FLW_FACTOR</b></A></H2>
+<P>
+<em>Prompt:</em> Weight for points flagged with WGT flag<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+The WGT flag directs NCALIB to multiply the data weight with an additional
+weighing factor.
+</PRE>
+<P>
+  <PRE>
+You may use this feature to reduce the weight of data affected by interference
+without rejecting it completely. The effect of this in a Selfcal solution is
+that it prevents the interference from bad interferometers to infect the
+healthy ones.
+</PRE>
+<P>
+  <PRE>
+A value of 1 will give all interferometers the weight they have in the .SCN
+file.
+</PRE>
+<P>
+<A NAME=.force.freedom><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031800000000000000>  <b>Parameter FORCE_FREEDOM</b></A></H2>
+<P>
+<em>Prompt:</em>   Manual constraints for gain (1st value)|-<BR><em>Expected input:</em> Yes/No:  1 to 2 values
+<P>
+  <PRE>
+Specify if you want to force the constraint equations for the align solution.
+If you reply NO, the program will determine them by itself from the
+interferometers selected.
+</PRE>
+<P>
+  <PRE>
+Your first reply refers to Gain, the second one to Phase.
+</PRE>
+<P>
+<A NAME=.force.phase><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00031900000000000000>  <b>Parameter FORCE_PHASE</b></A></H2>
+<P>
+<em>Prompt:</em> Define phase-zeroes<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Define initial phase zeros per telescope.
+</PRE>
+<P>
+  <PRE>
+This is useful for pathological cases where NCALIB on its own cannot correctly
+resolve the 360-deg phase ambiguities.
+</PRE>
+<P>
+<A NAME=.freq.corr><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032000000000000000>  <b>Parameter FREQ_CORR</b></A></H2>
+<P>
+<em>Prompt:</em> Increment to frequency correction (MHz)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the 'frequency correction' in MHz.
+</PRE>
+<P>
+  <PRE>
+This is an idiosyncratic way of representing a correction to the metric scale
+of the interferometer array: A scale correction with a factor (1+x) is
+represented by correcting the nominal observing frequency F with an additive
+term -x.F.
+</PRE>
+<P>
+  <PRE>
+Clearly this does not represent a real frequency shift since the observing
+frequency is precisely defined by the settings of local-oscillator frequencies
+and fringe-stopping parameters during the observation.
+</PRE>
+<P>
+  <PRE>
+The correction will be ADDED as an hour-angle-dependent phase to the OTH
+telescope corrections, and can only be undone by either zeroing these
+corrections, or inserting the same BASEL_POLE value with opposite sign.
+</PRE>
+<P>
+<A NAME=.gain.freedom><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032100000000000000>  <b>Parameter GAIN_FREEDOM</b></A></H2>
+<P>
+<em>Prompt:</em> Gain grouping<BR><em>Expected input:</em> Integer:  1 to 14 values
+<P>
+  <PRE>
+Define the telescope groups for which the gains will be solved independently.
+</PRE>
+<P>
+  <PRE>
+To solve e.g. separate gains for the 10 fixed telescopes (0 through 9) and the
+ 4 movable ones (A through D), specify:
+</PRE>
+<P>
+  <PRE>
+        1,1,1,1,1,1,1,1,1,1, 2,2,2,2
+</PRE>
+<P>
+  <PRE>
+* means one group containing all telescopes (i.e. 1,1,...,1,1).
+</PRE>
+<P>
+<A NAME=.gain.norm><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032200000000000000>  <b>Parameter GAIN_NORM</b></A></H2>
+<P>
+<em>Prompt:</em> Gain reference telescopes<BR><em>Expected input:</em> Integer:  1 to 14 values
+<P>
+  <PRE>
+Define the telescopes to be used as reference for renormalising the telescope
+gains.
+</PRE>
+<P>
+  <PRE>
+Your reply should be an array of values (separated by commas) for telescopes 0
+through D; 1 means that you select the telescope, 0 that you don't. Trailing 0s
+may be omitted.
+</PRE>
+<P>
+  <PRE>
+A wildcard ('*') means 'all', i.e. 1,1,1,1,1,1,1,1,1,1,1,1,1,1
+</PRE>
+<P>
+  <PRE>
+Example:
+        0,1,0,1,0 means 'use telescopes 1 and 3 as reference'
+</PRE>
+<P>
+  <PRE>
+NOTES:
+</PRE>
+<P>
+  <PRE>
+Renormalisation adjusts the gains so that the average for the fixed telescopes
+selected equals that for the moving telescopes. If either group is absent from
+yous selection, the average gain of the other group is made 0.
+</PRE>
+<P>
+  <PRE>
+Consequently, proper gain renormalisation is possible only for the 'standard'
+WSRT configuration: If there are any fixed-fixed or movable-movable
+interferometers, a message will be given and the operation aborted.
+</PRE>
+<P>
+  <PRE>
+You may, however, insist by putting a -1 instead of any of the 1s in your
+reply. The renormalisation will then be performed as if the fixed-movable
+interferometers were absent, and a warning given that the gain corrections for
+those interferometers are jeopardized.
+</PRE>
+<P>
+<A NAME=.gain.x><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032300000000000000>  <b>Parameter GAIN_X</b></A></H2>
+<P>
+<em>Prompt:</em> Gain corrections X (factors) |<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the X gain corrections per telescope as factors (1= no change).
+</PRE>
+<P>
+  <PRE>
+The values you give will be multiplied with the existing gain factors if you
+choose SET option MULT, they will replace the existing factors if you choose
+SET option MANUAL.
+</PRE>
+<P>
+<A NAME=.gain.xx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032400000000000000>  <b>Parameter GAIN_XX</b></A></H2>
+<P>
+<em>Prompt:</em> Interferometer gain corrections XX (factors) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the gain corrections for XX as factors (1= no change). You will be
+prompted for values, which will OVERWRITE the existing interferometer gain
+corrections.
+</PRE>
+<P>
+<A NAME=.gain.xy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032500000000000000>  <b>Parameter GAIN_XY</b></A></H2>
+<P>
+<em>Prompt:</em> interferometer gain corrections XY (factors) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the gain corrections for XY as factors (1= no change). You will be
+prompted for values, which will OVERWRITE the existing interferometer gain
+corrections.
+</PRE>
+<P>
+<A NAME=.gain.y><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032600000000000000>  <b>Parameter GAIN_Y</b></A></H2>
+<P>
+<em>Prompt:</em> Gain corrections Y (factors) |<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the Y gain corrections per telescope as factors (1= no change).
+</PRE>
+<P>
+  <PRE>
+The values you give will be multiplied with the existing gain factors if you
+choose SET option MULT, they will replace the existing factors if you choose
+SET option MANUAL.
+</PRE>
+<P>
+<A NAME=.gain.yx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032700000000000000>  <b>Parameter GAIN_YX</b></A></H2>
+<P>
+<em>Prompt:</em> interferometer gain corrections YX (factors) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the gain corrections for YX as factors (1= no change). You will be
+prompted for values, which will OVERWRITE the existing interferometer
+corrections.
+</PRE>
+<P>
+<A NAME=.gain.yy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032800000000000000>  <b>Parameter GAIN_YY</b></A></H2>
+<P>
+<em>Prompt:</em> interferometer gain corrections YY (factors) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the gain corrections for YY as factors (1= no change). You will be
+prompted for values, which will OVERWRITE the existing interferometer
+corrections.
+</PRE>
+<P>
+<A NAME=.ha.integration><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00032900000000000000>  <b>Parameter HA_INTEGRATION</b></A></H2>
+<P>
+<em>Prompt:</em> Integration time (sec)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the time interval over which you want to integrate (if possible) before
+calibrating. The value you specify will be rounded down to a multiple of the
+hour-angle interval between successive scans.
+</PRE>
+<P>
+  <PRE>
+'*' and '0' mean do not integrate, i.e. calibrate per scan.
+</PRE>
+<P>
+  <PRE>
+The largest value allowed is 3600 (= 1 hour).
+</PRE>
+<P>
+<A NAME=.ifr.xx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033000000000000000>  <b>Parameter IFR_XX</b></A></H2>
+<P>
+<em>Prompt:</em> additive interferometer corrections cos,sin XX (W.U.) |<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the additive interferometer corrections for XX in Westerbork Units
+(W.U.). The values you specify will OVERWRITE any existing values.
+</PRE>
+<P>
+<A NAME=.ifr.xy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033100000000000000>  <b>Parameter IFR_XY</b></A></H2>
+<P>
+<em>Prompt:</em> additive interferometer corrections cos,sin XY (W.U.) |<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the additive interferometer corrections for XY in Westerbork Units
+(W.U.). The values you specify will OVERWRITE any existing values.
+</PRE>
+<P>
+<A NAME=.ifr.yx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033200000000000000>  <b>Parameter IFR_YX</b></A></H2>
+<P>
+<em>Prompt:</em> additive interferometer corrections cos,sin YX (W.U.) |<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the additive interferometer corrections for YX in Westerbork Units
+(W.U.). The values you specify will OVERWRITE any existing values.
+</PRE>
+<P>
+<A NAME=.ifr.yy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033300000000000000>  <b>Parameter IFR_YY</b></A></H2>
+<P>
+<em>Prompt:</em> additive interferometer corrections cos,sin YY (W.U.) |<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the additive interferometer corrections for YY in  Westerbork Units
+(W.U.). The values you specify will OVERWRITE any existing values.
+</PRE>
+<P>
+<A NAME=.irefract.file><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033400000000000000>  <b>Parameter IREFRACT_FILE</b></A></H2>
+<P>
+<em>Prompt:</em> Ionospheric refraction data file<BR><em>Expected input:</em> Character:  1 value
+<P>
+  <PRE>
+Specify the name of a file with ionospheric refraction data. The file must be
+an ASCII file with lines
+</PRE>
+<P>
+  <PRE>
+        <hour angle in degrees>, <refraction in degrees/km at 1GHz>
+</PRE>
+<P>
+  <PRE>
+The file will be used to calculate ionospheric refraction for each scan by
+interpolation between the values in this file and scaling to the observing
+frequency. The calculated values will be stored in the scans as corrections.
+</PRE>
+<P>
+<A NAME=.mweight.data><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033500000000000000>  <b>Parameter MWEIGHT_DATA</b></A></H2>
+<P>
+<em>Prompt:</em> Centre, halfwidth (metres)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the centre and the halfpower-halfwidth in metres of the model weight
+function to be applied.
+</PRE>
+<P>
+  <PRE>
+Only positive values are accepted. Note that the function you define may extend
+over negative baselines but actual baselines are positive by definition.
+</PRE>
+<P>
+<A NAME=.mweight.type><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033600000000000000>  <b>Parameter MWEIGHT_TYPE</b></A></H2>
+<P>
+<em>Prompt:</em> Type of weight function|<BR><em>Expected input:</em> Character *10:  1 value
+<P>
+  <PRE>
+MWEIGHT_TYPE and MWEIGHT_DATA allow you to weigh baselines according to their
+lengths, in order to take advantage of source characteristics that are a priori
+known. The defaults for these parameters give all baselines the same weight.
+</PRE>
+<P>
+  <PRE>
+This parameter selects the form of the weighting function; its position and
+half-width will be defined by MWEIGHT_DATA. The following shapes can be chosen:
+</PRE>
+<P>
+  <PRE>
+   STEP          a step function: 1 out to some radius, 0 beyond
+   GAUSSIAN      a Gaussian
+   TRIANGLE      a triangular function: linearly decreasing from 1 to 0
+</PRE>
+<P>
+  <PRE>
+   Each of these can be prefixed with an 'I' to invert it, i.e. ISTEP means
+    '1 minus STEP'
+</PRE>
+<P>
+<A NAME=.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033700000000000000>  <b>Parameter OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> Type of action<BR><em>Expected input:</em> Character *12:  1 value
+<P>
+  <PRE>
+Specify type of action to perform:
+</PRE>
+<P>
+  <PRE>
+   REDUNDANCY    create telescope corrections by solving the
+                  redundancy/align/selfcal equations
+   POLAR         operations on polarisation corrections
+   SET           operations on all other corrections
+</PRE>
+<P>
+  <PRE>
+   SHOW          show (in logfile) average corrections in specified sector(s)
+   QUIT          finish
+</PRE>
+<P>
+<A NAME=.oth.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033800000000000000>  <b>Parameter OTH_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> SET action (others)|<BR><em>Expected input:</em> Character *6:  1 value
+<P>
+  <PRE>
+Specify action to perform to ADD corrections into the OTHer telescope
+corrections:
+        MULT    set an extra gain factor (multiply existing values)
+        DX      add telescope X correction in selected scans
+        DY      add telescope Y correction in selected scans
+        DZ      add telescope Z correction in selected scans
+        POLE    add baseline pole correction in selected scans
+        FREQ    add frequency offset correction in selected scans
+</PRE>
+<P>
+  <PRE>
+        QUIT    exit SET
+</PRE>
+<P>
+<A NAME=.phase.freedom><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00033900000000000000>  <b>Parameter PHASE_FREEDOM</b></A></H2>
+<P>
+<em>Prompt:</em> Phase grouping<BR><em>Expected input:</em> Integer:  1 to 14 values
+<P>
+  <PRE>
+Define the telescope groups for which the phases will be solved independently.
+</PRE>
+<P>
+  <PRE>
+To solve e.g. separate gains for the 10 fixed telescopes (0 through 9) and the
+ 4 movable ones (A through D), specify:
+</PRE>
+<P>
+  <PRE>
+        1,1,1,1,1,1,1,1,1,1, 2,2,2,2
+</PRE>
+<P>
+  <PRE>
+* means one group containing all telescopes (i.e. 1,1,...,1,1). Up to 14 groups
+may be defined.
+</PRE>
+<P>
+<A NAME=.phase.norm><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034000000000000000>  <b>Parameter PHASE_NORM</b></A></H2>
+<P>
+<em>Prompt:</em> Phase reference telescopes<BR><em>Expected input:</em> Integer:  1 to 14 values
+<P>
+  <PRE>
+Define the telescopes to use as reference for renormalising the telescope
+phases.
+</PRE>
+<P>
+  <PRE>
+Your reply should be an array of values (separated by commas) for telescopes 0
+through D; 1 means that you select the telescope, 0 that you don't. Trailing 0s
+may be omitted.
+</PRE>
+<P>
+  <PRE>
+A wildcard ('*') means 'all', i.e. 1,1,1,1,1,1,1,1,1,1,1,1,1,1
+</PRE>
+<P>
+  <PRE>
+Example:
+        0,1,0,1,0 means 'use telescopes 1 and 3 as reference
+</PRE>
+<P>
+<A NAME=.phase.x><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034100000000000000>  <b>Parameter PHASE_X</b></A></H2>
+<P>
+<em>Prompt:</em> Phase corrections X (deg) |<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the X phase corrections to be added per telescope (0 = no change).
+</PRE>
+<P>
+  <PRE>
+The values you give will be added to the existing OTHer phases if you choose
+SET option MULT, they will replace the existing phases if you choose SET option
+MANUAL.
+</PRE>
+<P>
+<A NAME=.phase.xx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034200000000000000>  <b>Parameter PHASE_XX</b></A></H2>
+<P>
+<em>Prompt:</em> interferometer phase corrections XX (deg) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the phase corrections for XX. You will be prompted for values, which
+will OVERWRITE the existing interferometer corrections.
+</PRE>
+<P>
+<A NAME=.phase.xy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034300000000000000>  <b>Parameter PHASE_XY</b></A></H2>
+<P>
+<em>Prompt:</em> interferometer phase corrections XY (deg) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the phase corrections for XY. You will be prompted for values, which
+will OVERWRITE the existing interferometer corrections.
+</PRE>
+<P>
+<A NAME=.phase.y><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034400000000000000>  <b>Parameter PHASE_Y</b></A></H2>
+<P>
+<em>Prompt:</em> Phase corrections Y (deg) |<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the Y phase corrections to be added per telescope (0 = no change).
+</PRE>
+<P>
+  <PRE>
+The values you give will be added to the existing OTHer phases if you choose
+SET option MULT, they will replace the existing phases if you choose SET option
+MANUAL.
+</PRE>
+<P>
+<A NAME=.phase.yx><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034500000000000000>  <b>Parameter PHASE_YX</b></A></H2>
+<P>
+<em>Prompt:</em> interferometer phase corrections YX (deg) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the phase corrections for YX. You will be prompted for values, which
+will OVERWRITE the existing interferometer corrections.
+</PRE>
+<P>
+<A NAME=.phase.yy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034600000000000000>  <b>Parameter PHASE_YY</b></A></H2>
+<P>
+<em>Prompt:</em> interferometer phase corrections YY (deg) |<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the phase corrections for YY. You will be prompted for values, which
+will OVERWRITE the existing interferometer corrections.
+</PRE>
+<P>
+<A NAME=.polar.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034700000000000000>  <b>Parameter POLAR_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> action on polarisation corrections|<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify action to perform on polarisation corrections:
+</PRE>
+<P>
+  <PRE>
+   Calculate corrections from calibrator visibilities. The new correction values
+   are ADDED to existing ones:
+</PRE>
+<P>
+  <PRE>
+        CALC     calculate dipole corrections
+</PRE>
+<P>
+  <PRE>
+        VZERO    select the set of operations dealing with the phase-zero
+                 difference ('PZD') between the X and Y channel groups
+</PRE>
+<P>
+  <PRE>
+   Copy/set corrections. The new corrections values generally OVERWRITE the
+   existing ones:
+</PRE>
+<P>
+  <PRE>
+        COPY     create dipole corrections in target sectors by copying them
+                  from one source sector
+</PRE>
+<P>
+  <PRE>
+        SET      set dipole corrections manually
+</PRE>
+<P>
+  <PRE>
+        ZERO     zero dipole corrections
+</PRE>
+<P>
+  <PRE>
+   Inspection:
+</PRE>
+<P>
+  <PRE>
+        SHOW     show dipole corrections
+</PRE>
+<P>
+  <PRE>
+        EDIT     edit dipole corrections
+</PRE>
+<P>
+  <PRE>
+   Other:
+</PRE>
+<P>
+  <PRE>
+        QUIT     exit from POLAR
+</PRE>
+<P>
+<A NAME=.pol.orthog><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034800000000000000>  <b>Parameter POL_ORTHOG</b></A></H2>
+<P>
+<em>Prompt:</em> Dipole orthogonalities (deg)|<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the deviations from orthogonality in the dual-dipole assemblies per
+telescope in degrees.
+</PRE>
+<P>
+<A NAME=.pol.rotan><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00034900000000000000>  <b>Parameter POL_ROTAN</b></A></H2>
+<P>
+<em>Prompt:</em> Dipole positions (deg)|<BR><em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the position angles of the dual-dipole assemblies per telescope in
+degrees.
+</PRE>
+<P>
+<A NAME=.pol.x.ellips><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035000000000000000>  <b>Parameter POL_X_ELLIPS</b></A></H2>
+<P>
+<em>Prompt:</em> X-dipole ellipticities (<em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the X-dipole ellipticities per telescope in %
+</PRE>
+<P>
+<A NAME=.pol.y.ellips><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035100000000000000>  <b>Parameter POL_Y_ELLIPS</b></A></H2>
+<P>
+<em>Prompt:</em> Y-dipole ellipticities (<em>Expected input:</em> Real:  1 to 14 values
+<P>
+  <PRE>
+Specify the Y-dipole ellipticities per telescope in %
+</PRE>
+<P>
+<A NAME=.qdetails><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035200000000000000>  <b>Parameter QDETAILS</b></A></H2>
+<P>
+<em>Prompt:</em> More details? (YES/NO)<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+Specify if you want to specify details of the solution procedure yourself
+rather than relying on NCALIB's expert defaults.
+</PRE>
+<P>
+<A NAME=.refraction><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035300000000000000>  <b>Parameter REFRACTION</b></A></H2>
+<P>
+<em>Prompt:</em> Refraction-1: quadratic's coefficients|<BR><em>Expected input:</em> Real:  1 to 3 values
+<P>
+  <PRE>
+Specify the coefficients A, B and C in the quadratic representation of the
+refraction coefficient as a function of frequency F in GHz:
+</PRE>
+<P>
+  <PRE>
+        EXT= (1+A) + B*F +C*F*F
+</PRE>
+<P>
+<A NAME=.save.residuals><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035400000000000000>  <b>Parameter SAVE_RESIDUALS</b></A></H2>
+<P>
+<em>Prompt:</em> Save the interferometer residuals as interferometer errors?<BR><em>Expected input:</em> Yes/No:  1 value
+<P>
+  <PRE>
+If YES, the interferometer residuals after Selfcal, Align or Redun will be
+saved for later use as Multiplicative Interferometer errors.
+</PRE>
+<P>
+<A NAME=.set.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035500000000000000>  <b>Parameter SET_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> SET action|<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+Specify action to perform to alter correction values.
+</PRE>
+<P>
+  <PRE>
+   Note: POLARISATION corrections are NOT included here. They must be handled
+    sparately through the POLAR main option.
+</PRE>
+<P>
+  <PRE>
+These option write correction values in (a) set(s) of target sectors (selected
+by the SCN_<xxx> parameters). These corrections are copied/calulated from
+corrections /data in the same file or another one (USE_SCN_<xxx> parameters).
+The calculations will use all source sectors you specify to obtain a single set
+of corrections. Unless stated otherwise below, the new values will be ADDED to
+the existing ones in each of the target sectors.
+</PRE>
+<P>
+  <PRE>
+   Transfer of corrections from a reference source:
+</PRE>
+<P>
+  <PRE>
+        COPY    copy all corrections from somewhere else
+                 (all corrections in the input set(s) are averaged)
+        CCOPY   copy corrections from surrounding (in time) observations
+                 in the input sets with the same frequency channel
+                 (corrections for the two input sets are averaged).
+        ICOPY   copy all MIFR corrections from somewhere else
+                 (all corrections in the input set(s) are averaged)
+        LINE    copy all corrections from corresponding continuum channel
+</PRE>
+<P>
+  <PRE>
+   Initialisation:
+</PRE>
+<P>
+  <PRE>
+        ZERO    zero corrections
+        MANUAL  copy input values into the OTH telescope corrections for
+                 selected scans
+        INIT    make an initial estimate of telescope corrections and shift the
+                 present values accordingly
+        RENORM  renormalise telescope corrections
+</PRE>
+<P>
+  <PRE>
+   Manual-input actions. Each option represents a correction type for which
+   your values will be requested.
+   - For the following actions, your values will OVERWRITE the existing ones:
+        EXT     set extinction in selected scans
+        REF     set refraction in selected scans
+        IREF    set ionospheric refraction in selected scans
+        FAR     set Faraday rotation in selected scans
+        IFR     set additive interferometer corrections in selected scans
+        MIFR    set multiplicative interferometer corrections in selected scans
+        CLK     set clock correction in selected scans
+        SHIFT   set (de-apply) coordinate shift in selected sectors
+</PRE>
+<P>
+  <PRE>
+        QUIT    exit SET
+</PRE>
+<P>
+<A NAME=.shift><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035600000000000000>  <b>Parameter SHIFT</b></A></H2>
+<P>
+<em>Prompt:</em> Shift to de-apply to data (arcsec)<BR><em>Expected input:</em> Real:  1 to 2 values
+<P>
+  <PRE>
+Specify the l,m shift in arcsec to be applied to data whenever the DE_APPLY
+SHIFT correction is requested. (Ignore the 'de-apply) in the prompt.)
+</PRE>
+<P>
+  <PRE>
+In the case where the shift is time-dependent (e.g. for a planet) it is
+approximated by a linear function
+</PRE>
+<P>
+  <PRE>
+        Total shift =  SHIFT + DSHIFT * (HA-HAB)
+</PRE>
+<P>
+  <PRE>
+In this case the SHIFT you specify here is the value at the meridian, DSHIFT is
+a second parameter for which you will be prompted.
+</PRE>
+<P>
+<A NAME=.show.level><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035700000000000000>  <b>Parameter SHOW_LEVEL</b></A></H2>
+<P>
+<em>Prompt:</em> Levels of terminal (1st value)| and log (2nd value) output<BR><em>Expected input:</em> Integer:  1 to 2 values
+<P>
+  <PRE>
+Specify the level of the type and print output you want:
+</PRE>
+<P>
+  <PRE>
+   0     none
+   1     sector numbers, errors and summary of results only (the summary in the
+          log file includes phase constraints and solution details which are not
+          shown on the terminal)
+   2     detailed report (several pages) per integration interval (parameter
+          HA_INTEGRATION) - intended primarily for debugging purposes
+</PRE>
+<P>
+<A NAME=.solve><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035800000000000000>  <b>Parameter SOLVE</b></A></H2>
+<P>
+<em>Prompt:</em> Solve for gain, phase (YES/NO, 2 values)?<BR><em>Expected input:</em> Yes/No:  1 to 2 values
+<P>
+  <PRE>
+Specify if you want solutions for gain and for phase.
+</PRE>
+<P>
+<A NAME=.use.scn.node><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00035900000000000000>  <b>Parameter USE_SCN_NODE</b></A></H2>
+<P>
+<em>Prompt:</em> Input .SCN-file name<BR><em>Expected input:</em> Character *80:  1 value
+<P>
+  <PRE>
+Specify the input .SCN file from which the corrections should be calculated or
+copied. A wildcard value ('*') indicates the same as the output .SCN file.
+</PRE>
+<P>
+<A NAME=.use.scn.sets><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00036000000000000000>  <b>Parameter USE_SCN_SETS</b></A></H2>
+<P>
+<em>Prompt:</em> Sets of input .SCN-file sectors: grp.obs.fld.chn.seq|<BR><em>Expected input:</em> Character *32:  1 to 64 values
+<P>
+  <PRE>
+Specify the .SCN-file sectors to be used as input in the calculations.
+</PRE>
+<P>
+<A NAME=.vzero.option><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00036100000000000000>  <b>Parameter VZERO_OPTION</b></A></H2>
+<P>
+<em>Prompt:</em> VZERO action<BR><em>Expected input:</em> Character *8:  1 value
+<P>
+  <PRE>
+This branch of NCALIB implements methods to define the unknown X-Y phase-zero
+difference ('PZD') in the parallel-dipole configuration.
+</PRE>
+<P>
+  <PRE>
+Correction values may be saved in an arbitrary selection of target sectors,
+selected by the SCN_<xxx> parameters. The new corrections are OTH telescope
+phases which will be ADDED to any existing ones in each of the sectors you
+specify for output.
+</PRE>
+<P>
+  <PRE>
+In determining the corrections, the program uses a collection of input sectors,
+which may coincide with the target sectors or be selected by the USE_SCN_
+parameters (for the COPY option). It is assumed that the source for these is a
+calibrator with significant Stokes U and 'negligibly' small Stokes V. If this
+condition is not fulfilled, the result will be meaningless.
+</PRE>
+<P>
+  <PRE>
+The PZD is a phase value that is ADDED to the existing OTH phase correction of
+the X channels. For this reason, you must be cautious to
+</PRE>
+<P>
+  <PRE>
+        - avoid more than one COPY to the same target data and
+        - avoid ruining a calibrator observation by doing an APPLY on it. (If
+           you should do this by accident, use MANUAL to restore the observation
+           to its previous state.)
+</PRE>
+<P>
+  <PRE>
+Specify action to perform:
+</PRE>
+<P>
+  <PRE>
+   Actions recommended for routine use:
+</PRE>
+<P>
+  <PRE>
+        CALC    calculate PZD from the selected node and sectors (SCN_
+                 parameters) and display it with its mean error. Use this option
+                 to check if a calibrator observation is suitable for
+                 determining the PZD.
+</PRE>
+<P>
+  <PRE>
+        COPY    as APPLY, but use X-Y phase-difference value derived from
+                 a calibrator observation (USE_SCN_<xxx> parameters). Use this
+                 option to set the correction for your observations
+</PRE>
+<P>
+  <PRE>
+        MANUAL  manually input phase-difference value
+</PRE>
+<P>
+  <PRE>
+   Other actions:
+</PRE>
+<P>
+  <PRE>
+        SCAN    as CALC, but per individual scan
+</PRE>
+<P>
+  <PRE>
+        APPLY   as CALC, then apply the correction to the sectors selected
+                 (SCN_<xxx> parameters).
+                NOTE that once you have performed this operation, a CALC or COPY
+                 operation on the same input data will yield PZD=0, so these
+                 data can no longer be used to calibrate another observation.
+</PRE>
+<P>
+  <PRE>
+        ASK     as APPLY, but display and ask for confirmation before modifying
+                 the existing values
+</PRE>
+<P>
+  <PRE>
+        QUIT    exit from VZERO
+</PRE>
+<P>
+<A NAME=.vzero.phase><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00036200000000000000>  <b>Parameter VZERO_PHASE</b></A></H2>
+<P>
+<em>Prompt:</em> X-Y phase-zero difference 'PZD' (deg)<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the 'phase-zero difference' (PZD) in degrees.
+</PRE>
+<P>
+  <PRE>
+In the parallel-dipole configuration, performing a Redundancy or Selfcal fit of
+telescope errors to the visibilities introduces an unknown phase offset for the
+set of telescope X channels and another unknown phase offset for the Y dipoles.
+For correctly determining Stokes U and V, the (equally unknown) difference
+between these must be corrected for.
+</PRE>
+<P>
+  <PRE>
+This is a tricky problem and you should remain suspicious of the results that
+you get.
+</PRE>
+<P>
+<A NAME=.weight.min><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00036300000000000000>  <b>Parameter WEIGHT_MIN</b></A></H2>
+<P>
+<em>Prompt:</em> Relative minimum weight accepted<BR><em>Expected input:</em> Real:  1 value
+<P>
+  <PRE>
+Specify the minimum relative weight of a data point that is still acceptable.
+</PRE>
+<P>
+  <PRE>
+The weight is relative to the maximum weight in the same scan, and in most
+cases can be seen as the minimum data amplitude accepted as fraction of the
+maximum in the scan.
+</PRE>
+<P>
+<A NAME=.zero><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00036400000000000000>  <b>Parameter ZERO</b></A></H2>
+<P>
+<em>Prompt:</em> Corrections (plural) to be zeroed |<BR><em>Expected input:</em> Character *8:  1 to 12 values
+<P>
+  <PRE>
+Specify any number of corrections you want to zero:
+</PRE>
+<P>
+  <PRE>
+   Generic:
+        ALL or * All corrections
+        NONE     None of the corrections: Return to previous prompt
+</PRE>
+<P>
+  <PRE>
+   Telescope gains and phases:
+        RED      Redundancy telescope corrections
+        ALG      Align telescope corrections
+        OTH      'Other' telescope gain/phase corrections
+</PRE>
+<P>
+  <PRE>
+   Interferometer gains and phases:
+        IFR      Additive interferometer corrections
+        MIFR     Multiplicative interferometer corrections
+</PRE>
+<P>
+  <PRE>
+   Corrections for the instrument as a whole:
+        EXT      Extinction correction
+        REF      Refraction correction
+        IREF     Ionospheric refraction correction
+        FAR      Faraday rotation
+        CLK      Clock correction
+        SHIFT    Coordinate shifts (de-apply)
+</PRE>
+<P>
+  <PRE>
+You may restrict the above to phase-only or gain-only by appending AT THE END
+of your reply either of:
+</PRE>
+<P>
+  <PRE>
+        NOGAIN   Zero only phases
+        NOPHASE  Zero only gain
+</PRE>
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

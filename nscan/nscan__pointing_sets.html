@@ -1,0 +1,31 @@
+<TITLE>Description of POINTING_SETS (NSCAN)</TITLE>
+<H1>Program NSCAN: private keyword POINTING_SETS</H1> 
+
+<DT><EM>Prompt:</EM> Mosaic field sequence number(s)
+<DT><EM>Expected input:</EM> Integer number, 512 values.<P>
+ Select the SEQUENCE numbers of the fields (= mosaic 'pointing 
+centres') to be selected. (see Note below). <P>
+NOTE that WSRT mosaic fields are numbered starting at 1 <P>
+   '*' selects all fields <P>
+   '&lt;begin&gt; TO &lt;end&gt;&gt; BY &lt;step&gt;' selects fields &lt;begin&gt;, &lt;begin&gt;+&lt;step&gt;, ... 
+        up to &lt;end&gt;. The 'BY &lt;step&gt;' part may be omitted. 
+   BEWARE: The notation &lt;begin&gt;-&lt;end&gt;:&lt;step&gt; will be interpreted as an 
+        expression and give incorrect results <P>
+Each of the selected fields will be stored in the .SCN file as a separate 
+'field' (fld) under the current 'group' and 'observation' grp.obs. (Remember 
+that .SCN file 'sectors' are identified by indices grp.obs.fld.chn.seq). <P>
+NOTE: 
+        The numbers you specify refer to the SEQUENCE (starting with 0) in 
+which the mosaic fields aqppear on the tape. Normally, an observation starts 
+with field 0 and the sequence numbers equal the field numbers. However, if your 
+observation starts 'somehere in the middle', this is no longer the case and you 
+must be careful in selecting your fields. Example: <P>
+        Your observation starts at field 19. To select fields 19 through 24,  
+specify POINTING_SETS= 0 TO 5.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nscan/nscan_keys.html">List of keywords</A> for NSCAN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nscan_descr/nscan_descr.html">program NSCAN</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

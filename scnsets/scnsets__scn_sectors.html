@@ -1,0 +1,31 @@
+<TITLE>Description of SCN_SECTORS (SCNSETS)</TITLE>
+<H1>Description of general keyword SCN_SECTORS</H1>
+
+<DT><EM>Prompt:</EM>  5th index: sectors
+<DT><EM>Expected input:</EM> Character(32).<P>
+ Give the 'sequence number' index-range (seq) of a sector-Set 
+specification 
+							(grp.obs.fld.chn.seq). <P>
+A standard use of multiple sectors for one .SCN file field and one frequency is 
+for the different hour-angle 'slices' in a mosaic observation. <P>
+Possible answers ([]=optional): <P>
+	0               take the first sector 
+	n1              take sector nr n1 (n1=0, 1, 2, 3, ....) 
+	n1-n2[:n3]      loop over sectors n1 through n2 [step n3] 
+	*               loop over all 
+			 (wildcard) 
+	n1-[*]          loop over all sectors for the field and channel,  
+			 starting with n1 [step n3] <P>
+NOTES: 
+	In a mosaic observation, the HOUR_ANGLE range parameter can be used to 
+select sectors. This is simpler but cruder: The same range applies to all 
+SCN_SETS and SCN_LOOPS specified. <P>
+	The associated SCN_LOOPS keyword allows even more looping over index 
+values. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../scnsets/scnsets_comm.html">List of general keywords</A> for SCNSETS
+<LI>Description of the <A HREF="../scn_descr/scn_descr.html">SCN file format</A>
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

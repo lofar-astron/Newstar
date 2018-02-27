@@ -1,0 +1,33 @@
+<TITLE>Description of IFR_MODE (NPLOT)</TITLE>
+<H1>Program NPLOT: private keyword IFR_MODE</H1> 
+
+<DT><EM>Prompt:</EM> NORMAL, INVERT, SORT;  SPECTRAL, BAND Select data cross-section
+<DT><EM>Expected input:</EM> Character(16).<P>
+Specify the cross section through the visibility data cube to be plotted: 
+        Consider the interferometers arranged in an upper-triangular matrix: <P>
+                00 01 02 ... 0B 0C 0D 
+                   11 12 ... 1B 1C 1D 
+                      22 ... 2B 2C 2D 
+                             :  :  : 
+                             BB BC BD 
+                                CC CD 
+                                   DD <P>
+Then the possible plotting modes are <P>
+    visibilities as function of hour angle per interferometer: <P>
+        NORMAL  interferometer order in the matrix is row by row <P>
+        INVERT  interferometer order in the matrix is column by column  . 
+        SORT    interferometers in order of ascending baseline <P>
+    other cross sections of the hour-angle/interferometer/channel cube: <P>
+        SPECTRAL visibilities as function of spectral channel and hour angle,  
+                  per interferometer (the WSRT 'PLUVO' format) 
+!!                      i.e. one plot per ifr? <P>
+        BAND    visibilities as function of channel and interferometer,  
+                 interferometer order as for NORMAL 
+!!                      for one HA or averaged? 
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nplot/nplot_keys.html">List of keywords</A> for NPLOT
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nplot_descr/nplot_descr.html">program NPLOT</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

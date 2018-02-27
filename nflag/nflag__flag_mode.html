@@ -1,0 +1,54 @@
+<TITLE>Description of FLAG_MODE (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword FLAG_MODE</H1> 
+
+<DT><EM>Prompt:</EM>  HYPER, SECTORS, NODE; CORR, NOCORR, UFLAG;|-DRYRUN, NODRYRUN, SHOW, NOSHOW, NOTRACE, TRACE; QUIT  "Set ONE environment parameter at a time; QUIT or &lt;CR&gt; when done|" 
+<DT><EM>Default:</EM> QUIT.
+<DT><EM>Expected input:</EM> Character(24).<P>
+ You may select one of the options at a time. 
+ The logical ones, such as CORR/NOCORR will take effect immediately. For the 
+others, you will be prompted for (a) new value(s).  The values shown below as 
+defaults are the ones with which NFLAG starts up. <P>
+   Redefinition of the primary data cube: <P>
+        HYPER:    Change the primary data cube by selecting new polarisation,  
+                   interferometer and hour-angle ranges. 
+        SECTORS:  As HYPER but including a change of the SCN_SECTORS selection. 
+        NODE:     Completely new primary data cube (i.e. including new .SCN 
+                   file) <P>
+   Data-correction modes. Shown in parentheses is NFLAG's initial setting: <P>
+        CORR/NOCORR (=NOCORR): 
+                Reading mode for visibility data: without/with corrections 
+                 applied and ignoring/acknowledging flags. 
+                 (NOCORR mode will be ignored in those cases for which the use 
+                 of uncorrected data would be pointless, e.g. ARESID, RRESID). <P>
+        UFLAG (=ALL): 
+                Default flag types to be acknowledged when reading data in 
+                 CORR mode. <P>
+   Run modes: <P>
+        SHOW/NOSHOW (=SHOW): 
+                After each flagging operation, show/don't show a summary of the 
+                 new flag settings for the data cube and flag types selected 
+for 
+                 that operation. 
+                Note that in either mode the affected flags will be counted 
+                 anyway, so you can use INSPECT afterwards to show summatries 
+                 from various perspectives <P>
+        DRYRUN/NODRYRUN (=DRYRUN): 
+                For any operation that would change flags in the .SCN file,  
+                 do/don't do a 'trial run' first, - e.g. to get a feeling for 
+                 sensible default values for clip limits etc. 
+                 (For NODRYRUN safe default values will be chosen for such 
+                 limits so that nothing will happen until the user sets his own 
+                 values.) <P>
+        NOTRACE/TRACE (=NOTRACE): 
+                Dont't/do trace the flagging operations through messages on the 
+                 terminal. TRACE is likely to produce a lot of output and 
+                 intended for debugging purposes only. <P>
+   Navigation: <P>
+        QUIT:    Go back to FLAG_OPTION. <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

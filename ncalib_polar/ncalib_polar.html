@@ -1,0 +1,978 @@
+<HEAD>
+<TITLE>No Title</TITLE>
+</HEAD>
+<BODY><P>
+ <b>NCALIB POLAR: Polarisation corrections</b> 
+<A NAME=.contents><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<P><H2><A NAME=SECTION0001000000000000000>Contents</A></H2>
+<UL> 
+<LI> <A NAME=tex2html1 HREF=ncalib_polar.html#SECTION0001000000000000000>Contents</A>
+<LI> <A NAME=tex2html2 HREF=ncalib_polar.html#SECTION0002000000000000000>  <b>Preface </b></A>
+<LI> <A NAME=tex2html3 HREF=ncalib_polar.html#SECTION0003000000000000000> <b>WSRT polarisation calibration strategy</b></A>
+<LI> <A NAME=tex2html4 HREF=ncalib_polar.html#SECTION0004000000000000000> <b>Polarisation equations</b></A>
+<UL> 
+<LI> <A NAME=tex2html5 HREF=ncalib_polar.html#SECTION0004100000000000000> <b>Parallel dipoles (++)</b></A>
+<LI> <A NAME=tex2html6 HREF=ncalib_polar.html#SECTION0004200000000000000> <b>X-Y Phase Zero Difference (PZD)</b></A>
+<LI> <A NAME=tex2html7 HREF=ncalib_polar.html#SECTION0004300000000000000> <b>Crossed dipoles (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1367.png">)</b></A>
+<LI> <A NAME=tex2html8 HREF=ncalib_polar.html#SECTION0004400000000000000> <b>Faraday rotation</b></A>
+</UL> 
+<LI> <A NAME=tex2html9 HREF=ncalib_polar.html#SECTION0005000000000000000> <b>POLAR SHOW: Show corrections</b></A>
+<LI> <A NAME=tex2html10 HREF=ncalib_polar.html#SECTION0006000000000000000> <b>POLAR CALC: Calculate corrections</b></A>
+<LI> <A NAME=tex2html11 HREF=ncalib_polar.html#SECTION0007000000000000000> <b>POLAR SET: Set corrections manually</b></A>
+<LI> <A NAME=tex2html12 HREF=ncalib_polar.html#SECTION0008000000000000000> <b>POLAR EDIT: Edit corrections</b></A>
+<LI> <A NAME=tex2html13 HREF=ncalib_polar.html#SECTION0009000000000000000> <b>POLAR ZERO: Zero corrections</b></A>
+<LI> <A NAME=tex2html14 HREF=ncalib_polar.html#SECTION00010000000000000000> <b>POLAR COPY: Copy corrections from somewhere else</b></A>
+<LI> <A NAME=tex2html15 HREF=ncalib_polar.html#SECTION00011000000000000000> <b>POLAR VZERO: X-Y Phase Zero Difference, assuming V=0</b></A>
+<UL> 
+<LI> <A NAME=tex2html16 HREF=ncalib_polar.html#SECTION00011100000000000000> <b>POLAR VZERO CALC: Calculate and show</b></A>
+<LI> <A NAME=tex2html17 HREF=ncalib_polar.html#SECTION00011200000000000000> <b>POLAR VZERO APPLY: Calculate, show and apply</b></A>
+<LI> <A NAME=tex2html18 HREF=ncalib_polar.html#SECTION00011300000000000000> <b>POLAR VZERO ASK: Calculate, check with user, and apply</b></A>
+<LI> <A NAME=tex2html19 HREF=ncalib_polar.html#SECTION00011400000000000000> <b>POLAR VZERO MANUAL: Ask for and apply</b></A>
+<LI> <A NAME=tex2html20 HREF=ncalib_polar.html#SECTION00011500000000000000> <b>POLAR VZERO SCAN: Calculate and apply on a per-scan basis</b></A>
+<LI> <A NAME=tex2html21 HREF=ncalib_polar.html#SECTION00011600000000000000> <b>POLAR VZERO COPY: Calculate from input and apply to output</b></A>
+</UL>
+</UL>
+<H1><A NAME=SECTION0002000000000000000>  <b>Preface </b></A></H1>
+<P>
+        This document describes the handling of polarisation calibration and correction by the NCALIB POLAR option.  This option is activated as follows: 
+   <BR> > <i>exe ncalib</i>   <PRE>
+      NCALIB$1 (v4.62) is started at 30-May-94 13:52:04
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>OPTION</b>
+ (REDUNDANCY, POLAR, SET, SHOW, QUIT)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1277.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1279.png">
+<P>
+		<i>Select option</i>
+<P>
+<A NAME=.strategy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0003000000000000000> <b>WSRT polarisation calibration strategy</b></A></H1>
+<P>
+        In the following, it will be assumed that the dipoles of the WSRT
+telescopes are <em>parallel</em> (++).  The usual calibration strategy consists of
+the following steps:
+<P>
+<UL><LI>
+        In addition to observing calibrators along with normal observations,
+the WSRT at regular intervals observes calibrators to determine various
+instrumental parameters which are reasonably constant. These corrections are
+automatically applied to your data at the telescope.
+<P>
+<LI>
+        The complex gain factors <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1281.png"> (i.e. dipole gain errors,
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1283.png">, and phase errors, <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1285.png"> are determined by
+observing a strong calibrator, for which an accurate model exists. The
+determination is done separately for the X-dipoles and the Y-dipoles, using
+<A HREF=" #.equ.pol.008">equation</A>.  <em>Note that any inaccuracy in the assumed value for Q
+will be interpreted as a gain error.  Also note that <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1287.png"> and
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1289.png"> will be inaccurate by the value of the ``phase-zero difference
+(PZD)'' between the X and Y dipoles.</em>
+<P>
+<LI>
+        The dipole angle errors <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1409.png"> and ellipticities <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1599.png"> are
+determined by observing a strong <em>unpolarised</em> calibrator. This is done by
+means of NCALIB option POLAR CALC in this section, using <A HREF=" #.equ.pol.010">equation</A>.
+The measured corrections are stored (as POLC) in the <em>sector header</em> of the
+SCN-file. (I.e. they are assumed to be constant for the duration of an entire
+sector rather than to change from scan to scan.).
+<P>
+<LI>
+        The missing 'phase-zero difference (PZD)' between the X- and Y-dipoles
+is determined with the help of a calibrator with strong U. Again,
+<A HREF=" #.equ.pol.010">equation</A> is used.  It is assumed that <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1295.png"> and
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1297.png">, which determine the `leakage' of the large I-term into the
+result, are negligible in this stage, and that <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1383.png">.  If this assumption is
+incorrect, this will translate into a spurious V in later observations.
+<P>
+<LI>
+        Ionospheric Faraday rotation may vary on much shorter timescales than
+the length of the observation.  This can be calibrated to a large extent by
+introducing external information, obtained by
+<A HREF="../ncalib_descr/ncalib_descr.html#.set.faraday">ionosonde measurements</A>.
+<P>
+<LI>
+        The WSRT instrumental polarisation is small, due to the placement of
+the feed on the axis of the antenna paraboloid.  The effect can be eliminated
+with the help of the multi-parameter <i>NEWSTAR </i> source model (see NMODEL).
+<P>
+</UL>
+<P>
+        For the best results, it may be necessary to iterate two or three
+times, because one pair of dipole errors (position angle/ellipticity) may
+affect the determination of the other pair (gain/phase).  However, the process
+will iterate to the correct result, because, <em>in the case of parallel
+dipoles</em>, all four types of dipole errors have distinct signatures.  This means
+that one type of dipole error cannot be interpreted as another type, and still
+give a consistent result.  Therefore, all four types can be determined
+independently.
+<P>
+<H1><A NAME=SECTION0004000000000000000> <b>Polarisation equations</b></A></H1>
+<P>
+        Each of the 14 WSRT telescopes have two perpendicular linear dipoles, X
+and Y.  In the existing front-ends, the XY-dipole unit can be rotated over an
+arbitrary angle.  The dipole position angle (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1301.png">) is defined from North
+(<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1303.png">) through East (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1305.png">).  The complex visibility
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1307.png"> that is measured with an interferometer (consisting of two dipoles
+with position angles <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1309.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1311.png"> can be written as (see Weiler,
+1973):
+<P>
+<P><A NAME=.equ.pol.002><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray140.png"><P>
+<P>
+in which I, Q, U and V are the Fourier transforms of the corresponding Stokes
+parameters of the observed source, and the <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1313.png">, <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1315.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1317.png">
+factors contain the four types of dipole errors: phase (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1319.png">), gain
+(<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1321.png">), dipole angle error (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1327.png">) and ellipticity (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1325.png">).
+In the ideal case, they are all zero. For small values of <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1327.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1325.png">,
+second-order terms can be ignored, and we can write:
+<P><A NAME=.equ.pol.004><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray149.png"><P>
+<P><A NAME=.equ.pol.006><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray154.png"><P>
+<P>
+<H2><A NAME=SECTION0004100000000000000> <b>Parallel dipoles (++)</b></A></H2>
+<P>
+In the `normal' position (+) of the dipole unit, <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1331.png"> (east), and
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1333.png"> (south). Usually the dipole units in all WSRT telescopes
+are set `parallel' (++) to each other. In this case, the equations reduce to a
+particularly simple form. Again ignoring second-order terms, we get <P><A NAME=.equ.pol.008><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray159.png"><P>
+<P><A NAME=.equ.pol.010><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray166.png"><P>
+in which <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1335.png"> is the visibility measured between the X-dipoles of
+telescopes <em>i</em> and <em>j</em>, etc. After calibration, <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1337.png"> and
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1339.png">, and the complex Stokes values can be calculated from the observed
+visibilities:
+<P><A NAME=.equ.pol.014><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray178.png"><P>
+<P>
+In the parallel mode (++), the two sets of dipole errors (phase/gain and
+angle/ellipticity) are separable, and so can be determined. Nowadays (after
+December 1983), the dipoles are almost always parallel, and in the new
+frontends (after 1997), the dipoles will not be rotatable.
+<P>
+<H2><A NAME=SECTION0004200000000000000> <b>X-Y Phase Zero Difference (PZD)</b></A></H2>
+<P>
+In the case of parallel dipoles (++), the complex gain errors of the X-dipoles
+and those of the Y-dipoles are calibrated separately; <IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1341.png"> and
+<IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1343.png"> will usually not have enough signal for calibration, because these
+dipoles are nominally perpendicular and the fraction of linear polarisation is
+usually small in calibrators. Since we only calibrate phase <em>differences</em>,
+an arbitrary phase zero (<IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1345.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1347.png">) is assigned to the X-
+and Y-dipoles. These phase zeros will cancel out for <IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1349.png"> and
+<IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1351.png">, but not for <IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1353.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_13658_tex2html_wrap1355.png">. Thus, the latter
+will be multiplied by an unknown phase factor <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1683.png">, the so-called <em>XY
+Phase Zero Difference (PZD)</em>.
+<P>
+<P><A NAME=.equ.pol.018><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><A NAME=.equ.pol.016><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray200.png"><P>
+<P>
+in which <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1359.png">. Of course,
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1361.png"> is the complex gain of the interferometer made up of the X-dipole
+of telescope <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1363.png"> and Y-dipole of telescope <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1365.png">, etc.
+<P>
+<H2><A NAME=SECTION0004300000000000000> <b>Crossed dipoles (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1367.png">)</b></A></H2>
+<P>
+        Before 1983, polarisation measurements with the WSRT were usually
+carried out with dipoles in the fixed telescopes (0-9) in the `normal'
+position, and the dipoles in the movable telescopes (A-D) rotated by <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1369.png">
+(<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1371.png">), with <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1373.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1375.png">.  The 40 standard
+(fixed-movable) interferometers were said to have `crossed' (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1367.png">)
+dipoles.  In this case, the visibility equations take the following form:
+<P><A NAME=.equ.pol.022><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray213.png"><P>
+        With crossed dipoles, the signal-to-noise ratio of the xy/yx terms are
+similar to that of the xx/yy terms.  This makes it possible to make a
+redundancy calibration solution for all 28 dipoles simultaneously, <em>but
+only if we may assume that <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1383.png"></em>.  In principle, this would open the way to
+continuous polarisation calibration on the object itself, provided it has
+enough flux.
+<P>
+        However, crossed dipoles introduce a number of new problems that make
+them less attractive:
+<UL><LI> The two sets of dipole errors (phase/gain and angle/ellipticity) are no
+longer completely separable.  This means that the phase solution will influence
+the angle error solution, and the gain solution will influence the ellipticity
+solution.
+<P>
+<LI> For part of the telescopes, the four-petal clover-leaf pattern of
+instrumental polarisation will be rotated by <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1369.png"> with respect to the sky
+and with respect to the four legs that support the focus box. This complicates
+any calibration schemes for instrumental polarisation.
+<P>
+</UL>
+<P>
+        These problems, combined with the fact that the phase-zero problem is
+not really avoided (since redundancy solution is only possible if it has to be
+assumed that <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1383.png">) have led to the practice to use only parallel dipoles.
+<P>
+        <i>(Annotation by JPH 940624: The reader is cautioned that the
+arguments advanced here against the use of crossed dipoles are a matter of
+continuing controversy.  It can easily be shown from first principles that the
+separability of phase/gain and dipole errors is irrelevant. Furthermore, the
+parallel-dipole configuration is inherently asymmetric with respect to Stokes
+<em>Q</em> and <em>U</em> and crossed dipoles are clearly superior in this respect;
+how important this is is not clear.)</i>
+<P>
+<A NAME=.equ.pol.024><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION0004400000000000000> <b>Faraday rotation</b></A></H2>
+<P>
+When radiation passes through a charged medium (like the ionosphere), the place
+of linear polarisation will be rotated by the angle <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1393.png">:
+<P><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray247.png"><P>
+Note that <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1387.png">, <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1389.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1391.png"> are independent of <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1393.png">. The
+Faraday effect is strongly frequency-dependent: <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1395.png">.
+<P>
+<A NAME=.show><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0005000000000000000> <b>POLAR SHOW: Show corrections</b></A></H1>
+<P>
+The 56 correction factors (2 for each of the 28 dipoles) for angle errors and
+ellipticities that are stored in the <em>set header</em> (as POLC, see SCN-file
+description) can be viewed in a digestible form:
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1403.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1405.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1407.png">
+<P>
+		<i>For example</i>    <PRE>
+ Sector: 2.0.0.0.0
+
+        Position          Ellipticity    Rotation Orthog.
+       X(%
+
+ 0    -1.13    -0.06    -0.37     0.54    -0.34     0.61
+ 1    -0.16     0.13     0.07     0.04    -0.01     0.17
+ 2     1.25     0.82     1.77    -2.56     0.59    -0.24
+ 3     0.49    -0.02     0.11     1.19     0.13    -0.29
+ 4    -0.72    -0.14    -0.03    -0.46    -0.25     0.33
+ 5    -0.09    -0.41     0.47     0.15    -0.14    -0.19
+ 6    -0.04    -0.21    -0.93     0.52    -0.07    -0.10
+ 7    -1.30    -1.42     0.45    -0.21    -0.78    -0.07
+ 8     2.51     1.77     0.86     0.99     1.23    -0.42
+ 9     0.80    -0.23    -0.69    -0.39     0.16    -0.59
+ A    -0.03    -0.73     1.61    -0.08    -0.22    -0.40
+ B    -0.13    -0.57    -0.57     0.30    -0.20    -0.26
+ C     0.00     0.00     0.00     0.00     0.00     0.00
+ D    -0.05    -0.31    -1.23     1.50    -0.10    -0.15
+</PRE>
+<P>
+The first two columns (position) give the dipole angle error, expressed as the
+percentage of I that will corrupt Q, U and V. This is equivalent to expressing
+the dipole misalignment errors as percentages of one radian. In the last two
+columns, these same numbers are re-interpreted as a position error (rotation)
+of the entire XY-dipole assembly in degrees, and a deviation from the nominal
+orthogonality between the X and Y dipole. This is useful, since the entire
+XY-dipole assembly can be rotated as a whole for each WSRT telescope.
+<P>
+The ellipticities are also given as percentages of the corrupting I, or as
+percentages of one radian.
+<P>
+<A NAME=.calc><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0006000000000000000> <b>POLAR CALC: Calculate corrections</b></A></H1>
+<P>
+The dipole angle <em>errors</em> <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1409.png"> and ellipticities <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1599.png"> are
+calculated using <A HREF=" #.equ.pol.010">equation</A>. A strong calibrator is observed, which
+is known to be unpolarised  (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1413.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1383.png">). It is assumed that gain and
+phase have already been calibrated by other means (e.g. Selfcal): <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1417.png">. Thus,
+<A HREF=" #.equ.pol.010">equation</A> reduces to:
+<P><IMG ALIGN=BOTTOM ALT="" SRC="_23919_equation278.png"><P>
+with <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1419.png">.
+<P>
+The system of linear equations (one for each <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1421.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1423.png">) can
+be solved in a manner that is entirely analogous to the
+<A HREF="../ncalib/ncalib.html#.redun">redundancy solution</A> for gain and phase errors. The
+separate solutions for the real and imaginary parts now give the <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1409.png"> and
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1599.png"> respectively.
+<P>
+Since the S/N of the <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1429.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1431.png"> will be small, the
+least-squares solution will be more accurate if more data (Sets and HA-range)
+are used. However, it must of course be assumed that the <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1409.png"> and
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1599.png"> values are the same for all these data.  This is a fairly safe
+assumption, since the causes for these dipole errors are `mechanical', and vary
+only slowly in time. If the estimated values are to be useful for correction
+subsequent observations, they must at least be constant for the duration of the
+calibrator observation.
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1469.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1471.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1473.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1475.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>HA_RANGE</b>
+ (DEG) (HA range)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1477.png">   <PRE>
+ All cross interferometers pre-selected
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SELECT_IFRS</b>
+ (Select/de-select ifrs)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1479.png">   <PRE>
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SELECT_IFRS</b>
+ (Select/de-select ifrs)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1481.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>BASEL_CHECK</b>
+ (M) (Baseline deviation allowed)
+ = 0.5 M:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1483.png">
+<P>
+The only difference with a `normal' (gain/phase) Redundancy solution is that
+these solutions are for all 28 dipoles simultaneously. Therefore, the necessary
+constraint equations have 28 coefficients. The words `gain' and `phase' refer
+to the separate Real and Imaginary solutions. The succession of dipoles is
+0X,0Y,1X,1Y,...etc.
+<P>
+The constraint equations arbitrarily set the <em>average ellipticity</em> and the
+<em>average dipole angle errors</em> over the array to zero. Without further
+information, this may be the most reasonable value. But if it is wrong it could
+affect the observations that are calibrated with the results.
+<P>
+The result of CALC looks very much like the output of SHOW (see above), except
+that the estimated accuracy (mean error) of the numbers is give in brackets.
+<P>
+    <PRE>
+ Sector: 2.0.0.0
+
+         Position                     Ellipticity           Rotation Orthog.
+         X(%
+
+ 0    -1.13(0.06)    -0.06(0.06)    -0.37(0.06)     0.54(0.06)    -0.34     0.61
+ 1    -0.16(0.06)     0.13(0.06)     0.07(0.06)     0.04(0.06)    -0.01     0.17
+ 2     1.25(0.06)     0.82(0.06)     1.77(0.06)    -2.56(0.06)     0.59    -0.24
+ 3     0.49(0.06)    -0.02(0.06)     0.11(0.06)     1.19(0.06)     0.13    -0.29
+ 4    -0.72(0.06)    -0.14(0.06)    -0.03(0.06)    -0.46(0.06)    -0.25     0.33
+ 5    -0.09(0.06)    -0.41(0.06)     0.47(0.06)     0.15(0.06)    -0.14    -0.19
+ 6    -0.04(0.06)    -0.21(0.06)    -0.93(0.06)     0.52(0.06)    -0.07    -0.10
+ 7    -1.30(0.06)    -1.42(0.06)     0.45(0.06)    -0.21(0.06)    -0.78    -0.07
+ 8     2.51(0.06)     1.77(0.06)     0.86(0.06)     0.99(0.06)     1.23    -0.42
+ 9     0.80(0.07)    -0.23(0.07)    -0.69(0.07)    -0.39(0.07)     0.16    -0.59
+ A    -0.03(0.04)    -0.73(0.04)     1.61(0.04)    -0.08(0.04)    -0.22    -0.40
+ B    -0.13(0.05)    -0.57(0.05)    -0.57(0.05)     0.30(0.05)    -0.20    -0.26
+ C     0.00(0.72)     0.00(0.72)     0.00(0.72)     0.00(0.72)     0.00     0.00
+ D    -0.05( 0.2)    -0.31( 0.2)    -1.23( 0.2)     1.50( 0.2)    -0.10    -0.15
+</PRE>
+<P>
+The dipole corrections estimated by CALC will be <em>added</em> to the corrections
+that were applied to the data when they were read in.
+<P>
+<A NAME=.set><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0007000000000000000> <b>POLAR SET: Set corrections manually</b></A></H1>
+<P>
+The user may specify values for the dipole angle errors <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1409.png"> and
+ellipticity <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1599.png"> manually. The numbers given by the user are converted to
+internal format, and stored (as POLC) in the headers of the given range of
+Sets. The default values are zero.
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1519.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1521.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1523.png">
+<P>
+		<i>For example</i> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_ROTAN</b>
+ (dipole position)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1525.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_ORTHOG</b>
+ (dipole orthogonality)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1527.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_X_ELLIPS</b>
+ (X ellipticity)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1529.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_Y_ELLIPS</b>
+ (Y ellipticity)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1531.png">   <PRE>
+ Sector: 2.0.0.0.0
+</PRE>
+<P>
+<A NAME=.edit><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0008000000000000000> <b>POLAR EDIT: Edit corrections</b></A></H1>
+<P>
+This is similar to POLAR SET above, except that the default values are the
+corrections (POLC) that are already stored in the Set headers. Thus, the
+existing POLC corrections in each Set header of the given range can be edited
+separately:
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1563.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1565.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1567.png">
+<P>
+		<i>For example</i>    <PRE>
+ Sector: 2.0.0.0.0
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_ROTAN</b>
+ (dipole position)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1569.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_ORTHOG</b>
+ (dipole orthogonality)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1571.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_X_ELLIPS</b>
+ (X ellipticity)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1573.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POL_Y_ELLIPS</b>
+ (Y ellipticity)
+ = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1575.png">
+<P>
+<A NAME=.zero><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION0009000000000000000> <b>POLAR ZERO: Zero corrections</b></A></H1>
+<P>
+For the specified range of sets, the POLC corrections in the set header are set
+to zero:
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1589.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1591.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1593.png">   <PRE>
+ Sector: 2.0.0.0.0
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1595.png">
+<P>
+<A NAME=.copy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION00010000000000000000> <b>POLAR COPY: Copy corrections from somewhere else</b></A></H1>
+<P>
+The polarisation corrections <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1409.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1599.png">  are calculated with the
+help of a strong, unpolarised calibrator source, using the option POLAR CALC
+(see above). In order to use these corrections to correct a real observation,
+they must be transferred (copied) from the Set header of the calibrator to the
+Set header(s) of the observed object.
+<P>
+There are two possibilities: The calibrator observation (and thus the desired
+corrections) may be stored in a separate SCN-file (node), or they may be stored
+in another `group' in the same SCN-file as the observed object. Below, an
+example is given for both situations:
+<P>
+If the calibrator observation is stored in a separate SCN-file:
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1639.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1641.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1643.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1645.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_NODE</b>
+ (input node name)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1647.png">   <PRE>
+ Specify the node name from which the corrections should be calculated.
+ * indicates the same as the output node name.
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_NODE</b>
+ (input node name)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1649.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_SETS</b>
+ (Set(s) of input uv-data Sectors:  g.o.f.c.s)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1651.png">   <PRE>
+ Sector: 0.0.0.0.0
+ Sector: 0.0.0.4.0
+</PRE>
+<P>
+If the calibrator observation is stored in the same SCN-file (e.g. as group 1,
+while the observed object is stored as group 0), the process runs as follows:
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1653.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1655.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1657.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1659.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_NODE</b>
+ (input node name)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1661.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_SETS</b>
+ (Set(s) of input uv-data Sectors:  g.o.f.c.s)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1663.png">   <PRE>
+ Sector: 0.0.0.0.0
+ Sector: 0.0.0.4.0
+</PRE>
+<P>
+<A NAME=.vzero><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H1><A NAME=SECTION00011000000000000000> <b>POLAR VZERO: X-Y Phase Zero Difference, assuming V=0</b></A></H1>
+<P>
+The VZERO option deals with the determination and manipulation of the <em>Phase Zero Difference (PZD)</em> between the X and Y dipoles. It is invoked in the
+following way:
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>POLAR_OPTION</b>
+ (CALC, SHOW, SET, COPY, EDIT...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1667.png">
+<P>
+<A NAME=.vzero.calc><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00011100000000000000> <b>POLAR VZERO CALC: Calculate and show</b></A></H2>
+<P>
+An Phase Zero Difference (PZD) between the X-dipoles an the Y-dipoles affects
+the phase of the complex gain factors <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1669.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1671.png"> (but not
+<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1673.png"> and <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1675.png">). The PZD is determined with the help of a
+strong calibrator source, which must have a relatively large U-component of
+linear polarisation, and an accurately known amount of circular polarisation
+(Stokes V). The latter is important, since a wrong value for V will be
+incorrectly interpreted as a PZD. Since the V is difficult to measure
+accurately, it is safer to use a calibrator that `should not' have any circular
+polarisation: <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1383.png">.
+<P>
+The algorithm uses <A HREF=" #.equ.pol.010">equation</A> and <A HREF=" #.equ.pol.018">equation</A>. It is assumed
+that the `leakage' of the strong I-term is eliminated by means
+<A HREF="#.calc">POLAR CALC</A>: <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1679.png">.  It is also assumed
+that the gain and phase errors have also been well-calibrated: <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1681.png">. Thus, <A HREF=" #.equ.pol.010">equation</A> reduce to:
+<P><IMG ALIGN=BOTTOM ALT="" SRC="_23919_eqnarray483.png"><P>
+<P>
+The calculation of the PZD angle (<IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1683.png">) is now quite straightforward. Because
+of the low S/N of the `cross-terms' <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1685.png">, as many data (Sets, HA-range)
+should be used in the estimation as possible. However, the PZD may change with
+time.
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_OPTION</b>
+ (CALC, APPLY, ASK, MANUAL, SCAN...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1715.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "PSR1937.JAN93":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1717.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1719.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1721.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>HA_RANGE</b>
+ (DEG) (HA range)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1723.png">   <PRE>
+ All cross interferometers pre-selected
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SELECT_IFRS</b>
+ (Select/de-select ifrs)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1725.png">   <PRE>
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+</PRE>
+<P>
+The resulting PZD angle is given as follows:
+<P>
+    <PRE>
+ A complex angle of 0.54+0.12I(0.01+0.01I) or 12.44 degrees
+</PRE>
+<P>
+This message is somewhat confusing as the interesting information in the
+``complex angle'' has been truncated in the printing (the relative sizes of the
+real and imaginary parts). The angle given in degrees is somewhat more
+informative.
+<P>
+<A NAME=.vzero.apply><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00011200000000000000> <b>POLAR VZERO APPLY: Calculate, show and apply</b></A></H2>
+<P>
+The PZD angle is `applied' by adjusting the phase in the `other corrections'
+(OTHC) in the Scan headers. This is done for the entire specified range (Sets
+and HA-range).
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_OPTION</b>
+ (CALC, APPLY, ASK, MANUAL, SCAN...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1751.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1753.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1755.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1757.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>HA_RANGE</b>
+ (DEG) (HA range)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1759.png">   <PRE>
+ All cross interferometers pre-selected
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SELECT_IFRS</b>
+ (Select/de-select ifrs)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1761.png">   <PRE>
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+ A complex angle of 0.55+0.01I(0.01+0.01I) or 1.00 degrees
+</PRE>
+<P>
+<A NAME=.vzero.ask><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00011300000000000000> <b>POLAR VZERO ASK: Calculate, check with user, and apply</b></A></H2>
+<P>
+The user may influence the result by giving another PZD, which will be
+`applied' for the entire specified range (Sets and HA-range). The default is
+the calculated value.
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_OPTION</b>
+ (CALC, APPLY, ASK, MANUAL, SCAN...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1801.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "PSR1937.JAN93":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1803.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1805.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1807.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>HA_RANGE</b>
+ (DEG) (HA range)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1809.png">   <PRE>
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SELECT_IFRS</b>
+ (Select/de-select ifrs)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1811.png">   <PRE>
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+ A complex angle of 0.55-0.00I(0.01+0.01I) or -0.19 degrees
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_PHASE</b>
+ (X-Y difference)
+ = -0.1857903:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1813.png">
+<P>
+		<i>Use the calculated value</i>
+<P>
+<A NAME=.vzero.manual><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00011400000000000000> <b>POLAR VZERO MANUAL: Ask for and apply</b></A></H2>
+<P>
+The PZD angle given by the user is `applied' to the entire specified range
+(Sets and HA-range). The default value is <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1815.png">.
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_OPTION</b>
+ (CALC, APPLY, ASK, MANUAL, SCAN...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1845.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "PSR1937.JAN93":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1847.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1849.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1851.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>HA_RANGE</b>
+ (DEG) (HA range)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1853.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_PHASE</b>
+ (X-Y difference)
+ = 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1855.png">
+<P>
+		<i>User specifies a PZD = -1 degrees</i>
+<P>
+<A NAME=.vzero.scan><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00011500000000000000> <b>POLAR VZERO SCAN: Calculate and apply on a per-scan basis</b></A></H2>
+<P>
+The change of the PZD angle as a function of time can be studied by estimating
+it for each Scan (HA) separately. The S/N of the estimation will necessarily be
+low.
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_OPTION</b>
+ (CALC, APPLY, ASK, MANUAL, SCAN...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1889.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = "PSR1937.JAN93":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1891.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1893.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1895.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>HA_RANGE</b>
+ (DEG) (HA range)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1897.png">   <PRE>
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SELECT_IFRS</b>
+ (Select/de-select ifrs)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1899.png">
+<P>
+<A NAME=.vzero.copy><IMG ALIGN=MIDDLE SRC="../icons/invis_anchor.png"></A>
+<H2><A NAME=SECTION00011600000000000000> <b>POLAR VZERO COPY: Calculate from input and apply to output</b></A></H2>
+<P>
+The PZD angle is calculated with the help of a strong, unpolarised calibrator
+source. In order to use it to correct a real observation, it must be
+transferred (copied) from the Scan header(s) of the calibrator to the Scan
+header(s) of the observed object.
+<P>
+There are two possibilities: The calibrator observation (and thus the desired
+corrections) may be stored in a separate SCN-file (node), or it may be stored
+in another group in the same SCN-file as the observed object. NB: In the latter
+case, it could even be the same observation!  In both cases, the PZD is
+calculated from a range of data (Sets and HA-range) in the INPUT_NODE, and
+`applied' (i.e. stored as `other corrections' (OTHC)) to the Scan Headers in
+the SCAN_NODE. In the following example, the calibrator is stored in the same
+SCN-file as group 1, while the observed object is stored as group 0):
+<P>
+  <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>VZERO_OPTION</b>
+ (CALC, APPLY, ASK, MANUAL, SCAN...)
+ = QUIT:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1931.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_NODE</b>
+ (input/output 'node' name)
+ = ""
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1933.png">
+<P>
+		<i>SCN-file</i> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_LOOPS</b>
+ (niter, Setincr(g.o.f.c.s) ....)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1935.png">
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SCN_SETS</b>
+ (Set(s) to do:  g.o.f.c.s )
+ = 0:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1937.png">
+<P>
+		<i>Apply the PZD to all sets of job 0</i> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_NODE</b>
+ (input node name)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1939.png">   <PRE>
+ Specify the node name from which the corrections should be calculated.
+ * indicates the same as the output node name.
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_NODE</b>
+ (input node name)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1941.png">
+<P>
+		<i>Use the same SCN file</i> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>USE_SCN_SETS</b>
+ (Set(s) of input uv-data Sectors:  g.o.f.c.s)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1943.png">
+<P>
+		<i>Sets in job 2</i> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>HA_RANGE</b>
+ (DEG) (HA range)
+ = *:
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1945.png">
+<P>
+		<i>Use all scans in these sets</i>    <PRE>
+   0123456789ABCD
+ 0 -+++++++++++++
+ 1  -++++++++++++
+ 2   -+++++++++++
+ 3    -++++++++++
+ 4     -+++++++++
+ 5      -++++++++
+ 6       -+++++++
+ 7        -++++++
+ 8         -+++++
+ 9          -++++
+ A           -+++
+ B            -++
+ C             -+
+ D              -
+</PRE> 
+    <BR><IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1857.png"> <b>SELECT_IFRS</b>
+ (Select/de-select ifrs)
+ = "":
+ <IMG ALIGN=BOTTOM ALT="" SRC="_8345_tex2html_wrap1947.png">
+<P>
+		<i>Use all interferometers</i>    <PRE>
+ Sector: 0.0.0.0
+ Sector: 0.0.0.4
+ A complex angle of 0.55-0.00I(0.01+0.01I) or -0.89 degrees
+</PRE>
+<P>
+Warning: Remember that the PZD may partly be an <em>artifact</em> of the separate
+phase/gain calibration of the X-dipoles and the Y-dipoles. This may lead to a
+different PZD angle for the calibrator and the subsequent observation. The
+difference may be several degrees, which is much greater than the accuracy that
+is required for the measurement of very small percentages of circular
+polarisation. However, the measured V may be more accurate if the observed
+object is extended, which will often be the case. But the truth of the matter
+is that, even though the WSRT may offer the best conditions for very accurate
+polarisation measurements, the PZD problem is essentially unsolved.
+<P>
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+<P>.
+
+</BODY> </HTML> 
+<HR>
+
+</BODY>
+<P><ADDRESS>
+newstar@nfra.nl

@@ -1,0 +1,23 @@
+<TITLE>Description of PUT_EXPAND_CH (NFLAG)</TITLE>
+<H1>Program NFLAG: private keyword PUT_EXPAND_CH</H1> 
+
+<DT><EM>Prompt:</EM> PUT expansion half-width in channel numbers
+<DT><EM>Expected input:</EM> Integer number; min.value: 0.000000.<P>
+ PUT performs flagging commands from the internal flag list on 
+your primary data cube. Each command consists of a flag/unflag mask plus ranges 
+in the frequency- 
+channel, interferometer, polarisation and hour-angle 'dimensions' of the TARGET 
+points to which it must be applied. <P>
+You have activated PUT's option to EXPAND, within the limits of the primary 
+data cube, the operation over a 4-dimensional volume of data around each target 
+point. You may now select the number of channels on either side of a target 
+channel over which you want to expand the flagging.  Example: 
+        If you reply 2, a total of 5 channels centered on each target channel 
+will be flagged: two above and two below the target.  <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../nflag/nflag_keys.html">List of keywords</A> for NFLAG
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>Description of <A HREF="../nflag_descr/nflag_descr.html">program NFLAG</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

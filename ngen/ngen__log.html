@@ -1,0 +1,44 @@
+<TITLE>Description of LOG (NGEN)</TITLE>
+<H1>Description of general keyword LOG</H1>
+
+<DT><EM>Prompt:</EM> log-file disposition NO, YES, SPOOL, CATEN
+<DT><EM>Default:</EM> YES /NOASK.
+<DT><EM>Expected input:</EM> Character(8).<P>
+For each run of a NEWSTAR program, logging information may be put into a 
+LOG-file, for subsequent inspection (and clogging up your room). LOG-files are 
+named with the first three letters of the program name (e.g. NCA), followed by 
+yymmddhhmmssA.LOG in the current working directory. E.g. NCA940305163412A.LOG 
+The most recent LOG-file for a program has an alias name equal to the program,  
+and the extension .LOG (e.g. NCALIB.LOG). <P>
+The LOG-file contains the values for all the parameter (keywords) that were 
+used for this particualr program run, including the 'hidden' ones. It will also 
+contain information about the program run itself, and any results. <P>
+Specify what to do with the logging output: 
+        NO:     Make no LOG-file (not recommended) 
+        YES:    Make a LOG-file (preferred option, no line-printer output) 
+        SPOOL:  Print the LOG-file on the printer at the end of the program run 
+        CATEN:  Add the new info to the existing LOG-file for this program <P>
+. 
+This keyword is part of NGEN, i.e. it is a NEWSTAR 'environment keyword', which 
+is available to all NEWSTAR programs. The switch /NOASK indicates that it is 
+'hidden', i.e. the user is not prompted for it, but the default value is used. 
+Its value may be modified (for a given $stream) in several ways: 
+        Permanently for all programs and streams during current login: 
+                change the default value: dws[pecify] 'NGEN$0' 
+        Permanently for all programs in certain stream during current login: 
+                change the default value: dws[pecify] NGEN['$stream'] 
+        Permanently for certain program in all streams during current login: 
+                change the default value: dws[pecify] 'program$0' 
+        Permanently for certain program in certain stream during current login: 
+                change the default value: dws[pecify] program['$stream'] Note: 
+use automatic saving in LOGOUT to pass on values beyond current login 
+        Incidentally for a certain incarnation of program[$stream]: 
+                run as: dwe program['$stream']/LOG=value 
+        Incidentally for all hidden values: 
+                run a NEWSTAR program as: dwe program['$stream']/ASK <P>
+
+ <H3> More information: </H3> <UL>
+<LI><A HREF="../ngen/ngen_comm.html">List of general keywords</A> for NGEN
+<LI><A HREF="../homepage.html">NEWSTAR Documentation Home page</A>
+<LI>The <A HREF="../common_descr/common_descr.html">DWARF User Interface</A>
+</UL>

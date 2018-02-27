@@ -1,4 +1,0 @@
-
-1 Type dwnews to get information about the recent changes in the DWARF system.
-
-**************************************************  16-Dec-92 WNB  ***********

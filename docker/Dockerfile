@@ -12,8 +12,10 @@ USER newstar
 
 # Obtain source code
 WORKDIR /home/newstar
-RUN wget --no-check-certificate -q https://github.com/tammojan/Newstar/archive/master.tar.gz
-RUN tar xf master.tar.gz && mv Newstar-master/* . && rmdir Newstar-master && rm master.tar.gz
+# Doesn't work anymore due to certificate issues (old wget uses an old protocol that github doesn't accept anymore)
+#RUN wget --no-check-certificate -q https://github.com/tammojan/Newstar/archive/master.tar.gz
+ADD master.tar.gz /home/newstar
+RUN sudo chown -R newstar:newstar Newstar-master && mv Newstar-master/* . && rmdir Newstar-master
 
 # Set required environment variables for newstar, this replaces the logic in $n_root/src/sys
 ENV n_site=docker \

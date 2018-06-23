@@ -7,7 +7,7 @@ The WSRT is operated by the Netherlands Foundation for Research in Astronomy (th
 
 Newstar was mainly written by Wim Brouw. Newstar is not being actively developed or maintained anymore.
 
-Documentation is currently hosted at https://tammojan.github.io/Newstar
+Documentation and tutorials are currently hosted at https://lofar-astron.github.io/Newstar
 
 To quickly get started, you can use the [Docker](https://www.docker.com/) distrubution of Newstar, by running
 ```

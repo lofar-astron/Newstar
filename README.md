@@ -13,3 +13,11 @@ To quickly get started, you can use the [Docker](https://www.docker.com/) distru
 ```
 docker run -it tammojan/newstar
 ```
+
+While in the container, some first command could be:
+```
+> exe nscan
+      NSCAN$1 (v6.27) is started at 12-Feb-19 15:58:12
+OPTION - Action (QUIT; LOAD,IFLOAD,LEIDEN,LIST,ARC,DUMP; UVFITS,PFITS;
+     SHOW; [CVX,NVS,NOPT; REGROUP; FROM_OLD,WERR,AERR,VFIX]) = QUIT:
+```
